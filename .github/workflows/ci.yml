@@ -1,0 +1,203 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '8'
+
+jobs:
+  install:
+    name: Install Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
+  typecheck:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run typecheck
+        run: pnpm turbo run typecheck
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm turbo run lint
+
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm format:check
+
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm turbo run test:unit
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./packages/*/coverage/coverage-final.json
+          flags: unittests
+          fail_ci_if_error: false
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint, format, test]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm turbo run build
+
+      - name: Cache build outputs
+        uses: actions/cache@v3
+        with:
+          path: |
+            packages/*/dist
+            apps/*/dist
+          key: ${{ runner.os }}-build-${{ github.sha }}
+
+  status-check:
+    name: CI Status Check
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint, format, test, build]
+    if: always()
+    steps:
+      - name: Check CI status
+        run: |
+          if [[ "${{ needs.typecheck.result }}" != "success" ]] || \
+             [[ "${{ needs.lint.result }}" != "success" ]] || \
+             [[ "${{ needs.format.result }}" != "success" ]] || \
+             [[ "${{ needs.test.result }}" != "success" ]] || \
+             [[ "${{ needs.build.result }}" != "success" ]]; then
+            echo "CI failed"
+            exit 1
+          fi
+          echo "CI passed"

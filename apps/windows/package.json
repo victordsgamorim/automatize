@@ -1,0 +1,17 @@
+{
+  "name": "@automatize/windows",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo 'Windows app - Coming in Phase 11'",
+    "build": "echo 'Windows app - Coming in Phase 11'",
+    "lint": "echo 'Lint - Coming soon'",
+    "typecheck": "echo 'Typecheck - Coming soon'",
+    "test": "echo 'Tests - Coming soon'",
+    "clean": "rm -rf node_modules .turbo"
+  },
+  "dependencies": {
+    "@automatize/core": "workspace:*",
+    "@automatize/ui": "workspace:*"
+  }
+}

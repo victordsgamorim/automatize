@@ -1,0 +1,94 @@
+.container {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #171717;
+  margin: 0 0 32px 0;
+}
+
+.welcomeCard {
+  background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+  color: white;
+  padding: 32px;
+  border-radius: 8px;
+  margin-bottom: 40px;
+}
+
+.welcomeCard h2 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.welcomeCard p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.card:hover {
+  border-color: #1e40af;
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.1);
+}
+
+.cardIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #171717;
+  margin: 0 0 8px 0;
+}
+
+.cardText {
+  font-size: 13px;
+  color: #737373;
+  margin: 0;
+}
+
+.infoCard {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.infoCard h3 {
+  color: #1d4ed8;
+  margin: 0 0 12px 0;
+  font-size: 16px;
+}
+
+.infoCard p {
+  color: #1e40af;
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.infoCard p:last-child {
+  margin-bottom: 0;
+}

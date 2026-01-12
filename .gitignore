@@ -1,0 +1,229 @@
+# ============================================================================
+# DEPENDENCIES
+# ============================================================================
+node_modules/
+.pnp
+.pnp.js
+*.lock
+
+# ============================================================================
+# ENVIRONMENT & SECRETS (CRITICAL - DO NOT COMMIT)
+# ============================================================================
+# Environment variables - NEVER commit these files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.staging
+.env.staging.local
+.env.production
+.env.production.local
+
+# Secrets and credentials - NEVER commit these
+.env.secrets
+secrets.json
+credentials.json
+*.key
+*.pem
+*.crt
+serviceAccountKey.json
+firebase-key.json
+
+# ============================================================================
+# BUILD OUTPUTS
+# ============================================================================
+dist/
+build/
+.next/
+.expo/
+.turbo/
+out/
+.nuxt/
+.cache/
+.parcel-cache/
+.gatsby-cache/
+
+# ============================================================================
+# TESTING & COVERAGE
+# ============================================================================
+coverage/
+.nyc_output/
+*.lcov
+.mocha_output/
+test-results/
+
+# ============================================================================
+# LOGS & DEBUG
+# ============================================================================
+npm-debug.log*
+npm-debug.log*.json
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+logs/
+
+# ============================================================================
+# OPERATING SYSTEM FILES
+# ============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ============================================================================
+# IDE & EDITOR FILES
+# ============================================================================
+.vscode/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.idea_modules/
+.project
+.classpath
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*~
+.project
+.settings/
+.c9/
+*.iml
+out/
+.history/
+.ionide/
+
+# ============================================================================
+# TEMPORARY & MISC FILES
+# ============================================================================
+*.tsbuildinfo
+*.tsbuildinfo.json
+.eslintcache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_esm/
+.rts2_cache_umd/
+.node_repl_history
+*.patch
+*.rej
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ============================================================================
+# REACT NATIVE & MOBILE
+# ============================================================================
+# Android
+android/app/debug/
+android/app/release/
+android/.gradle/
+android/.idea/
+android/build/
+android/captures/
+android/.DS_Store
+android/local.properties
+*.apk
+*.aab
+
+# iOS
+ios/Pods/
+ios/Podfile.lock
+ios/Flutter/Flutter.podspec
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.framework.dSYM
+ios/Flutter/GeneratedPluginRegistrant.*
+ios/Runner/GeneratedPluginRegistrant.*
+ios/GoogleService-Info.plist
+DerivedData/
+.ipa
+*.xcworkspace/xcuserdata/
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# ============================================================================
+# NEXT.JS & WEB
+# ============================================================================
+.next/
+out/
+.cache/
+.vercel/
+.nuxt/
+dist/
+.env.local
+.env.*.local
+
+# ============================================================================
+# DOCKER & CONTAINERS
+# ============================================================================
+.docker/
+docker-compose.override.yml
+.dockerignore
+
+# ============================================================================
+# SUPABASE & DATABASE
+# ============================================================================
+.supabase/
+supabase/.branches/
+supabase/seed.sql
+
+# ============================================================================
+# MISC DIRECTORIES
+# ============================================================================
+tmp/
+temp/
+.turbo/
+.vercel/
+coverage/
+reports/
+
+# ============================================================================
+# IMPORTANT NOTES
+# ============================================================================
+# 1. ENVIRONMENT FILES:
+#    - Copy .env.example to .env.local or .env.development
+#    - NEVER commit any .env files with credentials
+#    - Use .env.example as a template for documentation
+#
+# 2. SECRETS:
+#    - API Keys, tokens, and credentials must NEVER be committed
+#    - Use environment variables for all sensitive data
+#    - Consider using Supabase Vault for production secrets
+#
+# 3. BUILD ARTIFACTS:
+#    - dist/, build/, .next/ are generated and should never be committed
+#    - These are rebuilt during deployment
+#
+# 4. SENSITIVE FILES:
+#    - Service account keys, private keys, certificates
+#    - Firebase config, database credentials, API tokens
+#
+# 5. IDE AND OS FILES:
+#    - .vscode/, .idea/ (except extensions.json which can be shared)
+#    - .DS_Store, Thumbs.db, and other OS-specific files
+#
+# If you accidentally committed sensitive files:
+#    git rm --cached <filename>
+#    git commit -m "Remove <filename>"
+#    git push

@@ -1,0 +1,48 @@
+{
+  "name": "@automatize/ui",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./tokens": {
+      "types": "./dist/tokens/index.d.ts",
+      "import": "./dist/tokens/index.mjs",
+      "require": "./dist/tokens/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run --coverage",
+    "clean": "rm -rf dist node_modules .turbo"
+  },
+  "dependencies": {
+    "@automatize/core": "workspace:*",
+    "lucide-react-native": "^0.309.0",
+    "react": "^18.2.0",
+    "react-native": "^0.73.2"
+  },
+  "devDependencies": {
+    "@automatize/tsconfig": "workspace:*",
+    "@types/react": "^18.2.48",
+    "@vitest/coverage-v8": "^1.2.1",
+    "eslint": "^8.56.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.1"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-native": "^0.73.0"
+  }
+}
