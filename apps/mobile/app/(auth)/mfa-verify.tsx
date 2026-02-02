@@ -12,6 +12,7 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 import { useMFA } from '@automatize/auth';
 import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
 
@@ -24,6 +25,12 @@ export default function MFAVerifyScreen() {
     isLoading,
     error,
   } = useMFA();
+  const { factorId: factorIdParam } = useLocalSearchParams<{
+    factorId?: string;
+  }>();
+  const factorId = Array.isArray(factorIdParam)
+    ? factorIdParam[0]
+    : factorIdParam;
   const [code, setCode] = useState('');
   const [useBackupCode, setUseBackupCode] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -46,11 +53,16 @@ export default function MFAVerifyScreen() {
       return;
     }
 
+    if (!factorId) {
+      setLocalError('Missing MFA factor ID. Please try logging in again.');
+      return;
+    }
+
     try {
       if (useBackupCode) {
-        await verifyChallengeWithBackupCode(code);
+        await verifyChallengeWithBackupCode(factorId, code);
       } else {
-        await verifyChallengeWithTOTP(code);
+        await verifyChallengeWithTOTP(factorId, code);
       }
       // Navigation handled by auth context
     } catch (err) {
@@ -170,7 +182,7 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     backgroundColor: theme.background.error,
-    borderLeftColor: theme.error,
+    borderLeftColor: theme.state.error,
     borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,

@@ -43,7 +43,7 @@ export default function MFASetupScreen() {
       const mfaSetup = await enrollMFA();
       if (mfaSetup) {
         setSecret(mfaSetup.secret || '');
-        setQrCode(mfaSetup.qrCodeDataUrl || '');
+        setQrCode(mfaSetup.qrCode || '');
         // In a real implementation, mfaSetup would contain QR code
         // For now, we'll use the secret directly
         setStep('verify');
@@ -67,15 +67,13 @@ export default function MFASetupScreen() {
     }
 
     try {
-      const result = await verifyMFA(verificationCode);
-      if (result) {
-        // Get backup codes
-        const codes = Array.from({ length: 10 }, () =>
-          Math.random().toString(36).substring(2, 10).toUpperCase()
-        );
-        setBackupCodes(codes);
-        setStep('backup');
-      }
+      await verifyMFA(verificationCode, []);
+      // Get backup codes
+      const codes = Array.from({ length: 10 }, () =>
+        Math.random().toString(36).substring(2, 10).toUpperCase()
+      );
+      setBackupCodes(codes);
+      setStep('backup');
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Verification failed';
@@ -304,7 +302,7 @@ export default function MFASetupScreen() {
 
 const styles = StyleSheet.create({
   backupCodeRow: {
-    borderBottomColor: theme.border,
+    borderBottomColor: theme.border.default,
     borderBottomWidth: 1,
     paddingVertical: 8,
   },
@@ -346,7 +344,7 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     backgroundColor: theme.background.error,
-    borderLeftColor: theme.error,
+    borderLeftColor: theme.state.error,
     borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,

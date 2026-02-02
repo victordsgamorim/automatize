@@ -14,7 +14,14 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@automatize/auth';
-import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
+import {
+  Button,
+  Text,
+  FormField,
+  Card,
+  colors,
+  semanticColors,
+} from '@automatize/ui';
 
 const theme = semanticColors.light;
 
@@ -181,7 +188,7 @@ export default function ForgotPasswordScreen() {
                 testID="forgot-password-resend-button"
               >
                 {isLoading ? (
-                  <ActivityIndicator color={theme.brand[600]} />
+                  <ActivityIndicator color={colors.brand[600]} />
                 ) : (
                   "Didn't receive email? Resend"
                 )}
@@ -212,7 +219,7 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     backgroundColor: theme.background.error,
-    borderLeftColor: theme.error,
+    borderLeftColor: theme.state.error,
     borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,
@@ -244,7 +251,7 @@ const styles = StyleSheet.create({
   },
   successContainer: {
     backgroundColor: theme.background.secondary,
-    borderLeftColor: theme.success,
+    borderLeftColor: theme.state.success,
     borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,

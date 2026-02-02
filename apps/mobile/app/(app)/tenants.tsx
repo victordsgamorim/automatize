@@ -18,6 +18,7 @@ import {
   Card,
   FormField,
   Loading,
+  colors,
   semanticColors,
 } from '@automatize/ui';
 
@@ -95,8 +96,10 @@ export default function TenantsScreen() {
             <Text variant="h3" color="primary">
               Current Workspace
             </Text>
-            <View style={[styles.badge, { backgroundColor: theme.brand[600] }]}>
-              <Text variant="caption" color="white">
+            <View
+              style={[styles.badge, { backgroundColor: colors.brand[600] }]}
+            >
+              <Text variant="caption" style={styles.badgeText}>
                 Active
               </Text>
             </View>
@@ -228,6 +231,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
+  badgeText: {
+    color: colors.neutral[50],
+  },
   button: {
     marginTop: 8,
   },
@@ -251,7 +257,7 @@ const styles = StyleSheet.create({
   },
   currentTenantCard: {
     backgroundColor: theme.background.secondary,
-    borderLeftColor: theme.brand[600],
+    borderLeftColor: colors.brand[600],
     borderLeftWidth: 4,
     marginBottom: 24,
     paddingHorizontal: 16,
@@ -265,14 +271,14 @@ const styles = StyleSheet.create({
   },
   errorCard: {
     backgroundColor: theme.background.error,
-    borderLeftColor: theme.error,
+    borderLeftColor: theme.state.error,
     borderLeftWidth: 4,
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
   errorContainer: {
     backgroundColor: theme.background.error,
-    borderLeftColor: theme.error,
+    borderLeftColor: theme.state.error,
     borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,

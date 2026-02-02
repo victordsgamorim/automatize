@@ -12,7 +12,14 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useAuth } from '@automatize/auth';
-import { Button, Text, Card, FormField, semanticColors } from '@automatize/ui';
+import {
+  Button,
+  Text,
+  Card,
+  FormField,
+  colors,
+  semanticColors,
+} from '@automatize/ui';
 
 const theme = semanticColors.light;
 
@@ -75,7 +82,7 @@ export default function ProfileScreen() {
       <Card style={styles.profileCard}>
         <View style={styles.avatarContainer}>
           <View style={styles.avatar}>
-            <Text variant="h1" color="white">
+            <Text variant="h1" style={styles.avatarText}>
               {userProfile?.display_name?.charAt(0).toUpperCase() || 'U'}
             </Text>
           </View>
@@ -133,9 +140,12 @@ export default function ProfileScreen() {
             </Text>
           </View>
           <View
-            style={[styles.statusBadge, { backgroundColor: theme.success }]}
+            style={[
+              styles.statusBadge,
+              { backgroundColor: theme.state.success },
+            ]}
           >
-            <Text variant="caption" color="white">
+            <Text variant="caption" style={styles.statusBadgeText}>
               ✓ Active
             </Text>
           </View>
@@ -147,8 +157,8 @@ export default function ProfileScreen() {
             {
               marginTop: 16,
               borderTopWidth: 1,
-              borderTopColor: theme.border,
-              paddingTopTop: 16,
+              borderTopColor: theme.border.default,
+              paddingTop: 16,
             },
           ]}
         >
@@ -259,7 +269,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   avatar: {
     alignItems: 'center',
-    backgroundColor: theme.brand[600],
+    backgroundColor: colors.brand[600],
     borderRadius: 40,
     height: 80,
     justifyContent: 'center',
@@ -267,6 +277,9 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     marginBottom: 16,
+  },
+  avatarText: {
+    color: colors.neutral[50],
   },
   button: {
     marginTop: 8,
@@ -282,8 +295,8 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   dangerCard: {
-    backgroundColor: `${theme.error}10`,
-    borderLeftColor: theme.error,
+    backgroundColor: theme.background.error,
+    borderLeftColor: theme.state.error,
     borderLeftWidth: 4,
     marginBottom: 24,
     paddingHorizontal: 16,
@@ -305,7 +318,7 @@ const styles = StyleSheet.create({
   },
   infoRow: {
     alignItems: 'center',
-    borderBottomColor: theme.border,
+    borderBottomColor: theme.border.default,
     borderBottomWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -348,5 +361,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 4,
+  },
+  statusBadgeText: {
+    color: colors.neutral[50],
   },
 });

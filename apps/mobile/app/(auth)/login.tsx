@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     backgroundColor: theme.background.error,
-    borderLeftColor: theme.error,
+    borderLeftColor: theme.state.error,
     borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,

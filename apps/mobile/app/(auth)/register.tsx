@@ -28,7 +28,7 @@ function getPasswordStrength(password: string): {
 } {
   let score = 0;
   let label = 'Weak';
-  let color = theme.state.error;
+  let color: string = theme.state.error;
 
   if (password.length >= 8) score++;
   if (/[A-Z]/.test(password)) score++;

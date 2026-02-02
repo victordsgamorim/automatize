@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useAuth } from '@automatize/auth';
-import { Button, Text, Card, semanticColors } from '@automatize/ui';
+import { Button, Text, Card, colors, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;
 
@@ -91,13 +91,18 @@ export default function InviteScreen() {
 
   const handleAcceptInvitation = async () => {
     if (!isAuthenticated) {
+      if (!invitationId) {
+        setError('Invalid or missing invitation ID');
+        return;
+      }
       // Redirect to signup with invitation
+      const params: Record<string, string> = { invitationId };
+      if (invitationEmail) {
+        params.email = invitationEmail;
+      }
       router.push({
         pathname: '/(auth)/register',
-        params: {
-          invitationId,
-          email: invitationEmail,
-        },
+        params,
       });
       return;
     }
@@ -157,7 +162,7 @@ export default function InviteScreen() {
   if (authLoading || isLoading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color={theme.primary} />
+        <ActivityIndicator size="large" color={colors.brand[600]} />
       </View>
     );
   }
@@ -305,7 +310,7 @@ export default function InviteScreen() {
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color={theme.primary} />
+      <ActivityIndicator size="large" color={colors.brand[600]} />
     </View>
   );
 }
@@ -336,7 +341,7 @@ const styles = StyleSheet.create({
   },
   emailContainer: {
     backgroundColor: theme.background.secondary,
-    borderLeftColor: theme.info,
+    borderLeftColor: theme.state.info,
     borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,
@@ -344,7 +349,7 @@ const styles = StyleSheet.create({
   },
   errorContainer: {
     backgroundColor: theme.background.error,
-    borderLeftColor: theme.error,
+    borderLeftColor: theme.state.error,
     borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,
