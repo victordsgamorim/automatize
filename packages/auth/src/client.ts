@@ -3,30 +3,38 @@
  * Lazy-loaded client that avoids platform-specific imports at bundle time
  */
 
-import { createClient } from "@supabase/supabase-js";
-import { getAuthConfig } from "./config";
+import {
+  createClient,
+  SupabaseClient as SupabaseClientType,
+} from '@supabase/supabase-js';
+import { getAuthConfig } from './config';
+import type { Database } from './types/database.types';
 
-let supabaseInstance: ReturnType<typeof createClient> | null = null;
+let supabaseInstance: SupabaseClientType<Database> | null = null;
 
 /**
  * Get or create the Supabase client (lazy initialization)
  * This avoids platform-specific imports until actually needed
  */
-export function getSupabaseClient() {
+export function getSupabaseClient(): SupabaseClientType<Database> {
   if (!supabaseInstance) {
     const config = getAuthConfig();
 
-    supabaseInstance = createClient(config.supabaseUrl, config.supabaseAnonKey, {
-      auth: {
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true,
-      },
-      // For React Native, use the native fetch
-      global: {
-        fetch: fetch.bind(globalThis),
-      },
-    });
+    supabaseInstance = createClient<Database>(
+      config.supabaseUrl,
+      config.supabaseAnonKey,
+      {
+        auth: {
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: true,
+        },
+        // For React Native, use the native fetch
+        global: {
+          fetch: fetch.bind(globalThis),
+        },
+      }
+    );
   }
 
   return supabaseInstance;
@@ -35,13 +43,13 @@ export function getSupabaseClient() {
 /**
  * Export Supabase client type for TypeScript
  */
-export type SupabaseClient = ReturnType<typeof getSupabaseClient>;
+export type SupabaseClient = SupabaseClientType<Database>;
 
 /**
  * Legacy export for backwards compatibility
  * Lazy loads on first access
  */
-export const supabase = new Proxy({} as ReturnType<typeof getSupabaseClient>, {
+export const supabase = new Proxy({} as SupabaseClientType<Database>, {
   get(target, prop) {
     const client = getSupabaseClient();
     return Reflect.get(client, prop);
@@ -75,7 +83,7 @@ export function getSupabaseProjectId(): string {
   const url = getSupabaseUrl();
   const match = url.match(/https:\/\/([a-z0-9]+)\.supabase\.co/);
   if (!match || !match[1]) {
-    throw new Error("Could not extract project ID from Supabase URL");
+    throw new Error('Could not extract project ID from Supabase URL');
   }
   return match[1];
 }

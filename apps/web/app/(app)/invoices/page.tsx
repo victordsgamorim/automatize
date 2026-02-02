@@ -8,7 +8,9 @@ export default function InvoicesPage() {
       <h1 className={styles.title}>Faturas</h1>
       <div className={styles.placeholder}>
         <p>📄 Gestão de faturas - Em desenvolvimento</p>
-        <p className={styles.subtitle}>Aqui você poderá criar, editar e gerenciar suas faturas.</p>
+        <p className={styles.subtitle}>
+          Aqui você poderá criar, editar e gerenciar suas faturas.
+        </p>
       </div>
     </div>
   );

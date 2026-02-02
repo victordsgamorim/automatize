@@ -14,13 +14,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@automatize/auth';
-import {
-  Button,
-  Text,
-  FormField,
-  Card,
-  semanticColors,
-} from '@automatize/ui';
+import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;
 
@@ -42,7 +36,8 @@ export default function ForgotPasswordScreen() {
       await resetPassword(email);
       setSubmitted(true);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to send reset email';
+      const message =
+        err instanceof Error ? err.message : 'Failed to send reset email';
       setLocalError(message);
     }
   };
@@ -130,9 +125,17 @@ export default function ForgotPasswordScreen() {
                 <Text variant="h3" color="success" style={styles.successTitle}>
                   ✓ Email Sent
                 </Text>
-                <Text variant="body" color="secondary" style={styles.successMessage}>
+                <Text
+                  variant="body"
+                  color="secondary"
+                  style={styles.successMessage}
+                >
                   We've sent a password reset link to:{'\n'}
-                  <Text variant="body" color="primary" style={styles.emailHighlight}>
+                  <Text
+                    variant="body"
+                    color="primary"
+                    style={styles.emailHighlight}
+                  >
                     {email}
                   </Text>
                 </Text>
@@ -140,10 +143,18 @@ export default function ForgotPasswordScreen() {
 
               {/* Instructions */}
               <View style={styles.instructionsContainer}>
-                <Text variant="body" color="secondary" style={styles.instructionTitle}>
+                <Text
+                  variant="body"
+                  color="secondary"
+                  style={styles.instructionTitle}
+                >
                   What's next?
                 </Text>
-                <Text variant="body" color="secondary" style={styles.instructionText}>
+                <Text
+                  variant="body"
+                  color="secondary"
+                  style={styles.instructionText}
+                >
                   1. Check your email (including spam folder){'\n'}
                   2. Click the password reset link{'\n'}
                   3. Create a new password{'\n'}
@@ -184,65 +195,65 @@ export default function ForgotPasswordScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background.primary,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 16,
-    justifyContent: 'center',
-  },
-  header: {
-    marginBottom: 32,
-  },
-  subtitle: {
-    marginTop: 8,
+  button: {
+    marginTop: 12,
   },
   card: {
     marginBottom: 24,
     paddingHorizontal: 16,
     paddingVertical: 24,
   },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.error,
-  },
-  successContainer: {
-    backgroundColor: theme.background.secondary,
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.success,
-  },
-  successTitle: {
-    marginBottom: 8,
-  },
-  successMessage: {
-    marginBottom: 8,
+  container: {
+    backgroundColor: theme.background.primary,
+    flex: 1,
   },
   emailHighlight: {
     fontWeight: '600',
   },
-  instructionsContainer: {
-    backgroundColor: theme.background.secondary,
-    padding: 16,
+  errorContainer: {
+    backgroundColor: theme.background.error,
+    borderLeftColor: theme.error,
+    borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,
+    padding: 12,
+  },
+  header: {
+    marginBottom: 32,
+  },
+  instructionText: {
+    lineHeight: 24,
   },
   instructionTitle: {
     fontWeight: '600',
     marginBottom: 8,
   },
-  instructionText: {
-    lineHeight: 24,
+  instructionsContainer: {
+    backgroundColor: theme.background.secondary,
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 16,
   },
-  button: {
-    marginTop: 12,
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  subtitle: {
+    marginTop: 8,
+  },
+  successContainer: {
+    backgroundColor: theme.background.secondary,
+    borderLeftColor: theme.success,
+    borderLeftWidth: 4,
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 16,
+  },
+  successMessage: {
+    marginBottom: 8,
+  },
+  successTitle: {
+    marginBottom: 8,
   },
 });

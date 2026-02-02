@@ -4,7 +4,11 @@
  * Actual implementation provided by apps via initializeAuth()
  */
 
-import { getTokenStorage, type StoredTokens, type ITokenStorage } from "../config";
+import {
+  getTokenStorage,
+  type StoredTokens,
+  type ITokenStorage,
+} from '../config';
 
 /**
  * Get the current token storage implementation

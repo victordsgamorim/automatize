@@ -5,13 +5,13 @@
  * Consider using @supabase/auth-js which handles this automatically
  */
 
-import { type ITokenStorage, type StoredTokens } from "../../config";
+import { type ITokenStorage, type StoredTokens } from '../../config';
 
 const STORAGE_KEYS = {
-  ACCESS_TOKEN: "auth:access_token",
-  REFRESH_TOKEN: "auth:refresh_token",
-  EXPIRY: "auth:expiry",
-  USER_ID: "auth:user_id",
+  ACCESS_TOKEN: 'auth:access_token',
+  REFRESH_TOKEN: 'auth:refresh_token',
+  EXPIRY: 'auth:expiry',
+  USER_ID: 'auth:user_id',
 } as const;
 
 /**
@@ -20,7 +20,7 @@ const STORAGE_KEYS = {
 export class WebTokenStorage implements ITokenStorage {
   private isLocalStorageAvailable(): boolean {
     try {
-      const test = "__test__";
+      const test = '__test__';
       localStorage.setItem(test, test);
       localStorage.removeItem(test);
       return true;
@@ -32,7 +32,7 @@ export class WebTokenStorage implements ITokenStorage {
   async saveTokens(tokens: StoredTokens): Promise<void> {
     try {
       if (!this.isLocalStorageAvailable()) {
-        throw new Error("localStorage is not available");
+        throw new Error('localStorage is not available');
       }
 
       // Save access token
@@ -54,8 +54,8 @@ export class WebTokenStorage implements ITokenStorage {
         localStorage.setItem(STORAGE_KEYS.USER_ID, tokens.userId);
       }
     } catch (error) {
-      console.error("Failed to save tokens:", error);
-      throw new Error("Failed to save authentication tokens");
+      console.error('Failed to save tokens:', error);
+      throw new Error('Failed to save authentication tokens');
     }
   }
 
@@ -66,7 +66,7 @@ export class WebTokenStorage implements ITokenStorage {
       }
       return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
     } catch (error) {
-      console.error("Failed to retrieve access token:", error);
+      console.error('Failed to retrieve access token:', error);
       return null;
     }
   }
@@ -78,7 +78,7 @@ export class WebTokenStorage implements ITokenStorage {
       }
       return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
     } catch (error) {
-      console.error("Failed to retrieve refresh token:", error);
+      console.error('Failed to retrieve refresh token:', error);
       return null;
     }
   }
@@ -90,7 +90,7 @@ export class WebTokenStorage implements ITokenStorage {
       }
       return localStorage.getItem(STORAGE_KEYS.USER_ID);
     } catch (error) {
-      console.error("Failed to retrieve user ID:", error);
+      console.error('Failed to retrieve user ID:', error);
       return null;
     }
   }
@@ -103,7 +103,7 @@ export class WebTokenStorage implements ITokenStorage {
       const expiry = localStorage.getItem(STORAGE_KEYS.EXPIRY);
       return expiry ? parseInt(expiry, 10) : null;
     } catch (error) {
-      console.error("Failed to retrieve token expiry:", error);
+      console.error('Failed to retrieve token expiry:', error);
       return null;
     }
   }
@@ -118,8 +118,8 @@ export class WebTokenStorage implements ITokenStorage {
       localStorage.removeItem(STORAGE_KEYS.EXPIRY);
       localStorage.removeItem(STORAGE_KEYS.USER_ID);
     } catch (error) {
-      console.error("Failed to clear tokens:", error);
-      throw new Error("Failed to clear authentication tokens");
+      console.error('Failed to clear tokens:', error);
+      throw new Error('Failed to clear authentication tokens');
     }
   }
 

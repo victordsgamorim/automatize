@@ -3,12 +3,16 @@
  * Runtime validation for auth inputs and data structures
  */
 
-import { z } from "zod";
+import { z } from 'zod';
 
 /**
  * Email validation schema
  */
-export const emailSchema = z.string().email("Invalid email address").toLowerCase().trim();
+export const emailSchema = z
+  .string()
+  .email('Invalid email address')
+  .toLowerCase()
+  .trim();
 
 /**
  * Password validation schema
@@ -21,19 +25,22 @@ export const emailSchema = z.string().email("Invalid email address").toLowerCase
  */
 export const passwordSchema = z
   .string()
-  .min(8, "Password must be at least 8 characters")
-  .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-  .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-  .regex(/[0-9]/, "Password must contain at least one number")
-  .regex(/[^a-zA-Z0-9]/, "Password must contain at least one special character");
+  .min(8, 'Password must be at least 8 characters')
+  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+  .regex(/[0-9]/, 'Password must contain at least one number')
+  .regex(
+    /[^a-zA-Z0-9]/,
+    'Password must contain at least one special character'
+  );
 
 /**
  * Display name validation schema
  */
 export const displayNameSchema = z
   .string()
-  .min(1, "Display name is required")
-  .max(255, "Display name must be 255 characters or less")
+  .min(1, 'Display name is required')
+  .max(255, 'Display name must be 255 characters or less')
   .trim();
 
 /**
@@ -41,23 +48,26 @@ export const displayNameSchema = z
  */
 export const totpCodeSchema = z
   .string()
-  .length(6, "TOTP code must be exactly 6 digits")
-  .regex(/^\d+$/, "TOTP code must contain only numbers");
+  .length(6, 'TOTP code must be exactly 6 digits')
+  .regex(/^\d+$/, 'TOTP code must contain only numbers');
 
 /**
  * Backup code validation schema (8 characters)
  */
 export const backupCodeSchema = z
   .string()
-  .length(8, "Backup code must be exactly 8 characters")
-  .regex(/^[A-Z0-9]+$/, "Backup code must contain only uppercase letters and numbers");
+  .length(8, 'Backup code must be exactly 8 characters')
+  .regex(
+    /^[A-Z0-9]+$/,
+    'Backup code must contain only uppercase letters and numbers'
+  );
 
 /**
  * Login form validation schema
  */
 export const loginSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1, "Password is required"),
+  password: z.string().min(1, 'Password is required'),
   mfaCode: totpCodeSchema.optional(),
   backupCode: backupCodeSchema.optional(),
 });
@@ -69,11 +79,13 @@ export type LoginInput = z.infer<typeof loginSchema>;
  */
 export const loginWithBackupCodeSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1, "Password is required"),
+  password: z.string().min(1, 'Password is required'),
   backupCode: backupCodeSchema,
 });
 
-export type LoginWithBackupCodeInput = z.infer<typeof loginWithBackupCodeSchema>;
+export type LoginWithBackupCodeInput = z.infer<
+  typeof loginWithBackupCodeSchema
+>;
 
 /**
  * Registration form validation schema
@@ -81,7 +93,7 @@ export type LoginWithBackupCodeInput = z.infer<typeof loginWithBackupCodeSchema>
 export const registerSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
-  passwordConfirm: z.string().min(1, "Password confirmation is required"),
+  passwordConfirm: z.string().min(1, 'Password confirmation is required'),
   displayName: displayNameSchema,
 });
 
@@ -94,7 +106,9 @@ export const resetPasswordRequestSchema = z.object({
   email: emailSchema,
 });
 
-export type ResetPasswordRequestInput = z.infer<typeof resetPasswordRequestSchema>;
+export type ResetPasswordRequestInput = z.infer<
+  typeof resetPasswordRequestSchema
+>;
 
 /**
  * Password reset validation schema
@@ -102,11 +116,11 @@ export type ResetPasswordRequestInput = z.infer<typeof resetPasswordRequestSchem
 export const resetPasswordSchema = z
   .object({
     password: passwordSchema,
-    passwordConfirm: z.string().min(1, "Password confirmation is required"),
+    passwordConfirm: z.string().min(1, 'Password confirmation is required'),
   })
   .refine((data) => data.password === data.passwordConfirm, {
-    message: "Passwords do not match",
-    path: ["passwordConfirm"],
+    message: 'Passwords do not match',
+    path: ['passwordConfirm'],
   });
 
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
@@ -116,13 +130,13 @@ export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
  */
 export const updatePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, "Current password is required"),
+    currentPassword: z.string().min(1, 'Current password is required'),
     newPassword: passwordSchema,
-    newPasswordConfirm: z.string().min(1, "Password confirmation is required"),
+    newPasswordConfirm: z.string().min(1, 'Password confirmation is required'),
   })
   .refine((data) => data.newPassword === data.newPasswordConfirm, {
-    message: "New passwords do not match",
-    path: ["newPasswordConfirm"],
+    message: 'New passwords do not match',
+    path: ['newPasswordConfirm'],
   });
 
 export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;
@@ -133,7 +147,7 @@ export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;
 export const mfaSetupSchema = z.object({
   totpCode: totpCodeSchema,
   backupCodesSaved: z.boolean().refine((val) => val === true, {
-    message: "You must confirm that you have saved your backup codes",
+    message: 'You must confirm that you have saved your backup codes',
   }),
 });
 
@@ -148,8 +162,8 @@ export const mfaChallengeSchema = z
     backupCode: backupCodeSchema.optional(),
   })
   .refine((data) => data.totpCode || data.backupCode, {
-    message: "Either TOTP code or backup code is required",
-    path: ["totpCode"],
+    message: 'Either TOTP code or backup code is required',
+    path: ['totpCode'],
   });
 
 export type MFAChallengeInput = z.infer<typeof mfaChallengeSchema>;
@@ -164,11 +178,11 @@ export const tenantSlugSchema = z
   .string()
   .toLowerCase()
   .trim()
-  .min(3, "Slug must be at least 3 characters")
-  .max(63, "Slug must be at most 63 characters")
+  .min(3, 'Slug must be at least 3 characters')
+  .max(63, 'Slug must be at most 63 characters')
   .regex(
     /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/,
-    "Slug must contain only lowercase letters, numbers, and hyphens, and must start and end with a letter or number"
+    'Slug must contain only lowercase letters, numbers, and hyphens, and must start and end with a letter or number'
   );
 
 /**
@@ -176,8 +190,8 @@ export const tenantSlugSchema = z
  */
 export const tenantNameSchema = z
   .string()
-  .min(1, "Tenant name is required")
-  .max(255, "Tenant name must be 255 characters or less")
+  .min(1, 'Tenant name is required')
+  .max(255, 'Tenant name must be 255 characters or less')
   .trim();
 
 /**
@@ -193,7 +207,7 @@ export type CreateTenantInput = z.infer<typeof createTenantSchema>;
 /**
  * User role validation schema
  */
-export const userRoleSchema = z.enum(["admin", "editor", "viewer"]);
+export const userRoleSchema = z.enum(['admin', 'editor', 'viewer']);
 
 export type UserRole = z.infer<typeof userRoleSchema>;
 
@@ -201,7 +215,7 @@ export type UserRole = z.infer<typeof userRoleSchema>;
  * Add tenant member validation schema
  */
 export const addTenantMemberSchema = z.object({
-  userId: z.string().uuid("Invalid user ID"),
+  userId: z.string().uuid('Invalid user ID'),
   role: userRoleSchema,
 });
 
@@ -211,7 +225,7 @@ export type AddTenantMemberInput = z.infer<typeof addTenantMemberSchema>;
  * Update tenant member role validation schema
  */
 export const updateTenantMemberSchema = z.object({
-  userId: z.string().uuid("Invalid user ID"),
+  userId: z.string().uuid('Invalid user ID'),
   role: userRoleSchema,
 });
 

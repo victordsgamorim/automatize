@@ -10,6 +10,7 @@
 ### ✅ PHASE 0: Foundation & Setup (COMPLETA)
 
 #### Infraestrutura
+
 - [x] Monorepo com Turborepo + pnpm
 - [x] 5 pacotes criados (core, ui, sync, storage, auth)
 - [x] 3 apps estruturados (mobile, web, windows)
@@ -17,6 +18,7 @@
 - [x] Sistema de build automatizado
 
 #### Qualidade de Código
+
 - [x] ESLint configurado (TypeScript + React Native)
 - [x] Prettier configurado
 - [x] Pre-commit hooks funcionando
@@ -24,17 +26,20 @@
 - [x] Renovate para updates automáticos
 
 #### Testes
+
 - [x] Vitest configurado
 - [x] 1 teste de exemplo funcionando
 - [x] Cobertura de código configurada
 
 #### Design System
+
 - [x] Tokens de cores (light + dark)
 - [x] Tokens de espaçamento
 - [x] Tokens de tipografia
 - [x] Infraestrutura para dark mode
 
 #### Documentação
+
 - [x] README completo
 - [x] Guia de início rápido
 - [x] Estrutura de ADRs
@@ -42,6 +47,7 @@
 - [x] Documentação de setup
 
 #### Segurança
+
 - [x] Template de RLS policies
 - [x] Estrutura de env vars
 - [x] Estrutura de observabilidade (a ser configurada)
@@ -52,6 +58,7 @@
 ## ❌ O Que NÃO Está Pronto
 
 ### Phase 1: Authentication (PENDENTE)
+
 - [ ] Supabase setup
 - [ ] Login/Register
 - [ ] MFA (TOTP)
@@ -61,6 +68,7 @@
 - [ ] Proteção de rotas
 
 ### Phase 2: Offline-First (PENDENTE)
+
 - [ ] WatermelonDB setup
 - [ ] Sync engine
 - [ ] Outbox/Inbox
@@ -69,6 +77,7 @@
 - [ ] Sync UI indicators
 
 ### Phase 3: Invoices (PENDENTE)
+
 - [ ] Invoice CRUD
 - [ ] Invoice list
 - [ ] Invoice form
@@ -76,6 +85,7 @@
 - [ ] Cálculos
 
 ### Phase 4+: Features Avançadas (PENDENTE)
+
 - [ ] Clientes
 - [ ] Produtos
 - [ ] Analytics
@@ -93,6 +103,7 @@
 ```
 
 Isso vai:
+
 1. Verificar Node.js
 2. Instalar pnpm (se necessário)
 3. Instalar dependências
@@ -142,6 +153,7 @@ Quando rodar o app, você verá uma **tela inicial simples**:
 ## 🎯 Funcionalidades Atuais
 
 ### ✅ Funciona:
+
 - App abre no Expo Go
 - Hot reload funciona
 - Testes rodam
@@ -149,6 +161,7 @@ Quando rodar o app, você verá uma **tela inicial simples**:
 - Lint/TypeCheck funcionam
 
 ### ❌ Não funciona (ainda):
+
 - Login/Logout
 - Criar invoices
 - Sync offline
@@ -162,6 +175,7 @@ Quando rodar o app, você verá uma **tela inicial simples**:
 ### Imediato (você pode fazer agora):
 
 1. **Rodar o app:**
+
    ```bash
    ./setup.sh
    cd apps/mobile
@@ -207,16 +221,19 @@ Para ter um app funcional, precisamos completar **Phase 1**:
 ## 📊 Métricas do Projeto
 
 ### Código
+
 - **Arquivos criados:** 45+
 - **Linhas de código:** ~4,000
 - **Pacotes:** 5
 - **Apps:** 3 (1 ativo, 2 placeholders)
 
 ### Testes
+
 - **Testes:** 6 (todos passando ✅)
 - **Cobertura:** 100% no código atual
 
 ### Dependências
+
 - **Total de pacotes:** ~500
 - **Tamanho node_modules:** ~500MB (após instalação)
 
@@ -224,16 +241,17 @@ Para ter um app funcional, precisamos completar **Phase 1**:
 
 ## 🚦 Semáforo de Status
 
-| Área | Status | Notas |
-|------|--------|-------|
-| **Infraestrutura** | 🟢 Pronto | Monorepo, build, CI/CD |
-| **Tooling** | 🟢 Pronto | Lint, format, tests |
-| **Design System** | 🟡 Básico | Tokens prontos, componentes pendentes |
-| **Autenticação** | 🔴 Pendente | Phase 1 |
-| **Offline-First** | 🔴 Pendente | Phase 2 |
-| **Features** | 🔴 Pendente | Phase 3+ |
+| Área               | Status      | Notas                                 |
+| ------------------ | ----------- | ------------------------------------- |
+| **Infraestrutura** | 🟢 Pronto   | Monorepo, build, CI/CD                |
+| **Tooling**        | 🟢 Pronto   | Lint, format, tests                   |
+| **Design System**  | 🟡 Básico   | Tokens prontos, componentes pendentes |
+| **Autenticação**   | 🔴 Pendente | Phase 1                               |
+| **Offline-First**  | 🔴 Pendente | Phase 2                               |
+| **Features**       | 🔴 Pendente | Phase 3+                              |
 
 **Legenda:**
+
 - 🟢 Pronto para usar
 - 🟡 Parcialmente pronto
 - 🔴 Não iniciado
@@ -243,15 +261,19 @@ Para ter um app funcional, precisamos completar **Phase 1**:
 ## 💡 O Que Fazer Agora?
 
 ### Se você quer ver o app rodando:
+
 👉 Siga o [QUICK_START.md](QUICK_START.md)
 
 ### Se você quer começar a desenvolver:
+
 👉 Leia o [GETTING_STARTED.md](GETTING_STARTED.md)
 
 ### Se você quer entender o projeto:
+
 👉 Leia o [README.md](README.md) e [CLAUDE.md](CLAUDE.md)
 
 ### Se você quer desenvolver features:
+
 👉 Precisamos completar Phase 1 primeiro
 
 ---
@@ -259,14 +281,17 @@ Para ter um app funcional, precisamos completar **Phase 1**:
 ## 🆘 Precisa de Ajuda?
 
 ### Dúvidas sobre setup:
+
 - [QUICK_START.md](QUICK_START.md)
 - [GETTING_STARTED.md](GETTING_STARTED.md)
 
 ### Dúvidas sobre a arquitetura:
+
 - [CLAUDE.md](CLAUDE.md)
 - [docs/adr/](docs/adr/)
 
 ### Problemas técnicos:
+
 - [QUICK_START.md - Troubleshooting](QUICK_START.md#-problemas-comuns)
 
 ---

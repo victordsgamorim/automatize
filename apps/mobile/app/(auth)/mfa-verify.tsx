@@ -18,19 +18,24 @@ import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
 const theme = semanticColors.light;
 
 export default function MFAVerifyScreen() {
-  const { verifyChallengeWithTOTP, verifyChallengeWithBackupCode, isLoading, error } =
-    useMFA();
+  const {
+    verifyChallengeWithTOTP,
+    verifyChallengeWithBackupCode,
+    isLoading,
+    error,
+  } = useMFA();
   const [code, setCode] = useState('');
   const [useBackupCode, setUseBackupCode] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
   /**
-   * Auto-focus next field when code is complete
+   * Auto-verify when code is complete
    */
   useEffect(() => {
     if (!useBackupCode && code.length === 6) {
       handleVerify();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code, useBackupCode]);
 
   const handleVerify = async () => {
@@ -49,7 +54,8 @@ export default function MFAVerifyScreen() {
       }
       // Navigation handled by auth context
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Verification failed';
+      const message =
+        err instanceof Error ? err.message : 'Verification failed';
       setLocalError(message);
       setCode('');
     }
@@ -78,7 +84,9 @@ export default function MFAVerifyScreen() {
             Verify Your Identity
           </Text>
           <Text variant="body" color="secondary" style={styles.subtitle}>
-            {useBackupCode ? 'Enter your backup code' : 'Enter the code from your authenticator'}
+            {useBackupCode
+              ? 'Enter your backup code'
+              : 'Enter the code from your authenticator'}
           </Text>
         </View>
 
@@ -94,7 +102,9 @@ export default function MFAVerifyScreen() {
           {/* Code Input */}
           <FormField
             label={useBackupCode ? 'Backup Code' : 'Authenticator Code'}
-            placeholder={useBackupCode ? 'Enter 8-character code' : 'Enter 6-digit code'}
+            placeholder={
+              useBackupCode ? 'Enter 8-character code' : 'Enter 6-digit code'
+            }
             value={code}
             onChangeText={setCode}
             maxLength={useBackupCode ? 8 : 6}
@@ -126,7 +136,9 @@ export default function MFAVerifyScreen() {
             style={styles.toggleButton}
             testID="mfa-verify-toggle-backup"
           >
-            {useBackupCode ? 'Use authenticator code instead' : 'Use backup code instead'}
+            {useBackupCode
+              ? 'Use authenticator code instead'
+              : 'Use backup code instead'}
           </Button>
         </Card>
 
@@ -144,41 +156,41 @@ export default function MFAVerifyScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background.primary,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 16,
-    justifyContent: 'center',
-  },
-  header: {
-    marginBottom: 32,
-  },
-  subtitle: {
-    marginTop: 8,
+  button: {
+    marginTop: 16,
   },
   card: {
     marginBottom: 16,
     paddingHorizontal: 16,
     paddingVertical: 24,
   },
+  container: {
+    backgroundColor: theme.background.primary,
+    flex: 1,
+  },
   errorContainer: {
     backgroundColor: theme.background.error,
-    padding: 12,
+    borderLeftColor: theme.error,
+    borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.error,
+    padding: 12,
   },
-  button: {
-    marginTop: 16,
-  },
-  toggleButton: {
-    marginTop: 8,
+  header: {
+    marginBottom: 32,
   },
   infoCard: {
     backgroundColor: theme.background.secondary,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  subtitle: {
+    marginTop: 8,
+  },
+  toggleButton: {
+    marginTop: 8,
   },
 });

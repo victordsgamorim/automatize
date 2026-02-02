@@ -10,11 +10,11 @@ Deep linking allows external URLs to directly open specific screens in the Autom
 
 ### Supported Deep Link Routes
 
-| Route | Purpose | Example |
-|-------|---------|---------|
-| `/reset-password` | Password reset from email link | `automatize://reset-password?token=abc123` |
-| `/invite` | Join workspace via invitation | `automatize://invite?id=xyz789&email=user@example.com` |
-| `/switch-workspace` | Switch to another workspace | `automatize://switch-workspace?tenant_id=01ARZ3NDEKTSV4RRFFQ69G5FAV` |
+| Route               | Purpose                        | Example                                                              |
+| ------------------- | ------------------------------ | -------------------------------------------------------------------- |
+| `/reset-password`   | Password reset from email link | `automatize://reset-password?token=abc123`                           |
+| `/invite`           | Join workspace via invitation  | `automatize://invite?id=xyz789&email=user@example.com`               |
+| `/switch-workspace` | Switch to another workspace    | `automatize://switch-workspace?tenant_id=01ARZ3NDEKTSV4RRFFQ69G5FAV` |
 
 ---
 
@@ -25,10 +25,12 @@ Deep linking allows external URLs to directly open specific screens in the Autom
 **Bundle Identifier:** `com.automatize.app`
 
 **URL Scheme Registration:**
+
 - Already configured in `apps/mobile/app.json` with `"scheme": "automatize"`
 - Supabase Auth will automatically resolve `automatize://reset-password?token=X` to the app
 
 **Associated Domains (Optional for Email Link Handling):**
+
 ```json
 {
   "ios": {
@@ -45,10 +47,12 @@ Deep linking allows external URLs to directly open specific screens in the Autom
 **Package Name:** `com.automatize.app`
 
 **Intent Filter Configuration:**
+
 - Already configured in `apps/mobile/app.json` with `"scheme": "automatize"`
 - Deep links are automatically registered with Expo Router
 
 **App Links (Optional for Better UX):**
+
 ```json
 {
   "android": {
@@ -87,6 +91,7 @@ Web uses standard HTTP redirects, not deep links. Routing handled by Next.js/Exp
 **Supabase Console → Authentication → Email Templates → Reset Password Email**
 
 **Email Template (Liquid):**
+
 ```
 Click the link below to reset your password:
 
@@ -97,6 +102,7 @@ Or copy and paste this link in your browser:
 ```
 
 **Supabase will generate links in format:**
+
 - Mobile: `automatize://reset-password?token=YOUR_TOKEN&type=recovery`
 - Web: `https://automatize.app/auth/reset-password?token=YOUR_TOKEN&type=recovery`
 
@@ -141,6 +147,7 @@ Go to **Supabase Console → Authentication → Email Templates → Reset Passwo
 ```
 
 Where the confirmation URL will be:
+
 - Mobile: `automatize://reset-password?token=TOKEN`
 - Web: `https://automatize.app/auth/reset-password?token=TOKEN`
 
@@ -178,17 +185,20 @@ NEXT_PUBLIC_APP_URL=https://automatize.app
 
 ### Route 1: Password Reset (`/reset-password`)
 
-**File:** [apps/mobile/app/(auth)/reset-password.tsx](../../apps/mobile/app/(auth)/reset-password.tsx)
+**File:** [apps/mobile/app/(auth)/reset-password.tsx](<../../apps/mobile/app/(auth)/reset-password.tsx>)
 
 **URL Scheme:**
+
 ```
 automatize://reset-password?token=abc123def456
 ```
 
 **Expected Query Parameters:**
+
 - `token` (string, required): Supabase reset token from email link
 
 **Handler Logic:**
+
 1. Extract `token` from URL params using `useLocalSearchParams()`
 2. Display password reset form
 3. User enters new password (validated with Zod)
@@ -196,6 +206,7 @@ automatize://reset-password?token=abc123def456
 5. On success, navigate to login screen
 
 **User Flow:**
+
 1. User receives password reset email from Supabase
 2. Email contains link: `automatize://reset-password?token=X`
 3. User clicks link → App opens at reset password screen
@@ -205,19 +216,22 @@ automatize://reset-password?token=abc123def456
 
 ### Route 2: Workspace Invitation (`/invite`)
 
-**File:** (To be created at [apps/mobile/app/(auth)/invite.tsx](../../apps/mobile/app/(auth)/invite.tsx))
+**File:** (To be created at [apps/mobile/app/(auth)/invite.tsx](<../../apps/mobile/app/(auth)/invite.tsx>))
 
 **URL Scheme:**
+
 ```
 automatize://invite?id=abc123&email=user@example.com
 ```
 
 **Expected Query Parameters:**
+
 - `id` (string, required): Invitation ID (ULID)
 - `email` (string, required): User's email address
 - `code` (string, optional): Alternative to `id` (for URL-safe codes)
 
 **Handler Logic:**
+
 1. Extract invitation ID and email from params
 2. If user is NOT authenticated:
    - Show signup form pre-filled with email
@@ -229,6 +243,7 @@ automatize://invite?id=abc123&email=user@example.com
 4. Redirect to dashboard/workspace
 
 **User Flow:**
+
 1. Admin sends workspace invitation email
 2. Email contains link: `automatize://invite?id=XYZ&email=user@example.com`
 3. User clicks link
@@ -238,6 +253,7 @@ automatize://invite?id=abc123&email=user@example.com
 7. Redirect to workspace dashboard
 
 **Implementation Notes:**
+
 - Never require second signup if already signed in
 - If email doesn't match authenticated user, prompt logout first
 - Invitation expires after 7 days
@@ -245,17 +261,20 @@ automatize://invite?id=abc123&email=user@example.com
 
 ### Route 3: Workspace Switching (`/switch-workspace`)
 
-**File:** (Handle in [apps/mobile/app/(app)/tenants.tsx](../../apps/mobile/app/(app)/tenants.tsx) or modal)
+**File:** (Handle in [apps/mobile/app/(app)/tenants.tsx](<../../apps/mobile/app/(app)/tenants.tsx>) or modal)
 
 **URL Scheme:**
+
 ```
 automatize://switch-workspace?tenant_id=01ARZ3NDEKTSV4RRFFQ69G5FAV
 ```
 
 **Expected Query Parameters:**
+
 - `tenant_id` (string, required): Workspace ID (ULID)
 
 **Handler Logic:**
+
 1. Verify user is authenticated (if not, redirect to login)
 2. Fetch user's accessible tenants
 3. Verify tenant_id is in list of accessible tenants
@@ -264,6 +283,7 @@ automatize://switch-workspace?tenant_id=01ARZ3NDEKTSV4RRFFQ69G5FAV
 6. Redirect to workspace dashboard
 
 **User Flow:**
+
 1. User receives "shared workspace" link (internal or email)
 2. Link format: `automatize://switch-workspace?tenant_id=ABC123`
 3. User clicks link → Opens workspace directly
@@ -278,16 +298,19 @@ automatize://switch-workspace?tenant_id=01ARZ3NDEKTSV4RRFFQ69G5FAV
 ### iOS (Simulator)
 
 **Method 1: Using `xcrun`**
+
 ```bash
 xcrun simctl openurl booted "automatize://reset-password?token=test123"
 ```
 
 **Method 2: Using Safari in Simulator**
+
 1. Open Safari in iOS Simulator
 2. Enter URL: `automatize://reset-password?token=test123`
 3. Press Go → App opens at reset password screen
 
 **Method 3: Using Expo CLI**
+
 ```bash
 expo send --url "automatize://reset-password?token=test123" --ios
 ```
@@ -295,16 +318,19 @@ expo send --url "automatize://reset-password?token=test123" --ios
 ### Android (Emulator)
 
 **Method 1: Using `adb`**
+
 ```bash
 adb shell am start -W -a android.intent.action.VIEW -d "automatize://reset-password?token=test123" com.automatize.app
 ```
 
 **Method 2: Using Chrome**
+
 1. Open Chrome in Android Emulator
 2. Enter URL: `automatize://reset-password?token=test123`
 3. Press Go → App opens at reset password screen
 
 **Method 3: Using Expo CLI**
+
 ```bash
 expo send --url "automatize://reset-password?token=test123" --android
 ```
@@ -312,11 +338,13 @@ expo send --url "automatize://reset-password?token=test123" --android
 ### Web
 
 **Method 1: Direct Navigation**
+
 ```typescript
 router.push('/(auth)/reset-password?token=test123');
 ```
 
 **Method 2: From Browser**
+
 ```
 http://localhost:3000/auth/reset-password?token=test123
 ```
@@ -415,7 +443,7 @@ Always URL-encode special characters in deep link parameters:
 
 ```typescript
 // Correct
-const token = "abc+def=="; // JWT with special chars
+const token = 'abc+def=='; // JWT with special chars
 const encoded = encodeURIComponent(token); // "abc%2Bdef%3D%3D"
 const url = `automatize://reset-password?token=${encoded}`;
 
@@ -436,6 +464,7 @@ const decoded = decodeURIComponent(token); // "abc+def=="
 4. **Simulator/Emulator:** Restart simulator and clear app cache
 
 **Clear cache:**
+
 ```bash
 # iOS
 expo run:ios --clean
@@ -466,6 +495,7 @@ expo run:android --clean
 **Problem:** Reset tokens in URLs are logged/visible
 
 **Mitigation:**
+
 - Use short-lived tokens (15-30 min expiry)
 - Tokens single-use (used after reset)
 - Tokens are server-signed, user cannot forge
@@ -477,6 +507,7 @@ expo run:android --clean
 **Problem:** Reset email intercepted during transit
 
 **Mitigation:**
+
 - HTTPS for email delivery (Supabase uses TLS)
 - User must verify token validity (not auto-reset)
 - User sees token in URL before submitting
@@ -487,6 +518,7 @@ expo run:android --clean
 **Problem:** User tries to switch to unauthorized tenant
 
 **Mitigation:**
+
 - RLS policy validates user's `tenant_members` record
 - Edge Function verifies membership before issuing JWT
 - Client-side verification as defense-in-depth

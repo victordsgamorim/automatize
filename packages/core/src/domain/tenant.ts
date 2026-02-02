@@ -3,7 +3,7 @@
  * Represents an organization/workspace with business rules
  */
 
-import { z } from "zod";
+import { z } from 'zod';
 
 /**
  * Tenant domain schema
@@ -13,15 +13,15 @@ const tenantDomainSchema = z.object({
   id: z.string().uuid(),
   name: z
     .string()
-    .min(1, "Tenant name cannot be empty")
-    .max(255, "Tenant name must be 255 characters or less")
+    .min(1, 'Tenant name cannot be empty')
+    .max(255, 'Tenant name must be 255 characters or less')
     .trim(),
   slug: z
     .string()
     .toLowerCase()
     .regex(
       /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/,
-      "Slug must contain only lowercase letters, numbers, and hyphens"
+      'Slug must contain only lowercase letters, numbers, and hyphens'
     ),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
@@ -66,10 +66,10 @@ export class Tenant {
     return name
       .toLowerCase()
       .trim()
-      .replace(/[^\w\s-]/g, "") // Remove special characters
-      .replace(/\s+/g, "-") // Replace spaces with hyphens
-      .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
-      .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+      .replace(/[^\w\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+      .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
   }
 
   /**

@@ -6,14 +6,14 @@
  * because it imports expo-secure-store which is platform-specific
  */
 
-import * as SecureStore from "expo-secure-store";
-import { type ITokenStorage, type StoredTokens } from "../../config";
+import * as SecureStore from 'expo-secure-store';
+import { type ITokenStorage, type StoredTokens } from '../../config';
 
 const STORAGE_KEYS = {
-  ACCESS_TOKEN: "auth:access_token",
-  REFRESH_TOKEN: "auth:refresh_token",
-  EXPIRY: "auth:expiry",
-  USER_ID: "auth:user_id",
+  ACCESS_TOKEN: 'auth:access_token',
+  REFRESH_TOKEN: 'auth:refresh_token',
+  EXPIRY: 'auth:expiry',
+  USER_ID: 'auth:user_id',
 } as const;
 
 /**
@@ -23,17 +23,26 @@ export class MobileTokenStorage implements ITokenStorage {
   async saveTokens(tokens: StoredTokens): Promise<void> {
     try {
       // Save access token
-      await SecureStore.setItemAsync(STORAGE_KEYS.ACCESS_TOKEN, tokens.accessToken);
+      await SecureStore.setItemAsync(
+        STORAGE_KEYS.ACCESS_TOKEN,
+        tokens.accessToken
+      );
 
       // Save refresh token if provided
       if (tokens.refreshToken) {
-        await SecureStore.setItemAsync(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
+        await SecureStore.setItemAsync(
+          STORAGE_KEYS.REFRESH_TOKEN,
+          tokens.refreshToken
+        );
       }
 
       // Save token expiry
       if (tokens.expiresIn) {
         const expiryTime = Date.now() + tokens.expiresIn * 1000;
-        await SecureStore.setItemAsync(STORAGE_KEYS.EXPIRY, expiryTime.toString());
+        await SecureStore.setItemAsync(
+          STORAGE_KEYS.EXPIRY,
+          expiryTime.toString()
+        );
       }
 
       // Save user ID
@@ -41,8 +50,8 @@ export class MobileTokenStorage implements ITokenStorage {
         await SecureStore.setItemAsync(STORAGE_KEYS.USER_ID, tokens.userId);
       }
     } catch (error) {
-      console.error("Failed to save tokens:", error);
-      throw new Error("Failed to save authentication tokens securely");
+      console.error('Failed to save tokens:', error);
+      throw new Error('Failed to save authentication tokens securely');
     }
   }
 
@@ -50,7 +59,7 @@ export class MobileTokenStorage implements ITokenStorage {
     try {
       return await SecureStore.getItemAsync(STORAGE_KEYS.ACCESS_TOKEN);
     } catch (error) {
-      console.error("Failed to retrieve access token:", error);
+      console.error('Failed to retrieve access token:', error);
       return null;
     }
   }
@@ -59,7 +68,7 @@ export class MobileTokenStorage implements ITokenStorage {
     try {
       return await SecureStore.getItemAsync(STORAGE_KEYS.REFRESH_TOKEN);
     } catch (error) {
-      console.error("Failed to retrieve refresh token:", error);
+      console.error('Failed to retrieve refresh token:', error);
       return null;
     }
   }
@@ -68,7 +77,7 @@ export class MobileTokenStorage implements ITokenStorage {
     try {
       return await SecureStore.getItemAsync(STORAGE_KEYS.USER_ID);
     } catch (error) {
-      console.error("Failed to retrieve user ID:", error);
+      console.error('Failed to retrieve user ID:', error);
       return null;
     }
   }
@@ -78,7 +87,7 @@ export class MobileTokenStorage implements ITokenStorage {
       const expiry = await SecureStore.getItemAsync(STORAGE_KEYS.EXPIRY);
       return expiry ? parseInt(expiry, 10) : null;
     } catch (error) {
-      console.error("Failed to retrieve token expiry:", error);
+      console.error('Failed to retrieve token expiry:', error);
       return null;
     }
   }
@@ -90,8 +99,8 @@ export class MobileTokenStorage implements ITokenStorage {
       await SecureStore.deleteItemAsync(STORAGE_KEYS.EXPIRY);
       await SecureStore.deleteItemAsync(STORAGE_KEYS.USER_ID);
     } catch (error) {
-      console.error("Failed to clear tokens:", error);
-      throw new Error("Failed to clear authentication tokens");
+      console.error('Failed to clear tokens:', error);
+      throw new Error('Failed to clear authentication tokens');
     }
   }
 
@@ -105,4 +114,5 @@ export class MobileTokenStorage implements ITokenStorage {
   }
 }
 
-export const createMobileTokenStorage = (): ITokenStorage => new MobileTokenStorage();
+export const createMobileTokenStorage = (): ITokenStorage =>
+  new MobileTokenStorage();

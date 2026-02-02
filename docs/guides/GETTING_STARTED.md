@@ -7,11 +7,13 @@ Welcome to Automatize! This guide will help you set up the project and start dev
 The foundation of the project is now ready. Here's what has been configured:
 
 ### Infrastructure ✅
+
 - Monorepo with Turborepo + pnpm
 - Complete package structure (core, ui, sync, storage, auth)
 - Apps structure (mobile, web, windows)
 
 ### Tooling ✅
+
 - ESLint + Prettier configured
 - Pre-commit hooks (Husky + lint-staged)
 - Commitlint (Conventional Commits)
@@ -19,19 +21,23 @@ The foundation of the project is now ready. Here's what has been configured:
 - Vitest with sample tests
 
 ### Design System ✅
+
 - Design tokens (colors, spacing, typography)
 - Foundation for dark mode
 
 ### Security ✅
+
 - Environment variables structure
 - RLS policies template
 - Observability structure (to be configured)
 
 ### CI/CD ✅
+
 - GitHub Actions pipeline configured
 - Automated testing, linting, type-checking, and build
 
 ### Documentation ✅
+
 - Comprehensive README
 - ADR structure with first ADR
 - RLS policies template
@@ -44,11 +50,13 @@ The foundation of the project is now ready. Here's what has been configured:
 Before you begin, ensure you have the following installed:
 
 1. **Node.js 20.x or higher**
+
    ```bash
    node --version  # Should be >= 20.0.0
    ```
 
 2. **pnpm 8.x**
+
    ```bash
    npm install -g pnpm@8
    ```
@@ -108,6 +116,7 @@ pnpm build
 This builds all packages in the correct order (respecting dependencies).
 
 **Expected output:**
+
 ```
 ✓ @automatize/core built successfully
 ✓ @automatize/ui built successfully
@@ -180,6 +189,7 @@ pnpm dev
 ### Making Changes
 
 1. **Create a branch:**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -187,6 +197,7 @@ pnpm dev
 2. **Make your changes**
 
 3. **Run checks:**
+
    ```bash
    pnpm lint
    pnpm typecheck
@@ -194,6 +205,7 @@ pnpm dev
    ```
 
 4. **Commit (pre-commit hooks will run automatically):**
+
    ```bash
    git commit -m "feat(scope): your commit message"
    ```

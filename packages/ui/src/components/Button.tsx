@@ -3,12 +3,23 @@
  * Base button component with multiple variants and states
  */
 
-import React, { ReactNode } from "react";
-import { StyleSheet, TouchableOpacity, Text as RNText, ActivityIndicator } from "react-native";
-import { colors, spacing, typography } from "../tokens";
+import React, { ReactNode } from 'react';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Text as RNText,
+  ActivityIndicator,
+  ViewStyle,
+} from 'react-native';
+import { colors, spacing, typography } from '../tokens';
 
-export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'outline'
+  | 'ghost'
+  | 'danger';
+export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps {
   /** Button text or content */
@@ -28,10 +39,10 @@ export interface ButtonProps {
   /** Accessibility label */
   accessibilityLabel?: string;
   /** Custom styling */
-  style?: any;
+  style?: ViewStyle;
 }
 
-const variants: Record<ButtonVariant, any> = {
+const variants: Record<ButtonVariant, ViewStyle> = {
   primary: {
     backgroundColor: colors.brand[600],
     borderColor: colors.brand[600],
@@ -41,13 +52,13 @@ const variants: Record<ButtonVariant, any> = {
     borderColor: colors.neutral[200],
   },
   outline: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderColor: colors.brand[600],
     borderWidth: 1,
   },
   ghost: {
-    backgroundColor: "transparent",
-    borderColor: "transparent",
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
   },
   danger: {
     backgroundColor: colors.error[600],
@@ -55,7 +66,7 @@ const variants: Record<ButtonVariant, any> = {
   },
 };
 
-const sizes: Record<ButtonSize, any> = {
+const sizes: Record<ButtonSize, ViewStyle> = {
   sm: {
     paddingVertical: spacing[2],
     paddingHorizontal: spacing[3],
@@ -85,8 +96,8 @@ export const Button = React.forwardRef<TouchableOpacity, ButtonProps>(
   (
     {
       children,
-      variant = "primary",
-      size = "md",
+      variant = 'primary',
+      size = 'md',
       disabled = false,
       isLoading = false,
       onPress,
@@ -120,9 +131,14 @@ export const Button = React.forwardRef<TouchableOpacity, ButtonProps>(
         activeOpacity={0.7}
       >
         {isLoading ? (
-          <ActivityIndicator color={textColor} size={size === "sm" ? "small" : "small"} />
-        ) : typeof children === "string" ? (
-          <RNText style={[baseStyles.text, { color: textColor }]}>{children}</RNText>
+          <ActivityIndicator
+            color={textColor}
+            size={size === 'sm' ? 'small' : 'small'}
+          />
+        ) : typeof children === 'string' ? (
+          <RNText style={[baseStyles.text, { color: textColor }]}>
+            {children}
+          </RNText>
         ) : (
           children
         )}
@@ -131,18 +147,18 @@ export const Button = React.forwardRef<TouchableOpacity, ButtonProps>(
   }
 );
 
-Button.displayName = "Button";
+Button.displayName = 'Button';
 
 const baseStyles = StyleSheet.create({
   button: {
     borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
   text: {
     fontSize: typography.fontSize.base,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   disabled: {
     opacity: 0.5,

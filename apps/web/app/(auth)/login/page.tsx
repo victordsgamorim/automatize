@@ -211,7 +211,9 @@ export default function LoginScreen() {
               <input
                 type={useBackupCode ? 'text' : 'number'}
                 placeholder={
-                  useBackupCode ? 'Enter 8-character backup code' : 'Enter 6-digit code'
+                  useBackupCode
+                    ? 'Enter 8-character backup code'
+                    : 'Enter 6-digit code'
                 }
                 value={mfaCode}
                 onChange={(e) => setMfaCode(e.target.value)}
@@ -301,7 +303,9 @@ export default function LoginScreen() {
 
           <button
             type="submit"
-            disabled={!email || !password || (useMfaCode && !mfaCode) || isLoading}
+            disabled={
+              !email || !password || (useMfaCode && !mfaCode) || isLoading
+            }
             style={{
               marginTop: '24px',
               width: '100%',
@@ -312,7 +316,8 @@ export default function LoginScreen() {
               borderRadius: '6px',
               fontSize: '14px',
               fontWeight: 500,
-              cursor: isLoading || !email || !password ? 'not-allowed' : 'pointer',
+              cursor:
+                isLoading || !email || !password ? 'not-allowed' : 'pointer',
               opacity: isLoading || !email || !password ? 0.6 : 1,
             }}
           >

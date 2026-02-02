@@ -45,6 +45,7 @@ pnpm install
 ⏱️ Isso vai levar **2-5 minutos** na primeira vez.
 
 **O que vai acontecer:**
+
 - Download de ~500MB de dependências
 - Instalação de todas as libs (Expo, React Native, TypeScript, etc.)
 - Setup dos workspaces do monorepo
@@ -60,6 +61,7 @@ pnpm build
 ⏱️ ~1 minuto
 
 **O que vai acontecer:**
+
 - Build do `@automatize/core`
 - Build do `@automatize/ui`
 - Build dos outros pacotes
@@ -229,6 +231,7 @@ pnpm start --clear
 ### App não abre no celular
 
 **Checklist:**
+
 - [ ] Celular e computador na mesma rede WiFi?
 - [ ] Expo Go instalado?
 - [ ] QR code escaneado corretamente?
@@ -282,17 +285,20 @@ Depois de rodar o app, você pode:
 Abra **3 terminais**:
 
 **Terminal 1 - App Mobile:**
+
 ```bash
 cd apps/mobile
 pnpm start
 ```
 
 **Terminal 2 - Watch Build (opcional):**
+
 ```bash
 pnpm dev
 ```
 
 **Terminal 3 - Testes em Watch (opcional):**
+
 ```bash
 pnpm test:watch
 ```

@@ -4,17 +4,30 @@
  * Manages session state, login/register, and user data
  */
 
-import { createContext, useEffect, useState, useCallback, ReactNode } from "react";
-import { supabase } from "../client";
-import { tokenStorage } from "../storage/tokenStorage";
-import { loginSchema, registerSchema } from "../schemas/auth.schemas";
-import { parseSupabaseError } from "../utils/errors";
-import type { AuthUser, UserProfile, Tenant, AuthContextType } from "../types/auth.types";
+import {
+  createContext,
+  useEffect,
+  useState,
+  useCallback,
+  ReactNode,
+} from 'react';
+import { supabase } from '../client';
+import { tokenStorage } from '../storage/tokenStorage';
+import { loginSchema, registerSchema } from '../schemas/auth.schemas';
+import { parseSupabaseError } from '../utils/errors';
+import type {
+  AuthUser,
+  UserProfile,
+  Tenant,
+  AuthContextType,
+} from '../types/auth.types';
 
 /**
  * Auth context (replaces placeholder in useAuth hook)
  */
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export interface AuthProviderProps {
   children: ReactNode;
@@ -56,7 +69,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const { data, error: sessionError } = await supabase.auth.getSession();
 
       if (sessionError) {
-        console.error("Failed to restore session:", sessionError);
+        console.error('Failed to restore session:', sessionError);
         setIsAuthenticated(false);
         return;
       }
@@ -71,9 +84,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsAuthenticated(false);
       }
     } catch (err) {
-      console.error("Error restoring session:", err);
+      console.error('Error restoring session:', err);
       setIsAuthenticated(false);
-      setError("Failed to restore session");
+      setError('Failed to restore session');
     } finally {
       setIsLoading(false);
     }
@@ -85,13 +98,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const loadUserProfile = useCallback(async (userId: string) => {
     try {
       const { data, error: profileError } = await supabase
-        .from("user_profiles")
-        .select("*")
-        .eq("id", userId)
+        .from('user_profiles')
+        .select('*')
+        .eq('id', userId)
         .single();
 
       if (profileError) {
-        console.error("Failed to load user profile:", profileError);
+        console.error('Failed to load user profile:', profileError);
         return;
       }
 
@@ -104,7 +117,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
       }
     } catch (err) {
-      console.error("Error loading user profile:", err);
+      console.error('Error loading user profile:', err);
     }
   }, []);
 
@@ -114,13 +127,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const loadTenant = useCallback(async (tenantId: string) => {
     try {
       const { data, error: tenantError } = await supabase
-        .from("tenants")
-        .select("*")
-        .eq("id", tenantId)
+        .from('tenants')
+        .select('*')
+        .eq('id', tenantId)
         .single();
 
       if (tenantError) {
-        console.error("Failed to load tenant:", tenantError);
+        console.error('Failed to load tenant:', tenantError);
         return;
       }
 
@@ -128,7 +141,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setCurrentTenant(data as Tenant);
       }
     } catch (err) {
-      console.error("Error loading tenant:", err);
+      console.error('Error loading tenant:', err);
     }
   }, []);
 
@@ -136,7 +149,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
    * Login with email and password
    */
   const login = useCallback(
-    async (email: string, password: string, mfaCode?: string): Promise<void> => {
+    async (
+      email: string,
+      password: string,
+      mfaCode?: string
+    ): Promise<void> => {
       setIsLoading(true);
       setError(null);
 
@@ -151,25 +168,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (!validation.success) {
           const fieldErrors = validation.error.flatten().fieldErrors;
           const firstError = Object.values(fieldErrors)[0]?.[0];
-          throw new Error(firstError || "Invalid login credentials");
+          throw new Error(firstError || 'Invalid login credentials');
         }
 
         // Attempt login
-        const { data, error: loginError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        const { data, error: loginError } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
 
         if (loginError) {
           throw parseSupabaseError(loginError);
         }
 
         if (!data.session || !data.user) {
-          throw new Error("Login failed: No session returned");
+          throw new Error('Login failed: No session returned');
         }
 
         // Check if MFA is required
-        if (data.session.user.factors?.some((f) => f.status === "verified")) {
+        if (data.session.user.factors?.some((f) => f.status === 'verified')) {
           // MFA is enabled, may need to verify
           // In a real implementation, would handle MFA challenge here
         }
@@ -190,7 +208,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // Load profile
         await loadUserProfile(data.user.id);
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Login failed";
+        const message = err instanceof Error ? err.message : 'Login failed';
         setError(message);
         throw err;
       } finally {
@@ -204,7 +222,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
    * Login with backup code (MFA alternative)
    */
   const loginWithBackupCode = useCallback(
-    async (email: string, password: string, backupCode: string): Promise<void> => {
+    async (
+      email: string,
+      password: string,
+      backupCode: string
+    ): Promise<void> => {
       // First, do regular login
       await login(email, password);
 
@@ -212,7 +234,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // In production, would call the backup code verification API
       // For now, just acknowledge the backup code was used
       if (!backupCode) {
-        throw new Error("Backup code is required");
+        throw new Error('Backup code is required');
       }
     },
     [login]
@@ -222,7 +244,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
    * Register new user
    */
   const register = useCallback(
-    async (email: string, password: string, displayName: string): Promise<void> => {
+    async (
+      email: string,
+      password: string,
+      displayName: string
+    ): Promise<void> => {
       setIsLoading(true);
       setError(null);
 
@@ -238,7 +264,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (!validation.success) {
           const fieldErrors = validation.error.flatten().fieldErrors;
           const firstError = Object.values(fieldErrors)[0]?.[0];
-          throw new Error(firstError || "Validation failed");
+          throw new Error(firstError || 'Validation failed');
         }
 
         // Attempt registration
@@ -257,7 +283,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
 
         if (!data.user) {
-          throw new Error("Registration failed: No user created");
+          throw new Error('Registration failed: No user created');
         }
 
         // Note: User profile and tenant are created automatically by database trigger
@@ -278,7 +304,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           await loadUserProfile(data.user.id);
         }
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Registration failed";
+        const message =
+          err instanceof Error ? err.message : 'Registration failed';
         setError(message);
         throw err;
       } finally {
@@ -300,7 +327,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const { error: signOutError } = await supabase.auth.signOut();
 
       if (signOutError) {
-        console.error("Supabase sign out error:", signOutError);
+        console.error('Supabase sign out error:', signOutError);
         // Don't throw - clear local state anyway
       }
 
@@ -314,7 +341,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setCurrentTenant(null);
       setIsAuthenticated(false);
     } catch (err) {
-      console.error("Logout error:", err);
+      console.error('Logout error:', err);
       // Force clear state even if there was an error
       setUser(null);
       setUserProfile(null);
@@ -333,7 +360,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setError(null);
 
     try {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email);
+      const { error: resetError } =
+        await supabase.auth.resetPasswordForEmail(email);
 
       if (resetError) {
         throw parseSupabaseError(resetError);
@@ -341,7 +369,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       // Success - user should receive email
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to send reset email";
+      const message =
+        err instanceof Error ? err.message : 'Failed to send reset email';
       setError(message);
       throw err;
     } finally {
@@ -352,26 +381,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
   /**
    * Update password (for authenticated users)
    */
-  const updatePassword = useCallback(async (newPassword: string): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
+  const updatePassword = useCallback(
+    async (newPassword: string): Promise<void> => {
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: newPassword,
-      });
+      try {
+        const { error: updateError } = await supabase.auth.updateUser({
+          password: newPassword,
+        });
 
-      if (updateError) {
-        throw parseSupabaseError(updateError);
+        if (updateError) {
+          throw parseSupabaseError(updateError);
+        }
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Failed to update password';
+        setError(message);
+        throw err;
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to update password";
-      setError(message);
-      throw err;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   /**
    * Switch tenant
@@ -383,14 +416,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       try {
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error('Not authenticated');
         }
 
         // Update default tenant
         const { error: updateError } = await supabase
-          .from("user_profiles")
+          .from('user_profiles')
           .update({ default_tenant_id: tenantId })
-          .eq("id", user.id);
+          .eq('id', user.id);
 
         if (updateError) {
           throw updateError;
@@ -399,7 +432,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // Load new tenant
         await loadTenant(tenantId);
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to switch tenant";
+        const message =
+          err instanceof Error ? err.message : 'Failed to switch tenant';
         setError(message);
         throw err;
       } finally {
@@ -419,18 +453,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       try {
         if (!user) {
-          throw new Error("Not authenticated");
+          throw new Error('Not authenticated');
         }
 
         // Generate slug from name
         const slug = name
           .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^\w-]/g, "");
+          .replace(/\s+/g, '-')
+          .replace(/[^\w-]/g, '');
 
         // Create tenant
         const { data: tenantData, error: createError } = await supabase
-          .from("tenants")
+          .from('tenants')
           .insert([{ name, slug }])
           .select()
           .single();
@@ -440,17 +474,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
 
         if (!tenantData) {
-          throw new Error("Failed to create tenant");
+          throw new Error('Failed to create tenant');
         }
 
         // Add creator as admin
         const { error: memberError } = await supabase
-          .from("tenant_members")
+          .from('tenant_members')
           .insert([
             {
               tenant_id: tenantData.id,
               user_id: user.id,
-              role: "admin",
+              role: 'admin',
             },
           ]);
 
@@ -460,7 +494,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         return tenantData as Tenant;
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to create tenant";
+        const message =
+          err instanceof Error ? err.message : 'Failed to create tenant';
         setError(message);
         throw err;
       } finally {
@@ -481,18 +516,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session) {
+      if (event === 'SIGNED_IN' && session) {
         setUser(session.user as AuthUser);
         setIsAuthenticated(true);
         await loadUserProfile(session.user.id);
-      } else if (event === "SIGNED_OUT") {
+      } else if (event === 'SIGNED_OUT') {
         setUser(null);
         setUserProfile(null);
         setCurrentTenant(null);
         setIsAuthenticated(false);
         const storage = tokenStorage();
         await storage.clearTokens();
-      } else if (event === "USER_UPDATED" && session) {
+      } else if (event === 'USER_UPDATED' && session) {
         setUser(session.user as AuthUser);
       }
     });

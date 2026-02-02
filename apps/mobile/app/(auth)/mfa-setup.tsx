@@ -13,13 +13,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useMFA } from '@automatize/auth';
-import {
-  Button,
-  Text,
-  FormField,
-  Card,
-  semanticColors,
-} from '@automatize/ui';
+import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;
 
@@ -29,9 +23,9 @@ const theme = semanticColors.light;
  */
 export default function MFASetupScreen() {
   const { enrollMFA, verifyMFA, isLoading, error } = useMFA();
-  const [step, setStep] = useState<'generate' | 'verify' | 'backup' | 'complete'>(
-    'generate'
-  );
+  const [step, setStep] = useState<
+    'generate' | 'verify' | 'backup' | 'complete'
+  >('generate');
   const [secret, setSecret] = useState<string>('');
   const [qrCode, setQrCode] = useState<string>('');
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
@@ -55,7 +49,8 @@ export default function MFASetupScreen() {
         setStep('verify');
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to generate QR code';
+      const message =
+        err instanceof Error ? err.message : 'Failed to generate QR code';
       setLocalError(message);
     }
   };
@@ -76,16 +71,14 @@ export default function MFASetupScreen() {
       if (result) {
         // Get backup codes
         const codes = Array.from({ length: 10 }, () =>
-          Math.random()
-            .toString(36)
-            .substring(2, 10)
-            .toUpperCase()
+          Math.random().toString(36).substring(2, 10).toUpperCase()
         );
         setBackupCodes(codes);
         setStep('backup');
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Verification failed';
+      const message =
+        err instanceof Error ? err.message : 'Verification failed';
       setLocalError(message);
     }
   };
@@ -131,8 +124,8 @@ export default function MFASetupScreen() {
                 Step 1: Scan QR Code
               </Text>
               <Text variant="body" color="secondary" style={styles.description}>
-                Use an authenticator app like Google Authenticator, Authy, or Microsoft
-                Authenticator to scan the QR code.
+                Use an authenticator app like Google Authenticator, Authy, or
+                Microsoft Authenticator to scan the QR code.
               </Text>
 
               {displayError && (
@@ -180,7 +173,11 @@ export default function MFASetupScreen() {
                   <Text variant="caption" color="secondary">
                     Can't scan? Enter this code manually:
                   </Text>
-                  <Text variant="code" color="primary" style={styles.secretCode}>
+                  <Text
+                    variant="code"
+                    color="primary"
+                    style={styles.secretCode}
+                  >
                     {secret}
                   </Text>
                 </View>
@@ -228,8 +225,8 @@ export default function MFASetupScreen() {
               </Text>
 
               <Text variant="body" color="secondary" style={styles.description}>
-                Save these backup codes in a safe place. Each code can be used once if you
-                lose access to your authenticator app.
+                Save these backup codes in a safe place. Each code can be used
+                once if you lose access to your authenticator app.
               </Text>
 
               {/* Backup Codes List */}
@@ -253,7 +250,11 @@ export default function MFASetupScreen() {
                 >
                   {confirmBackupCodes ? '✓' : ' '}
                 </Button>
-                <Text variant="body" color="secondary" style={styles.confirmText}>
+                <Text
+                  variant="body"
+                  color="secondary"
+                  style={styles.confirmText}
+                >
                   I have saved my backup codes in a safe place
                 </Text>
               </View>
@@ -281,8 +282,9 @@ export default function MFASetupScreen() {
               </Text>
 
               <Text variant="body" color="secondary" style={styles.description}>
-                Your account is now protected with two-factor authentication. You will need
-                to enter your authenticator code or a backup code when logging in.
+                Your account is now protected with two-factor authentication.
+                You will need to enter your authenticator code or a backup code
+                when logging in.
               </Text>
 
               <Button
@@ -301,84 +303,84 @@ export default function MFASetupScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background.primary,
+  backupCodeRow: {
+    borderBottomColor: theme.border,
+    borderBottomWidth: 1,
+    paddingVertical: 8,
   },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 16,
+  backupCodesContainer: {
+    backgroundColor: theme.background.secondary,
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 12,
   },
-  header: {
-    marginBottom: 32,
-  },
-  subtitle: {
-    marginTop: 8,
+  button: {
+    marginTop: 16,
   },
   card: {
     paddingHorizontal: 16,
     paddingVertical: 24,
   },
-  title: {
-    marginBottom: 12,
-  },
-  description: {
-    marginBottom: 16,
-    lineHeight: 22,
-  },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.error,
-  },
-  qrContainer: {
-    height: 250,
-    backgroundColor: theme.background.secondary,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  secretContainer: {
-    backgroundColor: theme.background.secondary,
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  secretCode: {
-    marginTop: 8,
-    fontFamily: 'monospace',
-  },
-  backupCodesContainer: {
-    backgroundColor: theme.background.secondary,
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
-  },
-  backupCodeRow: {
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.border,
-  },
-  confirmContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-  },
   checkbox: {
-    width: 44,
     height: 44,
     marginRight: 8,
     minWidth: 44,
+    width: 44,
+  },
+  confirmContainer: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    marginBottom: 16,
   },
   confirmText: {
     flex: 1,
     paddingTop: 12,
   },
-  button: {
-    marginTop: 16,
+  container: {
+    backgroundColor: theme.background.primary,
+    flex: 1,
+  },
+  description: {
+    lineHeight: 22,
+    marginBottom: 16,
+  },
+  errorContainer: {
+    backgroundColor: theme.background.error,
+    borderLeftColor: theme.error,
+    borderLeftWidth: 4,
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 12,
+  },
+  header: {
+    marginBottom: 32,
+  },
+  qrContainer: {
+    alignItems: 'center',
+    backgroundColor: theme.background.secondary,
+    borderRadius: 8,
+    height: 250,
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    padding: 16,
+  },
+  secretCode: {
+    fontFamily: 'monospace',
+    marginTop: 8,
+  },
+  secretContainer: {
+    backgroundColor: theme.background.secondary,
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 12,
+  },
+  subtitle: {
+    marginTop: 8,
+  },
+  title: {
+    marginBottom: 12,
   },
 });

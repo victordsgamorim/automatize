@@ -47,31 +47,37 @@ docs/
 ## 🎯 Propósito de Cada Categoria
 
 ### 📖 Guides
+
 **Para:** Desenvolvedores que querem começar ou aprender
 **Contém:** Tutoriais, walkthroughs, how-tos
 **Exemplos:** Quick Start, Getting Started, How to add a feature
 
 ### 🗺️ Planning
+
 **Para:** Entender o roadmap e progresso
 **Contém:** Roadmap, status, milestones, releases
 **Exemplos:** Roadmap completo, Status atual, Phase completions
 
 ### 📐 Architecture
+
 **Para:** Entender decisões técnicas
 **Contém:** Estrutura, ADRs, padrões, templates
 **Exemplos:** Project Structure, ADRs, RLS templates
 
 ### 🔧 Troubleshooting
+
 **Para:** Resolver problemas
 **Contém:** Problemas comuns, soluções, fixes históricos
 **Exemplos:** Fixes Applied, Common Problems, Debug guides
 
 ### 📘 Runbooks
+
 **Para:** Operações de produção (futuro)
 **Contém:** Procedimentos operacionais, deploys, incidents
 **Exemplos:** Deploy procedures, Monitoring, Incident response
 
 ### 📋 ADRs
+
 **Para:** Registro de decisões arquiteturais
 **Contém:** Architecture Decision Records
 **Exemplos:** ADR-001 Monorepo, ADR-002 Supabase (futuro)
@@ -82,15 +88,15 @@ docs/
 
 ### Documentos Criados (Phase 0)
 
-| Categoria | Arquivos | Status |
-|-----------|----------|--------|
-| **Guides** | 3 | ✅ Base criada |
-| **Planning** | 4 | ✅ Completo |
-| **Architecture** | 4 | ✅ Base criada |
-| **Troubleshooting** | 2 | ✅ Base criada |
-| **Runbooks** | 1 | 📅 Planejado |
-| **ADRs** | 3 | ✅ Base criada |
-| **TOTAL** | **17** | **✅ Estruturado** |
+| Categoria           | Arquivos | Status             |
+| ------------------- | -------- | ------------------ |
+| **Guides**          | 3        | ✅ Base criada     |
+| **Planning**        | 4        | ✅ Completo        |
+| **Architecture**    | 4        | ✅ Base criada     |
+| **Troubleshooting** | 2        | ✅ Base criada     |
+| **Runbooks**        | 1        | 📅 Planejado       |
+| **ADRs**            | 3        | ✅ Base criada     |
+| **TOTAL**           | **17**   | **✅ Estruturado** |
 
 ---
 
@@ -99,21 +105,25 @@ docs/
 ### Por Persona
 
 **Novo Desenvolvedor:**
+
 1. [guides/QUICK_START.md](guides/QUICK_START.md)
 2. [guides/GETTING_STARTED.md](guides/GETTING_STARTED.md)
 3. [architecture/PROJECT_STRUCTURE.md](architecture/PROJECT_STRUCTURE.md)
 
 **Product Manager:**
+
 1. [planning/ROADMAP.md](planning/ROADMAP.md)
 2. [planning/STATUS.md](planning/STATUS.md)
 3. [planning/PHASE_0_COMPLETE.md](planning/PHASE_0_COMPLETE.md)
 
 **Arquiteto:**
+
 1. [adr/](adr/)
 2. [architecture/](architecture/)
 3. [planning/ROADMAP.md](planning/ROADMAP.md)
 
 **DevOps (Futuro):**
+
 1. [runbooks/](runbooks/)
 2. [troubleshooting/](troubleshooting/)
 
@@ -121,27 +131,29 @@ docs/
 
 ### Por Necessidade
 
-| Necessidade | Caminho |
-|-------------|---------|
-| Começar rapidamente | `guides/QUICK_START.md` |
-| Setup completo | `guides/GETTING_STARTED.md` |
-| Ver progresso | `planning/STATUS.md` |
-| Ver plano | `planning/ROADMAP.md` |
-| Entender estrutura | `architecture/PROJECT_STRUCTURE.md` |
-| Entender decisão técnica | `adr/` |
-| Resolver problema | `troubleshooting/` |
-| Deploy (futuro) | `runbooks/` |
+| Necessidade              | Caminho                             |
+| ------------------------ | ----------------------------------- |
+| Começar rapidamente      | `guides/QUICK_START.md`             |
+| Setup completo           | `guides/GETTING_STARTED.md`         |
+| Ver progresso            | `planning/STATUS.md`                |
+| Ver plano                | `planning/ROADMAP.md`               |
+| Entender estrutura       | `architecture/PROJECT_STRUCTURE.md` |
+| Entender decisão técnica | `adr/`                              |
+| Resolver problema        | `troubleshooting/`                  |
+| Deploy (futuro)          | `runbooks/`                         |
 
 ---
 
 ## 🎨 Convenções de Estilo
 
 ### Nomes de Arquivo
+
 - **UPPERCASE.md** para documentos importantes (README, INDEX, etc)
 - **kebab-case.md** para documentos técnicos (rls-policies-template.md)
 - **PascalCase.md** para ADRs numerados (001-monorepo-with-turborepo.md)
 
 ### Estrutura de Documento
+
 ```markdown
 # Título
 
@@ -165,6 +177,7 @@ Conteúdo...
 ```
 
 ### Emojis
+
 - 📚 Documentação geral
 - 📖 Guias
 - 🗺️ Planejamento
@@ -182,20 +195,25 @@ Conteúdo...
 ## 🔗 Links Entre Documentos
 
 ### Links Relativos
+
 Sempre use links relativos dentro de `docs/`:
 
 ```markdown
 # De docs/guides/QUICK_START.md
+
 [Roadmap](../planning/ROADMAP.md)
 
 # De docs/planning/ROADMAP.md
+
 [Quick Start](../guides/QUICK_START.md)
 
 # De docs/README.md
+
 [Quick Start](guides/QUICK_START.md)
 ```
 
 ### Links para Raiz
+
 ```markdown
 [README Principal](../README.md)
 [CLAUDE.md](../CLAUDE.md)
@@ -226,24 +244,28 @@ Sempre use links relativos dentro de `docs/`:
 ## 🚀 Evolução da Documentação
 
 ### Phase 0 ✅ (Atual)
+
 - Estrutura base criada
 - Documentos fundamentais
 - Guias de início
 - ADR inicial
 
 ### Phase 1 (Próxima)
+
 - [ ] Supabase setup guide
 - [ ] Authentication guide
 - [ ] ADR-002: Supabase Backend
 - [ ] ADR-003: MFA Strategy
 
 ### Phase 2
+
 - [ ] WatermelonDB guide
 - [ ] Sync engine docs
 - [ ] ADR-004: Offline Strategy
 - [ ] First runbook (backup)
 
 ### Phase 9+
+
 - [ ] Deployment runbooks
 - [ ] Monitoring guides
 - [ ] Performance guides

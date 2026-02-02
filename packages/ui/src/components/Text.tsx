@@ -3,12 +3,29 @@
  * Semantic text component with typography variants
  */
 
-import React, { ReactNode } from "react";
-import { Text as RNText, StyleSheet, TextProps as RNTextProps } from "react-native";
-import { colors, typography } from "../tokens";
+import React, { ReactNode } from 'react';
+import {
+  Text as RNText,
+  TextProps as RNTextProps,
+  TextStyle,
+} from 'react-native';
+import { colors, typography } from '../tokens';
 
-export type TextVariant = "h1" | "h2" | "h3" | "body" | "bodySmall" | "caption" | "code";
-export type TextColor = "primary" | "secondary" | "tertiary" | "error" | "success" | "warning";
+export type TextVariant =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'body'
+  | 'bodySmall'
+  | 'caption'
+  | 'code';
+export type TextColor =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'error'
+  | 'success'
+  | 'warning';
 
 export interface TextProps extends RNTextProps {
   /** Text content */
@@ -18,43 +35,43 @@ export interface TextProps extends RNTextProps {
   /** Text color */
   color?: TextColor;
   /** Additional style */
-  style?: any;
+  style?: TextStyle;
 }
 
-const variants: Record<TextVariant, any> = {
+const variants: Record<TextVariant, TextStyle> = {
   h1: {
-    fontSize: typography.fontSize["3xl"],
-    fontWeight: "700",
+    fontSize: typography.fontSize['3xl'],
+    fontWeight: '700',
     lineHeight: 36,
   },
   h2: {
-    fontSize: typography.fontSize["2xl"],
-    fontWeight: "700",
+    fontSize: typography.fontSize['2xl'],
+    fontWeight: '700',
     lineHeight: 30,
   },
   h3: {
     fontSize: typography.fontSize.xl,
-    fontWeight: "600",
+    fontWeight: '600',
     lineHeight: 26,
   },
   body: {
     fontSize: typography.fontSize.base,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 24,
   },
   bodySmall: {
     fontSize: typography.fontSize.sm,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 20,
   },
   caption: {
     fontSize: typography.fontSize.xs,
-    fontWeight: "400",
+    fontWeight: '400',
     lineHeight: 16,
   },
   code: {
     fontSize: typography.fontSize.sm,
-    fontWeight: "500",
+    fontWeight: '500',
     fontFamily: typography.fontFamily.mono,
   },
 };
@@ -69,7 +86,7 @@ const colorMap: Record<TextColor, string> = {
 };
 
 export const Text = React.forwardRef<RNText, TextProps>(
-  ({ children, variant = "body", color = "primary", style, ...props }, ref) => {
+  ({ children, variant = 'body', color = 'primary', style, ...props }, ref) => {
     const variantStyle = variants[variant];
     const textColor = colorMap[color];
 
@@ -85,4 +102,4 @@ export const Text = React.forwardRef<RNText, TextProps>(
   }
 );
 
-Text.displayName = "Text";
+Text.displayName = 'Text';

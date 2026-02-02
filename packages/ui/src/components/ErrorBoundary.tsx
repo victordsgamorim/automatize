@@ -5,11 +5,11 @@
  * Catches errors in the component tree and displays fallback UI
  */
 
-import React, { Component, ErrorInfo, ReactNode } from "react";
-import { View, StyleSheet } from "react-native";
-import { colors, spacing } from "../tokens";
-import { Text } from "./Text";
-import { Button } from "./Button";
+import { Component, ErrorInfo, ReactNode } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { colors, spacing } from '../tokens';
+import { Text } from './Text';
+import { Button } from './Button';
 
 export interface ErrorBoundaryProps {
   /** Child components */
@@ -38,7 +38,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
     };
   }
 
-  static getDerivedStateFromError(error: Error): Partial<State> {
+  static getDerivedStateFromError(_error: Error): Partial<State> {
     return { hasError: true };
   }
 
@@ -53,7 +53,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
 
     // Log to console in development
     if (__DEV__) {
-      console.error(`[${this.props.name || "ErrorBoundary"}]`, error, errorInfo);
+      console.error(
+        `[${this.props.name || 'ErrorBoundary'}]`,
+        error,
+        errorInfo
+      );
     }
   }
 
@@ -82,10 +86,18 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
 
             {__DEV__ && this.state.error && (
               <View style={styles.errorSection}>
-                <Text variant="caption" color="secondary" style={styles.errorLabel}>
+                <Text
+                  variant="caption"
+                  color="secondary"
+                  style={styles.errorLabel}
+                >
                   Error Details:
                 </Text>
-                <Text variant="code" color="tertiary" style={styles.errorMessage}>
+                <Text
+                  variant="code"
+                  color="tertiary"
+                  style={styles.errorMessage}
+                >
                   {this.state.error.toString()}
                 </Text>
               </View>
@@ -94,7 +106,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
             <View style={styles.message}>
               <Text variant="body" color="secondary">
                 {__DEV__
-                  ? "An unexpected error occurred. See details above."
+                  ? 'An unexpected error occurred. See details above.'
                   : "We're sorry, but something went wrong. Please try again."}
               </Text>
             </View>
@@ -115,19 +127,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.neutral[50],
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: spacing[4],
   },
   content: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
   },
   title: {
     marginBottom: spacing[3],
   },
   errorSection: {
-    width: "100%",
+    width: '100%',
     backgroundColor: colors.error[50],
     borderRadius: 8,
     padding: spacing[3],
@@ -137,7 +149,7 @@ const styles = StyleSheet.create({
   },
   errorLabel: {
     marginBottom: spacing[1],
-    fontWeight: "600",
+    fontWeight: '600',
   },
   errorMessage: {
     color: colors.error[700],
@@ -161,7 +173,7 @@ export const RootErrorBoundary = ({ children }: RootErrorBoundaryProps) => {
       name="RootErrorBoundary"
       onError={(error, errorInfo) => {
         // In production, send to error tracking service
-        console.error("Root error caught:", error, errorInfo);
+        console.error('Root error caught:', error, errorInfo);
       }}
     >
       {children}

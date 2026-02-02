@@ -14,18 +14,16 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useAuth } from '@automatize/auth';
-import {
-  Button,
-  Text,
-  FormField,
-  Card,
-  semanticColors,
-} from '@automatize/ui';
+import { Button, Text, Card, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;
 
 export default function InviteScreen() {
-  const { id, email: invitationEmail, code } = useLocalSearchParams<{
+  const {
+    id,
+    email: invitationEmail,
+    code,
+  } = useLocalSearchParams<{
     id?: string;
     email?: string;
     code?: string;
@@ -84,9 +82,7 @@ export default function InviteScreen() {
       setStep('accept');
     } catch (err) {
       const message =
-        err instanceof Error
-          ? err.message
-          : 'Failed to validate invitation';
+        err instanceof Error ? err.message : 'Failed to validate invitation';
       setError(message);
     } finally {
       setIsLoading(false);
@@ -118,9 +114,7 @@ export default function InviteScreen() {
       router.replace('/(app)');
     } catch (err) {
       const message =
-        err instanceof Error
-          ? err.message
-          : 'Failed to accept invitation';
+        err instanceof Error ? err.message : 'Failed to accept invitation';
       setError(message);
     } finally {
       setIsLoading(false);
@@ -145,7 +139,8 @@ export default function InviteScreen() {
             Invalid Invitation
           </Text>
           <Text variant="body" color="error">
-            The invitation link is invalid or missing. Please check your email and try again.
+            The invitation link is invalid or missing. Please check your email
+            and try again.
           </Text>
           <Button
             variant="primary"
@@ -180,7 +175,8 @@ export default function InviteScreen() {
           {isAuthenticated && user?.email !== invitationEmail && (
             <>
               <Text variant="body" color="secondary" style={styles.subtitle}>
-                Would you like to sign out and create a new account with the invited email?
+                Would you like to sign out and create a new account with the
+                invited email?
               </Text>
               <Button
                 variant="primary"
@@ -315,57 +311,57 @@ export default function InviteScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 16,
-    justifyContent: 'center',
-  },
-  header: {
-    marginBottom: 32,
-  },
-  subtitle: {
-    marginTop: 8,
+  button: {
+    marginTop: 12,
   },
   card: {
     marginBottom: 24,
     paddingHorizontal: 16,
     paddingVertical: 24,
   },
-  title: {
-    marginBottom: 16,
-  },
-  detailsContainer: {
-    backgroundColor: theme.background.secondary,
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
+  container: {
+    alignItems: 'center',
+    backgroundColor: theme.background.primary,
+    flex: 1,
+    justifyContent: 'center',
   },
   detailRow: {
     marginBottom: 16,
   },
-  emailContainer: {
+  detailsContainer: {
     backgroundColor: theme.background.secondary,
-    padding: 12,
     borderRadius: 8,
     marginBottom: 16,
-    borderLeftWidth: 4,
+    padding: 16,
+  },
+  emailContainer: {
+    backgroundColor: theme.background.secondary,
     borderLeftColor: theme.info,
+    borderLeftWidth: 4,
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 12,
   },
   errorContainer: {
     backgroundColor: theme.background.error,
-    padding: 12,
+    borderLeftColor: theme.error,
+    borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.error,
+    padding: 12,
   },
-  button: {
-    marginTop: 12,
+  header: {
+    marginBottom: 32,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  subtitle: {
+    marginTop: 8,
+  },
+  title: {
+    marginBottom: 16,
   },
 });

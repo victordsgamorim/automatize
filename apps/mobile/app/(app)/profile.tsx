@@ -12,13 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useAuth } from '@automatize/auth';
-import {
-  Button,
-  Text,
-  Card,
-  FormField,
-  semanticColors,
-} from '@automatize/ui';
+import { Button, Text, Card, FormField, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;
 
@@ -139,10 +133,7 @@ export default function ProfileScreen() {
             </Text>
           </View>
           <View
-            style={[
-              styles.statusBadge,
-              { backgroundColor: theme.success },
-            ]}
+            style={[styles.statusBadge, { backgroundColor: theme.success }]}
           >
             <Text variant="caption" color="white">
               ✓ Active
@@ -150,7 +141,17 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        <View style={[styles.securityRow, { marginTop: 16, borderTopWidth: 1, borderTopColor: theme.border, paddingTopTop: 16 }]}>
+        <View
+          style={[
+            styles.securityRow,
+            {
+              marginTop: 16,
+              borderTopWidth: 1,
+              borderTopColor: theme.border,
+              paddingTopTop: 16,
+            },
+          ]}
+        >
           <Button
             variant="outline"
             onPress={() => setShowChangePassword(!showChangePassword)}
@@ -205,7 +206,12 @@ export default function ProfileScreen() {
             <Button
               variant="primary"
               onPress={handleChangePassword}
-              disabled={!currentPassword || !newPassword || !confirmPassword || isChangingPassword}
+              disabled={
+                !currentPassword ||
+                !newPassword ||
+                !confirmPassword ||
+                isChangingPassword
+              }
               style={styles.button}
             >
               {isChangingPassword ? (
@@ -233,7 +239,7 @@ export default function ProfileScreen() {
       )}
 
       {/* Danger Zone */}
-      <Card style={[styles.dangerCard]}>
+      <Card style={styles.dangerCard}>
         <Text variant="h3" color="error" style={styles.sectionTitle}>
           Danger Zone
         </Text>
@@ -251,27 +257,37 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background.primary,
-    padding: 16,
-  },
-  profileCard: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 24,
+  avatar: {
     alignItems: 'center',
+    backgroundColor: theme.brand[600],
+    borderRadius: 40,
+    height: 80,
+    justifyContent: 'center',
+    width: 80,
   },
   avatarContainer: {
     marginBottom: 16,
   },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: theme.brand[600],
-    justifyContent: 'center',
-    alignItems: 'center',
+  button: {
+    marginTop: 8,
+  },
+  changePasswordCard: {
+    marginBottom: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+  },
+  container: {
+    backgroundColor: theme.background.primary,
+    flex: 1,
+    padding: 16,
+  },
+  dangerCard: {
+    backgroundColor: `${theme.error}10`,
+    borderLeftColor: theme.error,
+    borderLeftWidth: 4,
+    marginBottom: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
   },
   displayName: {
     marginBottom: 4,
@@ -284,63 +300,53 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
   },
-  sectionTitle: {
-    marginBottom: 16,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.border,
-  },
   infoLabel: {
     marginRight: 8,
   },
-  securityCard: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: theme.background.secondary,
-  },
-  securityRow: {
+  infoRow: {
+    alignItems: 'center',
+    borderBottomColor: theme.border,
+    borderBottomWidth: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: 12,
+  },
+  logoutButton: {
+    marginTop: 12,
+  },
+  passwordActions: {
+    gap: 8,
+    marginTop: 16,
+  },
+  profileCard: {
     alignItems: 'center',
+    marginBottom: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
   },
-  securityInfo: {
-    flex: 1,
-  },
-  statusBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+  sectionTitle: {
+    marginBottom: 16,
   },
   securityButton: {
     marginTop: 8,
   },
-  changePasswordCard: {
+  securityCard: {
+    backgroundColor: theme.background.secondary,
     marginBottom: 24,
     paddingHorizontal: 16,
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
-  passwordActions: {
-    marginTop: 16,
-    gap: 8,
+  securityInfo: {
+    flex: 1,
   },
-  dangerCard: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    backgroundColor: `${theme.error}10`,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.error,
+  securityRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  button: {
-    marginTop: 8,
-  },
-  logoutButton: {
-    marginTop: 12,
+  statusBadge: {
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
 });

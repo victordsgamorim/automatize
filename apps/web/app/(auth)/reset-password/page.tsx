@@ -24,7 +24,9 @@ export default function ResetPasswordScreen() {
 
   useEffect(() => {
     if (!token) {
-      setLocalError('Invalid or missing reset token. Please request a new password reset.');
+      setLocalError(
+        'Invalid or missing reset token. Please request a new password reset.'
+      );
     }
   }, [token]);
 
@@ -53,7 +55,8 @@ export default function ResetPasswordScreen() {
       await updatePassword(password);
       setSubmitted(true);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to reset password';
+      const message =
+        err instanceof Error ? err.message : 'Failed to reset password';
       setLocalError(message);
     }
   };
@@ -79,7 +82,14 @@ export default function ResetPasswordScreen() {
             padding: '40px',
           }}
         >
-          <h1 style={{ color: 'white', fontSize: '48px', fontWeight: 'bold', margin: 0 }}>
+          <h1
+            style={{
+              color: 'white',
+              fontSize: '48px',
+              fontWeight: 'bold',
+              margin: 0,
+            }}
+          >
             Automatize
           </h1>
         </div>
@@ -273,9 +283,10 @@ export default function ResetPasswordScreen() {
                   style={{
                     width: '100%',
                     padding: '10px 12px',
-                    border: confirmPassword && password !== confirmPassword
-                      ? `1px solid ${'#dc2626'}`
-                      : `1px solid ${theme.border || '#e5e7eb'}`,
+                    border:
+                      confirmPassword && password !== confirmPassword
+                        ? `1px solid ${'#dc2626'}`
+                        : `1px solid ${theme.border || '#e5e7eb'}`,
                     borderRadius: '6px',
                     fontSize: '14px',
                     backgroundColor: theme.background.primary,
@@ -336,8 +347,20 @@ export default function ResetPasswordScreen() {
                   borderRadius: '6px',
                   fontSize: '14px',
                   fontWeight: 500,
-                  cursor: !password || !confirmPassword || password !== confirmPassword || isLoading ? 'not-allowed' : 'pointer',
-                  opacity: !password || !confirmPassword || password !== confirmPassword || isLoading ? 0.6 : 1,
+                  cursor:
+                    !password ||
+                    !confirmPassword ||
+                    password !== confirmPassword ||
+                    isLoading
+                      ? 'not-allowed'
+                      : 'pointer',
+                  opacity:
+                    !password ||
+                    !confirmPassword ||
+                    password !== confirmPassword ||
+                    isLoading
+                      ? 0.6
+                      : 1,
                 }}
               >
                 {isLoading ? 'Resetting...' : 'Reset Password'}
@@ -368,8 +391,8 @@ export default function ResetPasswordScreen() {
                   fontSize: '14px',
                 }}
               >
-                Your password has been successfully reset. You can now log in with your new
-                password.
+                Your password has been successfully reset. You can now log in
+                with your new password.
               </div>
 
               <button

@@ -39,6 +39,7 @@ We will implement authentication using **Supabase Auth with JWT tokens**, secure
 #### 1. Token Management
 
 **Token Storage:**
+
 - Access tokens and refresh tokens stored in **expo-secure-store** (Keychain on iOS, Keystore on Android, encrypted storage on Web)
 - Never store tokens in AsyncStorage or React Context alone
 - Token retrieval is async and non-blocking
@@ -56,6 +57,7 @@ async function getAccessToken(): Promise<string | null> {
 ```
 
 **Token Format (JWT):**
+
 - Standard JWT claims: `iss`, `sub`, `aud`, `exp`, `iat`, `nbf`
 - Custom claims: `tenant_id` (ULID), `role` (admin|editor|viewer), `permissions` (array)
 - Access token TTL: 15 minutes
@@ -65,6 +67,7 @@ async function getAccessToken(): Promise<string | null> {
 #### 2. Session Management
 
 **Zustand Store:**
+
 ```typescript
 interface AuthState {
   user: User | null;
@@ -81,6 +84,7 @@ interface AuthState {
 ```
 
 **State Synchronization:**
+
 - Session hydrated on app startup (from secure storage)
 - State persists in Zustand (in-memory)
 - Automatic re-sync on network reconnection
@@ -89,6 +93,7 @@ interface AuthState {
 #### 3. Authentication Flow
 
 **Login Flow:**
+
 1. User enters email and password
 2. **Frontend validation**: Email format + password strength (Zod)
 3. **Supabase Auth**: POST `/auth/v1/token` with email/password
@@ -103,12 +108,13 @@ async function login(email: string, password: string) {
   const passwordValidation = validatePasswordStrength(password);
 
   if (!emailValidation.valid) throw new ValidationError('Invalid email');
-  if (passwordValidation.score < 1) throw new ValidationError('Invalid password');
+  if (passwordValidation.score < 1)
+    throw new ValidationError('Invalid password');
 
   // Call Supabase Auth
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
-    password
+    password,
   });
 
   if (error) throw new AuthError(error.message);
@@ -126,6 +132,7 @@ async function login(email: string, password: string) {
 ```
 
 **Registration Flow:**
+
 1. User enters email, password, full name
 2. **Frontend validation**: All fields validated with Zod
 3. **Supabase Auth**: POST `/auth/v1/signup` with email/password
@@ -138,12 +145,14 @@ async function login(email: string, password: string) {
 #### 4. Multi-Factor Authentication (MFA)
 
 **MFA Strategy: TOTP (Time-based One-Time Password)**
+
 - Standard: RFC 6238
 - Backup codes: 10 single-use codes generated during setup
 - Storage: `mfa_backup_codes` table in Supabase (encrypted)
 - Enforcement: Required before accessing sensitive data
 
 **MFA Setup Flow:**
+
 1. User initiates MFA setup
 2. **Generate Secret**: Supabase generates TOTP secret
 3. **Display QR Code**: Show QR code for authenticator apps (Google Authenticator, Authy, Microsoft Authenticator)
@@ -153,12 +162,13 @@ async function login(email: string, password: string) {
 7. **Enable MFA**: Set `requiresMFA = true` in user metadata
 
 **TOTP Verification:**
+
 ```typescript
 async function verifyMFA(userId: string, totp: string) {
   // Verify TOTP code (Supabase handles this)
   const { data, error } = await supabase.auth.verifyOtp({
     type: 'totp',
-    token: totp
+    token: totp,
   });
 
   if (error) {
@@ -173,6 +183,7 @@ async function verifyMFA(userId: string, totp: string) {
 ```
 
 **Backup Codes:**
+
 - Each code can be used exactly once (marked as `used` in DB)
 - Codes should only be shown once during setup (not retrievable later)
 - User advised to save codes in secure location (printed, password manager, etc.)
@@ -180,6 +191,7 @@ async function verifyMFA(userId: string, totp: string) {
 #### 5. Token Refresh
 
 **Automatic Refresh:**
+
 - Refresh happens before token expiry (at 14 minutes, before 15-min expiry)
 - Non-blocking background operation
 - Uses refresh token (never sends access token to refresh endpoint)
@@ -190,7 +202,7 @@ async function refreshAccessToken() {
   if (!refreshToken) throw new AuthError('No refresh token available');
 
   const { data, error } = await supabase.auth.refreshSession({
-    refresh_token: refreshToken
+    refresh_token: refreshToken,
   });
 
   if (error) {
@@ -205,6 +217,7 @@ async function refreshAccessToken() {
 ```
 
 **Refresh on Network Recovery:**
+
 - Monitor network state via NetInfo
 - When connection recovers, immediately refresh tokens
 - Prevents stale tokens when returning from offline
@@ -212,6 +225,7 @@ async function refreshAccessToken() {
 #### 6. Logout
 
 **Logout Flow:**
+
 1. **Clear Local Tokens**: Remove from secure storage
 2. **Clear State**: Reset Zustand auth store
 3. **Invalidate Session**: POST `/auth/v1/logout` to Supabase
@@ -245,6 +259,7 @@ async function logout() {
 #### 7. Password Reset
 
 **Reset Flow:**
+
 1. User enters email
 2. **Supabase**: Sends reset email with signed link
 3. **Link Format**: `https://app.com/reset-password?token=TOKEN&type=recovery`
@@ -262,12 +277,14 @@ async function resetPassword(token: string, newPassword: string) {
   // Validate new password
   const validation = validatePasswordStrength(newPassword);
   if (!validation.isStrong) {
-    throw new ValidationError(`Password too weak: ${validation.feedback.join(', ')}`);
+    throw new ValidationError(
+      `Password too weak: ${validation.feedback.join(', ')}`
+    );
   }
 
   // Update password
   const { error } = await supabase.auth.updateUser({
-    password: newPassword
+    password: newPassword,
   });
 
   if (error) throw new AuthError(error.message);
@@ -280,6 +297,7 @@ async function resetPassword(token: string, newPassword: string) {
 #### 8. Session Validation
 
 **On App Start:**
+
 1. Check if tokens exist in secure storage
 2. If tokens exist, attempt to refresh (in case they expired offline)
 3. If refresh succeeds, hydrate auth state
@@ -316,6 +334,7 @@ async function initializeAuth() {
 **Problem:** Multiple requests happen during token refresh, all see expired token
 
 **Solution:** Queue requests during refresh
+
 ```typescript
 let refreshPromise: Promise<void> | null = null;
 
@@ -325,8 +344,9 @@ async function getValidAccessToken() {
   if (isTokenExpired(token)) {
     // Only refresh once, other requests wait for result
     if (!refreshPromise) {
-      refreshPromise = refreshAccessToken()
-        .finally(() => { refreshPromise = null; });
+      refreshPromise = refreshAccessToken().finally(() => {
+        refreshPromise = null;
+      });
     }
     await refreshPromise;
     token = await getAccessToken();
@@ -339,6 +359,7 @@ async function getValidAccessToken() {
 #### 10. Security Headers & CSRF Protection
 
 **HTTP Client Configuration:**
+
 ```typescript
 const fetcher = ky.create({
   prefixUrl: API_URL,
@@ -351,7 +372,7 @@ const fetcher = ky.create({
         const token = await getValidAccessToken();
         request.headers.set('Authorization', `Bearer ${token}`);
         return request;
-      }
+      },
     ],
     afterResponse: [
       async (response) => {
@@ -364,9 +385,9 @@ const fetcher = ky.create({
           return ky(response.request);
         }
         return response;
-      }
-    ]
-  }
+      },
+    ],
+  },
 });
 ```
 

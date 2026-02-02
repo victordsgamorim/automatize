@@ -9,6 +9,7 @@ Guias operacionais para tarefas específicas em produção.
 **Runbooks** são documentos que descrevem exatamente como executar tarefas operacionais específicas, geralmente em ambientes de produção.
 
 São como "receitas" passo a passo para:
+
 - Resolver incidentes
 - Executar manutenções
 - Fazer deploys
@@ -20,30 +21,35 @@ São como "receitas" passo a passo para:
 ## 🚀 Runbooks Planejados
 
 ### Deployment
+
 - [ ] Como fazer deploy do mobile (App Store + Play Store)
 - [ ] Como fazer deploy do web (Vercel/Netlify)
 - [ ] Como fazer rollback de uma versão
 - [ ] Como fazer deploy de hotfix
 
 ### Operations
+
 - [ ] Como fazer backup manual do Supabase
 - [ ] Como restaurar backup
 - [ ] Como resetar dados de um tenant
 - [ ] Como adicionar novo tenant manualmente
 
 ### Monitoring
+
 - [ ] Como investigar erros nos logs
 - [ ] Como analisar performance
 - [ ] Como ver logs de sync
 - [ ] Como identificar usuários com problemas de sync
 
 ### Incident Response
+
 - [ ] App mobile não abre
 - [ ] Sync parou de funcionar
 - [ ] Supabase está fora do ar
 - [ ] Rate limit atingido
 
 ### Maintenance
+
 - [ ] Como atualizar dependências
 - [ ] Como fazer migration do banco
 - [ ] Como adicionar novo environment (staging/prod)
@@ -57,12 +63,15 @@ São como "receitas" passo a passo para:
 # [Nome da Tarefa]
 
 ## Visão Geral
+
 Breve descrição da tarefa
 
 ## Quando Usar
+
 Situações que exigem este runbook
 
 ## Pré-requisitos
+
 - Acesso X
 - Permissão Y
 - Tool Z instalada
@@ -70,21 +79,27 @@ Situações que exigem este runbook
 ## Passos
 
 ### 1. Preparação
+
 Comandos e verificações iniciais
 
 ### 2. Execução
+
 Passo a passo detalhado
 
 ### 3. Verificação
+
 Como confirmar que deu certo
 
 ### 4. Rollback (se necessário)
+
 Como desfazer se algo der errado
 
 ## Troubleshooting
+
 Problemas comuns e soluções
 
 ## Contatos
+
 Quem acionar em caso de problemas
 ```
 
@@ -93,6 +108,7 @@ Quem acionar em caso de problemas
 ## 🎯 Quando Criar um Runbook?
 
 Crie um runbook quando:
+
 - ✅ A tarefa é crítica
 - ✅ Precisa ser executada sob pressão
 - ✅ Tem múltiplos passos
@@ -101,6 +117,7 @@ Crie um runbook quando:
 - ✅ Outras pessoas precisam executar
 
 **Não** crie para:
+
 - ❌ Tarefas triviais (1-2 comandos)
 - ❌ Coisas que nunca se repetem
 - ❌ Desenvolvimento normal
@@ -110,6 +127,7 @@ Crie um runbook quando:
 ## 📚 Exemplos de Bons Runbooks
 
 ### Deploy de Emergency Hotfix
+
 1. Criar branch hotfix
 2. Fix + testes
 3. Build
@@ -120,6 +138,7 @@ Crie um runbook quando:
 8. Comunicar time
 
 ### Investigar Erro de Sync
+
 1. Identificar tenant/usuário afetado
 2. Verificar logs da aplicação
 3. Verificar outbox no banco

@@ -69,14 +69,18 @@ export default function HomeScreen() {
           Features Coming Soon
         </Text>
         <Text variant="body" color="secondary" style={styles.featureText}>
-          • Invoice Management{'\n'}• Product Catalog{'\n'}• Client Management{'\n'}•
-          Analytics & Reports
+          • Invoice Management{'\n'}• Product Catalog{'\n'}• Client Management
+          {'\n'}• Analytics & Reports
         </Text>
       </Card>
 
       {/* Logout Button */}
       <View style={styles.actionContainer}>
-        <Button variant="danger" onPress={handleLogout} testID="home-logout-button">
+        <Button
+          variant="danger"
+          onPress={handleLogout}
+          testID="home-logout-button"
+        >
           Logout
         </Button>
       </View>
@@ -85,31 +89,32 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  actionContainer: {
+    marginBottom: 24,
+  },
   container: {
-    flex: 1,
     backgroundColor: theme.background.primary,
+    flex: 1,
     padding: 16,
   },
-  welcomeCard: {
+  featureCard: {
+    backgroundColor: theme.background.secondary,
     marginBottom: 24,
     paddingHorizontal: 16,
     paddingVertical: 20,
   },
-  subtitle: {
-    marginTop: 8,
+  featureText: {
+    lineHeight: 24,
   },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-    gap: 8,
+  featureTitle: {
+    marginBottom: 12,
   },
   statCard: {
+    alignItems: 'center',
     flex: 1,
+    justifyContent: 'center',
     paddingHorizontal: 12,
     paddingVertical: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   statCard1: {
     backgroundColor: theme.background.secondary,
@@ -120,19 +125,18 @@ const styles = StyleSheet.create({
   statCard3: {
     backgroundColor: theme.background.secondary,
   },
-  featureCard: {
+  statsContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  subtitle: {
+    marginTop: 8,
+  },
+  welcomeCard: {
     marginBottom: 24,
     paddingHorizontal: 16,
     paddingVertical: 20,
-    backgroundColor: theme.background.secondary,
-  },
-  featureTitle: {
-    marginBottom: 12,
-  },
-  featureText: {
-    lineHeight: 24,
-  },
-  actionContainer: {
-    marginBottom: 24,
   },
 });

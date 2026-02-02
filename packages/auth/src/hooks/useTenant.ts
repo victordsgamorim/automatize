@@ -3,10 +3,10 @@
  * Manages tenant selection, creation, and member management
  */
 
-import { useState, useCallback, useEffect } from "react";
-import { supabase } from "../client";
-import { useAuth } from "./useAuth";
-import type { Tenant, TenantMember } from "../types/auth.types";
+import { useState, useCallback, useEffect } from 'react';
+import { supabase } from '../client';
+import { useAuth } from './useAuth';
+import type { Tenant, TenantMember } from '../types/auth.types';
 
 /**
  * useTenant hook
@@ -44,18 +44,21 @@ export function useTenant() {
     try {
       // Query tenants user is member of
       const { data, error: queryError } = await supabase
-        .from("tenant_members")
-        .select("tenants(*)")
-        .eq("user_id", user.id);
+        .from('tenant_members')
+        .select('tenants(*)')
+        .eq('user_id', user.id);
 
       if (queryError) throw queryError;
 
-      const userTenants = data?.map((tm: any) => tm.tenants).filter(Boolean) || [];
+      const userTenants =
+        data?.map((tm) => tm.tenants as unknown as Tenant).filter(Boolean) ||
+        [];
       setTenants(userTenants);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to fetch tenants";
+      const message =
+        err instanceof Error ? err.message : 'Failed to fetch tenants';
       setError(message);
-      console.error("Error fetching tenants:", err);
+      console.error('Error fetching tenants:', err);
     } finally {
       setIsLoading(false);
     }
@@ -74,18 +77,18 @@ export function useTenant() {
 
       try {
         const { data, error: queryError } = await supabase
-          .from("tenant_members")
-          .select("*")
-          .eq("tenant_id", id);
+          .from('tenant_members')
+          .select('*')
+          .eq('tenant_id', id);
 
         if (queryError) throw queryError;
 
-        setMembers(data || []);
+        setMembers((data as TenantMember[]) || []);
       } catch (err) {
         const message =
-          err instanceof Error ? err.message : "Failed to fetch tenant members";
+          err instanceof Error ? err.message : 'Failed to fetch tenant members';
         setError(message);
-        console.error("Error fetching tenant members:", err);
+        console.error('Error fetching tenant members:', err);
       } finally {
         setIsLoading(false);
       }
@@ -98,35 +101,35 @@ export function useTenant() {
    */
   const createTenant = useCallback(
     async (name: string, slug?: string): Promise<Tenant> => {
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error('Not authenticated');
 
       setIsLoading(true);
       setError(null);
 
       try {
         // Generate slug if not provided
-        const tenantSlug = slug || name.toLowerCase().replace(/\s+/g, "-");
+        const tenantSlug = slug || name.toLowerCase().replace(/\s+/g, '-');
 
         // Insert tenant
         const { data: tenantData, error: insertError } = await supabase
-          .from("tenants")
+          .from('tenants')
           .insert([{ name, slug: tenantSlug }])
           .select()
           .single();
 
         if (insertError) throw insertError;
-        if (!tenantData) throw new Error("Failed to create tenant");
+        if (!tenantData) throw new Error('Failed to create tenant');
 
         const tenant = tenantData as Tenant;
 
         // Add creator as admin member
         const { error: memberError } = await supabase
-          .from("tenant_members")
+          .from('tenant_members')
           .insert([
             {
               tenant_id: tenant.id,
               user_id: user.id,
-              role: "admin",
+              role: 'admin',
             },
           ]);
 
@@ -137,7 +140,8 @@ export function useTenant() {
 
         return tenant;
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to create tenant";
+        const message =
+          err instanceof Error ? err.message : 'Failed to create tenant';
         setError(message);
         throw err;
       } finally {
@@ -152,7 +156,7 @@ export function useTenant() {
    */
   const switchTenant = useCallback(
     async (tenantId: string): Promise<void> => {
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error('Not authenticated');
 
       setIsLoading(true);
       setError(null);
@@ -160,9 +164,9 @@ export function useTenant() {
       try {
         // Update user's default tenant
         const { error: updateError } = await supabase
-          .from("user_profiles")
+          .from('user_profiles')
           .update({ default_tenant_id: tenantId })
-          .eq("id", user.id);
+          .eq('id', user.id);
 
         if (updateError) throw updateError;
 
@@ -172,7 +176,8 @@ export function useTenant() {
         // In a real app, this would trigger a context update to refresh JWT claims
         // For now, the user would need to refresh or the next request would use the new claims
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to switch tenant";
+        const message =
+          err instanceof Error ? err.message : 'Failed to switch tenant';
         setError(message);
         throw err;
       } finally {
@@ -186,15 +191,18 @@ export function useTenant() {
    * Add member to tenant
    */
   const addMember = useCallback(
-    async (userId: string, role: "admin" | "editor" | "viewer"): Promise<void> => {
-      if (!currentTenant) throw new Error("No current tenant");
+    async (
+      userId: string,
+      role: 'admin' | 'editor' | 'viewer'
+    ): Promise<void> => {
+      if (!currentTenant) throw new Error('No current tenant');
 
       setIsLoading(true);
       setError(null);
 
       try {
         const { error: insertError } = await supabase
-          .from("tenant_members")
+          .from('tenant_members')
           .insert([
             {
               tenant_id: currentTenant.id,
@@ -208,7 +216,8 @@ export function useTenant() {
         // Refresh members
         await fetchTenantMembers();
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to add member";
+        const message =
+          err instanceof Error ? err.message : 'Failed to add member';
         setError(message);
         throw err;
       } finally {
@@ -222,25 +231,29 @@ export function useTenant() {
    * Update member role
    */
   const updateMemberRole = useCallback(
-    async (userId: string, role: "admin" | "editor" | "viewer"): Promise<void> => {
-      if (!currentTenant) throw new Error("No current tenant");
+    async (
+      userId: string,
+      role: 'admin' | 'editor' | 'viewer'
+    ): Promise<void> => {
+      if (!currentTenant) throw new Error('No current tenant');
 
       setIsLoading(true);
       setError(null);
 
       try {
         const { error: updateError } = await supabase
-          .from("tenant_members")
+          .from('tenant_members')
           .update({ role })
-          .eq("tenant_id", currentTenant.id)
-          .eq("user_id", userId);
+          .eq('tenant_id', currentTenant.id)
+          .eq('user_id', userId);
 
         if (updateError) throw updateError;
 
         // Refresh members
         await fetchTenantMembers();
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to update member role";
+        const message =
+          err instanceof Error ? err.message : 'Failed to update member role';
         setError(message);
         throw err;
       } finally {
@@ -255,24 +268,25 @@ export function useTenant() {
    */
   const removeMember = useCallback(
     async (userId: string): Promise<void> => {
-      if (!currentTenant) throw new Error("No current tenant");
+      if (!currentTenant) throw new Error('No current tenant');
 
       setIsLoading(true);
       setError(null);
 
       try {
         const { error: deleteError } = await supabase
-          .from("tenant_members")
+          .from('tenant_members')
           .delete()
-          .eq("tenant_id", currentTenant.id)
-          .eq("user_id", userId);
+          .eq('tenant_id', currentTenant.id)
+          .eq('user_id', userId);
 
         if (deleteError) throw deleteError;
 
         // Refresh members
         await fetchTenantMembers();
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to remove member";
+        const message =
+          err instanceof Error ? err.message : 'Failed to remove member';
         setError(message);
         throw err;
       } finally {

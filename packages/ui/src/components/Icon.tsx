@@ -17,7 +17,11 @@ export interface IconProps {
 /**
  * HomeIcon - House/home symbol
  */
-export function HomeIcon({ color = theme.text.primary, size = 24, style }: IconProps) {
+export function HomeIcon({
+  color = theme.text.primary,
+  size = 24,
+  style,
+}: IconProps) {
   return (
     <View
       style={[
@@ -60,7 +64,11 @@ export function HomeIcon({ color = theme.text.primary, size = 24, style }: IconP
 /**
  * UserIcon - Person/profile symbol
  */
-export function UserIcon({ color = theme.text.primary, size = 24, style }: IconProps) {
+export function UserIcon({
+  color = theme.text.primary,
+  size = 24,
+  style,
+}: IconProps) {
   return (
     <View
       style={[
@@ -105,7 +113,11 @@ export function UserIcon({ color = theme.text.primary, size = 24, style }: IconP
 /**
  * BuildingIcon - Building/organization symbol
  */
-export function BuildingIcon({ color = theme.text.primary, size = 24, style }: IconProps) {
+export function BuildingIcon({
+  color = theme.text.primary,
+  size = 24,
+  style,
+}: IconProps) {
   return (
     <View
       style={[
@@ -166,7 +178,11 @@ export function BuildingIcon({ color = theme.text.primary, size = 24, style }: I
 /**
  * LogOutIcon - Sign out symbol
  */
-export function LogOutIcon({ color = theme.text.primary, size = 24, style }: IconProps) {
+export function LogOutIcon({
+  color = theme.text.primary,
+  size = 24,
+  style,
+}: IconProps) {
   return (
     <View
       style={[

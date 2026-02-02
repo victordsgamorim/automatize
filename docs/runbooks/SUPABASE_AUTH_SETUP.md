@@ -49,6 +49,7 @@ automatize://switch-workspace
 ```
 
 **Why Multiple URLs?**
+
 - Web app needs HTTP/HTTPS redirects
 - Mobile app needs deep link URLs
 - Development, staging, and production have different domains
@@ -59,11 +60,13 @@ automatize://switch-workspace
 Under **Site URL**, set:
 
 **Development:**
+
 ```
 http://localhost:3000
 ```
 
 **Production:**
+
 ```
 https://automatize.app
 ```
@@ -84,11 +87,13 @@ This is the base URL for email links and redirects.
 
 1. Click **Edit** next to "Reset Password Email"
 2. Set **Subject:**
+
    ```
    Reset your Automatize password
    ```
 
 3. Set **Body** (HTML):
+
    ```html
    <p>Hi {{ .Email }},</p>
 
@@ -111,6 +116,7 @@ This is the base URL for email links and redirects.
 4. Click **Save**
 
 **Note:** Supabase automatically generates `{{ .ConfirmationURL }}` based on your Site URL:
+
 - For mobile: `automatize://reset-password?token=TOKEN`
 - For web: `https://automatize.app/auth/reset-password?token=TOKEN`
 
@@ -120,11 +126,13 @@ This is the base URL for email links and redirects.
 
 1. Click **Edit** next to "Confirm signup email"
 2. Set **Subject:**
+
    ```
    Confirm your Automatize account
    ```
 
 3. Set **Body**:
+
    ```html
    <p>Hi {{ .Email }},</p>
 
@@ -152,11 +160,13 @@ This is the base URL for email links and redirects.
 
 1. Click **Edit** next to "Invite email"
 2. Set **Subject:**
+
    ```
    You've been invited to Automatize
    ```
 
 3. Set **Body**:
+
    ```html
    <p>Hi {{ .Email }},</p>
 
@@ -171,7 +181,9 @@ This is the base URL for email links and redirects.
 
    <hr />
 
-   <p>If you didn't expect this invitation, you can safely ignore this email.</p>
+   <p>
+     If you didn't expect this invitation, you can safely ignore this email.
+   </p>
 
    <p>— Automatize Team</p>
    ```
@@ -248,6 +260,7 @@ If you want SMS-based MFA:
 **Do NOT change** the auto-generated JWT secret. This is used to sign tokens.
 
 **To view secret:**
+
 1. Click **Reveal secret**
 2. Copy the secret (keep confidential!)
 
@@ -290,7 +303,12 @@ function getPermissions(role: string): string[] {
   const permissions = {
     admin: ['*'],
     editor: ['invoices:*', 'clients:*', 'products:*', 'analytics:read'],
-    viewer: ['invoices:read', 'clients:read', 'products:read', 'analytics:read'],
+    viewer: [
+      'invoices:read',
+      'clients:read',
+      'products:read',
+      'analytics:read',
+    ],
   };
   return permissions[role] || [];
 }
@@ -341,6 +359,7 @@ If you want to add social login (Google, GitHub, etc.):
 2. Toggle **Enable Sign in with Google** to **ON**
 3. Add **Google Client ID** and **Client Secret**
 4. Add **Authorized Redirect URI:**
+
    ```
    https://gyxxlwmqlkjqvfkceeev.supabase.co/auth/v1/callback
    ```
@@ -369,11 +388,13 @@ Send a password reset to your account:
 Copy the reset link and test it:
 
 **iOS:**
+
 ```bash
 xcrun simctl openurl booted "automatize://reset-password?token=YOUR_TOKEN"
 ```
 
 **Android:**
+
 ```bash
 adb shell am start -W -a android.intent.action.VIEW -d "automatize://reset-password?token=YOUR_TOKEN" com.automatize.app
 ```
@@ -412,6 +433,7 @@ Reset your password via the app, then verify:
 **Problem:** Password reset links redirect to wrong URL
 
 **Solution:**
+
 1. Check "Site URL" setting matches your domain
 2. Check "Redirect URLs" includes the deep link scheme
 3. Clear browser cache and retry
@@ -421,6 +443,7 @@ Reset your password via the app, then verify:
 **Problem:** `automatize://reset-password?token=X` doesn't open app
 
 **Solution:**
+
 1. Verify URL scheme in `app.json` is `automatize`
 2. Verify URL is in Supabase "Redirect URLs"
 3. Rebuild app with `expo prebuild --clean`
@@ -431,6 +454,7 @@ Reset your password via the app, then verify:
 **Problem:** User signs in without MFA prompt
 
 **Solution:**
+
 1. Check `requiresMFA` is set in user metadata
 2. Check MFA is enabled in Auth settings
 3. Verify TOTP is configured correctly
@@ -441,6 +465,7 @@ Reset your password via the app, then verify:
 **Problem:** `tenant_id` not in JWT
 
 **Solution:**
+
 1. Verify Edge Function is deployed
 2. Check function is called on login
 3. Verify JWT is decoded correctly in frontend

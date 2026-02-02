@@ -68,7 +68,8 @@ export default function RegisterScreen() {
     try {
       await register(email, password, displayName);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Registration failed';
+      const message =
+        err instanceof Error ? err.message : 'Registration failed';
       setLocalError(message);
     }
   };
@@ -326,7 +327,10 @@ export default function RegisterScreen() {
               style={{
                 width: '100%',
                 padding: '10px 12px',
-                border: confirmPassword && !passwordMatch ? `1px solid ${'#dc2626'}` : `1px solid ${theme.border || '#e5e7eb'}`,
+                border:
+                  confirmPassword && !passwordMatch
+                    ? `1px solid ${'#dc2626'}`
+                    : `1px solid ${theme.border || '#e5e7eb'}`,
                 borderRadius: '6px',
                 fontSize: '14px',
                 backgroundColor: theme.background.primary,

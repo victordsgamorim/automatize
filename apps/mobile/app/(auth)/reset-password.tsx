@@ -14,13 +14,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useAuth } from '@automatize/auth';
-import {
-  Button,
-  Text,
-  FormField,
-  Card,
-  semanticColors,
-} from '@automatize/ui';
+import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;
 
@@ -35,7 +29,9 @@ export default function ResetPasswordScreen() {
   // Check if token is available
   useEffect(() => {
     if (!token) {
-      setLocalError('Invalid or missing reset token. Please request a new password reset.');
+      setLocalError(
+        'Invalid or missing reset token. Please request a new password reset.'
+      );
     }
   }, [token]);
 
@@ -208,8 +204,8 @@ export default function ResetPasswordScreen() {
                   ✓ Success
                 </Text>
                 <Text variant="body" color="secondary">
-                  Your password has been successfully reset. You can now log in with your
-                  new password.
+                  Your password has been successfully reset. You can now log in
+                  with your new password.
                 </Text>
               </View>
 
@@ -231,55 +227,55 @@ export default function ResetPasswordScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background.primary,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 16,
-    justifyContent: 'center',
-  },
-  header: {
-    marginBottom: 32,
-  },
-  subtitle: {
-    marginTop: 8,
+  button: {
+    marginTop: 16,
   },
   card: {
     marginBottom: 24,
     paddingHorizontal: 16,
     paddingVertical: 24,
   },
-  title: {
-    marginBottom: 16,
+  container: {
+    backgroundColor: theme.background.primary,
+    flex: 1,
   },
   errorContainer: {
     backgroundColor: theme.background.error,
-    padding: 12,
+    borderLeftColor: theme.state.error,
+    borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.error,
+    padding: 12,
+  },
+  header: {
+    marginBottom: 32,
+  },
+  requirementsContainer: {
+    backgroundColor: theme.background.secondary,
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 12,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  subtitle: {
+    marginTop: 8,
   },
   successContainer: {
     backgroundColor: theme.background.secondary,
-    padding: 16,
+    borderLeftColor: theme.state.success,
+    borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.success,
+    padding: 16,
   },
   successTitle: {
     marginBottom: 8,
   },
-  requirementsContainer: {
-    backgroundColor: theme.background.secondary,
-    padding: 12,
-    borderRadius: 8,
+  title: {
     marginBottom: 16,
-  },
-  button: {
-    marginTop: 16,
   },
 });

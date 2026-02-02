@@ -35,6 +35,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 7. **Verify:** Redirected to dashboard or prompted to login
 
 **Expected Results:**
+
 - [ ] Email confirmation sent
 - [ ] Confirmation link valid (opens app/redirects to web)
 - [ ] User profile created in database
@@ -43,6 +44,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 - [ ] User can log in with credentials
 
 **Edge Cases to Test:**
+
 - [ ] Duplicate email (should error)
 - [ ] Weak password (should error with feedback)
 - [ ] Passwords don't match (should error)
@@ -66,6 +68,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 4. **Verify:** Dashboard appears
 
 **Expected Results:**
+
 - [ ] User authenticated
 - [ ] Access token stored securely (secure store, not AsyncStorage)
 - [ ] User profile loaded
@@ -73,6 +76,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 - [ ] Dashboard displays correctly
 
 **Edge Cases to Test:**
+
 - [ ] Wrong password (should error)
 - [ ] Non-existent email (should error)
 - [ ] Empty email/password (should error)
@@ -100,6 +104,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 11. **Verify:** Login works with new password
 
 **Expected Results:**
+
 - [ ] Reset email sent
 - [ ] Reset link valid and opens app/redirects to web
 - [ ] Password reset screen appears with token validated
@@ -108,6 +113,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 - [ ] New password works immediately
 
 **Edge Cases to Test:**
+
 - [ ] Invalid token (should error)
 - [ ] Expired token (should error)
 - [ ] Password too weak (should error with feedback)
@@ -137,6 +143,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 12. **Verify:** Dashboard appears
 
 **Expected Results:**
+
 - [ ] QR code displayed correctly
 - [ ] TOTP setup completes
 - [ ] 10 backup codes generated
@@ -146,6 +153,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 - [ ] Invalid TOTP code shows error
 
 **Edge Cases to Test:**
+
 - [ ] MFA setup cancelled (should not enable MFA)
 - [ ] Invalid TOTP code (should error)
 - [ ] Expired TOTP code (30s window, test clock skew)
@@ -170,6 +178,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 6. **Verify:** Redirected to login
 
 **Expected Results:**
+
 - [ ] Access token refreshed transparently
 - [ ] No interruption in user experience
 - [ ] Token refresh happens in background
@@ -177,6 +186,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 - [ ] Logout clears local DB (optional)
 
 **Edge Cases to Test:**
+
 - [ ] Network offline during token refresh (should queue request)
 - [ ] App backgrounded for 1+ hour (session still valid on foreground)
 - [ ] Multiple concurrent requests during token refresh (only refresh once)
@@ -194,6 +204,7 @@ Comprehensive manual testing procedures for authentication, multi-tenancy, and d
 **Setup:**
 
 Create two test users in different tenants:
+
 - User A: admin in Tenant X
 - User B: viewer in Tenant Y
 
@@ -212,6 +223,7 @@ Create two test users in different tenants:
 7. **Verify:** Error 403 Forbidden or no data returned
 
 **Expected Results:**
+
 - [ ] User B cannot see User A's invoices
 - [ ] RLS policy blocks query (database level, not app level)
 - [ ] API returns 403 or empty result
@@ -229,6 +241,7 @@ SELECT * FROM invoices WHERE tenant_id = 'TENANT_A_ID';
 ```
 
 **Edge Cases to Test:**
+
 - [ ] Direct database query bypasses RLS (as service role only)
 - [ ] SQL injection attempts (RLS should prevent)
 - [ ] Tenant ID in JWT is wrong (RLS rejects)
@@ -244,6 +257,7 @@ SELECT * FROM invoices WHERE tenant_id = 'TENANT_A_ID';
 **Setup:**
 
 Create three test users in same tenant with different roles:
+
 - User A: admin
 - User B: editor
 - User C: viewer
@@ -284,6 +298,7 @@ As User C (viewer):
 6. View analytics ✓
 
 **Expected Results:**
+
 - [ ] Permissions match role definitions
 - [ ] Forbidden actions return 403 errors
 - [ ] UI hides buttons for forbidden actions (UX)
@@ -328,6 +343,7 @@ VALUES ('123', 'WRONG_TENANT_ID', 100, ...)
 15. **Verify:** Member can no longer access workspace
 
 **Expected Results:**
+
 - [ ] Invitation email sent
 - [ ] Invitation link is valid (7-day expiry)
 - [ ] Invitation expires after 7 days
@@ -337,6 +353,7 @@ VALUES ('123', 'WRONG_TENANT_ID', 100, ...)
 - [ ] Member can rejoin if re-invited
 
 **Edge Cases to Test:**
+
 - [ ] Invite existing team member (should error)
 - [ ] Invite with invalid email (should error)
 - [ ] Expired invitation link (should error)
@@ -372,6 +389,7 @@ User A is admin in Tenant X and editor in Tenant Y.
 11. **Verify:** No data leakage between workspaces
 
 **Expected Results:**
+
 - [ ] All user's workspaces listed correctly
 - [ ] Switch happens instantly (no delay)
 - [ ] Data updates after switch
@@ -381,6 +399,7 @@ User A is admin in Tenant X and editor in Tenant Y.
 - [ ] Sync starts for new workspace
 
 **Edge Cases to Test:**
+
 - [ ] User removed from workspace while viewing it (should logout or redirect)
 - [ ] Workspace deleted while user viewing (should redirect)
 - [ ] Network offline during switch (should queue, sync when online)
@@ -429,6 +448,7 @@ User A is admin in Tenant X and editor in Tenant Y.
 5. **Enter new password and submit**
 
 **Expected Results:**
+
 - [ ] Deep link opens app (if installed)
 - [ ] Token parsed correctly from URL
 - [ ] Reset password screen displays
@@ -437,6 +457,7 @@ User A is admin in Tenant X and editor in Tenant Y.
 - [ ] Can login with new password
 
 **Edge Cases to Test:**
+
 - [ ] Invalid token (should error)
 - [ ] Expired token (24h timeout)
 - [ ] Malformed URL (should error)
@@ -465,6 +486,7 @@ User A is admin in Tenant X and editor in Tenant Y.
 10. **Verify:** Added to workspace
 
 **Expected Results:**
+
 - [ ] Invitation link opens app
 - [ ] Email pre-filled for new users
 - [ ] New user automatically added on signup
@@ -486,6 +508,7 @@ User A is admin in Tenant X and editor in Tenant Y.
    automatize://switch-workspace?tenant_id=01ARZ3NDEKTSV4RRFFQ69G5FAV
    ```
 3. **Test on mobile:**
+
    ```bash
    # iOS
    xcrun simctl openurl booted "automatize://switch-workspace?tenant_id=ABC123"
@@ -493,17 +516,20 @@ User A is admin in Tenant X and editor in Tenant Y.
    # Android
    adb shell am start -W -a android.intent.action.VIEW -d "automatize://switch-workspace?tenant_id=ABC123" com.automatize.app
    ```
+
 4. **Verify:** App switches to specified workspace
 5. **Verify:** Data for new workspace loads
 6. **Create invoice** to confirm you're in new workspace
 
 **Expected Results:**
+
 - [ ] Deep link switches workspace instantly
 - [ ] Data updates for new workspace
 - [ ] RLS policies enforce isolation
 - [ ] Sync begins for new workspace
 
 **Edge Cases to Test:**
+
 - [ ] Unauthorized tenant (user doesn't have access)
 - [ ] Non-existent tenant
 - [ ] Network offline (should queue, switch when online)
@@ -531,6 +557,7 @@ User A is admin in Tenant X and editor in Tenant Y.
 11. **Sync badge shows "Synced"**
 
 **Expected Results:**
+
 - [ ] Offline data cached locally
 - [ ] Can navigate and create records offline
 - [ ] Pending operations visible
@@ -558,6 +585,7 @@ User A is admin in Tenant X and editor in Tenant Y.
 8. **Verify:** Sync completes
 
 **Expected Results:**
+
 - [ ] Sync retries with exponential backoff
 - [ ] Error message is user-friendly
 - [ ] Retry button available

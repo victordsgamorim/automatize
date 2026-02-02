@@ -22,7 +22,7 @@ const theme = semanticColors.light;
  */
 export default function AppLayout() {
   const { currentTenant } = useAuth();
-  const colorScheme = useColorScheme();
+  const _colorScheme = useColorScheme();
 
   return (
     <Tabs
