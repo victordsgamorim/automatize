@@ -8,7 +8,6 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  FlatList,
   ActivityIndicator,
   Alert,
 } from 'react-native';
@@ -19,6 +18,7 @@ import {
   Card,
   FormField,
   Loading,
+  colors,
   semanticColors,
 } from '@automatize/ui';
 
@@ -54,7 +54,8 @@ export default function TenantsScreen() {
       setShowCreateForm(false);
       Alert.alert('Success', 'Tenant created successfully');
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to create tenant';
+      const message =
+        err instanceof Error ? err.message : 'Failed to create tenant';
       setCreateError(message);
     } finally {
       setIsCreating(false);
@@ -66,7 +67,8 @@ export default function TenantsScreen() {
       await switchTenant(tenantId);
       Alert.alert('Success', 'Tenant switched');
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to switch tenant';
+      const message =
+        err instanceof Error ? err.message : 'Failed to switch tenant';
       Alert.alert('Error', message);
     }
   };
@@ -95,12 +97,9 @@ export default function TenantsScreen() {
               Current Workspace
             </Text>
             <View
-              style={[
-                styles.badge,
-                { backgroundColor: theme.brand[600] },
-              ]}
+              style={[styles.badge, { backgroundColor: colors.brand[600] }]}
             >
-              <Text variant="caption" color="white">
+              <Text variant="caption" style={styles.badgeText}>
                 Active
               </Text>
             </View>
@@ -125,7 +124,11 @@ export default function TenantsScreen() {
             <Card key={tenant.id} style={styles.tenantCard}>
               <View style={styles.tenantHeader}>
                 <View style={styles.tenantInfo}>
-                  <Text variant="body" color="primary" style={styles.tenantName}>
+                  <Text
+                    variant="body"
+                    color="primary"
+                    style={styles.tenantName}
+                  >
                     {tenant.name}
                   </Text>
                   <Text variant="caption" color="secondary">
@@ -188,11 +191,7 @@ export default function TenantsScreen() {
               disabled={!newTenantName.trim() || isCreating}
               style={styles.button}
             >
-              {isCreating ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                'Create'
-              )}
+              {isCreating ? <ActivityIndicator color="white" /> : 'Create'}
             </Button>
 
             <Button
@@ -224,40 +223,71 @@ export default function TenantsScreen() {
 }
 
 const styles = StyleSheet.create({
+  actionContainer: {
+    marginBottom: 24,
+  },
+  badge: {
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  badgeText: {
+    color: colors.neutral[50],
+  },
+  button: {
+    marginTop: 8,
+  },
   container: {
-    flex: 1,
     backgroundColor: theme.background.primary,
+    flex: 1,
     padding: 16,
+  },
+  createActions: {
+    gap: 8,
+    marginTop: 16,
+  },
+  createCard: {
+    backgroundColor: theme.background.secondary,
+    marginBottom: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+  },
+  createTitle: {
+    marginBottom: 16,
+  },
+  currentTenantCard: {
+    backgroundColor: theme.background.secondary,
+    borderLeftColor: colors.brand[600],
+    borderLeftWidth: 4,
+    marginBottom: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  currentTenantHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  errorCard: {
+    backgroundColor: theme.background.error,
+    borderLeftColor: theme.state.error,
+    borderLeftWidth: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  errorContainer: {
+    backgroundColor: theme.background.error,
+    borderLeftColor: theme.state.error,
+    borderLeftWidth: 4,
+    borderRadius: 8,
+    marginBottom: 16,
+    padding: 12,
   },
   headerCard: {
     marginBottom: 24,
     paddingHorizontal: 16,
     paddingVertical: 20,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
-  currentTenantCard: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: theme.background.secondary,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.brand[600],
-  },
-  currentTenantHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  badge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  tenantName: {
-    marginBottom: 4,
   },
   listContainer: {
     marginBottom: 24,
@@ -265,55 +295,27 @@ const styles = StyleSheet.create({
   listTitle: {
     marginBottom: 12,
   },
+  subtitle: {
+    marginTop: 8,
+  },
+  switchButton: {
+    marginTop: 8,
+  },
   tenantCard: {
     marginBottom: 12,
     paddingHorizontal: 16,
     paddingVertical: 16,
   },
   tenantHeader: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 12,
   },
   tenantInfo: {
     flex: 1,
   },
-  switchButton: {
-    marginTop: 8,
-  },
-  createCard: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    backgroundColor: theme.background.secondary,
-  },
-  createTitle: {
-    marginBottom: 16,
-  },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.error,
-  },
-  createActions: {
-    marginTop: 16,
-    gap: 8,
-  },
-  actionContainer: {
-    marginBottom: 24,
-  },
-  button: {
-    marginTop: 8,
-  },
-  errorCard: {
-    backgroundColor: theme.background.error,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.error,
+  tenantName: {
+    marginBottom: 4,
   },
 });

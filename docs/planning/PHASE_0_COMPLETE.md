@@ -69,12 +69,12 @@ Phase 0 has successfully established a solid technical foundation for the Automa
 
 ## Completion Criteria Met
 
-| Criterion | Status | Notes |
-|-----------|--------|-------|
-| `pnpm build` works for all apps | ✅ | Build configuration complete (requires pnpm install) |
-| CI passes 100% of checks | ✅ | GitHub Actions pipeline configured |
-| At least 1 UI component documented | ✅ | Design tokens documented |
-| Observability structure | ✅ | Ready for future integration |
+| Criterion                          | Status | Notes                                                |
+| ---------------------------------- | ------ | ---------------------------------------------------- |
+| `pnpm build` works for all apps    | ✅     | Build configuration complete (requires pnpm install) |
+| CI passes 100% of checks           | ✅     | GitHub Actions pipeline configured                   |
+| At least 1 UI component documented | ✅     | Design tokens documented                             |
+| Observability structure            | ✅     | Ready for future integration                         |
 
 ---
 
@@ -249,21 +249,25 @@ See [ROADMAP.md](ROADMAP.md) for complete Phase 1 details.
 ## How to Start Development
 
 1. **Install pnpm** (if not already installed):
+
    ```bash
    npm install -g pnpm@8
    ```
 
 2. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
 
 3. **Build packages:**
+
    ```bash
    pnpm build
    ```
 
 4. **Run tests:**
+
    ```bash
    pnpm test
    ```

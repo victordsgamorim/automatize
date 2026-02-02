@@ -6,10 +6,7 @@
  */
 
 import Constants from 'expo-constants';
-import {
-  initializeAuth,
-  type AuthConfig,
-} from '@automatize/auth';
+import { initializeAuth, type AuthConfig } from '@automatize/auth';
 import { createMobileTokenStorage } from '@automatize/auth/storage/implementations/mobileTokenStorage';
 
 /**

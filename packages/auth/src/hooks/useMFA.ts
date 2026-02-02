@@ -3,10 +3,10 @@
  * Manages MFA (Multi-Factor Authentication) setup and verification
  */
 
-import { useState, useCallback } from "react";
-import { supabase } from "../client";
-import { generateBackupCodes } from "@automatize/core";
-import { validateTOTPCode, validateBackupCode } from "@automatize/core";
+import { useState, useCallback } from 'react';
+import { supabase } from '../client';
+import { generateBackupCodes } from '@automatize/core';
+import { validateTOTPCode, validateBackupCode } from '@automatize/core';
 
 export interface MFASetupState {
   secret?: string;
@@ -57,7 +57,7 @@ export function useMFA() {
       } = await supabase.auth.getSession();
 
       if (sessionError || !session) {
-        throw new Error("Not authenticated");
+        throw new Error('Not authenticated');
       }
 
       // Supabase doesn't have a direct TOTP enrollment endpoint in the JS client
@@ -75,7 +75,8 @@ export function useMFA() {
         // secret: response.data.secret,
       };
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to enroll in MFA";
+      const message =
+        err instanceof Error ? err.message : 'Failed to enroll in MFA';
       setError(message);
       throw err;
     } finally {
@@ -95,14 +96,14 @@ export function useMFA() {
         // Validate TOTP code
         const validationResult = validateTOTPCode(totpCode);
         if (!validationResult.valid) {
-          throw new Error(validationResult.message || "Invalid TOTP code");
+          throw new Error(validationResult.message || 'Invalid TOTP code');
         }
 
         // Validate backup codes
         for (const code of backupCodes) {
           const codeValidation = validateBackupCode(code);
           if (!codeValidation.valid) {
-            throw new Error("One or more backup codes are invalid");
+            throw new Error('One or more backup codes are invalid');
           }
         }
 
@@ -117,10 +118,11 @@ export function useMFA() {
         // For now, just acknowledge successful verification
 
         if (!totpCode) {
-          throw new Error("TOTP code is required");
+          throw new Error('TOTP code is required');
         }
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to verify MFA";
+        const message =
+          err instanceof Error ? err.message : 'Failed to verify MFA';
         setError(message);
         throw err;
       } finally {
@@ -141,7 +143,7 @@ export function useMFA() {
       try {
         const validationResult = validateTOTPCode(totpCode);
         if (!validationResult.valid) {
-          throw new Error(validationResult.message || "Invalid TOTP code");
+          throw new Error(validationResult.message || 'Invalid TOTP code');
         }
 
         // Send to Supabase MFA API
@@ -155,7 +157,8 @@ export function useMFA() {
           throw error;
         }
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to verify TOTP code";
+        const message =
+          err instanceof Error ? err.message : 'Failed to verify TOTP code';
         setError(message);
         throw err;
       } finally {
@@ -176,7 +179,7 @@ export function useMFA() {
       try {
         const validationResult = validateBackupCode(backupCode);
         if (!validationResult.valid) {
-          throw new Error(validationResult.message || "Invalid backup code");
+          throw new Error(validationResult.message || 'Invalid backup code');
         }
 
         // Send to Supabase MFA API
@@ -189,7 +192,8 @@ export function useMFA() {
           throw error;
         }
       } catch (err) {
-        const message = err instanceof Error ? err.message : "Failed to verify backup code";
+        const message =
+          err instanceof Error ? err.message : 'Failed to verify backup code';
         setError(message);
         throw err;
       } finally {
@@ -215,12 +219,13 @@ export function useMFA() {
       } = await supabase.auth.getSession();
 
       if (sessionError || !session) {
-        throw new Error("Not authenticated");
+        throw new Error('Not authenticated');
       }
 
       // Would disable MFA here
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to disable MFA";
+      const message =
+        err instanceof Error ? err.message : 'Failed to disable MFA';
       setError(message);
       throw err;
     } finally {
@@ -231,29 +236,28 @@ export function useMFA() {
   /**
    * Regenerate backup codes
    */
-  const regenerateBackupCodes = useCallback(
-    async (): Promise<string[]> => {
-      setIsLoading(true);
-      setError(null);
+  const regenerateBackupCodes = useCallback(async (): Promise<string[]> => {
+    setIsLoading(true);
+    setError(null);
 
-      try {
-        const codes = generateBackupCodes(10);
+    try {
+      const codes = generateBackupCodes(10);
 
-        // In production, would save to database
-        // const { error } = await api.post('/mfa/backup-codes', { codes });
+      // In production, would save to database
+      // const { error } = await api.post('/mfa/backup-codes', { codes });
 
-        return codes;
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Failed to regenerate backup codes";
-        setError(message);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    []
-  );
+      return codes;
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Failed to regenerate backup codes';
+      setError(message);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   return {
     isLoading,

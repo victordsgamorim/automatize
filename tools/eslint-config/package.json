@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "main": "base.js",
-  "files": ["base.js", "react-native.js"],
+  "files": [
+    "base.js",
+    "react-native.js"
+  ],
   "exports": {
     "./base": "./base.js",
     "./react-native": "./react-native.js"

@@ -3,32 +3,34 @@
  * Helpers for parsing and validating JWT tokens
  */
 
-import { jwtClaimsSchema, type JWTClaims } from "../schemas/auth.schemas";
+import { jwtClaimsSchema, type JWTClaims } from '../schemas/auth.schemas';
 
 /**
  * Decode base64 string
  * Works in both browser and Node.js environments
  */
 function decodeBase64(str: string): string {
-  if (typeof atob !== "undefined") {
+  if (typeof atob !== 'undefined') {
     return atob(str);
   }
   // Node.js fallback
-  if (typeof Buffer !== "undefined") {
-    return Buffer.from(str, "base64").toString("utf-8");
+  if (typeof Buffer !== 'undefined') {
+    return Buffer.from(str, 'base64').toString('utf-8');
   }
-  throw new Error("Unable to decode base64: atob and Buffer not available");
+  throw new Error('Unable to decode base64: atob and Buffer not available');
 }
 
 /**
  * Decode JWT payload (without verification)
  * NOTE: This only decodes the JWT. Always verify on the server side.
  */
-export function decodeJWT<T = Record<string, unknown>>(token: string): T | null {
+export function decodeJWT<T = Record<string, unknown>>(
+  token: string
+): T | null {
   try {
-    const parts = token.split(".");
+    const parts = token.split('.');
     if (parts.length !== 3) {
-      console.error("Invalid JWT format");
+      console.error('Invalid JWT format');
       return null;
     }
 
@@ -37,7 +39,7 @@ export function decodeJWT<T = Record<string, unknown>>(token: string): T | null 
     const decoded = JSON.parse(decodeBase64(payload));
     return decoded as T;
   } catch (error) {
-    console.error("Failed to decode JWT:", error);
+    console.error('Failed to decode JWT:', error);
     return null;
   }
 }
@@ -52,7 +54,7 @@ export function getJWTClaims(token: string): JWTClaims | null {
   try {
     return jwtClaimsSchema.parse(payload as JWTClaims);
   } catch (error) {
-    console.error("Invalid JWT claims:", error);
+    console.error('Invalid JWT claims:', error);
     return null;
   }
 }
@@ -137,7 +139,10 @@ export function getJWTTimeRemaining(token: string): number {
  * Check if JWT needs refresh (expired or about to expire)
  * Refresh if less than 5 minutes remaining
  */
-export function shouldRefreshJWT(token: string, thresholdSeconds = 300): boolean {
+export function shouldRefreshJWT(
+  token: string,
+  thresholdSeconds = 300
+): boolean {
   const timeRemaining = getJWTTimeRemaining(token);
   return timeRemaining < thresholdSeconds;
 }

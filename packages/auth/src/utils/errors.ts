@@ -3,8 +3,8 @@
  * Utilities for handling and normalizing auth errors
  */
 
-import type { AuthError } from "../types/auth.types";
-import { AuthErrorCode } from "../types/auth.types";
+import type { AuthError } from '../types/auth.types';
+import { AuthErrorCode } from '../types/auth.types';
 
 /**
  * Create a structured auth error
@@ -25,88 +25,103 @@ export function createAuthError(
  */
 export function parseSupabaseError(error: unknown): AuthError {
   // Handle Supabase AuthApiError
-  if (error && typeof error === "object" && "message" in error) {
+  if (error && typeof error === 'object' && 'message' in error) {
     const msg = String(error.message);
 
     // Invalid credentials
-    if (msg.includes("Invalid login credentials") || msg.includes("Email not confirmed")) {
+    if (
+      msg.includes('Invalid login credentials') ||
+      msg.includes('Email not confirmed')
+    ) {
       return createAuthError(
         AuthErrorCode.INVALID_CREDENTIALS,
-        "Invalid email or password. Please try again."
+        'Invalid email or password. Please try again.'
       );
     }
 
     // User not found
-    if (msg.includes("User not found") || msg.includes("No user found")) {
-      return createAuthError(AuthErrorCode.USER_NOT_FOUND, "User account not found");
+    if (msg.includes('User not found') || msg.includes('No user found')) {
+      return createAuthError(
+        AuthErrorCode.USER_NOT_FOUND,
+        'User account not found'
+      );
     }
 
     // Email not confirmed
-    if (msg.includes("Email not confirmed")) {
+    if (msg.includes('Email not confirmed')) {
       return createAuthError(
         AuthErrorCode.EMAIL_NOT_CONFIRMED,
-        "Please confirm your email address before logging in"
+        'Please confirm your email address before logging in'
       );
     }
 
     // Too many requests
-    if (msg.includes("too many")) {
+    if (msg.includes('too many')) {
       return createAuthError(
         AuthErrorCode.TOO_MANY_REQUESTS,
-        "Too many login attempts. Please try again later."
+        'Too many login attempts. Please try again later.'
       );
     }
 
     // User already exists
-    if (msg.includes("User already exists") || msg.includes("duplicate")) {
+    if (msg.includes('User already exists') || msg.includes('duplicate')) {
       return createAuthError(
         AuthErrorCode.USER_ALREADY_EXISTS,
-        "An account with this email already exists"
+        'An account with this email already exists'
       );
     }
 
     // MFA errors
-    if (msg.includes("MFA")) {
-      if (msg.includes("challenge")) {
+    if (msg.includes('MFA')) {
+      if (msg.includes('challenge')) {
         return createAuthError(
           AuthErrorCode.INVALID_MFA_CODE,
-          "Invalid MFA code. Please try again."
+          'Invalid MFA code. Please try again.'
         );
       }
-      return createAuthError(AuthErrorCode.MFA_REQUIRED, "MFA verification required");
+      return createAuthError(
+        AuthErrorCode.MFA_REQUIRED,
+        'MFA verification required'
+      );
     }
 
     // Session/token errors
-    if (msg.includes("session") || msg.includes("Session")) {
-      return createAuthError(AuthErrorCode.SESSION_EXPIRED, "Your session has expired. Please log in again.");
+    if (msg.includes('session') || msg.includes('Session')) {
+      return createAuthError(
+        AuthErrorCode.SESSION_EXPIRED,
+        'Your session has expired. Please log in again.'
+      );
     }
 
-    if (msg.includes("refresh token") || msg.includes("invalid token")) {
-      return createAuthError(AuthErrorCode.INVALID_TOKEN, "Invalid authentication token");
+    if (msg.includes('refresh token') || msg.includes('invalid token')) {
+      return createAuthError(
+        AuthErrorCode.INVALID_TOKEN,
+        'Invalid authentication token'
+      );
     }
   }
 
   // Handle network errors
-  if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+  if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
     return createAuthError(
       AuthErrorCode.NETWORK_ERROR,
-      "Network connection failed. Please check your internet connection."
+      'Network connection failed. Please check your internet connection.'
     );
   }
 
   // Handle timeout
-  if (error instanceof Error && error.message.includes("timeout")) {
+  if (error instanceof Error && error.message.includes('timeout')) {
     return createAuthError(
       AuthErrorCode.TIMEOUT,
-      "Request timed out. Please try again."
+      'Request timed out. Please try again.'
     );
   }
 
   // Default unknown error
-  console.error("Unknown auth error:", error);
+  console.error('Unknown auth error:', error);
   return createAuthError(
     AuthErrorCode.UNKNOWN_ERROR,
-    "An unexpected error occurred. Please try again."
+    'An unexpected error occurred. Please try again.'
   );
 }
 
@@ -114,13 +129,13 @@ export function parseSupabaseError(error: unknown): AuthError {
  * Get user-friendly error message
  */
 export function getErrorMessage(error: unknown): string {
-  if (error && typeof error === "object" && "message" in error) {
+  if (error && typeof error === 'object' && 'message' in error) {
     return String(error.message);
   }
   if (error instanceof Error) {
     return error.message;
   }
-  return "An unexpected error occurred";
+  return 'An unexpected error occurred';
 }
 
 /**
@@ -131,17 +146,17 @@ export function parseValidationErrors(
 ): Record<string, string> | null {
   if (
     error &&
-    typeof error === "object" &&
-    "errors" in error &&
+    typeof error === 'object' &&
+    'errors' in error &&
     Array.isArray(error.errors)
   ) {
     const fieldErrors: Record<string, string> = {};
     for (const err of error.errors) {
       if (
         err &&
-        typeof err === "object" &&
-        "path" in err &&
-        "message" in err &&
+        typeof err === 'object' &&
+        'path' in err &&
+        'message' in err &&
         Array.isArray(err.path)
       ) {
         const field = String(err.path[0]);
@@ -159,7 +174,7 @@ export function parseValidationErrors(
 export function isAuthError(error: unknown): error is AuthError {
   return (
     error instanceof Error &&
-    "code" in error &&
+    'code' in error &&
     Object.values(AuthErrorCode).includes((error as AuthError).code)
   );
 }
@@ -202,10 +217,10 @@ export function redactPIIFromError(error: AuthError): AuthError {
     redacted.details = {
       ...redacted.details,
       // Redact sensitive fields
-      email: "[REDACTED]",
-      password: "[REDACTED]",
-      phone: "[REDACTED]",
-      address: "[REDACTED]",
+      email: '[REDACTED]',
+      password: '[REDACTED]',
+      phone: '[REDACTED]',
+      address: '[REDACTED]',
     };
   }
   return redacted;

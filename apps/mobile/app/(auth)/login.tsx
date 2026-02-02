@@ -14,13 +14,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@automatize/auth';
-import {
-  Button,
-  Text,
-  FormField,
-  Card,
-  semanticColors,
-} from '@automatize/ui';
+import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;
 
@@ -117,7 +111,11 @@ export default function LoginScreen() {
           {useMfaCode && (
             <FormField
               label={useBackupCode ? 'Backup Code' : 'MFA Code'}
-              placeholder={useBackupCode ? 'Enter 8-character backup code' : 'Enter 6-digit code'}
+              placeholder={
+                useBackupCode
+                  ? 'Enter 8-character backup code'
+                  : 'Enter 6-digit code'
+              }
               value={mfaCode}
               onChangeText={setMfaCode}
               maxLength={useBackupCode ? 8 : 6}
@@ -171,15 +169,13 @@ export default function LoginScreen() {
           <Button
             variant="primary"
             onPress={handleLogin}
-            disabled={!email || !password || (useMfaCode && !mfaCode) || isLoading}
+            disabled={
+              !email || !password || (useMfaCode && !mfaCode) || isLoading
+            }
             testID="login-submit-button"
             style={styles.submitButton}
           >
-            {isLoading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              'Login'
-            )}
+            {isLoading ? <ActivityIndicator color="white" /> : 'Login'}
           </Button>
 
           {/* Forgot Password Link */}
@@ -213,44 +209,44 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background.primary,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 16,
-    justifyContent: 'center',
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
   card: {
     marginBottom: 24,
     paddingHorizontal: 16,
     paddingVertical: 24,
   },
-  title: {
-    marginBottom: 20,
+  container: {
+    backgroundColor: theme.background.primary,
+    flex: 1,
   },
   errorContainer: {
     backgroundColor: theme.background.error,
-    padding: 12,
+    borderLeftColor: theme.state.error,
+    borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.error,
-  },
-  submitButton: {
-    marginTop: 16,
-    marginBottom: 8,
+    padding: 12,
   },
   footer: {
     alignItems: 'center',
     marginTop: 16,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  submitButton: {
+    marginBottom: 8,
+    marginTop: 16,
+  },
+  subtitle: {
+    marginTop: 8,
+  },
+  title: {
+    marginBottom: 20,
   },
 });

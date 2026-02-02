@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import React from 'react';
 import { useIsAuthenticated } from '@automatize/auth';
 import { useRouter } from 'next/navigation';
 import styles from './app-layout.module.css';

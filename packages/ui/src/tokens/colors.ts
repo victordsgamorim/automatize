@@ -101,6 +101,9 @@ export const semanticColors = {
       primary: colors.neutral[50],
       secondary: colors.neutral[100],
       tertiary: colors.neutral[200],
+      error: colors.error[50],
+      success: colors.success[50],
+      warning: colors.warning[50],
     },
     text: {
       primary: colors.neutral[900],
@@ -125,6 +128,9 @@ export const semanticColors = {
       primary: colors.neutral[950],
       secondary: colors.neutral[900],
       tertiary: colors.neutral[800],
+      error: colors.error[950],
+      success: colors.success[950],
+      warning: colors.warning[950],
     },
     text: {
       primary: colors.neutral[50],

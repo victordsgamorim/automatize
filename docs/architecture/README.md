@@ -7,9 +7,11 @@ Documentação sobre a arquitetura do projeto.
 ## 🏗️ Estrutura do Projeto
 
 ### [Project Structure](PROJECT_STRUCTURE.md)
+
 Visualização completa da estrutura de diretórios e arquivos.
 
 **Inclui:**
+
 - Árvore de diretórios
 - Dependency graph
 - Ordem de build
@@ -21,9 +23,11 @@ Visualização completa da estrutura de diretórios e arquivos.
 ## 🔐 Segurança
 
 ### [RLS Policies Template](rls-policies-template.md)
+
 Template e guia para políticas de Row Level Security no Supabase.
 
 **Conteúdo:**
+
 - Princípios de segurança
 - Template de tabela base
 - Políticas padrão (SELECT, INSERT, UPDATE, DELETE)
@@ -37,12 +41,15 @@ Template e guia para políticas de Row Level Security no Supabase.
 ## 📋 ADRs (Architecture Decision Records)
 
 ### [ADR Index](../adr/README.md)
+
 Registro de todas as decisões arquiteturais importantes.
 
 **ADRs criados:**
+
 - [ADR-001: Monorepo com Turborepo](../adr/001-monorepo-with-turborepo.md)
 
 **ADRs planejados (Phase 1+):**
+
 - ADR-002: Supabase para Backend
 - ADR-003: WatermelonDB para Offline-First
 - ADR-004: Expo Router para Navegação
@@ -53,11 +60,13 @@ Registro de todas as decisões arquiteturais importantes.
 ## 🎨 Design System
 
 ### Tokens (Ver código)
+
 - [Colors](../../packages/ui/src/tokens/colors.ts)
 - [Spacing](../../packages/ui/src/tokens/spacing.ts)
 - [Typography](../../packages/ui/src/tokens/typography.ts)
 
 ### Princípios
+
 - Mobile-first
 - Offline-first
 - Multi-tenancy obrigatória
@@ -69,7 +78,9 @@ Registro de todas as decisões arquiteturais importantes.
 ## 🔄 Padrões de Sincronização
 
 ### Sync Strategy (Phase 2)
+
 Documentação virá na Phase 2, incluindo:
+
 - Push/Pull operations
 - Conflict resolution (LWW)
 - Outbox pattern
@@ -81,7 +92,9 @@ Documentação virá na Phase 2, incluindo:
 ## 📊 Data Model
 
 ### Entidades Base
+
 Todos os modelos herdam de BaseEntity:
+
 ```typescript
 {
   id: ULID
@@ -94,6 +107,7 @@ Todos os modelos herdam de BaseEntity:
 ```
 
 ### Multi-tenancy
+
 - Isolamento obrigatório por `tenantId`
 - RLS policies em 100% das tabelas
 - Custom JWT claims
@@ -103,6 +117,7 @@ Todos os modelos herdam de BaseEntity:
 ## 🏛️ Princípios Arquiteturais
 
 ### SOLID
+
 - Single Responsibility
 - Open/Closed
 - Liskov Substitution
@@ -110,17 +125,20 @@ Todos os modelos herdam de BaseEntity:
 - Dependency Inversion
 
 ### Offline-First
+
 - Local DB (WatermelonDB) é source of truth
 - Writes são imediatas no local
 - Sync assíncrono em background
 - UI nunca espera sync
 
 ### Multi-tenancy
+
 - Tenant isolation obrigatória
 - RLS em todas as tabelas
 - Zero trust (validar no servidor)
 
 ### Security
+
 - Never trust the client
 - PII redaction automática
 - Secrets apenas em servidor

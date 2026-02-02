@@ -9,6 +9,7 @@ Este documento lista as correções aplicadas durante o setup inicial do projeto
 ## ✅ Correção 1: TypeScript Incremental Build
 
 **Problema:**
+
 ```
 error TS5074: Option '--incremental' can only be specified using tsconfig,
 emitting to single file or when option '--tsBuildInfoFile' is specified.
@@ -18,9 +19,11 @@ emitting to single file or when option '--tsBuildInfoFile' is specified.
 A opção `incremental: true` no tsconfig.json não é compatível com tsup.
 
 **Solução:**
+
 - Removemos `"incremental": true` de `tools/tsconfig/base.json`
 
 **Arquivo alterado:**
+
 - `tools/tsconfig/base.json`
 
 **Status:** ✅ Resolvido
@@ -30,6 +33,7 @@ A opção `incremental: true` no tsconfig.json não é compatível com tsup.
 ## ✅ Correção 2: Metro Bundler + Monorepo
 
 **Problema:**
+
 ```
 ReferenceError: SHA-1 for file ... is not computed.
 Potential causes:
@@ -40,10 +44,12 @@ Potential causes:
 Metro (bundler do React Native) não lida bem com symlinks do pnpm por padrão.
 
 **Solução:**
+
 - Criamos `apps/mobile/metro.config.js` com configuração para monorepo
 - Configuramos `watchFolders`, `nodeModulesPaths` e `disableHierarchicalLookup`
 
 **Arquivo criado:**
+
 - `apps/mobile/metro.config.js`
 
 **Status:** ✅ Resolvido
@@ -59,10 +65,12 @@ Metro (bundler do React Native) não lida bem com symlinks do pnpm por padrão.
 Mobile app não precisa de build para desenvolvimento (usa `expo start`).
 
 **Solução:**
+
 - Alteramos o script `build` no `package.json` do mobile para apenas um echo
 - `"build": "echo 'Mobile app does not need build for development. Use: pnpm start'"`
 
 **Arquivo alterado:**
+
 - `apps/mobile/package.json`
 
 **Status:** ✅ Resolvido
@@ -72,6 +80,7 @@ Mobile app não precisa de build para desenvolvimento (usa `expo start`).
 ## ✅ Correção 4: TypeScript Config Extends
 
 **Problema:**
+
 ```
 File '@automatize/tsconfig/base.json' not found.
 ```
@@ -80,11 +89,13 @@ File '@automatize/tsconfig/base.json' not found.
 TypeScript não resolve packages de workspace da mesma forma que Node.js resolve módulos.
 
 **Solução:**
+
 - Alteramos todos os `tsconfig.json` para usar caminhos relativos
 - De: `"extends": "@automatize/tsconfig/base.json"`
 - Para: `"extends": "../../tools/tsconfig/base.json"`
 
 **Arquivos alterados:**
+
 - `packages/core/tsconfig.json`
 - `packages/ui/tsconfig.json`
 - `packages/auth/tsconfig.json`
@@ -101,6 +112,7 @@ TypeScript não resolve packages de workspace da mesma forma que Node.js resolve
 Após todas as correções:
 
 ### ✅ Build
+
 ```bash
 pnpm build
 # Tasks:    8 successful, 8 total
@@ -109,12 +121,14 @@ pnpm build
 ```
 
 ### ✅ TypeCheck
+
 ```bash
 pnpm typecheck
 # ✓ Sem erros em todos os pacotes
 ```
 
 ### ✅ Expo Dev Server
+
 ```bash
 cd apps/mobile && pnpm start
 # ✓ Starting Metro Bundler
@@ -125,36 +139,40 @@ cd apps/mobile && pnpm start
 
 ## 🎯 Status Atual
 
-| Item | Status | Notas |
-|------|--------|-------|
-| Build completo | ✅ Funciona | 8/8 pacotes |
-| TypeCheck | ✅ Funciona | Sem erros |
-| Tests | ✅ Funciona | 6/6 testes passando |
-| Expo Server | ✅ Funciona | http://localhost:8081 |
-| Lint | ✅ Funciona | Configurado |
-| Pre-commit hooks | ✅ Funciona | Husky configurado |
+| Item             | Status      | Notas                 |
+| ---------------- | ----------- | --------------------- |
+| Build completo   | ✅ Funciona | 8/8 pacotes           |
+| TypeCheck        | ✅ Funciona | Sem erros             |
+| Tests            | ✅ Funciona | 6/6 testes passando   |
+| Expo Server      | ✅ Funciona | http://localhost:8081 |
+| Lint             | ✅ Funciona | Configurado           |
+| Pre-commit hooks | ✅ Funciona | Husky configurado     |
 
 ---
 
 ## 🚀 Como Usar Agora
 
 ### 1. Build dos pacotes
+
 ```bash
 pnpm build
 ```
 
 ### 2. Rodar testes
+
 ```bash
 pnpm test
 ```
 
 ### 3. Rodar app mobile
+
 ```bash
 cd apps/mobile
 pnpm start
 ```
 
 Depois:
+
 - Pressione `w` para web
 - Pressione `i` para iOS
 - Pressione `a` para Android

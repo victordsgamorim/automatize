@@ -7,9 +7,11 @@ Soluções para problemas comuns e correções aplicadas.
 ## 📝 Correções Aplicadas
 
 ### [Fixes Applied](FIXES_APPLIED.md)
+
 Histórico de todas as correções aplicadas durante o setup.
 
 **Correções documentadas:**
+
 1. TypeScript incremental build
 2. Metro Bundler + Monorepo
 3. Build do Mobile App
@@ -22,11 +24,15 @@ Histórico de todas as correções aplicadas durante o setup.
 ### Instalação
 
 #### `pnpm: command not found`
+
 **Solução:**
+
 ```bash
 sudo npm install -g pnpm@8
 ```
+
 ou
+
 ```bash
 npm install -g pnpm@8 --prefix ~/.npm-global
 export PATH=~/.npm-global/bin:$PATH
@@ -35,6 +41,7 @@ export PATH=~/.npm-global/bin:$PATH
 ---
 
 #### `EACCES: permission denied`
+
 **Solução:**
 Use `sudo` ou instale com `--prefix ~/.npm-global`
 
@@ -43,13 +50,16 @@ Use `sudo` ou instale com `--prefix ~/.npm-global`
 ### Build
 
 #### `error TS5074: Option '--incremental'...`
+
 **Solução:**
 Já corrigido! Se ainda aparecer, verifique se `incremental: true` foi removido de `tools/tsconfig/base.json`
 
 ---
 
 #### `Cannot find module '@automatize/core'`
+
 **Solução:**
+
 ```bash
 pnpm build
 ```
@@ -59,10 +69,12 @@ pnpm build
 ### Expo
 
 #### `ReferenceError: SHA-1 for file ... is not computed`
+
 **Solução:**
 Já corrigido! `metro.config.js` criado.
 
 Se ainda aparecer:
+
 ```bash
 cd apps/mobile
 rm -rf .expo node_modules
@@ -73,7 +85,9 @@ pnpm start --clear
 ---
 
 #### `Unable to resolve module`
+
 **Solução:**
+
 ```bash
 cd apps/mobile
 rm -rf .expo
@@ -86,7 +100,9 @@ pnpm start --clear
 ---
 
 #### App não abre no celular
+
 **Checklist:**
+
 - [ ] Celular e PC na mesma rede WiFi?
 - [ ] Expo Go instalado?
 - [ ] QR code escaneado corretamente?
@@ -100,10 +116,12 @@ Pressione `w` para abrir no navegador
 ### TypeScript
 
 #### `File '@automatize/tsconfig/base.json' not found`
+
 **Solução:**
 Já corrigido! Agora usa caminhos relativos.
 
 Se ainda aparecer, verifique se o tsconfig.json usa:
+
 ```json
 {
   "extends": "../../tools/tsconfig/base.json"
@@ -115,9 +133,11 @@ Se ainda aparecer, verifique se o tsconfig.json usa:
 ### Git
 
 #### Pre-commit hook failing
+
 **Causa:** Lint ou format errors
 
 **Solução:**
+
 ```bash
 pnpm lint --fix
 pnpm format
@@ -128,9 +148,11 @@ git commit -m "..."
 ---
 
 #### Commit message rejected
+
 **Causa:** Não segue Conventional Commits
 
 **Formato correto:**
+
 ```
 <type>(<scope>): <subject>
 
@@ -138,6 +160,7 @@ Types: feat, fix, docs, refactor, test, chore, perf, ci
 ```
 
 **Exemplo:**
+
 ```bash
 git commit -m "feat(invoices): add invoice list"
 ```
@@ -147,6 +170,7 @@ git commit -m "feat(invoices): add invoice list"
 ## 🚨 Problemas Críticos
 
 ### Build completamente quebrado
+
 ```bash
 # Limpar tudo
 pnpm clean
@@ -161,6 +185,7 @@ pnpm build
 ---
 
 ### Expo completamente quebrado
+
 ```bash
 cd apps/mobile
 
@@ -196,17 +221,20 @@ pnpm start --clear
 ## 🔍 Debug Avançado
 
 ### Ver logs do Metro
+
 ```bash
 cd apps/mobile
 REACT_NATIVE_PACKAGER_HOSTNAME=localhost pnpm start --verbose
 ```
 
 ### Ver logs do Turbo
+
 ```bash
 pnpm build --verbose
 ```
 
 ### Ver o que o pnpm está instalando
+
 ```bash
 pnpm install --verbose
 ```

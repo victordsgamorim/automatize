@@ -3,11 +3,11 @@
  * Manages session state and auto-refresh
  */
 
-import { useEffect, useRef, useCallback } from "react";
-import { supabase } from "../client";
-import { tokenStorage } from "../storage/tokenStorage";
-import { shouldRefreshJWT, getJWTTimeRemaining } from "../utils/jwt";
-import { useAuth } from "./useAuth";
+import { useEffect, useRef, useCallback } from 'react';
+import { supabase } from '../client';
+import { tokenStorage } from '../storage/tokenStorage';
+import { shouldRefreshJWT, getJWTTimeRemaining } from '../utils/jwt';
+import { useAuth } from './useAuth';
 
 /**
  * useSession hook
@@ -38,7 +38,7 @@ export function useSession() {
       const storage = tokenStorage();
       const refreshToken = await storage.getRefreshToken();
       if (!refreshToken) {
-        throw new Error("No refresh token available");
+        throw new Error('No refresh token available');
       }
 
       const { data, error } = await supabase.auth.refreshSession({
@@ -46,7 +46,7 @@ export function useSession() {
       });
 
       if (error) {
-        console.error("Failed to refresh session:", error);
+        console.error('Failed to refresh session:', error);
         // Session is invalid, force logout
         await supabase.auth.signOut();
         throw error;
@@ -61,7 +61,7 @@ export function useSession() {
         });
       }
     } catch (error) {
-      console.error("Session refresh error:", error);
+      console.error('Session refresh error:', error);
       // Don't throw - let the user continue. They'll be kicked out when trying to make a request.
     } finally {
       isRefreshingRef.current = false;
@@ -95,15 +95,12 @@ export function useSession() {
 
         // Schedule refresh 5 minutes before expiry (or in 10 minutes, whichever is sooner)
         const refreshInSeconds = Math.max(300, timeRemaining - 300);
-        refreshTimerRef.current = setTimeout(
-          () => {
-            refreshAccessToken();
-            scheduleRefresh(); // Schedule next refresh
-          },
-          refreshInSeconds * 1000
-        );
+        refreshTimerRef.current = setTimeout(() => {
+          refreshAccessToken();
+          scheduleRefresh(); // Schedule next refresh
+        }, refreshInSeconds * 1000);
       } catch (error) {
-        console.error("Error scheduling session refresh:", error);
+        console.error('Error scheduling session refresh:', error);
       }
     };
 
@@ -130,7 +127,7 @@ export function useSession() {
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       const storage = tokenStorage();
-      if (event === "SIGNED_IN" && session) {
+      if (event === 'SIGNED_IN' && session) {
         // User signed in, save tokens and schedule refresh
         await storage.saveTokens({
           accessToken: session.access_token,
@@ -139,13 +136,13 @@ export function useSession() {
           userId: session.user.id,
         });
         scheduleRefresh();
-      } else if (event === "SIGNED_OUT") {
+      } else if (event === 'SIGNED_OUT') {
         // User signed out, clear tokens and refresh timer
         await storage.clearTokens();
         if (refreshTimerRef.current) {
           clearTimeout(refreshTimerRef.current);
         }
-      } else if (event === "TOKEN_REFRESHED" && session) {
+      } else if (event === 'TOKEN_REFRESHED' && session) {
         // Token was refreshed, save new tokens
         await storage.saveTokens({
           accessToken: session.access_token,

@@ -114,6 +114,7 @@ CREATE INDEX idx_mfa_codes_user ON mfa_backup_codes(user_id);
 #### 2. JWT Custom Claims
 
 **Token Structure:**
+
 ```json
 {
   "iss": "https://gyxxlwmqlkjqvfkceeev.supabase.co",
@@ -126,18 +127,27 @@ CREATE INDEX idx_mfa_codes_user ON mfa_backup_codes(user_id);
   "is_anonymous": false,
   "tenant_id": "01ARZ3NDEKTSV4RRFFQ69G5FAV",
   "role": "admin",
-  "permissions": ["invoices:create", "invoices:read", "invoices:update", "invoices:delete", "clients:*", "products:*"],
+  "permissions": [
+    "invoices:create",
+    "invoices:read",
+    "invoices:update",
+    "invoices:delete",
+    "clients:*",
+    "products:*"
+  ],
   "current_workspace_id": "01ARZ3NDEKTSV4RRFFQ69G5FAV"
 }
 ```
 
 **Custom Claims Set In:**
+
 - Supabase Auth hook or Edge Function
 - Every time user logs in or switches workspace
 - On MFA completion
 - On token refresh
 
 **Values Sourced From:**
+
 - `tenant_id`: Current active workspace
 - `role`: User's role in that workspace (`tenant_members.role`)
 - `permissions`: Derived from role (admin: all, editor: modify, viewer: read-only)
@@ -146,6 +156,7 @@ CREATE INDEX idx_mfa_codes_user ON mfa_backup_codes(user_id);
 #### 3. Row-Level Security (RLS) Policies
 
 **Mandatory RLS:**
+
 - RLS **ENABLED** on 100% of exposed tables
 - Policies for SELECT, INSERT, UPDATE, DELETE on each table
 - Policies validate `tenant_id` from JWT claims
@@ -265,20 +276,19 @@ async function getUserTenants(): Promise<Tenant[]> {
     .eq('user_id', userId)
     .is('deleted_at', null);
 
-  return data.map(m => ({
+  return data.map((m) => ({
     id: m.tenant_id,
     name: m.tenants.name,
-    role: m.role
+    role: m.role,
   }));
 }
 
 // 2. Switch to different workspace
 async function switchWorkspace(tenantId: string) {
   // Call Edge Function to update JWT claims
-  const { data, error } = await supabase.functions.invoke(
-    'switch-workspace',
-    { body: { tenantId } }
-  );
+  const { data, error } = await supabase.functions.invoke('switch-workspace', {
+    body: { tenantId },
+  });
 
   if (error) throw error;
 
@@ -307,9 +317,11 @@ import { z } from 'zod';
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 export async function POST(req: Request) {
-  const { tenantId } = z.object({
-    tenantId: z.string().ulid()
-  }).parse(await req.json());
+  const { tenantId } = z
+    .object({
+      tenantId: z.string().ulid(),
+    })
+    .parse(await req.json());
 
   const authHeader = req.headers.get('Authorization') || '';
   const token = authHeader.replace('Bearer ', '');
@@ -343,7 +355,7 @@ export async function POST(req: Request) {
   return Response.json({
     accessToken: newJWT.access_token,
     refreshToken: newJWT.refresh_token,
-    role: membership.role
+    role: membership.role,
   });
 }
 ```
@@ -351,6 +363,7 @@ export async function POST(req: Request) {
 #### 5. Role-Based Access Control (RBAC)
 
 **Roles:**
+
 - **admin**: Full access (CRUD on all resources, manage team members)
 - **editor**: Create and modify content (CRU, no delete, no member management)
 - **viewer**: Read-only access (R only)
@@ -414,11 +427,13 @@ function InvoiceRow({ invoice, permissions }) {
 
 ```typescript
 // 1. Admin sends invitation (creates pending member record)
-async function inviteMember(email: string, role: 'admin' | 'editor' | 'viewer') {
-  const { data, error } = await supabase.functions.invoke(
-    'invite-member',
-    { body: { email, role, tenantId } }
-  );
+async function inviteMember(
+  email: string,
+  role: 'admin' | 'editor' | 'viewer'
+) {
+  const { data, error } = await supabase.functions.invoke('invite-member', {
+    body: { email, role, tenantId },
+  });
 
   if (error) throw error;
   return data.invitationLink;
@@ -429,17 +444,15 @@ async function handleInvitation(email: string, role: string, tenantId: string) {
   // Create pending invitation record
   const invitationId = generateULID();
 
-  await supabaseAdmin
-    .from('member_invitations')
-    .insert({
-      id: invitationId,
-      tenant_id: tenantId,
-      email,
-      role,
-      invited_by: userId,
-      status: 'pending',
-      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-    });
+  await supabaseAdmin.from('member_invitations').insert({
+    id: invitationId,
+    tenant_id: tenantId,
+    email,
+    role,
+    invited_by: userId,
+    status: 'pending',
+    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+  });
 
   // Send email with sign-up link
   const signUpLink = `${APP_URL}/auth/register?invitation=${invitationId}&email=${email}`;
@@ -447,7 +460,7 @@ async function handleInvitation(email: string, role: string, tenantId: string) {
   await sendEmail({
     to: email,
     subject: `You've been invited to ${tenantName}`,
-    body: `Click here to join: ${signUpLink}`
+    body: `Click here to join: ${signUpLink}`,
   });
 
   return signUpLink;
@@ -469,20 +482,18 @@ async function registerWithInvitation(invitationId: string, password: string) {
   // Create auth user
   const { data: auth, error } = await supabase.auth.signUp({
     email: invitation.email,
-    password
+    password,
   });
 
   if (error) throw error;
 
   // Create tenant member record
-  await supabase
-    .from('tenant_members')
-    .insert({
-      id: generateULID(),
-      tenant_id: invitation.tenant_id,
-      user_id: auth.user.id,
-      role: invitation.role
-    });
+  await supabase.from('tenant_members').insert({
+    id: generateULID(),
+    tenant_id: invitation.tenant_id,
+    user_id: auth.user.id,
+    role: invitation.role,
+  });
 
   // Mark invitation as used
   await supabase
@@ -588,8 +599,8 @@ const migrations = [
         columns: [
           { name: 'id', type: 'string', isIndexed: true },
           { name: 'name', type: 'string' },
-          { name: 'is_active', type: 'boolean', value: false }
-        ]
+          { name: 'is_active', type: 'boolean', value: false },
+        ],
       }),
       createTable({
         name: 'invoices',
@@ -597,11 +608,11 @@ const migrations = [
           { name: 'id', type: 'string', isIndexed: true },
           { name: 'tenant_id', type: 'string', isIndexed: true },
           { name: 'number', type: 'string' },
-          { name: 'amount', type: 'number' }
-        ]
-      })
-    ]
-  }
+          { name: 'amount', type: 'number' },
+        ],
+      }),
+    ],
+  },
 ];
 
 // Query invoices for current tenant
@@ -620,12 +631,10 @@ async function getInvoices(tenantId: string) {
 ```typescript
 // Pull changes only for current tenant
 async function pullChanges(tenantId: string, cursor: string) {
-  const changes = await supabase
-    .from('sync_pull')
-    .rpc('pull_changes', {
-      p_cursor: cursor,
-      p_tenant_id: tenantId
-    });
+  const changes = await supabase.from('sync_pull').rpc('pull_changes', {
+    p_cursor: cursor,
+    p_tenant_id: tenantId,
+  });
 
   // Apply to WatermelonDB
   await database.write(async () => {

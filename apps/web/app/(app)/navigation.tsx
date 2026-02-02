@@ -29,7 +29,9 @@ export default function Navigation() {
           <Link
             href="/(app)"
             className={`${styles.menuItem} ${
-              isActive('/(app)') && !isActive('/(app)/invoices') ? styles.active : ''
+              isActive('/(app)') && !isActive('/(app)/invoices')
+                ? styles.active
+                : ''
             }`}
           >
             📊 Dashboard

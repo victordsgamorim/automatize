@@ -180,15 +180,15 @@ apps/mobile
 
 ## File Count by Type
 
-| Type | Count | Examples |
-|------|-------|----------|
-| TypeScript Source | 12 | `*.ts`, `*.tsx` |
-| Tests | 1 | `*.test.ts` |
-| Configuration | 20+ | `package.json`, `tsconfig.json`, etc. |
-| Documentation | 8 | `*.md` |
-| CI/CD | 1 | `.github/workflows/ci.yml` |
-| Git Hooks | 2 | `.husky/*` |
-| **Total** | **45+** | |
+| Type              | Count   | Examples                              |
+| ----------------- | ------- | ------------------------------------- |
+| TypeScript Source | 12      | `*.ts`, `*.tsx`                       |
+| Tests             | 1       | `*.test.ts`                           |
+| Configuration     | 20+     | `package.json`, `tsconfig.json`, etc. |
+| Documentation     | 8       | `*.md`                                |
+| CI/CD             | 1       | `.github/workflows/ci.yml`            |
+| Git Hooks         | 2       | `.husky/*`                            |
+| **Total**         | **45+** |                                       |
 
 ---
 
@@ -196,37 +196,37 @@ apps/mobile
 
 ### Root Level
 
-| File | Purpose |
-|------|---------|
-| `package.json` | Root package with scripts |
-| `turbo.json` | Turborepo build pipeline |
-| `pnpm-workspace.yaml` | Workspace definition |
-| `.npmrc` | pnpm configuration |
-| `.gitignore` | Git ignore rules |
-| `.env.example` | Environment template |
+| File                  | Purpose                   |
+| --------------------- | ------------------------- |
+| `package.json`        | Root package with scripts |
+| `turbo.json`          | Turborepo build pipeline  |
+| `pnpm-workspace.yaml` | Workspace definition      |
+| `.npmrc`              | pnpm configuration        |
+| `.gitignore`          | Git ignore rules          |
+| `.env.example`        | Environment template      |
 
 ### Code Quality
 
-| File | Purpose |
-|------|---------|
-| `.eslintrc.js` | ESLint configuration |
-| `.prettierrc.json` | Prettier configuration |
-| `.commitlintrc.json` | Commit message rules |
+| File                 | Purpose                 |
+| -------------------- | ----------------------- |
+| `.eslintrc.js`       | ESLint configuration    |
+| `.prettierrc.json`   | Prettier configuration  |
+| `.commitlintrc.json` | Commit message rules    |
 | `.lintstagedrc.json` | Pre-commit hooks config |
 
 ### Git Hooks
 
-| File | Purpose |
-|------|---------|
+| File                | Purpose                   |
+| ------------------- | ------------------------- |
 | `.husky/pre-commit` | Run linting before commit |
-| `.husky/commit-msg` | Validate commit messages |
+| `.husky/commit-msg` | Validate commit messages  |
 
 ### CI/CD
 
-| File | Purpose |
-|------|---------|
-| `.github/workflows/ci.yml` | GitHub Actions pipeline |
-| `renovate.json` | Automated dependency updates |
+| File                       | Purpose                      |
+| -------------------------- | ---------------------------- |
+| `.github/workflows/ci.yml` | GitHub Actions pipeline      |
+| `renovate.json`            | Automated dependency updates |
 
 ---
 
@@ -234,24 +234,24 @@ apps/mobile
 
 ### Lines of Code (Approximate)
 
-| Category | Lines |
-|----------|-------|
-| TypeScript Source | ~500 |
-| Tests | ~60 |
-| Configuration | ~1,000 |
-| Documentation | ~2,000 |
-| **Total** | **~3,560** |
+| Category          | Lines      |
+| ----------------- | ---------- |
+| TypeScript Source | ~500       |
+| Tests             | ~60        |
+| Configuration     | ~1,000     |
+| Documentation     | ~2,000     |
+| **Total**         | **~3,560** |
 
 ### Package Breakdown
 
-| Package | Files | Lines (approx) |
-|---------|-------|----------------|
-| `@automatize/core` | 5 | ~200 |
-| `@automatize/ui` | 5 | ~300 |
-| `@automatize/sync` | 2 | ~20 |
-| `@automatize/storage` | 2 | ~20 |
-| `@automatize/auth` | 2 | ~20 |
-| `apps/mobile` | 4 | ~100 |
+| Package               | Files | Lines (approx) |
+| --------------------- | ----- | -------------- |
+| `@automatize/core`    | 5     | ~200           |
+| `@automatize/ui`      | 5     | ~300           |
+| `@automatize/sync`    | 2     | ~20            |
+| `@automatize/storage` | 2     | ~20            |
+| `@automatize/auth`    | 2     | ~20            |
+| `apps/mobile`         | 4     | ~100           |
 
 ---
 

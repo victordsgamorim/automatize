@@ -20,7 +20,8 @@ export function AuthProviderWrapper({ children }: Props) {
       initializeAuthForMobile();
       setIsAuthInitialized(true);
     } catch (error) {
-      const err = error instanceof Error ? error : new Error('Failed to initialize auth');
+      const err =
+        error instanceof Error ? error : new Error('Failed to initialize auth');
       setInitError(err);
       console.error('Auth initialization failed:', err);
     }

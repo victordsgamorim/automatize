@@ -17,7 +17,7 @@ export type {
   JWTClaims,
   AuthContextType,
   UserRole,
-} from "./types/auth.types";
+} from './types/auth.types';
 
 // Schemas
 export {
@@ -32,7 +32,7 @@ export {
   backupCodeSchema,
   tenantNameSchema,
   tenantSlugSchema,
-} from "./schemas/auth.schemas";
+} from './schemas/auth.schemas';
 
 // ============================================================================
 // CONFIGURATION & INITIALIZATION
@@ -44,12 +44,8 @@ export {
   getTokenStorage,
   isAuthConfigured,
   resetAuthConfig,
-} from "./config";
-export type {
-  AuthConfig,
-  ITokenStorage,
-  StoredTokens,
-} from "./config";
+} from './config';
+export type { AuthConfig, ITokenStorage, StoredTokens } from './config';
 
 // ============================================================================
 // CLIENT & STORAGE
@@ -62,9 +58,13 @@ export {
   getSupabaseUrl,
   getSupabaseProjectId,
   resetSupabaseClient,
-} from "./client";
-export { tokenStorage, isTokenExpired, getTokenExpiresIn } from "./storage/tokenStorage";
-export type { ITokenStorage as TokenStorage } from "./storage/tokenStorage";
+} from './client';
+export {
+  tokenStorage,
+  isTokenExpired,
+  getTokenExpiresIn,
+} from './storage/tokenStorage';
+export type { ITokenStorage as TokenStorage } from './storage/tokenStorage';
 
 // Note: Storage implementations (createWebTokenStorage, createMobileTokenStorage)
 // are not exported here to prevent platform-specific code from being bundled.
@@ -84,14 +84,18 @@ export {
   useLogout,
   useUserEmail,
   useDisplayName,
-} from "./hooks/useAuth";
+} from './hooks/useAuth';
 
-export { useSession, getSessionTimeRemaining, shouldRefreshSession } from "./hooks/useSession";
+export {
+  useSession,
+  getSessionTimeRemaining,
+  shouldRefreshSession,
+} from './hooks/useSession';
 
-export { useMFA } from "./hooks/useMFA";
-export type { MFASetupState } from "./hooks/useMFA";
+export { useMFA } from './hooks/useMFA';
+export type { MFASetupState } from './hooks/useMFA';
 
-export { useTenant } from "./hooks/useTenant";
+export { useTenant } from './hooks/useTenant';
 
 // ============================================================================
 // UTILITIES
@@ -109,7 +113,7 @@ export {
   getJWTIssuedAt,
   getJWTTimeRemaining,
   shouldRefreshJWT,
-} from "./utils/jwt";
+} from './utils/jwt';
 
 // Error utilities
 export {
@@ -121,17 +125,17 @@ export {
   isRecoverableError,
   getRetryDelay,
   redactPIIFromError,
-} from "./utils/errors";
+} from './utils/errors';
 
 // ============================================================================
 // PROVIDERS
 // ============================================================================
 
-export { AuthProvider, AuthContext } from "./providers/AuthProvider";
-export type { AuthProviderProps } from "./providers/AuthProvider";
+export { AuthProvider, AuthContext } from './providers/AuthProvider';
+export type { AuthProviderProps } from './providers/AuthProvider';
 
 // ============================================================================
 // VERSION
 // ============================================================================
 
-export const AUTH_VERSION = "1.0.0-alpha";
+export const AUTH_VERSION = '1.0.0-alpha';

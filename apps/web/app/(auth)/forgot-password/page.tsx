@@ -32,7 +32,8 @@ export default function ForgotPasswordScreen() {
       await resetPassword(email);
       setSubmitted(true);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to send reset email';
+      const message =
+        err instanceof Error ? err.message : 'Failed to send reset email';
       setLocalError(message);
     }
   };
@@ -225,7 +226,13 @@ export default function ForgotPasswordScreen() {
                   borderLeft: `4px solid ${'#22c55e'}`,
                 }}
               >
-                <p style={{ margin: '0 0 8px 0', color: theme.text.secondary, fontSize: '14px' }}>
+                <p
+                  style={{
+                    margin: '0 0 8px 0',
+                    color: theme.text.secondary,
+                    fontSize: '14px',
+                  }}
+                >
                   We've sent a password reset link to:
                 </p>
                 <p

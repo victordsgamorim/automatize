@@ -8,7 +8,9 @@ export default function ProductsPage() {
       <h1 className={styles.title}>Produtos</h1>
       <div className={styles.placeholder}>
         <p>📦 Gestão de produtos - Em desenvolvimento</p>
-        <p className={styles.subtitle}>Aqui você poderá cadastrar e gerenciar seus produtos e serviços.</p>
+        <p className={styles.subtitle}>
+          Aqui você poderá cadastrar e gerenciar seus produtos e serviços.
+        </p>
       </div>
     </div>
   );
