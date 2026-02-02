@@ -11,6 +11,7 @@ import {
   HomeIcon,
   UserIcon,
   BuildingIcon,
+  colors,
   semanticColors,
 } from '@automatize/ui';
 
@@ -22,7 +23,7 @@ const theme = semanticColors.light;
  */
 export default function AppLayout() {
   const { currentTenant } = useAuth();
-  const colorScheme = useColorScheme();
+  const _colorScheme = useColorScheme();
 
   return (
     <Tabs
@@ -30,7 +31,7 @@ export default function AppLayout() {
         headerShown: true,
         headerStyle: {
           backgroundColor: theme.background.primary,
-          borderBottomColor: theme.border,
+          borderBottomColor: theme.border.default,
           borderBottomWidth: 1,
         },
         headerTitleStyle: {
@@ -41,10 +42,10 @@ export default function AppLayout() {
         headerLeftLabelVisible: false,
         tabBarStyle: {
           backgroundColor: theme.background.primary,
-          borderTopColor: theme.border,
+          borderTopColor: theme.border.default,
           borderTopWidth: 1,
         },
-        tabBarActiveTintColor: theme.brand[600],
+        tabBarActiveTintColor: colors.brand[600],
         tabBarInactiveTintColor: theme.text.tertiary,
         tabBarLabelStyle: {
           fontSize: 12,

@@ -116,16 +116,16 @@ Never for business logic.
 
 Example:
 
-~~~ts
+```ts
 const invoiceSchema = z.object({
   id: z.string().ulid(),
   amount: z.number().positive(),
   clientId: z.string().ulid(),
   dueDate: z.date(),
-  tenantId: z.string().ulid()
+  tenantId: z.string().ulid(),
 });
 type Invoice = z.infer<typeof invoiceSchema>;
-~~~
+```
 
 ---
 
@@ -173,17 +173,17 @@ type Invoice = z.infer<typeof invoiceSchema>;
 
 Default configuration:
 
-~~~ts
+```ts
 const fetcher = ky.create({
   prefixUrl: API_URL,
   retry: 3,
   timeout: 10000,
   hooks: {
     beforeRequest: [addAuthHeader],
-    afterResponse: [handleErrors]
-  }
+    afterResponse: [handleErrors],
+  },
 });
-~~~
+```
 
 ### Date/Time Handling
 
@@ -207,9 +207,9 @@ Why not dayjs/moment:
 **Strategy:** GitHub Flow (simplified)
 
 - main → Production (always deployable)
-- feature/* → Features
-- fix/* → Bugfixes
-- hotfix/* → Emergencies
+- feature/\* → Features
+- fix/\* → Bugfixes
+- hotfix/\* → Emergencies
 
 Rules:
 
@@ -225,11 +225,11 @@ Rules:
 
 Format:
 
-~~~
+```
 <type>(<scope>): <subject>
 <body>
 <footer>
-~~~
+```
 
 Required types:
 
@@ -248,29 +248,14 @@ Required types:
 
 ### Observability & APM
 
-**Tool:** Sentry
+**Tool:** To be defined (optional)
 
 - Error tracking
 - Performance monitoring
-- Session replay
 - Release tracking
-- Automatic source maps
 - Built-in PII scrubbing
 
-Configuration:
-
-~~~ts
-Sentry.init({
-  dsn: SENTRY_DSN,
-  environment: __DEV__ ? 'development' : 'production',
-  tracesSampleRate: 0.2,
-  beforeSend: redactPII,
-  integrations: [
-    new Sentry.BrowserTracing(),
-    new Sentry.Replay()
-  ]
-});
-~~~
+Structure prepared for future observability integration. No external APM tool configured at this time.
 
 ### Environment Management
 
@@ -297,7 +282,7 @@ Required environments:
 
 Environment variables:
 
-~~~env
+```env
 # .env.development
 SUPABASE_URL=https://xxx.supabase.co
 SUPABASE_ANON_KEY=xxx
@@ -311,7 +296,7 @@ SUPABASE_ANON_KEY=xxx
 API_URL=https://api.production.com
 SENTRY_DSN=xxx
 ENVIRONMENT=production
-~~~
+```
 
 ---
 
@@ -328,18 +313,18 @@ ENVIRONMENT=production
 
 Usage:
 
-~~~ts
+```ts
 import NetInfo from '@react-native-community/netinfo';
 
 useEffect(() => {
-  const unsubscribe = NetInfo.addEventListener(state => {
+  const unsubscribe = NetInfo.addEventListener((state) => {
     if (state.isConnected) {
       triggerSync();
     }
   });
   return unsubscribe;
 }, []);
-~~~
+```
 
 ### Background Sync Strategy
 
@@ -391,7 +376,7 @@ Strategy:
 
 Structure based on Tailwind/Radix:
 
-~~~ts
+```ts
 // tokens/colors.ts
 export const colors = {
   // Semantic layers
@@ -404,14 +389,14 @@ export const colors = {
   background: {
     primary: colors.neutral[50],
     secondary: colors.neutral[100],
-    tertiary: colors.neutral[200]
+    tertiary: colors.neutral[200],
   },
   // State colors
   success: colors.green[600],
   error: colors.red[600],
   warning: colors.yellow[600],
-  info: colors.blue[600]
-}
+  info: colors.blue[600],
+};
 
 // tokens/spacing.ts
 export const spacing = {
@@ -425,14 +410,14 @@ export const spacing = {
   8: 32,
   10: 40,
   12: 48,
-  16: 64
-}
+  16: 64,
+};
 
 // tokens/typography.ts
 export const typography = {
   fontFamily: {
     sans: 'Inter, system-ui, sans-serif',
-    mono: 'JetBrains Mono, monospace'
+    mono: 'JetBrains Mono, monospace',
   },
   fontSize: {
     xs: 12,
@@ -441,10 +426,10 @@ export const typography = {
     lg: 18,
     xl: 20,
     '2xl': 24,
-    '3xl': 30
-  }
-}
-~~~
+    '3xl': 30,
+  },
+};
+```
 
 Tool: Style Dictionary to generate cross-platform tokens
 
@@ -454,21 +439,21 @@ Strategy: Mobile-first
 
 Breakpoints:
 
-~~~ts
+```ts
 const breakpoints = {
-  sm: 640,  // Mobile landscape
-  md: 768,  // Tablet
+  sm: 640, // Mobile landscape
+  md: 768, // Tablet
   lg: 1024, // Desktop
   xl: 1280, // Large desktop
-  '2xl': 1536 // Extra large
-}
-~~~
+  '2xl': 1536, // Extra large
+};
+```
 
 ### Asset Management
 
 Structure:
 
-~~~
+```
 assets/
 ├── images/
 │   ├── logos/
@@ -479,7 +464,7 @@ assets/
 │   ├── Inter/
 │   └── JetBrainsMono/
 └── lottie/ # Animations (if used)
-~~~
+```
 
 Optimization:
 
@@ -503,7 +488,7 @@ Tool: i18next + react-i18next
 
 File structure:
 
-~~~
+```
 locales/
 ├── en/
 │   ├── common.json
@@ -517,24 +502,22 @@ locales/
     ├── products.json
     ├── clients.json
     └── errors.json
-~~~
+```
 
 Configuration:
 
-~~~ts
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: 'pt-BR',
-    fallbackLng: 'en',
-    interpolation: {
-      escapeValue: false
-    },
-    ns: ['common'],
-    defaultNS: 'common'
-  });
-~~~
+```ts
+i18n.use(initReactI18next).init({
+  resources,
+  lng: 'pt-BR',
+  fallbackLng: 'en',
+  interpolation: {
+    escapeValue: false,
+  },
+  ns: ['common'],
+  defaultNS: 'common',
+});
+```
 
 ---
 
@@ -569,13 +552,12 @@ Tool: react-error-boundary
 
 Implementation:
 
-~~~tsx
+```tsx
 <ErrorBoundary
   FallbackComponent={ErrorFallback}
   onError={(error, info) => {
-    Sentry.captureException(error, {
-      contexts: { react: info }
-    });
+    // Log error with PII redaction
+    logger.error('React Error Boundary', { error, info });
   }}
   onReset={() => {
     // Reset app state
@@ -584,7 +566,7 @@ Implementation:
 >
   <App />
 </ErrorBoundary>
-~~~
+```
 
 Granularity:
 
@@ -627,7 +609,7 @@ No business rule may depend on:
 
 ## Project Structure (Mandatory)
 
-~~~
+```
 project/
 ├── apps/
 │   ├── mobile/   # Expo (iOS + Android)
@@ -663,7 +645,7 @@ project/
 └── tools/
     ├── eslint-config/
     └── tsconfig/
-~~~
+```
 
 Rules:
 
@@ -851,7 +833,7 @@ Central sync engine (in packages/sync):
 
 Structure:
 
-~~~ts
+```ts
 // packages/storage/migrations/index.ts
 export default [
   {
@@ -859,11 +841,9 @@ export default [
     steps: [
       addColumns({
         table: 'invoices',
-        columns: [
-          { name: 'tax_amount', type: 'number', isOptional: true }
-        ]
-      })
-    ]
+        columns: [{ name: 'tax_amount', type: 'number', isOptional: true }],
+      }),
+    ],
   },
   {
     toVersion: 3,
@@ -872,13 +852,13 @@ export default [
         name: 'products',
         columns: [
           { name: 'name', type: 'string' },
-          { name: 'price', type: 'number' }
-        ]
-      })
-    ]
-  }
-]
-~~~
+          { name: 'price', type: 'number' },
+        ],
+      }),
+    ],
+  },
+];
+```
 
 ### Remote (Supabase)
 
@@ -900,11 +880,11 @@ Default strategy: Last-Write-Wins (LWW) by updatedAt
 
 - Complex conflicts generate events for resolution
 - UI must allow viewing and manually resolving conflicts
-- Conflicts are logged to Sentry for analysis
+- Conflicts are logged for analysis
 
 Implementation:
 
-~~~ts
+```ts
 function resolveConflict(local, remote) {
   // Standard LWW
   if (local.updatedAt > remote.updatedAt) {
@@ -917,7 +897,7 @@ function resolveConflict(local, remote) {
   }
   return remote;
 }
-~~~
+```
 
 ---
 
@@ -947,7 +927,7 @@ Message examples:
 
 - Automatic retry with exponential backoff (1s, 2s, 4s, 8s, 16s, 32s)
 - Graceful fallback when an operation fails
-- Structured error logs (redacted, sent to Sentry)
+- Structured error logs (redacted, sent to logger)
 - Circuit breaker to avoid request storms
 - After 5 consecutive failures, pause sync for 5 minutes
 
@@ -972,14 +952,14 @@ Mandatory fields for all entities:
 
 Zod schema example:
 
-~~~ts
+```ts
 const baseEntitySchema = z.object({
   id: z.string().ulid(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   deletedAt: z.string().datetime().nullable(),
   version: z.number().int().nonnegative(),
-  tenantId: z.string().ulid()
+  tenantId: z.string().ulid(),
 });
 
 const invoiceSchema = baseEntitySchema.extend({
@@ -987,9 +967,9 @@ const invoiceSchema = baseEntitySchema.extend({
   amount: z.number().positive(),
   dueDate: z.string().datetime(),
   clientId: z.string().ulid(),
-  status: z.enum(['draft', 'sent', 'paid', 'cancelled'])
+  status: z.enum(['draft', 'sent', 'paid', 'cancelled']),
 });
-~~~
+```
 
 ---
 
@@ -1003,22 +983,21 @@ Required classification:
 Rules:
 
 - Never log PII (redaction required)
-- Never send PII to analytics or Sentry
+- Never send PII to analytics or logs
 - Telemetry with explicit allowlist + redaction
 - Error correlation only via hashed + salted IDs
 - Event retention documented by type
 - Mandatory local wipe on logout/delete account
 
-Automatic redaction (Sentry):
+Automatic redaction (Logger):
 
-~~~ts
-Sentry.init({
-  beforeSend(event) {
-    // Remove PII from all known keys
-    return redactPII(event);
-  }
-});
-~~~
+```ts
+function redactPII(data: any): any {
+  // Remove PII from all known keys (email, name, phone, etc.)
+  // Implementation in packages/core/utils/redaction.ts
+  return sanitizeData(data);
+}
+```
 
 ---
 
@@ -1050,7 +1029,7 @@ Nothing in the architecture may prevent future compliance.
 
 - Recovery mode for corrupted WatermelonDB
 - Restore to last known valid state
-- Recovery logs for analysis/support (Sentry)
+- Recovery logs for analysis/support (local logging)
 - Recovery UI accessible even with corrupted DB (fallback to AsyncStorage)
 
 ### Retention
@@ -1074,15 +1053,15 @@ Rendering everything at once is forbidden (critical performance).
 
 Recommended implementation:
 
-~~~ts
+```ts
 import { useInfiniteQuery } from '@tanstack/react-query';
 
 const { data, fetchNextPage } = useInfiniteQuery({
   queryKey: ['invoices'],
   queryFn: ({ pageParam = 0 }) => fetchInvoices(pageParam),
-  getNextPageParam: (lastPage) => lastPage.nextCursor
+  getNextPageParam: (lastPage) => lastPage.nextCursor,
 });
-~~~
+```
 
 ---
 
@@ -1101,7 +1080,7 @@ Automatic deep links:
 
 Routes structure:
 
-~~~
+```
 app/
 ├── (auth)/
 │   ├── login.tsx
@@ -1116,7 +1095,7 @@ app/
 │   ├── products/
 │   └── clients/
 └── _layout.tsx
-~~~
+```
 
 Validation:
 
@@ -1241,7 +1220,7 @@ Branch protection:
 
 ### Renovate Configuration
 
-~~~json
+```json
 {
   "extends": ["config:base"],
   "packageRules": [
@@ -1259,7 +1238,7 @@ Branch protection:
   ],
   "schedule": ["before 10am on monday"]
 }
-~~~
+```
 
 ---
 
@@ -1274,13 +1253,13 @@ Secrets must be isolated from the UI layer (only in services)
 
 Implementation:
 
-~~~ts
+```ts
 import * as SecureStore from 'expo-secure-store';
 
 async function saveToken(token: string) {
   await SecureStore.setItemAsync('auth_token', token);
 }
-~~~
+```
 
 ### B) Absolute Redaction
 
@@ -1294,13 +1273,13 @@ Advanced debug:
 
 Structured logger:
 
-~~~ts
+```ts
 logger.info('User logged in', {
   userId: hashUserId(userId), // hash, not raw ID
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
   // NEVER include: email, name, phone
 });
-~~~
+```
 
 ### C) Basic Anti-leak
 
@@ -1323,14 +1302,14 @@ Web/Desktop:
 
 Example:
 
-~~~ts
+```ts
 import Constants from 'expo-constants';
 
 const config = {
   supabaseUrl: Constants.expoConfig?.extra?.supabaseUrl,
-  supabaseAnonKey: Constants.expoConfig?.extra?.supabaseAnonKey
+  supabaseAnonKey: Constants.expoConfig?.extra?.supabaseAnonKey,
 };
-~~~
+```
 
 Violation of the Client Security Baseline is a critical security bug.
 
@@ -1358,7 +1337,7 @@ Rules:
 
 Example:
 
-~~~ts
+```ts
 import { describe, it, expect } from 'vitest';
 import { calculateInvoiceTotal } from './invoice-calculations';
 
@@ -1366,12 +1345,12 @@ describe('calculateInvoiceTotal', () => {
   it('should calculate total with tax', () => {
     const result = calculateInvoiceTotal({
       subtotal: 100,
-      taxRate: 0.2
+      taxRate: 0.2,
     });
     expect(result).toBe(120);
   });
 });
-~~~
+```
 
 ### Integration Tests
 
@@ -1391,7 +1370,7 @@ Rules:
 
 Example:
 
-~~~ts
+```ts
 import { renderHook, waitFor } from '@testing-library/react-native';
 import { useInvoices } from './use-invoices';
 
@@ -1412,7 +1391,7 @@ it('should sync invoices when coming online', async () => {
     expect(result.current.pendingOperations).toBe(0);
   });
 });
-~~~
+```
 
 ### Mandatory Execution
 
@@ -1461,7 +1440,7 @@ A feature is only considered done when:
 - Syncs correctly (tested on slow 3G)
 - Respects tenant isolation (tested with multiple tenants)
 - Applies permissions correctly (tested with different roles)
-- Does not violate privacy (no PII logs, tested with Sentry)
+- Does not violate privacy (no PII logs, verified)
 - Does not degrade performance (Lighthouse score > 90 for web)
 - Unit and integration tests created (coverage > 80%)
 - Routes and deep links tested (iOS + Android + Web)

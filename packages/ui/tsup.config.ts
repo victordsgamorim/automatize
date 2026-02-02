@@ -20,7 +20,12 @@ export default defineConfig({
   },
   onSuccess: async () => {
     // Ensure 'use client' is at the top of dist files
-    const files = ['dist/index.js', 'dist/index.mjs', 'dist/tokens/index.js', 'dist/tokens/index.mjs'];
+    const files = [
+      'dist/index.js',
+      'dist/index.mjs',
+      'dist/tokens/index.js',
+      'dist/tokens/index.mjs',
+    ];
     for (const file of files) {
       try {
         const content = readFileSync(file, 'utf-8');

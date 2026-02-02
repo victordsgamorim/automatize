@@ -14,13 +14,7 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@automatize/auth';
-import {
-  Button,
-  Text,
-  FormField,
-  Card,
-  semanticColors,
-} from '@automatize/ui';
+import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;
 
@@ -34,7 +28,7 @@ function getPasswordStrength(password: string): {
 } {
   let score = 0;
   let label = 'Weak';
-  let color = theme.error;
+  let color: string = theme.state.error;
 
   if (password.length >= 8) score++;
   if (/[A-Z]/.test(password)) score++;
@@ -43,10 +37,10 @@ function getPasswordStrength(password: string): {
 
   if (score === 4) {
     label = 'Strong';
-    color = theme.success;
+    color = theme.state.success;
   } else if (score === 3) {
     label = 'Good';
-    color = theme.warning;
+    color = theme.state.warning;
   }
 
   return { score: Math.min(score, 4), label, color };
@@ -98,7 +92,8 @@ export default function RegisterScreen() {
       // On success, the AuthProvider will redirect to MFA setup or app home
       // Navigation is handled by the auth context
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Registration failed';
+      const message =
+        err instanceof Error ? err.message : 'Registration failed';
       setLocalError(message);
     }
   };
@@ -194,7 +189,11 @@ export default function RegisterScreen() {
                   },
                 ]}
               />
-              <Text variant="caption" color="secondary" style={styles.strengthLabel}>
+              <Text
+                variant="caption"
+                color="secondary"
+                style={styles.strengthLabel}
+              >
                 Password strength: {passwordStrength.label}
               </Text>
             </View>
@@ -208,7 +207,11 @@ export default function RegisterScreen() {
             onChangeText={setConfirmPassword}
             secureTextEntry
             editable={!isLoading}
-            error={confirmPassword && !passwordMatch ? 'Passwords do not match' : undefined}
+            error={
+              confirmPassword && !passwordMatch
+                ? 'Passwords do not match'
+                : undefined
+            }
             testID="register-confirm-password-input"
           />
 
@@ -236,11 +239,7 @@ export default function RegisterScreen() {
             testID="register-submit-button"
             style={styles.submitButton}
           >
-            {isLoading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              'Create Account'
-            )}
+            {isLoading ? <ActivityIndicator color="white" /> : 'Create Account'}
           </Button>
         </Card>
 
@@ -264,70 +263,70 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.background.primary,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 16,
-    justifyContent: 'center',
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
   card: {
     marginBottom: 24,
     paddingHorizontal: 16,
     paddingVertical: 24,
   },
-  title: {
-    marginBottom: 20,
+  checkbox: {
+    height: 44,
+    marginRight: 8,
+    minWidth: 44,
+    width: 44,
+  },
+  container: {
+    backgroundColor: theme.background.primary,
+    flex: 1,
   },
   errorContainer: {
     backgroundColor: theme.background.error,
-    padding: 12,
+    borderLeftColor: theme.state.error,
+    borderLeftWidth: 4,
     borderRadius: 8,
     marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: theme.error,
+    padding: 12,
+  },
+  footer: {
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  strengthBar: {
+    borderRadius: 2,
+    height: 4,
+    marginBottom: 4,
   },
   strengthContainer: {
     marginBottom: 16,
   },
-  strengthBar: {
-    height: 4,
-    borderRadius: 2,
-    marginBottom: 4,
-  },
   strengthLabel: {
     marginTop: 4,
   },
-  termsContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 16,
+  submitButton: {
+    marginBottom: 8,
+    marginTop: 16,
   },
-  checkbox: {
-    width: 44,
-    height: 44,
-    marginRight: 8,
-    minWidth: 44,
+  subtitle: {
+    marginTop: 8,
+  },
+  termsContainer: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    marginBottom: 16,
   },
   termsText: {
     flex: 1,
     paddingTop: 12,
   },
-  submitButton: {
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  footer: {
-    alignItems: 'center',
-    marginTop: 16,
+  title: {
+    marginBottom: 20,
   },
 });

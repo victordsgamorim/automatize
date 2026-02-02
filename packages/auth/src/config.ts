@@ -37,7 +37,10 @@ let tokenStorageImpl: ITokenStorage | null = null;
  * Initialize auth with app-specific configuration
  * Call this in your app's entry point (before using auth)
  */
-export function initializeAuth(config: AuthConfig, tokenStorage: ITokenStorage): void {
+export function initializeAuth(
+  config: AuthConfig,
+  tokenStorage: ITokenStorage
+): void {
   authConfig = config;
   tokenStorageImpl = tokenStorage;
 }

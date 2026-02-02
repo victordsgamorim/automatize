@@ -11,10 +11,12 @@ Ver **[INDEX.md](INDEX.md)** para o índice completo da documentação.
 ## 🚀 Início Rápido
 
 ### Novos Usuários
+
 1. **[Quick Start](QUICK_START.md)** - Rode o app em 5 minutos
 2. **[Getting Started](GETTING_STARTED.md)** - Setup completo passo a passo
 
 ### Status do Projeto
+
 - **[Status Atual](STATUS.md)** - O que funciona agora
 - **[Phase 0 Complete](PHASE_0_COMPLETE.md)** - Resumo da Phase 0
 - **[Fixes Applied](FIXES_APPLIED.md)** - Problemas resolvidos
@@ -24,13 +26,16 @@ Ver **[INDEX.md](INDEX.md)** para o índice completo da documentação.
 ## 📐 Arquitetura
 
 ### Estrutura
+
 - **[Project Structure](PROJECT_STRUCTURE.md)** - Estrutura visual do projeto
 
 ### ADRs (Architecture Decision Records)
+
 - **[ADR Index](adr/README.md)** - Todas as decisões
 - **[ADR-001: Monorepo](adr/001-monorepo-with-turborepo.md)** - Por que Turborepo?
 
 ### Segurança
+
 - **[RLS Policies Template](rls-policies-template.md)** - Políticas de segurança
 
 ---
@@ -40,6 +45,7 @@ Ver **[INDEX.md](INDEX.md)** para o índice completo da documentação.
 Ver **[ROADMAP.md](../ROADMAP.md)** para o plano completo.
 
 **Fases:**
+
 - ✅ **Phase 0:** Foundation & Setup (Completa)
 - ⏳ **Phase 1:** Authentication & Multi-tenancy (Próxima)
 - 📅 **Phase 2:** Offline-First Infrastructure
@@ -71,21 +77,22 @@ docs/
 
 ## 🔍 Procurando Algo Específico?
 
-| Você Quer... | Vá Para... |
-|--------------|------------|
-| Rodar o app rapidamente | [Quick Start](QUICK_START.md) |
-| Setup completo | [Getting Started](GETTING_STARTED.md) |
-| Ver o que funciona | [Status](STATUS.md) |
-| Entender decisões técnicas | [ADRs](adr/README.md) |
-| Entender a estrutura | [Project Structure](PROJECT_STRUCTURE.md) |
-| Ver o plano completo | [Roadmap](../ROADMAP.md) |
-| Resolver problemas | [Fixes Applied](FIXES_APPLIED.md) |
+| Você Quer...               | Vá Para...                                |
+| -------------------------- | ----------------------------------------- |
+| Rodar o app rapidamente    | [Quick Start](QUICK_START.md)             |
+| Setup completo             | [Getting Started](GETTING_STARTED.md)     |
+| Ver o que funciona         | [Status](STATUS.md)                       |
+| Entender decisões técnicas | [ADRs](adr/README.md)                     |
+| Entender a estrutura       | [Project Structure](PROJECT_STRUCTURE.md) |
+| Ver o plano completo       | [Roadmap](../ROADMAP.md)                  |
+| Resolver problemas         | [Fixes Applied](FIXES_APPLIED.md)         |
 
 ---
 
 ## 💡 Dica
 
 **Comece por aqui:**
+
 1. Leia [Quick Start](QUICK_START.md)
 2. Rode o app
 3. Explore [Getting Started](GETTING_STARTED.md) para detalhes

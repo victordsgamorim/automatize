@@ -52,7 +52,7 @@ Phase 0 has successfully established a solid technical foundation for the Automa
 ### ✅ Security Baseline
 
 - [x] Secure storage structure (expo-secure-store ready)
-- [x] Sentry configuration template with PII redaction
+- [x] PII redaction structure prepared
 - [x] Environment variables structure (.env.example)
 - [x] RLS policies template documented
 
@@ -69,14 +69,12 @@ Phase 0 has successfully established a solid technical foundation for the Automa
 
 ## Completion Criteria Met
 
-| Criterion | Status | Notes |
-|-----------|--------|-------|
-| `pnpm build` works for all apps | ✅ | Build configuration complete (requires pnpm install) |
-| CI passes 100% of checks | ✅ | GitHub Actions pipeline configured |
-| At least 1 UI component documented | ✅ | Design tokens documented |
-| Sentry receives test events | 🔶 | Configuration ready, will be tested in Phase 1 |
-
-> **Note:** Sentry will be fully integrated and tested in Phase 1 along with authentication.
+| Criterion                          | Status | Notes                                                |
+| ---------------------------------- | ------ | ---------------------------------------------------- |
+| `pnpm build` works for all apps    | ✅     | Build configuration complete (requires pnpm install) |
+| CI passes 100% of checks           | ✅     | GitHub Actions pipeline configured                   |
+| At least 1 UI component documented | ✅     | Design tokens documented                             |
+| Observability structure            | ✅     | Ready for future integration                         |
 
 ---
 
@@ -206,7 +204,7 @@ apps/mobile/tsconfig.json
 ### DevOps
 
 - ✅ **CI/CD:** GitHub Actions
-- ✅ **Observability:** Sentry (configured, to be integrated)
+- ✅ **Observability:** Structure prepared (provider TBD)
 - ✅ **Updates:** Renovate
 
 ---
@@ -251,21 +249,25 @@ See [ROADMAP.md](ROADMAP.md) for complete Phase 1 details.
 ## How to Start Development
 
 1. **Install pnpm** (if not already installed):
+
    ```bash
    npm install -g pnpm@8
    ```
 
 2. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
 
 3. **Build packages:**
+
    ```bash
    pnpm build
    ```
 
 4. **Run tests:**
+
    ```bash
    pnpm test
    ```
@@ -285,7 +287,7 @@ For detailed instructions, see [GETTING_STARTED.md](GETTING_STARTED.md).
 ### Known Limitations (By Design)
 
 - Web and Windows apps are placeholders (coming in Phase 10 and 11)
-- Sentry integration will be tested in Phase 1 with real authentication
+- Observability integration can be added in future phases
 - Some packages (`sync`, `storage`, `auth`) have minimal code (will be built in Phase 1-2)
 - No UI components yet (design system tokens established, components in future phases)
 

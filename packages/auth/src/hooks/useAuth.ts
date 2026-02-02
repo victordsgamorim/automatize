@@ -3,9 +3,9 @@
  * Main authentication hook for login, register, logout, and session management
  */
 
-import { useContext } from "react";
-import { AuthContext } from "../providers/AuthProvider";
-import { AuthContextType } from "../types/auth.types";
+import { useContext } from 'react';
+import { AuthContext } from '../providers/AuthProvider';
+import { AuthContextType } from '../types/auth.types';
 
 /**
  * useAuth hook
@@ -38,8 +38,8 @@ export function useAuth(): AuthContextType {
 
   if (!context) {
     throw new Error(
-      "useAuth must be used within an AuthProvider. " +
-        "Make sure your app is wrapped with <AuthProvider>.</AuthProvider>"
+      'useAuth must be used within an AuthProvider. ' +
+        'Make sure your app is wrapped with <AuthProvider>.</AuthProvider>'
     );
   }
 
@@ -86,7 +86,7 @@ export function useUserEmail(): string | null {
   const { user } = useAuth();
   if (!user?.email) return null;
   // Return partial email for privacy
-  const [local] = user.email.split("@");
+  const [local] = user.email.split('@');
   return local ? `${local}@...` : null;
 }
 

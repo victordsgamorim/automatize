@@ -3,22 +3,22 @@
  * Container with elevation and padding
  */
 
-import React, { ReactNode } from "react";
-import { View, StyleSheet, ViewProps } from "react-native";
-import { colors, spacing } from "../tokens";
+import React, { ReactNode } from 'react';
+import { View, StyleSheet, ViewProps } from 'react-native';
+import { colors, spacing } from '../tokens';
 
 export interface CardProps extends ViewProps {
   /** Content of the card */
   children: ReactNode;
   /** Card padding */
-  padding?: "sm" | "md" | "lg";
+  padding?: 'sm' | 'md' | 'lg';
   /** Elevation level (0-3) */
   elevation?: 0 | 1 | 2 | 3;
 }
 
 const elevations = {
   0: {
-    shadowColor: "transparent",
+    shadowColor: 'transparent',
     elevation: 0,
   },
   1: {
@@ -51,19 +51,14 @@ const paddings = {
 };
 
 export const Card = React.forwardRef<View, CardProps>(
-  ({ children, padding = "md", elevation = 1, style, ...props }, ref) => {
+  ({ children, padding = 'md', elevation = 1, style, ...props }, ref) => {
     const elevationStyle = elevations[elevation];
     const paddingValue = paddings[padding];
 
     return (
       <View
         ref={ref}
-        style={[
-          styles.card,
-          elevationStyle,
-          { padding: paddingValue },
-          style,
-        ]}
+        style={[styles.card, elevationStyle, { padding: paddingValue }, style]}
         {...props}
       >
         {children}
@@ -72,12 +67,12 @@ export const Card = React.forwardRef<View, CardProps>(
   }
 );
 
-Card.displayName = "Card";
+Card.displayName = 'Card';
 
 const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.neutral[50],
     borderRadius: 8,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
 });

@@ -3,12 +3,12 @@
  * Represents a user with business rules and permissions
  */
 
-import { z } from "zod";
+import { z } from 'zod';
 
 /**
  * User role type
  */
-export type UserRole = "admin" | "editor" | "viewer";
+export type UserRole = 'admin' | 'editor' | 'viewer';
 
 /**
  * User domain schema
@@ -16,11 +16,11 @@ export type UserRole = "admin" | "editor" | "viewer";
  */
 const userDomainSchema = z.object({
   id: z.string().uuid(),
-  email: z.string().email("Invalid email address").toLowerCase(),
+  email: z.string().email('Invalid email address').toLowerCase(),
   displayName: z
     .string()
-    .min(1, "Display name cannot be empty")
-    .max(255, "Display name must be 255 characters or less")
+    .min(1, 'Display name cannot be empty')
+    .max(255, 'Display name must be 255 characters or less')
     .trim(),
   defaultTenantId: z.string().uuid().nullable().optional(),
   createdAt: z.string().datetime(),
@@ -62,8 +62,8 @@ export class User {
    */
   getEmailHash(): string {
     // Return first part only for safer logging
-    const [localPart] = this.email.split("@");
-    return localPart ? `${localPart}@...` : "[REDACTED]";
+    const [localPart] = this.email.split('@');
+    return localPart ? `${localPart}@...` : '[REDACTED]';
   }
 
   /**
@@ -87,26 +87,24 @@ export class User {
  */
 export const rolePermissions: Record<UserRole, Set<string>> = {
   admin: new Set([
-    "read:*",
-    "create:*",
-    "update:*",
-    "delete:*",
-    "manage:members",
-    "manage:settings",
+    'read:*',
+    'create:*',
+    'update:*',
+    'delete:*',
+    'manage:members',
+    'manage:settings',
   ]),
   editor: new Set([
-    "read:*",
-    "create:invoices",
-    "create:products",
-    "create:clients",
-    "update:invoices",
-    "update:products",
-    "update:clients",
-    "delete:own", // Can only delete own records
+    'read:*',
+    'create:invoices',
+    'create:products',
+    'create:clients',
+    'update:invoices',
+    'update:products',
+    'update:clients',
+    'delete:own', // Can only delete own records
   ]),
-  viewer: new Set([
-    "read:*",
-  ]),
+  viewer: new Set(['read:*']),
 };
 
 /**
@@ -119,10 +117,17 @@ export function hasPermission(role: UserRole, permission: string): boolean {
   // Check exact match
   if (permissions.has(permission)) return true;
 
-  // Check wildcard match
-  const [resource, action] = permission.split(":");
-  if (action === "*" && permissions.has(`${resource}:*`)) return true;
-  if (resource === "*" && action === "*" && permissions.has("*")) return true;
+  // Check wildcard match - user permissions can have wildcards
+  const [requestedResource, requestedAction] = permission.split(':');
+
+  // Check if user has "resource:*" permission
+  if (permissions.has(`${requestedResource}:*`)) return true;
+
+  // Check if user has "*:action" permission
+  if (permissions.has(`*:${requestedAction}`)) return true;
+
+  // Check if user has full wildcard "*"
+  if (permissions.has('*')) return true;
 
   return false;
 }
@@ -130,14 +135,20 @@ export function hasPermission(role: UserRole, permission: string): boolean {
 /**
  * Check multiple permissions (all must be true)
  */
-export function hasAllPermissions(role: UserRole, permissions: string[]): boolean {
+export function hasAllPermissions(
+  role: UserRole,
+  permissions: string[]
+): boolean {
   return permissions.every((p) => hasPermission(role, p));
 }
 
 /**
  * Check multiple permissions (at least one must be true)
  */
-export function hasAnyPermission(role: UserRole, permissions: string[]): boolean {
+export function hasAnyPermission(
+  role: UserRole,
+  permissions: string[]
+): boolean {
   return permissions.some((p) => hasPermission(role, p));
 }
 

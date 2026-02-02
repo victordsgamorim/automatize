@@ -5,11 +5,8 @@
  * This file is imported at app startup to configure the @automatize/auth package
  */
 
-import {
-  initializeAuth,
-  type AuthConfig,
-} from "@automatize/auth";
-import { createWebTokenStorage } from "@automatize/auth/storage/implementations/webTokenStorage";
+import { initializeAuth, type AuthConfig } from '@automatize/auth';
+import { createWebTokenStorage } from '@automatize/auth/storage/implementations/webTokenStorage';
 
 /**
  * Get Supabase configuration from environment variables
@@ -20,7 +17,7 @@ function getSupabaseConfig(): AuthConfig {
 
   if (!url || !anonKey) {
     throw new Error(
-      "Missing Supabase configuration. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables."
+      'Missing Supabase configuration. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.'
     );
   }
 
@@ -41,9 +38,9 @@ export function initializeAuthForWeb(): void {
 
     initializeAuth(config, tokenStorage);
 
-    console.info("Auth initialized for web");
+    console.info('Auth initialized for web');
   } catch (error) {
-    console.error("Failed to initialize auth:", error);
+    console.error('Failed to initialize auth:', error);
     throw error;
   }
 }

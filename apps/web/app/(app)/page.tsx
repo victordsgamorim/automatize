@@ -38,19 +38,22 @@ export default function DashboardPage() {
         <div className={styles.card}>
           <div className={styles.cardIcon}>📊</div>
           <h3>Relatórios</h3>
-          <p className={styles.cardText}>Veja análises e métricas do seu negócio</p>
+          <p className={styles.cardText}>
+            Veja análises e métricas do seu negócio
+          </p>
         </div>
       </div>
 
       <div className={styles.infoCard}>
         <h3>ℹ️ Informações do App</h3>
         <p>
-          Este é um projeto de gerenciamento de faturas com arquitetura offline-first, suportando
-          Web, Mobile (iOS/Android) e Desktop (Windows).
+          Este é um projeto de gerenciamento de faturas com arquitetura
+          offline-first, suportando Web, Mobile (iOS/Android) e Desktop
+          (Windows).
         </p>
         <p>
-          <strong>Stack:</strong> Next.js (Web), React Native + Expo (Mobile), WatermelonDB (Local),
-          Supabase (Backend)
+          <strong>Stack:</strong> Next.js (Web), React Native + Expo (Mobile),
+          WatermelonDB (Local), Supabase (Backend)
         </p>
       </div>
     </div>

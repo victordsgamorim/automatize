@@ -5,7 +5,7 @@
  * Text input with validation support and clear button
  */
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   StyleSheet,
   TextInput as RNTextInput,
@@ -13,8 +13,8 @@ import {
   TouchableOpacity,
   Text,
   TextInputProps as RNTextInputProps,
-} from "react-native";
-import { colors, spacing, typography } from "../tokens";
+} from 'react-native';
+import { colors, spacing, typography } from '../tokens';
 
 export interface InputProps extends RNTextInputProps {
   /** Label for the input */
@@ -50,7 +50,7 @@ export const Input = React.forwardRef<RNTextInput, InputProps>(
     const [isFocused, setIsFocused] = useState(false);
 
     const handleClear = () => {
-      onChangeText?.("");
+      onChangeText?.('');
     };
 
     const borderColor = isFocused
@@ -91,7 +91,9 @@ export const Input = React.forwardRef<RNTextInput, InputProps>(
             </TouchableOpacity>
           )}
 
-          {!clearable && rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
+          {!clearable && rightIcon && (
+            <View style={styles.rightIcon}>{rightIcon}</View>
+          )}
         </View>
 
         {error && <Text style={styles.errorText}>{error}</Text>}
@@ -100,21 +102,21 @@ export const Input = React.forwardRef<RNTextInput, InputProps>(
   }
 );
 
-Input.displayName = "Input";
+Input.displayName = 'Input';
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    width: '100%',
   },
   label: {
     fontSize: typography.fontSize.sm,
-    fontWeight: "600",
+    fontWeight: '600',
     color: colors.neutral[900],
     marginBottom: spacing[2],
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: spacing[3],
     backgroundColor: colors.neutral[50],
     borderRadius: 8,
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
   clearButton: {
     fontSize: 18,
     color: colors.neutral[400],
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   errorText: {
     fontSize: typography.fontSize.xs,

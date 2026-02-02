@@ -3,12 +3,12 @@
  * Defines TypeScript interfaces for auth-related data structures
  */
 
-import type { User as SupabaseUser } from "@supabase/supabase-js";
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 /**
  * User role in a tenant
  */
-export type UserRole = "admin" | "editor" | "viewer";
+export type UserRole = 'admin' | 'editor' | 'viewer';
 
 /**
  * Extended Supabase user type
@@ -104,7 +104,11 @@ export interface AuthContextType {
 
   // Auth methods
   login(email: string, password: string, mfaCode?: string): Promise<void>;
-  loginWithBackupCode(email: string, password: string, backupCode: string): Promise<void>;
+  loginWithBackupCode(
+    email: string,
+    password: string,
+    backupCode: string
+  ): Promise<void>;
   register(email: string, password: string, displayName: string): Promise<void>;
   logout(): Promise<void>;
   resetPassword(email: string): Promise<void>;
@@ -120,33 +124,33 @@ export interface AuthContextType {
  */
 export enum AuthErrorCode {
   // Auth errors
-  INVALID_CREDENTIALS = "INVALID_CREDENTIALS",
-  USER_NOT_FOUND = "USER_NOT_FOUND",
-  EMAIL_NOT_CONFIRMED = "EMAIL_NOT_CONFIRMED",
-  TOO_MANY_REQUESTS = "TOO_MANY_REQUESTS",
-  USER_ALREADY_EXISTS = "USER_ALREADY_EXISTS",
+  INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
+  USER_NOT_FOUND = 'USER_NOT_FOUND',
+  EMAIL_NOT_CONFIRMED = 'EMAIL_NOT_CONFIRMED',
+  TOO_MANY_REQUESTS = 'TOO_MANY_REQUESTS',
+  USER_ALREADY_EXISTS = 'USER_ALREADY_EXISTS',
 
   // MFA errors
-  MFA_REQUIRED = "MFA_REQUIRED",
-  INVALID_MFA_CODE = "INVALID_MFA_CODE",
-  INVALID_BACKUP_CODE = "INVALID_BACKUP_CODE",
-  BACKUP_CODE_ALREADY_USED = "BACKUP_CODE_ALREADY_USED",
+  MFA_REQUIRED = 'MFA_REQUIRED',
+  INVALID_MFA_CODE = 'INVALID_MFA_CODE',
+  INVALID_BACKUP_CODE = 'INVALID_BACKUP_CODE',
+  BACKUP_CODE_ALREADY_USED = 'BACKUP_CODE_ALREADY_USED',
 
   // Session errors
-  SESSION_EXPIRED = "SESSION_EXPIRED",
-  INVALID_TOKEN = "INVALID_TOKEN",
+  SESSION_EXPIRED = 'SESSION_EXPIRED',
+  INVALID_TOKEN = 'INVALID_TOKEN',
 
   // Tenant errors
-  TENANT_NOT_FOUND = "TENANT_NOT_FOUND",
-  INVALID_TENANT_SLUG = "INVALID_TENANT_SLUG",
-  INSUFFICIENT_PERMISSIONS = "INSUFFICIENT_PERMISSIONS",
+  TENANT_NOT_FOUND = 'TENANT_NOT_FOUND',
+  INVALID_TENANT_SLUG = 'INVALID_TENANT_SLUG',
+  INSUFFICIENT_PERMISSIONS = 'INSUFFICIENT_PERMISSIONS',
 
   // Network errors
-  NETWORK_ERROR = "NETWORK_ERROR",
-  TIMEOUT = "TIMEOUT",
+  NETWORK_ERROR = 'NETWORK_ERROR',
+  TIMEOUT = 'TIMEOUT',
 
   // Generic errors
-  UNKNOWN_ERROR = "UNKNOWN_ERROR",
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
 }
 
 /**
