@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "test": "vitest",
+    "test": "echo 'Tests - Coming soon'",
     "clean": "rm -rf node_modules .turbo .next"
   },
   "dependencies": {

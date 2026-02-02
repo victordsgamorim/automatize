@@ -58,7 +58,6 @@ Automatize is a production-grade invoice management application supporting:
 ### DevOps
 
 - **CI/CD**: GitHub Actions
-- **Observability**: Sentry
 - **Dependency Updates**: Renovate
 
 ---

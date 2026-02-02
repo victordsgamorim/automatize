@@ -44,7 +44,7 @@
 #### Segurança
 - [x] Template de RLS policies
 - [x] Estrutura de env vars
-- [x] Sentry configurado (pronto para usar)
+- [x] Estrutura de observabilidade (a ser configurada)
 - [x] Secure storage preparado
 
 ---

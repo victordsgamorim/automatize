@@ -50,35 +50,35 @@ export function validatePasswordStrength(
   }
 
   // Check for uppercase
-  if (!opts.requireUppercase || /[A-Z]/.test(password)) {
-    if (/[A-Z]/.test(password)) score += 1;
-  } else {
+  if (opts.requireUppercase && !/[A-Z]/.test(password)) {
     feedback.push("Password must contain at least one uppercase letter");
+  } else if (/[A-Z]/.test(password)) {
+    score += 1;
   }
 
   // Check for lowercase
-  if (!opts.requireLowercase || /[a-z]/.test(password)) {
-    if (/[a-z]/.test(password)) score += 1;
-  } else {
+  if (opts.requireLowercase && !/[a-z]/.test(password)) {
     feedback.push("Password must contain at least one lowercase letter");
+  } else if (/[a-z]/.test(password)) {
+    score += 1;
   }
 
   // Check for numbers
-  if (!opts.requireNumbers || /[0-9]/.test(password)) {
-    if (/[0-9]/.test(password)) score += 1;
-  } else {
+  if (opts.requireNumbers && !/[0-9]/.test(password)) {
     feedback.push("Password must contain at least one number");
+  } else if (/[0-9]/.test(password)) {
+    score += 1;
   }
 
   // Check for special characters
-  if (!opts.requireSpecialChars || /[^a-zA-Z0-9]/.test(password)) {
-    if (/[^a-zA-Z0-9]/.test(password)) score += 1;
-  } else {
+  if (opts.requireSpecialChars && !/[^a-zA-Z0-9]/.test(password)) {
     feedback.push("Password must contain at least one special character");
+  } else if (/[^a-zA-Z0-9]/.test(password)) {
+    score += 1;
   }
 
   return {
-    isStrong: score >= 4,
+    isStrong: feedback.length === 0,
     score: Math.min(score, 5),
     feedback,
   };

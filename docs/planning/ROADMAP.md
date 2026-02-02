@@ -53,7 +53,7 @@ Phases **9–15**: Polish, Desktop, Advanced Features, Monitoring
 
 #### Security Baseline
 - Secure storage setup (expo-secure-store)
-- Sentry configured with redaction
+- Observability structure prepared
 - Environment variables structure
 - RLS policies template
 
@@ -63,7 +63,7 @@ Phases **9–15**: Polish, Desktop, Advanced Features, Monitoring
 - `pnpm build` works for all apps
 - CI passes 100% of checks
 - At least 1 UI component documented
-- Sentry receives test events
+- Observability integration planned
 
 ---
 
@@ -518,7 +518,7 @@ Phases **9–15**: Polish, Desktop, Advanced Features, Monitoring
 **Goal:** Observability and reliability in production.
 
 #### Monitoring
-- Sentry dashboards
+- Observability dashboards
 - Alerts configured
 - Active performance monitoring
 - Error grouping and prioritization

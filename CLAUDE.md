@@ -248,29 +248,14 @@ Required types:
 
 ### Observability & APM
 
-**Tool:** Sentry
+**Tool:** To be defined (optional)
 
 - Error tracking
 - Performance monitoring
-- Session replay
 - Release tracking
-- Automatic source maps
 - Built-in PII scrubbing
 
-Configuration:
-
-~~~ts
-Sentry.init({
-  dsn: SENTRY_DSN,
-  environment: __DEV__ ? 'development' : 'production',
-  tracesSampleRate: 0.2,
-  beforeSend: redactPII,
-  integrations: [
-    new Sentry.BrowserTracing(),
-    new Sentry.Replay()
-  ]
-});
-~~~
+Structure prepared for future observability integration. No external APM tool configured at this time.
 
 ### Environment Management
 
@@ -573,9 +558,8 @@ Implementation:
 <ErrorBoundary
   FallbackComponent={ErrorFallback}
   onError={(error, info) => {
-    Sentry.captureException(error, {
-      contexts: { react: info }
-    });
+    // Log error with PII redaction
+    logger.error('React Error Boundary', { error, info });
   }}
   onReset={() => {
     // Reset app state
@@ -900,7 +884,7 @@ Default strategy: Last-Write-Wins (LWW) by updatedAt
 
 - Complex conflicts generate events for resolution
 - UI must allow viewing and manually resolving conflicts
-- Conflicts are logged to Sentry for analysis
+- Conflicts are logged for analysis
 
 Implementation:
 
@@ -947,7 +931,7 @@ Message examples:
 
 - Automatic retry with exponential backoff (1s, 2s, 4s, 8s, 16s, 32s)
 - Graceful fallback when an operation fails
-- Structured error logs (redacted, sent to Sentry)
+- Structured error logs (redacted, sent to logger)
 - Circuit breaker to avoid request storms
 - After 5 consecutive failures, pause sync for 5 minutes
 
@@ -1003,21 +987,20 @@ Required classification:
 Rules:
 
 - Never log PII (redaction required)
-- Never send PII to analytics or Sentry
+- Never send PII to analytics or logs
 - Telemetry with explicit allowlist + redaction
 - Error correlation only via hashed + salted IDs
 - Event retention documented by type
 - Mandatory local wipe on logout/delete account
 
-Automatic redaction (Sentry):
+Automatic redaction (Logger):
 
 ~~~ts
-Sentry.init({
-  beforeSend(event) {
-    // Remove PII from all known keys
-    return redactPII(event);
-  }
-});
+function redactPII(data: any): any {
+  // Remove PII from all known keys (email, name, phone, etc.)
+  // Implementation in packages/core/utils/redaction.ts
+  return sanitizeData(data);
+}
 ~~~
 
 ---
@@ -1050,7 +1033,7 @@ Nothing in the architecture may prevent future compliance.
 
 - Recovery mode for corrupted WatermelonDB
 - Restore to last known valid state
-- Recovery logs for analysis/support (Sentry)
+- Recovery logs for analysis/support (local logging)
 - Recovery UI accessible even with corrupted DB (fallback to AsyncStorage)
 
 ### Retention
@@ -1461,7 +1444,7 @@ A feature is only considered done when:
 - Syncs correctly (tested on slow 3G)
 - Respects tenant isolation (tested with multiple tenants)
 - Applies permissions correctly (tested with different roles)
-- Does not violate privacy (no PII logs, tested with Sentry)
+- Does not violate privacy (no PII logs, verified)
 - Does not degrade performance (Lighthouse score > 90 for web)
 - Unit and integration tests created (coverage > 80%)
 - Routes and deep links tested (iOS + Android + Web)

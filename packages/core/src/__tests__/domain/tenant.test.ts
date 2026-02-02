@@ -45,8 +45,8 @@ describe("Tenant Domain", () => {
         deletedAt: null,
       });
 
-      // Note: schema doesn't auto-trim in this context, would need middleware
-      expect(tenant.name).toBe("  Test Tenant  ");
+      // Schema auto-trims the name
+      expect(tenant.name).toBe("Test Tenant");
     });
 
     it("should check if tenant is deleted", () => {

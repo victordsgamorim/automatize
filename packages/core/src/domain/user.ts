@@ -119,10 +119,17 @@ export function hasPermission(role: UserRole, permission: string): boolean {
   // Check exact match
   if (permissions.has(permission)) return true;
 
-  // Check wildcard match
-  const [resource, action] = permission.split(":");
-  if (action === "*" && permissions.has(`${resource}:*`)) return true;
-  if (resource === "*" && action === "*" && permissions.has("*")) return true;
+  // Check wildcard match - user permissions can have wildcards
+  const [requestedResource, requestedAction] = permission.split(":");
+
+  // Check if user has "resource:*" permission
+  if (permissions.has(`${requestedResource}:*`)) return true;
+
+  // Check if user has "*:action" permission
+  if (permissions.has(`*:${requestedAction}`)) return true;
+
+  // Check if user has full wildcard "*"
+  if (permissions.has("*")) return true;
 
   return false;
 }

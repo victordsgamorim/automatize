@@ -25,7 +25,7 @@ The foundation of the project is now ready. Here's what has been configured:
 ### Security ✅
 - Environment variables structure
 - RLS policies template
-- Basic Sentry setup (configuration ready)
+- Observability structure (to be configured)
 
 ### CI/CD ✅
 - GitHub Actions pipeline configured
@@ -90,8 +90,8 @@ SUPABASE_ANON_KEY=your-anon-key-here
 # API Configuration
 API_URL=http://localhost:3000
 
-# Sentry Configuration (optional for now)
-SENTRY_DSN=
+# Observability Configuration (optional - to be configured)
+# OBSERVABILITY_PROVIDER=
 
 # Environment
 ENVIRONMENT=development

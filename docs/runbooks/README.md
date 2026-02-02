@@ -32,8 +32,8 @@ São como "receitas" passo a passo para:
 - [ ] Como adicionar novo tenant manualmente
 
 ### Monitoring
-- [ ] Como investigar erro no Sentry
-- [ ] Como analisar performance no Sentry
+- [ ] Como investigar erros nos logs
+- [ ] Como analisar performance
 - [ ] Como ver logs de sync
 - [ ] Como identificar usuários com problemas de sync
 
@@ -116,12 +116,12 @@ Crie um runbook quando:
 4. Deploy staging
 5. Validar
 6. Deploy prod
-7. Monitorar Sentry
+7. Monitorar logs
 8. Comunicar time
 
 ### Investigar Erro de Sync
 1. Identificar tenant/usuário afetado
-2. Verificar logs Sentry
+2. Verificar logs da aplicação
 3. Verificar outbox no banco
 4. Verificar network logs
 5. Identificar causa raiz
