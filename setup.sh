@@ -20,7 +20,7 @@ echo "📦 Checking Node.js..."
 if ! command -v node &> /dev/null; then
     echo -e "${RED}❌ Node.js is not installed${NC}"
     echo "Please install Node.js 20+ from https://nodejs.org"
-    exit 1
+    exit 1      
 fi
 
 NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)

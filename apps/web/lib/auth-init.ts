@@ -38,7 +38,7 @@ export function initializeAuthForWeb(): void {
 
     initializeAuth(config, tokenStorage);
 
-    console.info('Auth initialized for web');
+    // Auth initialized for web
   } catch (error) {
     console.error('Failed to initialize auth:', error);
     throw error;
