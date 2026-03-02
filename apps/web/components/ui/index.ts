@@ -179,7 +179,7 @@ export {
 export {
   Drawer,
   DrawerClose,
-  DrawerContent,
+  // DrawerContent,
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
