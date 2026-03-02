@@ -266,7 +266,7 @@ export { ToggleGroup, ToggleGroupItem } from './toggle-group';
 
 // Feedback
 export { Alert, AlertDescription, AlertTitle } from './alert';
-export { Sonner } from './sonner';
+export { Toaster } from './sonner';
 
 // Sidebar
 export {
