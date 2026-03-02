@@ -21,6 +21,12 @@
     "pnpm": ">=8.0.0"
   },
   "packageManager": "pnpm@8.15.0",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "^19.0.0",
+      "@types/react-dom": "^19.0.0"
+    }
+  },
   "devDependencies": {
     "@automatize/eslint-config": "workspace:*",
     "@commitlint/cli": "^18.6.0",
