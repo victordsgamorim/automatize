@@ -634,10 +634,15 @@ project/
 │   │   ├── models/
 │   │   ├── schemas/
 │   │   └── adapters/
-│   └── auth/     # Auth logic (Supabase)
-│       ├── hooks/
-│       ├── providers/
-│       └── utils/
+│   ├── auth/     # Auth logic (Supabase)
+│   │   ├── hooks/
+│   │   ├── providers/
+│   │   └── utils/
+│   └── integration/          # Meta-package — external integrations
+│       ├── src/index.ts      # Barrel: re-exports active sub-modules
+│       ├── payment/          # @automatize/integration-payment
+│       ├── nfe/              # @automatize/integration-nfe
+│       └── <domain>/         # One sub-package per integration domain
 ├── docs/
 │   ├── adr/            # Architecture Decision Records
 │   ├── api-contract.md # API Sync Contract
@@ -653,6 +658,41 @@ Rules:
 - core/ never uses platform APIs
 - UI is a thin wrapper over core
 - Each package has its own package.json
+- integration/ is a meta-package: the root contains only the barrel (src/index.ts); all logic lives in sub-packages
+
+---
+
+## Integration Module — Pattern (Mandatory)
+
+`packages/integration` is a **meta-package**: it acts as a container and barrel for independent integration sub-modules. It must stay minimal.
+
+### Structure rules
+
+- `packages/integration/src/index.ts` — only re-exports from active sub-modules; no logic of its own
+- Each integration domain lives in its own sub-package (e.g. `packages/integration/payment/`)
+- Sub-packages are independent workspace members with their own `package.json`, `tsconfig.json`, `tsup.config.ts` and tests
+- Sub-packages are named `@automatize/integration-<domain>` (e.g. `@automatize/integration-payment`)
+- `pnpm-workspace.yaml` includes `packages/integration/*` so every sub-package is automatically discovered by Turborepo and CI
+
+### When to add content to the root integration package
+
+Never add runtime logic to `packages/integration` itself. Only add a re-export line to `src/index.ts` after a sub-package is created and stable.
+
+### When to create a new sub-package
+
+Create a new sub-package for each external integration domain (payment, fiscal/NFe, ERP, CRM, shipping, etc.). Do not mix domains inside a single sub-package.
+
+### Sub-package scaffolding checklist
+
+Every sub-package must have:
+
+- `package.json` (name: `@automatize/integration-<domain>`, `private: true`)
+- `tsconfig.json` (extends `../../../../tools/tsconfig/base.json`)
+- `tsup.config.ts`
+- `vitest.config.ts`
+- `.eslintrc.js`
+- `src/index.ts` (public API barrel)
+- At least one unit test before the sub-package is considered active
 
 ---
 
