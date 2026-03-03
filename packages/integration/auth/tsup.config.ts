@@ -1,11 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: [
-    'src/index.ts',
-    'src/storage/implementations/webTokenStorage.ts',
-    'src/storage/implementations/mobileTokenStorage.ts',
-  ],
+  entry: ['src/index.ts', 'src/adapters/web.ts', 'src/adapters/mobile.ts'],
   format: ['cjs', 'esm'],
   dts: true,
   splitting: false,

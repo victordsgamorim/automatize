@@ -11,15 +11,15 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
-    "./storage/implementations/webTokenStorage": {
-      "types": "./dist/storage/implementations/webTokenStorage.d.ts",
-      "import": "./dist/storage/implementations/webTokenStorage.mjs",
-      "require": "./dist/storage/implementations/webTokenStorage.js"
+    "./adapters/web": {
+      "types": "./dist/adapters/web.d.ts",
+      "import": "./dist/adapters/web.mjs",
+      "require": "./dist/adapters/web.js"
     },
-    "./storage/implementations/mobileTokenStorage": {
-      "types": "./dist/storage/implementations/mobileTokenStorage.d.ts",
-      "import": "./dist/storage/implementations/mobileTokenStorage.mjs",
-      "require": "./dist/storage/implementations/mobileTokenStorage.js"
+    "./adapters/mobile": {
+      "types": "./dist/adapters/mobile.d.ts",
+      "import": "./dist/adapters/mobile.mjs",
+      "require": "./dist/adapters/mobile.js"
     }
   },
   "scripts": {

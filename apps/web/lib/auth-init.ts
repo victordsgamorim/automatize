@@ -6,7 +6,7 @@
  */
 
 import { initializeAuth, type AuthConfig } from '@automatize/auth';
-import { createWebTokenStorage } from '@automatize/auth/storage/implementations/webTokenStorage';
+import { createWebTokenStorage } from '@automatize/auth/adapters/web';
 
 /**
  * Get Supabase configuration from environment variables

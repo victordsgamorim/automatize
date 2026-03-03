@@ -7,7 +7,7 @@
 
 import Constants from 'expo-constants';
 import { initializeAuth, type AuthConfig } from '@automatize/auth';
-import { createMobileTokenStorage } from '@automatize/auth/storage/implementations/mobileTokenStorage';
+import { createMobileTokenStorage } from '@automatize/auth/adapters/mobile';
 
 /**
  * Get Supabase configuration from Expo constants
