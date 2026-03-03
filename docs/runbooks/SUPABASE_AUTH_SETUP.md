@@ -270,7 +270,7 @@ Custom claims are added via **Auth Hooks** (Edge Functions) or **Database Trigge
 
 For Automatize, we add custom claims via Edge Function:
 
-**File:** `supabase/functions/update-jwt-claims/index.ts`
+**File:** `packages/integration/supabase/functions/update-jwt-claims/index.ts`
 
 ```typescript
 import { createClient } from '@supabase/supabase-js';

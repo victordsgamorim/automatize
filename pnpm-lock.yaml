@@ -47,16 +47,16 @@ importers:
     dependencies:
       '@automatize/auth':
         specifier: workspace:*
-        version: link:../../packages/auth
+        version: link:../../packages/integration/auth
       '@automatize/core':
         specifier: workspace:*
         version: link:../../packages/core
       '@automatize/storage':
         specifier: workspace:*
-        version: link:../../packages/storage
+        version: link:../../packages/integration/storage
       '@automatize/sync':
         specifier: workspace:*
-        version: link:../../packages/sync
+        version: link:../../packages/integration/sync
       '@automatize/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -126,7 +126,7 @@ importers:
     dependencies:
       '@automatize/auth':
         specifier: workspace:*
-        version: link:../../packages/auth
+        version: link:../../packages/integration/auth
       '@automatize/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -300,52 +300,6 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
 
-  packages/auth:
-    dependencies:
-      '@automatize/core':
-        specifier: workspace:*
-        version: link:../core
-      '@supabase/supabase-js':
-        specifier: ^2.39.3
-        version: 2.89.0
-      expo-constants:
-        specifier: ^15.0.1
-        version: 15.4.6(expo@50.0.21)
-      expo-secure-store:
-        specifier: ^12.8.1
-        version: 12.8.1(expo@50.0.21)
-      react:
-        specifier: ^18.2.0
-        version: 18.3.1
-      react-native:
-        specifier: ^0.74.0
-        version: 0.74.7(@babel/core@7.28.5)(@babel/preset-env@7.28.5)(@types/react@19.2.7)(react@18.3.1)
-      zod:
-        specifier: ^3.22.4
-        version: 3.25.76
-    devDependencies:
-      '@automatize/tsconfig':
-        specifier: workspace:*
-        version: link:../../tools/tsconfig
-      '@types/react':
-        specifier: ^19.0.0
-        version: 19.2.7
-      '@vitest/coverage-v8':
-        specifier: ^1.2.1
-        version: 1.6.1(vitest@1.6.1)
-      eslint:
-        specifier: ^8.56.0
-        version: 8.57.1
-      tsup:
-        specifier: ^8.0.1
-        version: 8.5.1(typescript@5.9.3)
-      typescript:
-        specifier: ^5.3.3
-        version: 5.9.3
-      vitest:
-        specifier: ^1.2.1
-        version: 1.6.1(@types/node@20.19.27)
-
   packages/core:
     dependencies:
       date-fns:
@@ -398,24 +352,36 @@ importers:
         specifier: ^5.3.3
         version: 5.9.3
 
-  packages/storage:
+  packages/integration/auth:
     dependencies:
       '@automatize/core':
         specifier: workspace:*
-        version: link:../core
-      '@nozbe/watermelondb':
-        specifier: ^0.27.1
-        version: 0.27.1
-      ulid:
-        specifier: ^2.3.0
-        version: 2.4.0
+        version: link:../../core
+      '@supabase/supabase-js':
+        specifier: ^2.39.3
+        version: 2.89.0
+      expo-constants:
+        specifier: ^15.0.1
+        version: 15.4.6(expo@50.0.21)
+      expo-secure-store:
+        specifier: ^12.8.1
+        version: 12.8.1(expo@50.0.21)
+      react:
+        specifier: ^18.2.0
+        version: 18.3.1
+      react-native:
+        specifier: ^0.74.0
+        version: 0.74.7(@babel/core@7.28.5)(@babel/preset-env@7.28.5)(@types/react@19.2.7)(react@18.3.1)
       zod:
         specifier: ^3.22.4
         version: 3.25.76
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.7
       '@vitest/coverage-v8':
         specifier: ^1.2.1
         version: 1.6.1(vitest@1.6.1)
@@ -432,11 +398,45 @@ importers:
         specifier: ^1.2.1
         version: 1.6.1(@types/node@20.19.27)
 
-  packages/sync:
+  packages/integration/storage:
     dependencies:
       '@automatize/core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../../core
+      '@nozbe/watermelondb':
+        specifier: ^0.27.1
+        version: 0.27.1
+      ulid:
+        specifier: ^2.3.0
+        version: 2.4.0
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.76
+    devDependencies:
+      '@automatize/tsconfig':
+        specifier: workspace:*
+        version: link:../../../tools/tsconfig
+      '@vitest/coverage-v8':
+        specifier: ^1.2.1
+        version: 1.6.1(vitest@1.6.1)
+      eslint:
+        specifier: ^8.56.0
+        version: 8.57.1
+      tsup:
+        specifier: ^8.0.1
+        version: 8.5.1(typescript@5.9.3)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+      vitest:
+        specifier: ^1.2.1
+        version: 1.6.1(@types/node@20.19.27)
+
+  packages/integration/sync:
+    dependencies:
+      '@automatize/core':
+        specifier: workspace:*
+        version: link:../../core
       '@automatize/storage':
         specifier: workspace:*
         version: link:../storage
@@ -455,7 +455,7 @@ importers:
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*
-        version: link:../../tools/tsconfig
+        version: link:../../../tools/tsconfig
       '@vitest/coverage-v8':
         specifier: ^1.2.1
         version: 1.6.1(vitest@1.6.1)

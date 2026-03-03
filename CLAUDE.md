@@ -626,20 +626,22 @@ project/
 │   │   ├── components/
 │   │   ├── tokens/
 │   │   └── theme/
-│   ├── sync/     # Sync engine (WatermelonDB)
-│   │   ├── engine/
-│   │   ├── operations/
-│   │   └── migrations/
-│   ├── storage/  # DB adapters (WatermelonDB)
-│   │   ├── models/
-│   │   ├── schemas/
-│   │   └── adapters/
-│   ├── auth/     # Auth logic (Supabase)
-│   │   ├── hooks/
-│   │   ├── providers/
-│   │   └── utils/
-│   └── integration/          # Meta-package — external integrations
-│       ├── src/index.ts      # Barrel: re-exports active sub-modules
+│   └── integration/          # Meta-package — all infrastructure + external integrations
+│       ├── src/index.ts      # Barrel: documents active sub-packages
+│       ├── auth/             # @automatize/auth — Auth logic (Supabase)
+│       │   ├── hooks/
+│       │   ├── providers/
+│       │   └── utils/
+│       ├── storage/          # @automatize/storage — DB adapters (WatermelonDB)
+│       │   ├── models/
+│       │   ├── schemas/
+│       │   └── adapters/
+│       ├── sync/             # @automatize/sync — Sync engine (WatermelonDB)
+│       │   ├── engine/
+│       │   ├── operations/
+│       │   └── migrations/
+│       ├── supabase/         # Supabase CLI project (migrations, config)
+│       │   └── migrations/   # SQL migration files
 │       ├── payment/          # @automatize/integration-payment
 │       ├── nfe/              # @automatize/integration-nfe
 │       └── <domain>/         # One sub-package per integration domain
@@ -659,19 +661,21 @@ Rules:
 - UI is a thin wrapper over core
 - Each package has its own package.json
 - integration/ is a meta-package: the root contains only the barrel (src/index.ts); all logic lives in sub-packages
+- auth/, storage/, sync/ are infrastructure sub-packages living under integration/ (@automatize/auth, @automatize/storage, @automatize/sync)
 
 ---
 
 ## Integration Module — Pattern (Mandatory)
 
-`packages/integration` is a **meta-package**: it acts as a container and barrel for independent integration sub-modules. It must stay minimal.
+`packages/integration` is a **meta-package**: it acts as a container and barrel for independent sub-packages. It hosts both infrastructure packages (auth, storage, sync) and external integration domains. It must stay minimal.
 
 ### Structure rules
 
 - `packages/integration/src/index.ts` — only re-exports from active sub-modules; no logic of its own
 - Each integration domain lives in its own sub-package (e.g. `packages/integration/payment/`)
 - Sub-packages are independent workspace members with their own `package.json`, `tsconfig.json`, `tsup.config.ts` and tests
-- Sub-packages are named `@automatize/integration-<domain>` (e.g. `@automatize/integration-payment`)
+- Infrastructure sub-packages keep their direct names: `@automatize/auth`, `@automatize/storage`, `@automatize/sync`
+- External integration sub-packages are named `@automatize/integration-<domain>` (e.g. `@automatize/integration-payment`)
 - `pnpm-workspace.yaml` includes `packages/integration/*` so every sub-package is automatically discovered by Turborepo and CI
 
 ### When to add content to the root integration package
@@ -680,14 +684,14 @@ Never add runtime logic to `packages/integration` itself. Only add a re-export l
 
 ### When to create a new sub-package
 
-Create a new sub-package for each external integration domain (payment, fiscal/NFe, ERP, CRM, shipping, etc.). Do not mix domains inside a single sub-package.
+Create a new sub-package for each external integration domain (payment, fiscal/NFe, ERP, CRM, shipping, etc.). Infrastructure packages (auth, storage, sync) already live here. Do not mix domains inside a single sub-package.
 
 ### Sub-package scaffolding checklist
 
 Every sub-package must have:
 
-- `package.json` (name: `@automatize/integration-<domain>`, `private: true`)
-- `tsconfig.json` (extends `../../../../tools/tsconfig/base.json`)
+- `package.json` (name: `@automatize/integration-<domain>` for external domains, or `@automatize/<name>` for infrastructure packages; `private: true`)
+- `tsconfig.json` (extends `"../../../tools/tsconfig/base.json"`)
 - `tsup.config.ts`
 - `vitest.config.ts`
 - `.eslintrc.js`
@@ -850,7 +854,7 @@ Writes:
 - update WatermelonDB immediately
 - always generate outbox
 
-Central sync engine (in packages/sync):
+Central sync engine (in packages/integration/sync):
 
 - push + incremental pull
 - idempotent (via opId ULID)
@@ -874,7 +878,7 @@ Central sync engine (in packages/sync):
 Structure:
 
 ```ts
-// packages/storage/migrations/index.ts
+// packages/integration/storage/migrations/index.ts
 export default [
   {
     toVersion: 2,
@@ -906,6 +910,14 @@ export default [
 - Versioning synced with the app
 - Migrations in pure SQL
 - Always test in staging before prod
+
+> **Supabase CLI — working directory:** The Supabase project files live at `packages/integration/supabase/`.
+> Always run Supabase CLI commands with `--workdir packages/integration/supabase` or from inside that directory:
+>
+> ```bash
+> supabase db push --workdir packages/integration/supabase
+> supabase migration new <name> --workdir packages/integration/supabase
+> ```
 
 Rule:
 
