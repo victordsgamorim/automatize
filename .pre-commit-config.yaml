@@ -1,0 +1,51 @@
+repos:
+  # -------------------------------------------------------------------------
+  # General file hygiene (pre-commit built-ins)
+  # -------------------------------------------------------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: end-of-file-fixer
+        name: Fix end of files
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+      - id: check-json
+        name: Validate JSON files
+      - id: check-yaml
+        name: Validate YAML files
+      - id: detect-private-key
+        name: Detect private keys
+
+  # -------------------------------------------------------------------------
+  # Commitlint — validate-hook-names equivalent for commit messages
+  # Enforced via Husky commit-msg hook; pre-commit mirror for CI parity.
+  # -------------------------------------------------------------------------
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v9.18.0
+    hooks:
+      - id: commitlint
+        name: Validate commit message (Conventional Commits)
+        stages: [commit-msg]
+        additional_dependencies:
+          - '@commitlint/config-conventional'
+
+  # -------------------------------------------------------------------------
+  # Node / pnpm — Prettier + ESLint
+  # These run via `local` hooks so they use the project's own installed
+  # versions, ensuring version parity with CI and lint-staged.
+  # -------------------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: prettier
+        name: Prettier (format check)
+        language: node
+        entry: pnpm exec prettier --write
+        types_or: [ts, tsx, javascript, jsx, json, markdown]
+        pass_filenames: true
+
+      - id: eslint
+        name: ESLint
+        language: node
+        entry: pnpm exec eslint --fix --max-warnings 0
+        types_or: [ts, tsx, javascript, jsx]
+        pass_filenames: true
