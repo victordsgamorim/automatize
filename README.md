@@ -73,13 +73,11 @@ automatize/
 ├── packages/
 │   ├── core/           # Platform-agnostic business logic
 │   ├── ui/             # Design system + components
-│   └── integration/    # Infrastructure + external integration sub-packages
+│   └── integration/    # Plain container — no package.json
 │       ├── auth/       # @automatize/auth — Authentication logic (Supabase)
 │       ├── storage/    # @automatize/storage — WatermelonDB models & schemas
 │       ├── sync/       # @automatize/sync — Sync engine
-│       ├── supabase/   # Supabase CLI project (migrations, config)
-│       ├── payment/    # @automatize/integration-payment (planned)
-│       └── nfe/        # @automatize/integration-nfe (planned)
+│       └── supabase/   # Supabase CLI project (SQL migrations)
 ├── docs/
 │   ├── adr/            # Architecture Decision Records
 │   └── runbooks/       # Operational guides
