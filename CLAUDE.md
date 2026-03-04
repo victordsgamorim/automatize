@@ -626,8 +626,7 @@ project/
 │   │   ├── components/
 │   │   ├── tokens/
 │   │   └── theme/
-│   └── integration/          # Meta-package — all infrastructure + external integrations
-│       ├── src/index.ts      # Barrel: documents active sub-packages
+│   └── integration/          # Plain folder container — no package.json, no src/
 │       ├── auth/             # @automatize/auth — Auth logic (Supabase)
 │       │   ├── hooks/
 │       │   ├── providers/
@@ -642,8 +641,8 @@ project/
 │       │   └── migrations/
 │       ├── supabase/         # Supabase CLI project (migrations, config)
 │       │   └── migrations/   # SQL migration files
-│       ├── payment/          # @automatize/integration-payment
-│       ├── nfe/              # @automatize/integration-nfe
+│       ├── payment/          # @automatize/integration-payment (future)
+│       ├── nfe/              # @automatize/integration-nfe (future)
 │       └── <domain>/         # One sub-package per integration domain
 ├── docs/
 │   ├── adr/            # Architecture Decision Records
@@ -659,28 +658,24 @@ Rules:
 - core/ never imports from apps/
 - core/ never uses platform APIs
 - UI is a thin wrapper over core
-- Each package has its own package.json
-- integration/ is a meta-package: the root contains only the barrel (src/index.ts); all logic lives in sub-packages
-- auth/, storage/, sync/ are infrastructure sub-packages living under integration/ (@automatize/auth, @automatize/storage, @automatize/sync)
+- Each sub-package inside integration/ has its own package.json
+- integration/ is a plain folder (no package.json, no src/): it is a pure container
+- pnpm-workspace.yaml includes `packages/integration/*` so every sub-package is automatically discovered by Turborepo and CI
 
 ---
 
 ## Integration Module — Pattern (Mandatory)
 
-`packages/integration` is a **meta-package**: it acts as a container and barrel for independent sub-packages. It hosts both infrastructure packages (auth, storage, sync) and external integration domains. It must stay minimal.
+`packages/integration` is a **plain folder container**: it has no `package.json`, no `src/`, and no build tooling of its own. It simply groups all sub-packages that interact with external services or infrastructure. Sub-packages are independent workspace members discovered via `pnpm-workspace.yaml`.
 
 ### Structure rules
 
-- `packages/integration/src/index.ts` — only re-exports from active sub-modules; no logic of its own
+- `packages/integration/` has no `package.json` and no `src/` — it is a pure container
 - Each integration domain lives in its own sub-package (e.g. `packages/integration/payment/`)
 - Sub-packages are independent workspace members with their own `package.json`, `tsconfig.json`, `tsup.config.ts` and tests
 - Infrastructure sub-packages keep their direct names: `@automatize/auth`, `@automatize/storage`, `@automatize/sync`
 - External integration sub-packages are named `@automatize/integration-<domain>` (e.g. `@automatize/integration-payment`)
 - `pnpm-workspace.yaml` includes `packages/integration/*` so every sub-package is automatically discovered by Turborepo and CI
-
-### When to add content to the root integration package
-
-Never add runtime logic to `packages/integration` itself. Only add a re-export line to `src/index.ts` after a sub-package is created and stable.
 
 ### When to create a new sub-package
 
