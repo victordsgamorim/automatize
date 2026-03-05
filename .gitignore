@@ -4,7 +4,8 @@
 node_modules/
 .pnp
 .pnp.js
-*.lock
+# Only ignore yarn lockfile — pnpm-lock.yaml MUST be committed
+yarn.lock
 
 # ============================================================================
 # ENVIRONMENT & SECRETS (CRITICAL - DO NOT COMMIT)
