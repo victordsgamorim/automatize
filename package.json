@@ -24,9 +24,15 @@
   },
   "engines": {
     "node": ">=20.0.0",
-    "pnpm": ">=8.0.0"
+    "pnpm": ">=10.0.0"
   },
   "packageManager": "pnpm@10.30.3",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  },
   "devDependencies": {
     "@automatize/eslint-config": "workspace:*",
     "@commitlint/cli": "^18.6.0",
