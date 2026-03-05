@@ -184,7 +184,7 @@ Quando rodar o app, você verá uma **tela inicial simples**:
 
 2. **Explorar o código:**
    - Design tokens: [packages/ui/src/tokens/](packages/ui/src/tokens/)
-   - Core types: [packages/core/src/types/](packages/core/src/types/)
+   - Core types: [core/src/types/](core/src/types/)
    - Mobile app: [apps/mobile/app/](apps/mobile/app/)
 
 3. **Fazer uma mudança:**

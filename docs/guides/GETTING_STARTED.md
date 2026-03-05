@@ -174,7 +174,7 @@ pnpm format
 #### From Package Level
 
 ```bash
-cd packages/core
+cd core
 
 # Build this package
 pnpm build

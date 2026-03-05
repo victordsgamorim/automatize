@@ -70,14 +70,14 @@ automatize/
 │   ├── mobile/         # Expo app (iOS + Android + Web)
 │   ├── web/            # Web-specific optimizations (Phase 10)
 │   └── windows/        # Windows desktop app (Phase 11)
+├── core/               # Platform-agnostic business logic
+├── integration/        # Plain container — no package.json
+│   ├── auth/           # @automatize/auth — Authentication logic (Supabase)
+│   ├── storage/        # @automatize/storage — WatermelonDB models & schemas
+│   ├── sync/           # @automatize/sync — Sync engine
+│   └── supabase/       # Supabase CLI project (SQL migrations)
 ├── packages/
-│   ├── core/           # Platform-agnostic business logic
-│   ├── ui/             # Design system + components
-│   └── integration/    # Plain container — no package.json
-│       ├── auth/       # @automatize/auth — Authentication logic (Supabase)
-│       ├── storage/    # @automatize/storage — WatermelonDB models & schemas
-│       ├── sync/       # @automatize/sync — Sync engine
-│       └── supabase/   # Supabase CLI project (SQL migrations)
+│   └── ui/             # Design system + components
 ├── docs/
 │   ├── adr/            # Architecture Decision Records
 │   └── runbooks/       # Operational guides

@@ -134,7 +134,10 @@ jobs:
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
-          files: ./packages/*/coverage/coverage-final.json
+          files: |
+            ./core/coverage/coverage-final.json
+            ./packages/*/coverage/coverage-final.json
+            ./integration/*/coverage/coverage-final.json
           flags: unittests
           fail_ci_if_error: false
 
@@ -165,7 +168,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
+            core/dist
             packages/*/dist
+            integration/*/dist
             apps/*/dist
           key: ${{ runner.os }}-build-${{ github.sha }}
 
