@@ -13,10 +13,11 @@ export default function Navigation() {
 
   const handleLogout = async () => {
     await logout?.();
-    router.push('/(auth)/login');
+    router.push('/login');
   };
 
-  const isActive = (path: string) => pathname.startsWith(path);
+  const isActive = (path: string) =>
+    path === '/' ? pathname === '/' : pathname.startsWith(path);
 
   return (
     <nav className={styles.nav}>
@@ -27,36 +28,32 @@ export default function Navigation() {
       <ul className={styles.menu}>
         <li>
           <Link
-            href="/(app)"
-            className={`${styles.menuItem} ${
-              isActive('/(app)') && !isActive('/(app)/invoices')
-                ? styles.active
-                : ''
-            }`}
+            href="/"
+            className={`${styles.menuItem} ${isActive('/') ? styles.active : ''}`}
           >
             📊 Dashboard
           </Link>
         </li>
         <li>
           <Link
-            href="/(app)/invoices"
-            className={`${styles.menuItem} ${isActive('/(app)/invoices') ? styles.active : ''}`}
+            href="/invoices"
+            className={`${styles.menuItem} ${isActive('/invoices') ? styles.active : ''}`}
           >
             📄 Faturas
           </Link>
         </li>
         <li>
           <Link
-            href="/(app)/clients"
-            className={`${styles.menuItem} ${isActive('/(app)/clients') ? styles.active : ''}`}
+            href="/clients"
+            className={`${styles.menuItem} ${isActive('/clients') ? styles.active : ''}`}
           >
             👥 Clientes
           </Link>
         </li>
         <li>
           <Link
-            href="/(app)/products"
-            className={`${styles.menuItem} ${isActive('/(app)/products') ? styles.active : ''}`}
+            href="/products"
+            className={`${styles.menuItem} ${isActive('/products') ? styles.active : ''}`}
           >
             📦 Produtos
           </Link>

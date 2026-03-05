@@ -28,15 +28,15 @@
   },
   "dependencies": {
     "@automatize/core": "workspace:*",
-    "lucide-react-native": "^0.309.0",
-    "react": "^18.2.0",
-    "react-native": "^0.73.2"
+    "lucide-react-native": "^0.309.0"
   },
   "devDependencies": {
     "@automatize/tsconfig": "workspace:*",
     "@types/react": "^18.2.48",
     "@vitest/coverage-v8": "^1.2.1",
     "eslint": "^8.56.0",
+    "react": "18.2.0",
+    "react-native": "^0.73.2",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3",
     "vitest": "^1.2.1"

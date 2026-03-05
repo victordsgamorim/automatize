@@ -4,7 +4,8 @@
 node_modules/
 .pnp
 .pnp.js
-*.lock
+# Only ignore yarn lockfile — pnpm-lock.yaml MUST be committed
+yarn.lock
 
 # ============================================================================
 # ENVIRONMENT & SECRETS (CRITICAL - DO NOT COMMIT)
@@ -78,6 +79,9 @@ logs/
 ehthumbs.db
 Thumbs.db
 Desktop.ini
+
+# Windows reserved device names (created by scripts redirecting to nul)
+/nul
 
 # ============================================================================
 # IDE & EDITOR FILES
