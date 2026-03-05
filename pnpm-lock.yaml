@@ -47,16 +47,16 @@ importers:
     dependencies:
       '@automatize/auth':
         specifier: workspace:*
-        version: link:../../packages/integration/auth
+        version: link:../../integration/auth
       '@automatize/core':
         specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../../core
       '@automatize/storage':
         specifier: workspace:*
-        version: link:../../packages/integration/storage
+        version: link:../../integration/storage
       '@automatize/sync':
         specifier: workspace:*
-        version: link:../../packages/integration/sync
+        version: link:../../integration/sync
       '@automatize/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -132,10 +132,10 @@ importers:
     dependencies:
       '@automatize/auth':
         specifier: workspace:*
-        version: link:../../packages/integration/auth
+        version: link:../../integration/auth
       '@automatize/core':
         specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../../core
       '@automatize/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -301,12 +301,12 @@ importers:
     dependencies:
       '@automatize/core':
         specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../../core
       '@automatize/ui':
         specifier: workspace:*
         version: link:../../packages/ui
 
-  packages/core:
+  core:
     dependencies:
       date-fns:
         specifier: ^3.2.0
@@ -320,7 +320,7 @@ importers:
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*
-        version: link:../../tools/tsconfig
+        version: link:../tools/tsconfig
       '@types/node':
         specifier: ^20.11.5
         version: 20.19.35
@@ -340,7 +340,7 @@ importers:
         specifier: ^1.2.1
         version: 1.6.1(@types/node@20.19.35)(lightningcss@1.31.1)(terser@5.46.0)
 
-  packages/integration/auth:
+  integration/auth:
     dependencies:
       '@automatize/core':
         specifier: workspace:*
@@ -360,7 +360,7 @@ importers:
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*
-        version: link:../../../tools/tsconfig
+        version: link:../../tools/tsconfig
       '@types/react':
         specifier: ^18.3.0
         version: 18.3.28
@@ -386,7 +386,7 @@ importers:
         specifier: ^1.2.1
         version: 1.6.1(@types/node@20.19.35)(lightningcss@1.31.1)(terser@5.46.0)
 
-  packages/integration/storage:
+  integration/storage:
     dependencies:
       '@automatize/core':
         specifier: workspace:*
@@ -403,7 +403,7 @@ importers:
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*
-        version: link:../../../tools/tsconfig
+        version: link:../../tools/tsconfig
       '@vitest/coverage-v8':
         specifier: ^1.2.1
         version: 1.6.1(vitest@1.6.1(@types/node@20.19.35)(lightningcss@1.31.1)(terser@5.46.0))
@@ -420,7 +420,7 @@ importers:
         specifier: ^1.2.1
         version: 1.6.1(@types/node@20.19.35)(lightningcss@1.31.1)(terser@5.46.0)
 
-  packages/integration/sync:
+  integration/sync:
     dependencies:
       '@automatize/core':
         specifier: workspace:*
@@ -443,7 +443,7 @@ importers:
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*
-        version: link:../../../tools/tsconfig
+        version: link:../../tools/tsconfig
       '@vitest/coverage-v8':
         specifier: ^1.2.1
         version: 1.6.1(vitest@1.6.1(@types/node@20.19.35)(lightningcss@1.31.1)(terser@5.46.0))
@@ -470,7 +470,7 @@ importers:
     dependencies:
       '@automatize/core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../../core
       lucide-react-native:
         specifier: ^0.309.0
         version: 0.309.0(react-native-svg@14.2.0(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0)

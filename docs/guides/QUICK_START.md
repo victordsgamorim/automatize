@@ -171,7 +171,7 @@ pnpm test
 **Resultado esperado:**
 
 ```
-✓ packages/core/src/utils/index.test.ts (3)
+✓ core/src/utils/index.test.ts (3)
   ✓ generateId (2)
   ✓ getCurrentTimestamp (2)
   ✓ hashValue (2)
@@ -270,8 +270,8 @@ Depois de rodar o app, você pode:
 
 2. **Explorar o código**
    - Ver os design tokens em `packages/ui/src/tokens/`
-   - Ver os tipos em `packages/core/src/types/`
-   - Ver os testes em `packages/core/src/utils/index.test.ts`
+   - Ver os tipos em `core/src/types/`
+   - Ver os testes em `core/src/utils/index.test.ts`
 
 3. **Fazer mudanças**
    - Edite `apps/mobile/app/index.tsx`

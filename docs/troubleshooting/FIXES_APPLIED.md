@@ -96,11 +96,11 @@ TypeScript não resolve packages de workspace da mesma forma que Node.js resolve
 
 **Arquivos alterados:**
 
-- `packages/core/tsconfig.json`
+- `core/tsconfig.json`
 - `packages/ui/tsconfig.json`
-- `packages/auth/tsconfig.json`
-- `packages/storage/tsconfig.json`
-- `packages/sync/tsconfig.json`
+- `integration/auth/tsconfig.json`
+- `integration/storage/tsconfig.json`
+- `integration/sync/tsconfig.json`
 - `apps/mobile/tsconfig.json`
 
 **Status:** ✅ Resolvido

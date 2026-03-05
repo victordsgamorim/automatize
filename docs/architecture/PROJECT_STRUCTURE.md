@@ -33,17 +33,29 @@ automatize/
 │   └── windows/                            # Windows desktop (Phase 11)
 │       └── package.json
 │
-├── packages/
-│   ├── core/                               # Business logic (platform-agnostic)
+├── core/                                   # Business logic (platform-agnostic)
+│   ├── src/
+│   │   ├── domain/                         # Entities, Value Objects
+│   │   ├── services/                       # Use cases
+│   │   ├── hooks/                          # Domain React hooks
+│   │   ├── types/
+│   │   │   └── index.ts                    # Base types (BaseEntity, UserRole)
+│   │   ├── utils/
+│   │   │   ├── index.ts                    # Utility functions
+│   │   │   └── index.test.ts               # Unit tests
+│   │   └── index.ts                        # Package entry
+│   ├── .eslintrc.js
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── tsup.config.ts
+│   └── vitest.config.ts
+│
+├── integration/                            # Plain container — no package.json
+│   ├── auth/                               # @automatize/auth — Authentication
 │   │   ├── src/
-│   │   │   ├── domain/                     # (Future) Entities, Value Objects
-│   │   │   ├── services/                   # (Future) Use cases
-│   │   │   ├── hooks/                      # (Future) React hooks
-│   │   │   ├── types/
-│   │   │   │   └── index.ts                # Base types (BaseEntity, UserRole)
-│   │   │   ├── utils/
-│   │   │   │   ├── index.ts                # Utility functions
-│   │   │   │   └── index.test.ts           # Unit tests
+│   │   │   ├── hooks/                      # Auth hooks
+│   │   │   ├── providers/                  # Auth provider
+│   │   │   ├── utils/                      # Auth utilities
 │   │   │   └── index.ts                    # Package entry
 │   │   ├── .eslintrc.js
 │   │   ├── package.json
@@ -51,48 +63,42 @@ automatize/
 │   │   ├── tsup.config.ts
 │   │   └── vitest.config.ts
 │   │
-│   ├── ui/                                 # Design system
+│   ├── storage/                            # @automatize/storage — WatermelonDB
 │   │   ├── src/
-│   │   │   ├── components/                 # (Future) UI components
-│   │   │   ├── tokens/
-│   │   │   │   ├── colors.ts               # Color system
-│   │   │   │   ├── spacing.ts              # Spacing scale
-│   │   │   │   ├── typography.ts           # Font system
-│   │   │   │   └── index.ts                # Tokens entry
-│   │   │   ├── theme/                      # (Future) Theme provider
+│   │   │   ├── models/                     # WatermelonDB models
+│   │   │   ├── schemas/                    # Database schemas
+│   │   │   ├── adapters/                   # Platform adapters
 │   │   │   └── index.ts                    # Package entry
 │   │   ├── .eslintrc.js
 │   │   ├── package.json
 │   │   ├── tsconfig.json
-│   │   └── tsup.config.ts
+│   │   ├── tsup.config.ts
+│   │   └── vitest.config.ts
 │   │
-│   ├── sync/                               # Sync engine (Phase 2)
+│   ├── sync/                               # @automatize/sync — Sync engine
 │   │   ├── src/
-│   │   │   ├── engine/                     # (Future) Sync orchestration
-│   │   │   ├── operations/                 # (Future) Push/Pull operations
-│   │   │   ├── migrations/                 # (Future) Sync migrations
+│   │   │   ├── engine/                     # Sync orchestration
+│   │   │   ├── operations/                 # Push/Pull operations
 │   │   │   └── index.ts                    # Package entry
 │   │   ├── .eslintrc.js
 │   │   ├── package.json
 │   │   ├── tsconfig.json
-│   │   └── tsup.config.ts
+│   │   ├── tsup.config.ts
+│   │   └── vitest.config.ts
 │   │
-│   ├── storage/                            # WatermelonDB adapters (Phase 2)
-│   │   ├── src/
-│   │   │   ├── models/                     # (Future) WatermelonDB models
-│   │   │   ├── schemas/                    # (Future) Database schemas
-│   │   │   ├── adapters/                   # (Future) Platform adapters
-│   │   │   └── index.ts                    # Package entry
-│   │   ├── .eslintrc.js
-│   │   ├── package.json
-│   │   ├── tsconfig.json
-│   │   └── tsup.config.ts
-│   │
-│   └── auth/                               # Authentication (Phase 1)
+│   └── supabase/                           # Supabase CLI project
+│       └── migrations/                     # SQL migration files
+│
+├── packages/
+│   └── ui/                                 # Design system
 │       ├── src/
-│       │   ├── hooks/                      # (Future) Auth hooks
-│       │   ├── providers/                  # (Future) Auth provider
-│       │   ├── utils/                      # (Future) Auth utilities
+│       │   ├── components/                 # UI components
+│       │   ├── tokens/
+│       │   │   ├── colors.ts               # Color system
+│       │   │   ├── spacing.ts              # Spacing scale
+│       │   │   ├── typography.ts           # Font system
+│       │   │   └── index.ts                # Tokens entry
+│       │   ├── theme/                      # Theme provider
 │       │   └── index.ts                    # Package entry
 │       ├── .eslintrc.js
 │       ├── package.json
@@ -262,7 +268,7 @@ As the project grows, expect these additions:
 ### Phase 1 (Auth & Multi-tenancy)
 
 ```
-packages/auth/src/
+integration/auth/src/
   ├── hooks/
   │   ├── useAuth.ts
   │   ├── useSession.ts
@@ -286,7 +292,7 @@ apps/mobile/app/
 ### Phase 2 (Offline-First)
 
 ```
-packages/storage/src/
+integration/storage/src/
   ├── models/
   │   ├── User.ts
   │   └── Tenant.ts
@@ -296,7 +302,7 @@ packages/storage/src/
       ├── sqlite.ts
       └── indexeddb.ts
 
-packages/sync/src/
+integration/sync/src/
   ├── engine/
   │   └── SyncEngine.ts
   ├── operations/
@@ -309,7 +315,7 @@ packages/sync/src/
 ### Phase 3 (Invoices MVP)
 
 ```
-packages/core/src/
+core/src/
   ├── domain/
   │   ├── Invoice.ts
   │   └── InvoiceSchema.ts

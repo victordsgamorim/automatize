@@ -615,35 +615,35 @@ project/
 │   ├── mobile/   # Expo (iOS + Android)
 │   ├── web/      # Expo Web
 │   └── windows/  # RN Windows
+├── core/         # Business logic (platform-agnostic)
+│   ├── domain/   # Entities, Value Objects
+│   ├── services/ # Use cases, Services
+│   ├── hooks/    # Domain React hooks
+│   ├── types/    # TypeScript types/interfaces
+│   └── utils/    # Pure helpers
+├── integration/          # Plain folder container — no package.json, no src/
+│   ├── auth/             # @automatize/auth — Auth logic (Supabase)
+│   │   ├── hooks/
+│   │   ├── providers/
+│   │   └── utils/
+│   ├── storage/          # @automatize/storage — DB adapters (WatermelonDB)
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   └── adapters/
+│   ├── sync/             # @automatize/sync — Sync engine (WatermelonDB)
+│   │   ├── engine/
+│   │   ├── operations/
+│   │   └── migrations/
+│   ├── supabase/         # Supabase CLI project (migrations, config)
+│   │   └── migrations/   # SQL migration files
+│   ├── payment/          # @automatize/integration-payment (future)
+│   ├── nfe/              # @automatize/integration-nfe (future)
+│   └── <domain>/         # One sub-package per integration domain
 ├── packages/
-│   ├── core/     # Business logic (platform-agnostic)
-│   │   ├── domain/   # Entities, Value Objects
-│   │   ├── services/ # Use cases, Services
-│   │   ├── hooks/    # Domain React hooks
-│   │   ├── types/    # TypeScript types/interfaces
-│   │   └── utils/    # Pure helpers
-│   ├── ui/       # Design system + components
-│   │   ├── components/
-│   │   ├── tokens/
-│   │   └── theme/
-│   └── integration/          # Plain folder container — no package.json, no src/
-│       ├── auth/             # @automatize/auth — Auth logic (Supabase)
-│       │   ├── hooks/
-│       │   ├── providers/
-│       │   └── utils/
-│       ├── storage/          # @automatize/storage — DB adapters (WatermelonDB)
-│       │   ├── models/
-│       │   ├── schemas/
-│       │   └── adapters/
-│       ├── sync/             # @automatize/sync — Sync engine (WatermelonDB)
-│       │   ├── engine/
-│       │   ├── operations/
-│       │   └── migrations/
-│       ├── supabase/         # Supabase CLI project (migrations, config)
-│       │   └── migrations/   # SQL migration files
-│       ├── payment/          # @automatize/integration-payment (future)
-│       ├── nfe/              # @automatize/integration-nfe (future)
-│       └── <domain>/         # One sub-package per integration domain
+│   └── ui/       # Design system + components
+│       ├── components/
+│       ├── tokens/
+│       └── theme/
 ├── docs/
 │   ├── adr/            # Architecture Decision Records
 │   ├── api-contract.md # API Sync Contract
@@ -660,22 +660,22 @@ Rules:
 - UI is a thin wrapper over core
 - Each sub-package inside integration/ has its own package.json
 - integration/ is a plain folder (no package.json, no src/): it is a pure container
-- pnpm-workspace.yaml includes `packages/integration/*` so every sub-package is automatically discovered by Turborepo and CI
+- pnpm-workspace.yaml includes `integration/*` so every sub-package is automatically discovered by Turborepo and CI
 
 ---
 
 ## Integration Module — Pattern (Mandatory)
 
-`packages/integration` is a **plain folder container**: it has no `package.json`, no `src/`, and no build tooling of its own. It simply groups all sub-packages that interact with external services or infrastructure. Sub-packages are independent workspace members discovered via `pnpm-workspace.yaml`.
+`integration/` is a **plain folder container**: it has no `package.json`, no `src/`, and no build tooling of its own. It simply groups all sub-packages that interact with external services or infrastructure. Sub-packages are independent workspace members discovered via `pnpm-workspace.yaml`.
 
 ### Structure rules
 
-- `packages/integration/` has no `package.json` and no `src/` — it is a pure container
-- Each integration domain lives in its own sub-package (e.g. `packages/integration/payment/`)
+- `integration/` has no `package.json` and no `src/` — it is a pure container
+- Each integration domain lives in its own sub-package (e.g. `integration/payment/`)
 - Sub-packages are independent workspace members with their own `package.json`, `tsconfig.json`, `tsup.config.ts` and tests
 - Infrastructure sub-packages keep their direct names: `@automatize/auth`, `@automatize/storage`, `@automatize/sync`
 - External integration sub-packages are named `@automatize/integration-<domain>` (e.g. `@automatize/integration-payment`)
-- `pnpm-workspace.yaml` includes `packages/integration/*` so every sub-package is automatically discovered by Turborepo and CI
+- `pnpm-workspace.yaml` includes `integration/*` so every sub-package is automatically discovered by Turborepo and CI
 
 ### When to create a new sub-package
 
@@ -686,7 +686,7 @@ Create a new sub-package for each external integration domain (payment, fiscal/N
 Every sub-package must have:
 
 - `package.json` (name: `@automatize/integration-<domain>` for external domains, or `@automatize/<name>` for infrastructure packages; `private: true`)
-- `tsconfig.json` (extends `"../../../tools/tsconfig/base.json"`)
+- `tsconfig.json` (extends `"../../tools/tsconfig/base.json"`)
 - `tsup.config.ts`
 - `vitest.config.ts`
 - `.eslintrc.js`
@@ -834,7 +834,7 @@ Minimum roles:
 - editor
 - viewer
 
-- Authorization lives in core (packages/core)
+- Authorization lives in core (`core/`)
 - UI only queries/applies permissions
 - Invalid writes fail in the domain (before persisting)
 
@@ -849,7 +849,7 @@ Writes:
 - update WatermelonDB immediately
 - always generate outbox
 
-Central sync engine (in packages/integration/sync):
+Central sync engine (in `integration/sync`):
 
 - push + incremental pull
 - idempotent (via opId ULID)
@@ -873,7 +873,7 @@ Central sync engine (in packages/integration/sync):
 Structure:
 
 ```ts
-// packages/integration/storage/migrations/index.ts
+// integration/storage/migrations/index.ts
 export default [
   {
     toVersion: 2,
@@ -906,12 +906,12 @@ export default [
 - Migrations in pure SQL
 - Always test in staging before prod
 
-> **Supabase CLI — working directory:** The Supabase project files live at `packages/integration/supabase/`.
-> Always run Supabase CLI commands with `--workdir packages/integration/supabase` or from inside that directory:
+> **Supabase CLI — working directory:** The Supabase project files live at `integration/supabase/`.
+> Always run Supabase CLI commands with `--workdir integration/supabase` or from inside that directory:
 >
 > ```bash
-> supabase db push --workdir packages/integration/supabase
-> supabase migration new <name> --workdir packages/integration/supabase
+> supabase db push --workdir integration/supabase
+> supabase migration new <name> --workdir integration/supabase
 > ```
 
 Rule:
@@ -1041,7 +1041,7 @@ Automatic redaction (Logger):
 ```ts
 function redactPII(data: any): any {
   // Remove PII from all known keys (email, name, phone, etc.)
-  // Implementation in packages/core/utils/redaction.ts
+  // Implementation in core/src/utils/redaction.ts
   return sanitizeData(data);
 }
 ```

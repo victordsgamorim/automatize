@@ -149,18 +149,18 @@ docs/rls-policies-template.md    # RLS template
 ### Packages
 
 ```
-packages/core/src/index.ts
-packages/core/src/types/index.ts
-packages/core/src/utils/index.ts
-packages/core/src/utils/index.test.ts
+core/src/index.ts
+core/src/types/index.ts
+core/src/utils/index.ts
+core/src/utils/index.test.ts
 packages/ui/src/index.ts
 packages/ui/src/tokens/colors.ts
 packages/ui/src/tokens/spacing.ts
 packages/ui/src/tokens/typography.ts
 packages/ui/src/tokens/index.ts
-packages/sync/src/index.ts
-packages/storage/src/index.ts
-packages/auth/src/index.ts
+integration/sync/src/index.ts
+integration/storage/src/index.ts
+integration/auth/src/index.ts
 ```
 
 ### Mobile App
