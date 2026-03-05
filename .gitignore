@@ -79,6 +79,9 @@ ehthumbs.db
 Thumbs.db
 Desktop.ini
 
+# Windows reserved device names (created by scripts redirecting to nul)
+/nul
+
 # ============================================================================
 # IDE & EDITOR FILES
 # ============================================================================

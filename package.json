@@ -6,6 +6,12 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:mobile": "turbo run dev --filter=@automatize/mobile",
+    "dev:mobile:android": "turbo run android --filter=@automatize/mobile",
+    "dev:mobile:ios": "turbo run ios --filter=@automatize/mobile",
+    "dev:mobile:web": "turbo run web --filter=@automatize/mobile",
+    "dev:web": "turbo run dev --filter=@automatize/web",
+    "dev:packages": "turbo run dev --filter=@automatize/core --filter=@automatize/ui --filter=@automatize/auth --filter=@automatize/storage --filter=@automatize/sync",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
@@ -20,13 +26,7 @@
     "node": ">=20.0.0",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@8.15.0",
-  "pnpm": {
-    "overrides": {
-      "@types/react": "^19.0.0",
-      "@types/react-dom": "^19.0.0"
-    }
-  },
+  "packageManager": "pnpm@10.30.3",
   "devDependencies": {
     "@automatize/eslint-config": "workspace:*",
     "@commitlint/cli": "^18.6.0",

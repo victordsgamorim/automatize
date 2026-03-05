@@ -32,11 +32,6 @@
     "plugins": ["expo-router", "expo-secure-store"],
     "experiments": {
       "typedRoutes": true
-    },
-    "deepLinks": [
-      "automatize://reset-password",
-      "automatize://switch-workspace",
-      "automatize://invite"
-    ]
+    }
   }
 }

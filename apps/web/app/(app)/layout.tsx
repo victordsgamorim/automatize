@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useIsAuthenticated } from '@automatize/auth';
 import { useRouter } from 'next/navigation';
 import styles from './app-layout.module.css';
@@ -10,8 +10,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useIsAuthenticated();
   const router = useRouter();
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
+
   if (!isAuthenticated) {
-    router.push('/(auth)/login');
     return null;
   }
 
