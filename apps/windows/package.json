@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "echo 'Windows app - Coming in Phase 11'",
-    "build": "echo 'Windows app - Coming in Phase 11'",
+    "dev": "echo 'Windows app - Coming soon'",
+    "build": "echo 'Windows app - Coming soon'",
     "lint": "echo 'Lint - Coming soon'",
     "typecheck": "echo 'Typecheck - Coming soon'",
     "test": "echo 'Tests - Coming soon'",

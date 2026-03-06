@@ -366,7 +366,7 @@ If you want to add social login (Google, GitHub, etc.):
 
 5. Click **Save**
 
-**Note:** Social login is optional for MVP. Can be added in Phase 2.
+**Note:** Social login is optional for MVP. Can be added later.
 
 ---
 

@@ -3,5 +3,5 @@
  * WatermelonDB adapters and models
  */
 
-// Placeholder - WatermelonDB setup will come in Phase 2
+// Placeholder - WatermelonDB setup coming soon
 export const STORAGE_VERSION = '0.0.0';

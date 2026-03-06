@@ -1,38 +1,38 @@
-# 🔧 Correções Aplicadas
+# 🔧 Fixes Applied
 
-Este documento lista as correções aplicadas durante o setup inicial do projeto.
+This document lists the fixes applied during the initial project setup.
 
-## Data: 2026-01-04
+## Date: 2026-01-04
 
 ---
 
-## ✅ Correção 1: TypeScript Incremental Build
+## ✅ Fix 1: TypeScript Incremental Build
 
-**Problema:**
+**Problem:**
 
 ```
 error TS5074: Option '--incremental' can only be specified using tsconfig,
 emitting to single file or when option '--tsBuildInfoFile' is specified.
 ```
 
-**Causa:**
-A opção `incremental: true` no tsconfig.json não é compatível com tsup.
+**Cause:**
+The `incremental: true` option in tsconfig.json is not compatible with tsup.
 
-**Solução:**
+**Solution:**
 
-- Removemos `"incremental": true` de `tools/tsconfig/base.json`
+- Removed `"incremental": true` from `tools/tsconfig/base.json`
 
-**Arquivo alterado:**
+**File changed:**
 
 - `tools/tsconfig/base.json`
 
-**Status:** ✅ Resolvido
+**Status:** ✅ Resolved
 
 ---
 
-## ✅ Correção 2: Metro Bundler + Monorepo
+## ✅ Fix 2: Metro Bundler + Monorepo
 
-**Problema:**
+**Problem:**
 
 ```
 ReferenceError: SHA-1 for file ... is not computed.
@@ -40,61 +40,61 @@ Potential causes:
   1) You have symlinks in your project
 ```
 
-**Causa:**
-Metro (bundler do React Native) não lida bem com symlinks do pnpm por padrão.
+**Cause:**
+Metro (React Native bundler) doesn't handle pnpm symlinks well by default.
 
-**Solução:**
+**Solution:**
 
-- Criamos `apps/mobile/metro.config.js` com configuração para monorepo
-- Configuramos `watchFolders`, `nodeModulesPaths` e `disableHierarchicalLookup`
+- Created `apps/mobile/metro.config.js` with monorepo configuration
+- Configured `watchFolders`, `nodeModulesPaths`, and `disableHierarchicalLookup`
 
-**Arquivo criado:**
+**File created:**
 
 - `apps/mobile/metro.config.js`
 
-**Status:** ✅ Resolvido
+**Status:** ✅ Resolved
 
 ---
 
-## ✅ Correção 3: Build do Mobile App
+## ✅ Fix 3: Mobile App Build
 
-**Problema:**
-`expo export` falhava durante `pnpm build` devido ao Metro/symlinks.
+**Problem:**
+`expo export` was failing during `pnpm build` due to Metro/symlinks.
 
-**Causa:**
-Mobile app não precisa de build para desenvolvimento (usa `expo start`).
+**Cause:**
+Mobile app doesn't need build for development (uses `expo start`).
 
-**Solução:**
+**Solution:**
 
-- Alteramos o script `build` no `package.json` do mobile para apenas um echo
+- Changed the `build` script in mobile `package.json` to just an echo
 - `"build": "echo 'Mobile app does not need build for development. Use: pnpm start'"`
 
-**Arquivo alterado:**
+**File changed:**
 
 - `apps/mobile/package.json`
 
-**Status:** ✅ Resolvido
+**Status:** ✅ Resolved
 
 ---
 
-## ✅ Correção 4: TypeScript Config Extends
+## ✅ Fix 4: TypeScript Config Extends
 
-**Problema:**
+**Problem:**
 
 ```
 File '@automatize/tsconfig/base.json' not found.
 ```
 
-**Causa:**
-TypeScript não resolve packages de workspace da mesma forma que Node.js resolve módulos.
+**Cause:**
+TypeScript doesn't resolve workspace packages the same way Node.js resolves modules.
 
-**Solução:**
+**Solution:**
 
-- Alteramos todos os `tsconfig.json` para usar caminhos relativos
-- De: `"extends": "@automatize/tsconfig/base.json"`
-- Para: `"extends": "../../tools/tsconfig/base.json"`
+- Changed all tsconfig.json files to use relative paths
+- From: `"extends": "@automatize/tsconfig/base.json"`
+- To: `"extends": "../../tools/tsconfig/base.json"`
 
-**Arquivos alterados:**
+**Files changed:**
 
 - `core/tsconfig.json`
 - `packages/ui/tsconfig.json`
@@ -103,13 +103,13 @@ TypeScript não resolve packages de workspace da mesma forma que Node.js resolve
 - `integration/sync/tsconfig.json`
 - `apps/mobile/tsconfig.json`
 
-**Status:** ✅ Resolvido
+**Status:** ✅ Resolved
 
 ---
 
-## 📊 Resultados Finais
+## 📊 Final Results
 
-Após todas as correções:
+After all fixes:
 
 ### ✅ Build
 
@@ -124,7 +124,7 @@ pnpm build
 
 ```bash
 pnpm typecheck
-# ✓ Sem erros em todos os pacotes
+# ✓ No errors in any packages
 ```
 
 ### ✅ Expo Dev Server
@@ -137,61 +137,61 @@ cd apps/mobile && pnpm start
 
 ---
 
-## 🎯 Status Atual
+## 🎯 Current Status
 
-| Item             | Status      | Notas                 |
-| ---------------- | ----------- | --------------------- |
-| Build completo   | ✅ Funciona | 8/8 pacotes           |
-| TypeCheck        | ✅ Funciona | Sem erros             |
-| Tests            | ✅ Funciona | 6/6 testes passando   |
-| Expo Server      | ✅ Funciona | http://localhost:8081 |
-| Lint             | ✅ Funciona | Configurado           |
-| Pre-commit hooks | ✅ Funciona | Husky configurado     |
+| Item             | Status   | Notes                 |
+| ---------------- | -------- | --------------------- |
+| Full Build       | ✅ Works | 8/8 packages          |
+| TypeCheck        | ✅ Works | No errors             |
+| Tests            | ✅ Works | 6/6 tests passing     |
+| Expo Server      | ✅ Works | http://localhost:8081 |
+| Lint             | ✅ Works | Configured            |
+| Pre-commit hooks | ✅ Works | Husky configured      |
 
 ---
 
-## 🚀 Como Usar Agora
+## 🚀 How to Use Now
 
-### 1. Build dos pacotes
+### 1. Build packages
 
 ```bash
 pnpm build
 ```
 
-### 2. Rodar testes
+### 2. Run tests
 
 ```bash
 pnpm test
 ```
 
-### 3. Rodar app mobile
+### 3. Run mobile app
 
 ```bash
 cd apps/mobile
 pnpm start
 ```
 
-Depois:
+Then:
 
-- Pressione `w` para web
-- Pressione `i` para iOS
-- Pressione `a` para Android
-- Escaneie o QR code com Expo Go
-
----
-
-## 📝 Notas
-
-1. **Avisos de versão no Expo:** São normais e não afetam o funcionamento. Podem ser corrigidos depois com Renovate.
-
-2. **Build do mobile:** Não é necessário para desenvolvimento. Só precisaremos buildar para produção (Phase 9+).
-
-3. **Cache do Turborepo:** Após o primeiro build, builds subsequentes são muito mais rápidos (229ms).
-
-4. **Hot Reload:** Funciona perfeitamente. Edite qualquer arquivo e salve para ver a mudança instantânea.
+- Press `w` for web
+- Press `i` for iOS
+- Press `a` for Android
+- Scan QR code with Expo Go
 
 ---
 
-**Última atualização:** 2026-01-04
-**Todas as correções aplicadas:** ✅ Sim
-**Projeto funcionando:** ✅ 100%
+## 📝 Notes
+
+1. **Expo version warnings:** These are normal and don't affect functionality. Can be fixed later with Renovate.
+
+2. **Mobile build:** Not needed for development. We'll only build for production (Phase 9+).
+
+3. **Turborepo cache:** After the first build, subsequent builds are much faster (229ms).
+
+4. **Hot Reload:** Works perfectly. Edit any file and save to see the change instantly.
+
+---
+
+**Last updated:** 2026-01-04
+**All fixes applied:** ✅ Yes
+**Project working:** ✅ 100%
