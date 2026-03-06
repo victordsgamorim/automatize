@@ -5,11 +5,13 @@
   "main": "base.js",
   "files": [
     "base.js",
-    "react-native.js"
+    "react-native.js",
+    "next.js"
   ],
   "exports": {
     "./base": "./base.js",
-    "./react-native": "./react-native.js"
+    "./react-native": "./react-native.js",
+    "./next": "./next.js"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^6.19.0",
@@ -18,6 +20,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-config-next": "^15.0.0",
     "eslint-plugin-react-native": "^4.1.0"
   }
 }

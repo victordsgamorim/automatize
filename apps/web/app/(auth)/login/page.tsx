@@ -349,7 +349,7 @@ export default function LoginScreen() {
               fontSize: '14px',
             }}
           >
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link
               href="/(auth)/register"
               style={{

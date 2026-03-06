@@ -233,7 +233,7 @@ export default function ForgotPasswordScreen() {
                     fontSize: '14px',
                   }}
                 >
-                  We've sent a password reset link to:
+                  We&apos;ve sent a password reset link to:
                 </p>
                 <p
                   style={{

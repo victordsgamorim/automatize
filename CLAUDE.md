@@ -660,3 +660,93 @@ After completing a feature:
 4. Run `pnpm lint` and `pnpm typecheck`
 5. Fix all errors/warnings
 6. Open PR only when all gates pass
+
+---
+
+## 23) Shared Tools — TypeScript and ESLint (Mandatory)
+
+Every module MUST use the shared configs from `tools/tsconfig` and `tools/eslint-config`. No module may define TypeScript or ESLint rules from scratch.
+
+### 23.1 Available Configs
+
+#### tools/tsconfig (`@automatize/tsconfig`)
+
+| File                | Use for                                                |
+| ------------------- | ------------------------------------------------------ |
+| `base.json`         | All non-platform modules (core, packages, integration) |
+| `react-native.json` | React Native / Expo apps (apps/mobile)                 |
+| `nextjs.json`       | Next.js apps (apps/web)                                |
+
+#### tools/eslint-config (`@automatize/eslint-config`)
+
+| File              | Export path      | Use for                                                |
+| ----------------- | ---------------- | ------------------------------------------------------ |
+| `base.js`         | `./base`         | All non-platform modules (core, packages, integration) |
+| `react-native.js` | `./react-native` | React Native / Expo apps (apps/mobile)                 |
+| `next.js`         | `./next`         | Next.js apps (apps/web)                                |
+
+### 23.2 Template for New Modules
+
+**Generic module** (`core/`, `packages/*`, `integration/*`):
+
+```jsonc
+// tsconfig.json
+{
+  "extends": "../../tools/tsconfig/base.json", // adjust depth as needed
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"],
+}
+```
+
+```javascript
+// .eslintrc.js
+module.exports = {
+  root: true,
+  extends: [require.resolve('../../tools/eslint-config/base.js')],
+};
+```
+
+**React Native / Expo app** (`apps/mobile`):
+
+```jsonc
+// tsconfig.json
+{
+  "extends": "../../tools/tsconfig/react-native.json",
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"],
+}
+```
+
+```javascript
+// .eslintrc.js
+module.exports = {
+  root: true,
+  extends: [require.resolve('../../tools/eslint-config/react-native.js')],
+};
+```
+
+**Next.js app** (`apps/web`):
+
+```jsonc
+// tsconfig.json
+{
+  "extends": "../../tools/tsconfig/nextjs.json",
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", ".next"],
+}
+```
+
+```javascript
+// .eslintrc.js
+module.exports = {
+  root: true,
+  extends: [require.resolve('../../tools/eslint-config/next.js')],
+  ignorePatterns: ['node_modules', '.next', 'out', '.eslintrc.js'],
+};
+```
+
+### 23.3 Rules
+
+- Adding `peerDependencies` for ESLint plugins directly in a module is forbidden — add them to `tools/eslint-config` instead.
+- Duplicating parser options, plugin lists, or rule overrides across modules is forbidden.
+- App-level `.eslintrc.js` files may only contain `root: true`, `extends`, `ignorePatterns`, and narrow `rules` overrides specific to that app (e.g., silencing a rule for a known exception with a comment explaining why).
