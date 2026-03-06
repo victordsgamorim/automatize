@@ -2,12 +2,12 @@
  * Auth Initialization for Mobile App
  * Initialize auth with mobile-specific storage and configuration
  *
- * This file is imported at app startup to configure the @automatize/auth package
+ * This file is imported at app startup to configure the @automatize/supabase-auth package
  */
 
 import Constants from 'expo-constants';
-import { initializeAuth, type AuthConfig } from '@automatize/auth';
-import { createMobileTokenStorage } from '@automatize/auth/adapters/mobile';
+import { initializeAuth, type AuthConfig } from '@automatize/supabase-auth';
+import { createMobileTokenStorage } from '@automatize/supabase-auth/adapters/mobile';
 
 /**
  * Get Supabase configuration from Expo constants

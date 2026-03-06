@@ -4,7 +4,7 @@
  */
 
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { useAuth } from '@automatize/auth';
+import { useAuth } from '@automatize/supabase-auth';
 import { Button, Text, Card, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;

@@ -1,5 +1,5 @@
 {
-  "name": "@automatize/auth",
+  "name": "@automatize/supabase-auth",
   "version": "0.0.0",
   "private": true,
   "main": "./dist/index.js",

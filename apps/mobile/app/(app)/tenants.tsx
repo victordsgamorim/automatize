@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native';
-import { useTenant } from '@automatize/auth';
+import { useTenant } from '@automatize/supabase-auth';
 import {
   Button,
   Text,

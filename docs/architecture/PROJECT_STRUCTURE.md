@@ -51,17 +51,20 @@ automatize/
 │   └── vitest.config.ts
 │
 ├── integration/                            # Plain container — no package.json
-│   ├── auth/                               # @automatize/auth — Authentication
-│   │   ├── src/
-│   │   │   ├── hooks/                      # Auth hooks
-│   │   │   ├── providers/                  # Auth provider
-│   │   │   ├── utils/                      # Auth utilities
-│   │   │   └── index.ts                    # Package entry
-│   │   ├── .eslintrc.js
-│   │   ├── package.json
-│   │   ├── tsconfig.json
-│   │   ├── tsup.config.ts
-│   │   └── vitest.config.ts
+│   ├── supabase/                           # Supabase container (plain folder, no package.json)
+│   │   ├── auth/                           # @automatize/supabase-auth — Authentication
+│   │   │   ├── src/
+│   │   │   │   ├── hooks/                  # Auth hooks
+│   │   │   │   ├── providers/              # Auth provider
+│   │   │   │   ├── utils/                  # Auth utilities
+│   │   │   │   └── index.ts                # Package entry
+│   │   │   ├── .eslintrc.js
+│   │   │   ├── package.json
+│   │   │   ├── tsconfig.json
+│   │   │   ├── tsup.config.ts
+│   │   │   └── vitest.config.ts
+│   │   │
+│   │   └── migrations/                     # Supabase CLI SQL migrations
 │   │
 │   ├── storage/                            # @automatize/storage — WatermelonDB
 │   │   ├── src/
@@ -86,9 +89,6 @@ automatize/
 │   │   ├── tsup.config.ts
 │   │   └── vitest.config.ts
 │   │
-│   └── supabase/                           # Supabase CLI project
-│       └── migrations/                     # SQL migration files
-│
 ├── packages/
 │   └── ui/                                 # Design system
 │       ├── src/
@@ -156,7 +156,7 @@ apps/mobile
   ├─> @automatize/ui
   ├─> @automatize/sync
   ├─> @automatize/storage
-  └─> @automatize/auth
+  └─> @automatize/supabase-auth
 
 @automatize/ui
   └─> @automatize/core
@@ -168,7 +168,7 @@ apps/mobile
 @automatize/storage
   └─> @automatize/core
 
-@automatize/auth
+@automatize/supabase-auth
   └─> @automatize/core
 
 @automatize/core
@@ -178,7 +178,7 @@ apps/mobile
 ### Build Order (Managed by Turborepo)
 
 1. `@automatize/core` (no dependencies)
-2. `@automatize/ui`, `@automatize/storage`, `@automatize/auth` (depend on core)
+2. `@automatize/ui`, `@automatize/storage`, `@automatize/supabase-auth` (depend on core)
 3. `@automatize/sync` (depends on core + storage)
 4. `apps/mobile` (depends on all packages)
 
@@ -250,14 +250,14 @@ apps/mobile
 
 ### Package Breakdown
 
-| Package               | Files | Lines (approx) |
-| --------------------- | ----- | -------------- |
-| `@automatize/core`    | 5     | ~200           |
-| `@automatize/ui`      | 5     | ~300           |
-| `@automatize/sync`    | 2     | ~20            |
-| `@automatize/storage` | 2     | ~20            |
-| `@automatize/auth`    | 2     | ~20            |
-| `apps/mobile`         | 4     | ~100           |
+| Package                     | Files | Lines (approx) |
+| --------------------------- | ----- | -------------- |
+| `@automatize/core`          | 5     | ~200           |
+| `@automatize/ui`            | 5     | ~300           |
+| `@automatize/sync`          | 2     | ~20            |
+| `@automatize/storage`       | 2     | ~20            |
+| `@automatize/supabase-auth` | 2     | ~20            |
+| `apps/mobile`               | 4     | ~100           |
 
 ---
 
@@ -268,7 +268,7 @@ As the project grows, expect these additions:
 ### Phase 1 (Auth & Multi-tenancy)
 
 ```
-integration/auth/src/
+integration/supabase/auth/src/
   ├── hooks/
   │   ├── useAuth.ts
   │   ├── useSession.ts

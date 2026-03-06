@@ -1,6 +1,17 @@
 packages:
-  - 'apps/*'
+  # Apps
+  - 'apps/mobile'
+  - 'apps/web'
+  - 'apps/windows'
+  # Core
   - 'core'
-  - 'packages/*'
-  - 'integration/*'
-  - 'tools/*'
+  # Design system
+  - 'packages/ui'
+  # Integration — local infrastructure
+  - 'integration/storage'
+  - 'integration/sync'
+  # Integration — Supabase ecosystem
+  - 'integration/supabase/auth'
+  # Tools
+  - 'tools/eslint-config'
+  - 'tools/tsconfig'

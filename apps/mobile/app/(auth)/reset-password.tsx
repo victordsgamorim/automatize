@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { useAuth } from '@automatize/auth';
+import { useAuth } from '@automatize/supabase-auth';
 import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;

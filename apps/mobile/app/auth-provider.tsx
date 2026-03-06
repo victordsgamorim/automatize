@@ -4,7 +4,7 @@
  */
 
 import { ReactNode, useEffect, useState } from 'react';
-import { AuthProvider } from '@automatize/auth';
+import { AuthProvider } from '@automatize/supabase-auth';
 import { initializeAuthForMobile } from '@/lib/auth-init';
 
 interface Props {

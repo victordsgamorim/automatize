@@ -374,7 +374,7 @@ If you need to handle deep links before reaching the route:
 
 import { useEffect } from 'react';
 import * as Linking from 'expo-linking';
-import { useAuth } from '@automatize/auth';
+import { useAuth } from '@automatize/supabase-auth';
 
 const linking = {
   prefixes: ['automatize://', 'https://automatize.app'],

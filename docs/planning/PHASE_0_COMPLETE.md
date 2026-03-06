@@ -21,7 +21,7 @@ Phase 0 has successfully established a solid technical foundation for the Automa
   - `@automatize/ui` - Design system
   - `@automatize/sync` - Sync engine (structure)
   - `@automatize/storage` - WatermelonDB adapters (structure)
-  - `@automatize/auth` - Authentication logic (structure)
+  - `@automatize/supabase-auth` - Authentication logic (structure)
 - [x] Apps structure created:
   - `@automatize/mobile` - Expo app (iOS/Android/Web)
   - `@automatize/web` - Web-specific (placeholder)
