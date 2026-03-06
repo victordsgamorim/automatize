@@ -1,37 +1,37 @@
 # 🔧 Troubleshooting
 
-Soluções para problemas comuns e correções aplicadas.
+Solutions for common problems and applied fixes.
 
 ---
 
-## 📝 Correções Aplicadas
+## 📝 Fixes Applied
 
 ### [Fixes Applied](FIXES_APPLIED.md)
 
-Histórico de todas as correções aplicadas durante o setup.
+History of all fixes applied during project setup.
 
-**Correções documentadas:**
+**Documented fixes:**
 
 1. TypeScript incremental build
 2. Metro Bundler + Monorepo
-3. Build do Mobile App
+3. Mobile App Build
 4. TypeScript Config Extends
 
 ---
 
-## ❓ Problemas Comuns
+## ❓ Common Problems
 
-### Instalação
+### Installation
 
 #### `pnpm: command not found`
 
-**Solução:**
+**Solution:**
 
 ```bash
 sudo npm install -g pnpm@8
 ```
 
-ou
+Or without sudo (recommended):
 
 ```bash
 npm install -g pnpm@8 --prefix ~/.npm-global
@@ -42,8 +42,8 @@ export PATH=~/.npm-global/bin:$PATH
 
 #### `EACCES: permission denied`
 
-**Solução:**
-Use `sudo` ou instale com `--prefix ~/.npm-global`
+**Solution:**
+Use `sudo` or install with `--prefix ~/.npm-global`
 
 ---
 
@@ -51,14 +51,14 @@ Use `sudo` ou instale com `--prefix ~/.npm-global`
 
 #### `error TS5074: Option '--incremental'...`
 
-**Solução:**
-Já corrigido! Se ainda aparecer, verifique se `incremental: true` foi removido de `tools/tsconfig/base.json`
+**Solution:**
+Already fixed! If still appearing, verify that `incremental: true` was removed from `tools/tsconfig/base.json`
 
 ---
 
 #### `Cannot find module '@automatize/core'`
 
-**Solução:**
+**Solution:**
 
 ```bash
 pnpm build
@@ -70,10 +70,10 @@ pnpm build
 
 #### `ReferenceError: SHA-1 for file ... is not computed`
 
-**Solução:**
-Já corrigido! `metro.config.js` criado.
+**Solution:**
+Already fixed! `metro.config.js` was created.
 
-Se ainda aparecer:
+If still appearing:
 
 ```bash
 cd apps/mobile
@@ -86,7 +86,7 @@ pnpm start --clear
 
 #### `Unable to resolve module`
 
-**Solução:**
+**Solution:**
 
 ```bash
 cd apps/mobile
@@ -99,17 +99,17 @@ pnpm start --clear
 
 ---
 
-#### App não abre no celular
+#### App not opening on phone
 
 **Checklist:**
 
-- [ ] Celular e PC na mesma rede WiFi?
-- [ ] Expo Go instalado?
-- [ ] QR code escaneado corretamente?
-- [ ] Firewall bloqueando porta 8081?
+- [ ] Phone and PC on same WiFi network?
+- [ ] Expo Go installed?
+- [ ] QR code scanned correctly?
+- [ ] Firewall blocking port 8081?
 
-**Solução alternativa:**
-Pressione `w` para abrir no navegador
+**Alternative solution:**
+Press `w` to open in browser
 
 ---
 
@@ -117,10 +117,10 @@ Pressione `w` para abrir no navegador
 
 #### `File '@automatize/tsconfig/base.json' not found`
 
-**Solução:**
-Já corrigido! Agora usa caminhos relativos.
+**Solution:**
+Already fixed! Now uses relative paths.
 
-Se ainda aparecer, verifique se o tsconfig.json usa:
+If still appearing, verify that tsconfig.json uses:
 
 ```json
 {
@@ -134,9 +134,9 @@ Se ainda aparecer, verifique se o tsconfig.json usa:
 
 #### Pre-commit hook failing
 
-**Causa:** Lint ou format errors
+**Cause:** Lint or format errors
 
-**Solução:**
+**Solution:**
 
 ```bash
 pnpm lint --fix
@@ -149,9 +149,9 @@ git commit -m "..."
 
 #### Commit message rejected
 
-**Causa:** Não segue Conventional Commits
+**Cause:** Does not follow Conventional Commits
 
-**Formato correto:**
+**Correct format:**
 
 ```
 <type>(<scope>): <subject>
@@ -159,7 +159,7 @@ git commit -m "..."
 Types: feat, fix, docs, refactor, test, chore, perf, ci
 ```
 
-**Exemplo:**
+**Example:**
 
 ```bash
 git commit -m "feat(invoices): add invoice list"
@@ -167,73 +167,73 @@ git commit -m "feat(invoices): add invoice list"
 
 ---
 
-## 🚨 Problemas Críticos
+## 🚨 Critical Issues
 
-### Build completamente quebrado
+### Completely broken build
 
 ```bash
-# Limpar tudo
+# Clean everything
 pnpm clean
 
-# Reinstalar
+# Reinstall
 pnpm install
 
-# Rebuildar
+# Rebuild
 pnpm build
 ```
 
 ---
 
-### Expo completamente quebrado
+### Completely broken Expo
 
 ```bash
 cd apps/mobile
 
-# Limpar cache Expo
+# Clear Expo cache
 rm -rf .expo
 
-# Limpar node_modules
+# Clear node_modules
 rm -rf node_modules
 
-# Reinstalar
+# Reinstall
 cd ../..
 pnpm install
 
-# Rebuildar pacotes
+# Rebuild packages
 pnpm build
 
-# Tentar novamente
+# Try again
 cd apps/mobile
 pnpm start --clear
 ```
 
 ---
 
-## 📞 Ainda com Problemas?
+## 📞 Still Having Issues?
 
-1. **Verifique [Fixes Applied](FIXES_APPLIED.md)** - Pode já ter solução
-2. **Veja logs completos** - Use `--verbose` nos comandos
-3. **Procure no GitHub Issues** - Pode ser um problema conhecido
-4. **Crie uma issue** - Com logs completos e passos para reproduzir
+1. **Check [Fixes Applied](FIXES_APPLIED.md)** - Solution may already exist
+2. **See full logs** - Use `--verbose` on commands
+3. **Search GitHub Issues** - May be a known issue
+4. **Create an issue** - With full logs and reproduction steps
 
 ---
 
-## 🔍 Debug Avançado
+## 🔍 Advanced Debugging
 
-### Ver logs do Metro
+### View Metro logs
 
 ```bash
 cd apps/mobile
 REACT_NATIVE_PACKAGER_HOSTNAME=localhost pnpm start --verbose
 ```
 
-### Ver logs do Turbo
+### View Turbo logs
 
 ```bash
 pnpm build --verbose
 ```
 
-### Ver o que o pnpm está instalando
+### See what pnpm is installing
 
 ```bash
 pnpm install --verbose
@@ -241,4 +241,4 @@ pnpm install --verbose
 
 ---
 
-**Última atualização:** 2026-01-04
+**Last updated:** 2026-01-04

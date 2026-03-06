@@ -2,7 +2,39 @@
 
 Cross-platform invoice management system with offline-first architecture.
 
-> 📚 **[Documentação Completa](docs/INDEX.md)** | 🚀 **[Quick Start](docs/guides/QUICK_START.md)** | 📊 **[Status](docs/planning/STATUS.md)** | 🗺️ **[Roadmap](docs/planning/ROADMAP.md)**
+> 📁 **[Modules](core/README.md)** | 🔐 **[Auth](integration/supabase/auth/README.md)** | 🗺️ **Roadmap** (local-only)
+
+---
+
+## Architecture: Modular Monolith
+
+This project follows a **Modular Monolith** architecture with **Core-Driven Dependency Injection**.
+
+```
+apps/                 # Platform applications
+├── mobile/           # Expo app (iOS + Android + Web)
+├── web/              # Next.js web app
+└── windows/          # Windows desktop app
+
+core/                 # Dependency injection & interfaces
+
+packages/             # Feature modules
+└── ui/               # Design system
+
+integration/          # Infrastructure implementations
+├── supabase/        # Supabase clients & auth
+├── storage/         # WatermelonDB
+└── sync/            # Sync engine
+```
+
+### Architecture
+
+This project follows a **Modular Monolith** approach:
+
+- **Core** — DI container and interfaces
+- **Packages** — Feature modules (UI design system)
+- **Integration** — Concrete implementations
+- **Apps** — Platform-specific entry points
 
 ## Overview
 
@@ -10,7 +42,7 @@ Automatize is a production-grade invoice management application supporting:
 
 - **Mobile**: iOS and Android (via Expo)
 - **Web**: Progressive Web App
-- **Desktop**: Windows (planned for Phase 11)
+- **Desktop**: Windows
 
 ### Key Features
 
@@ -68,25 +100,23 @@ Automatize is a production-grade invoice management application supporting:
 automatize/
 ├── apps/
 │   ├── mobile/         # Expo app (iOS + Android + Web)
-│   ├── web/            # Web-specific optimizations (Phase 10)
-│   └── windows/        # Windows desktop app (Phase 11)
-├── core/               # Platform-agnostic business logic
-├── integration/        # Plain container — no package.json
-│   ├── supabase/       # Supabase container (plain folder, no package.json)
-│   │   ├── auth/       # @automatize/supabase-auth — Authentication logic (Supabase)
-│   │   └── migrations/ # Supabase CLI SQL migrations
-│   ├── storage/        # @automatize/storage — WatermelonDB models & schemas
-│   └── sync/           # @automatize/sync — Sync engine
+│   ├── web/            # Next.js web app
+│   └── windows/        # Windows desktop app
+├── core/               # Dependency injection & interfaces
+│   └── README.md
+├── integration/        # Infrastructure implementations
+│   ├── supabase/       # Supabase ecosystem
+│   │   ├── auth/       # @automatize/supabase-auth
+│   │   │   └── README.md
+│   │   └── docs/       # Auth config, RLS policies
+│   ├── storage/        # @automatize/storage
+│   └── sync/           # @automatize/sync
 ├── packages/
 │   └── ui/             # Design system + components
-├── docs/
-│   ├── adr/            # Architecture Decision Records
-│   └── runbooks/       # Operational guides
-├── tools/
-│   ├── eslint-config/  # Shared ESLint configs
-│   └── tsconfig/       # Shared TypeScript configs
-└── .github/
-    └── workflows/      # CI/CD pipelines
+│       └── README.md
+└── tools/
+    ├── eslint-config/  # Shared ESLint configs
+    └── tsconfig/       # Shared TypeScript configs
 ```
 
 ---
@@ -189,13 +219,11 @@ Each package has its own scripts:
 
 ## Architecture Decisions
 
-See [docs/adr/](docs/adr/) for Architecture Decision Records (ADRs).
+Key decisions are documented in the project context file.
 
-Key decisions:
-
-- **ADR-001**: Monorepo with Turborepo (Phase 0)
-- **ADR-002**: Offline-first with WatermelonDB (Phase 2)
-- **ADR-003**: Multi-tenancy with RLS (Phase 1)
+- **ADR-001**: Monorepo with Turborepo
+- **ADR-002**: Offline-first with WatermelonDB
+- **ADR-003**: Multi-tenancy with RLS
 
 ---
 
@@ -308,17 +336,13 @@ pnpm test:watch
 
 ### RLS Policies
 
-See [docs/rls-policies-template.md](docs/rls-policies-template.md) for RLS policy templates.
+See [integration/supabase/docs/RLS_POLICIES.md](integration/supabase/docs/RLS_POLICIES.md) for RLS policy templates.
 
 ---
 
 ## Roadmap
 
-We follow an incremental, phase-based roadmap. See [docs/planning/ROADMAP.md](docs/planning/ROADMAP.md) for details.
-
-**Current Phase:** Phase 0 - Foundation & Setup ✅
-
-**Next Phase:** Phase 1 - Authentication & Multi-tenancy
+See local documentation for details (not committed to git).
 
 ---
 
@@ -378,6 +402,6 @@ Built with:
 
 ---
 
-**Status:** Phase 0 Complete ✅
+**Status:** ✅
 **Version:** 0.0.0
 **Last Updated:** 2026-01-04
