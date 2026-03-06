@@ -2,11 +2,11 @@
  * Auth Initialization for Web App
  * Initialize auth with web-specific storage and configuration
  *
- * This file is imported at app startup to configure the @automatize/auth package
+ * This file is imported at app startup to configure the @automatize/supabase-auth package
  */
 
-import { initializeAuth, type AuthConfig } from '@automatize/auth';
-import { createWebTokenStorage } from '@automatize/auth/adapters/web';
+import { initializeAuth, type AuthConfig } from '@automatize/supabase-auth';
+import { createWebTokenStorage } from '@automatize/supabase-auth/adapters/web';
 
 /**
  * Get Supabase configuration from environment variables

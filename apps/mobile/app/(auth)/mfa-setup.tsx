@@ -12,7 +12,7 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { useMFA } from '@automatize/auth';
+import { useMFA } from '@automatize/supabase-auth';
 import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
 
 const theme = semanticColors.light;

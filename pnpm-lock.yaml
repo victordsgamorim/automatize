@@ -45,15 +45,15 @@ importers:
 
   apps/mobile:
     dependencies:
-      '@automatize/auth':
-        specifier: workspace:*
-        version: link:../../integration/auth
       '@automatize/core':
         specifier: workspace:*
         version: link:../../core
       '@automatize/storage':
         specifier: workspace:*
         version: link:../../integration/storage
+      '@automatize/supabase-auth':
+        specifier: workspace:*
+        version: link:../../integration/supabase/auth
       '@automatize/sync':
         specifier: workspace:*
         version: link:../../integration/sync
@@ -130,12 +130,12 @@ importers:
 
   apps/web:
     dependencies:
-      '@automatize/auth':
-        specifier: workspace:*
-        version: link:../../integration/auth
       '@automatize/core':
         specifier: workspace:*
         version: link:../../core
+      '@automatize/supabase-auth':
+        specifier: workspace:*
+        version: link:../../integration/supabase/auth
       '@automatize/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -340,52 +340,6 @@ importers:
         specifier: ^1.2.1
         version: 1.6.1(@types/node@20.19.35)(lightningcss@1.31.1)(terser@5.46.0)
 
-  integration/auth:
-    dependencies:
-      '@automatize/core':
-        specifier: workspace:*
-        version: link:../../core
-      '@supabase/supabase-js':
-        specifier: ^2.39.3
-        version: 2.98.0
-      expo-constants:
-        specifier: ^15.0.1
-        version: 15.4.6(expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0))
-      expo-secure-store:
-        specifier: ^12.8.1
-        version: 12.8.1(expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0))
-      zod:
-        specifier: ^3.22.4
-        version: 3.25.76
-    devDependencies:
-      '@automatize/tsconfig':
-        specifier: workspace:*
-        version: link:../../tools/tsconfig
-      '@types/react':
-        specifier: ^18.3.0
-        version: 18.3.28
-      '@vitest/coverage-v8':
-        specifier: ^1.2.1
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.35)(lightningcss@1.31.1)(terser@5.46.0))
-      eslint:
-        specifier: ^8.56.0
-        version: 8.57.1
-      react:
-        specifier: 18.2.0
-        version: 18.2.0
-      react-native:
-        specifier: ^0.73.2
-        version: 0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0)
-      tsup:
-        specifier: ^8.0.1
-        version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(typescript@5.9.3)(yaml@2.8.2)
-      typescript:
-        specifier: ^5.3.3
-        version: 5.9.3
-      vitest:
-        specifier: ^1.2.1
-        version: 1.6.1(@types/node@20.19.35)(lightningcss@1.31.1)(terser@5.46.0)
-
   integration/storage:
     dependencies:
       '@automatize/core':
@@ -410,6 +364,52 @@ importers:
       eslint:
         specifier: ^8.56.0
         version: 8.57.1
+      tsup:
+        specifier: ^8.0.1
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+      vitest:
+        specifier: ^1.2.1
+        version: 1.6.1(@types/node@20.19.35)(lightningcss@1.31.1)(terser@5.46.0)
+
+  integration/supabase/auth:
+    dependencies:
+      '@automatize/core':
+        specifier: workspace:*
+        version: link:../../../core
+      '@supabase/supabase-js':
+        specifier: ^2.39.3
+        version: 2.98.0
+      expo-constants:
+        specifier: ^15.0.1
+        version: 15.4.6(expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0))
+      expo-secure-store:
+        specifier: ^12.8.1
+        version: 12.8.1(expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0))
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.76
+    devDependencies:
+      '@automatize/tsconfig':
+        specifier: workspace:*
+        version: link:../../../tools/tsconfig
+      '@types/react':
+        specifier: ^18.3.0
+        version: 18.3.28
+      '@vitest/coverage-v8':
+        specifier: ^1.2.1
+        version: 1.6.1(vitest@1.6.1(@types/node@20.19.35)(lightningcss@1.31.1)(terser@5.46.0))
+      eslint:
+        specifier: ^8.56.0
+        version: 8.57.1
+      react:
+        specifier: 18.2.0
+        version: 18.2.0
+      react-native:
+        specifier: ^0.73.2
+        version: 0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0)
       tsup:
         specifier: ^8.0.1
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(typescript@5.9.3)(yaml@2.8.2)

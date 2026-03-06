@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@automatize/auth';
+import { useAuth } from '@automatize/supabase-auth';
 import styles from './dashboard.module.css';
 
 export default function DashboardPage() {

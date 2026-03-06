@@ -6,7 +6,7 @@
 
 import { useColorScheme } from 'react-native';
 import { Tabs } from 'expo-router';
-import { useAuth } from '@automatize/auth';
+import { useAuth } from '@automatize/supabase-auth';
 import {
   HomeIcon,
   UserIcon,

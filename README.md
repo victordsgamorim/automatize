@@ -72,10 +72,11 @@ automatize/
 │   └── windows/        # Windows desktop app (Phase 11)
 ├── core/               # Platform-agnostic business logic
 ├── integration/        # Plain container — no package.json
-│   ├── auth/           # @automatize/auth — Authentication logic (Supabase)
+│   ├── supabase/       # Supabase container (plain folder, no package.json)
+│   │   ├── auth/       # @automatize/supabase-auth — Authentication logic (Supabase)
+│   │   └── migrations/ # Supabase CLI SQL migrations
 │   ├── storage/        # @automatize/storage — WatermelonDB models & schemas
-│   ├── sync/           # @automatize/sync — Sync engine
-│   └── supabase/       # Supabase CLI project (SQL migrations)
+│   └── sync/           # @automatize/sync — Sync engine
 ├── packages/
 │   └── ui/             # Design system + components
 ├── docs/

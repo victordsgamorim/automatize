@@ -1,5 +1,5 @@
 /**
- * @automatize/auth
+ * @automatize/supabase-auth
  * Authentication and multi-tenancy library for Automatize
  */
 
@@ -69,8 +69,8 @@ export type { ITokenStorage as TokenStorage } from './storage/tokenStorage';
 // Note: Storage implementations (createWebTokenStorage, createMobileTokenStorage)
 // are not exported here to prevent platform-specific code from being bundled.
 // Import directly from their respective files:
-// - import { createWebTokenStorage } from '@automatize/auth/adapters/web'
-// - import { createMobileTokenStorage } from '@automatize/auth/adapters/mobile'
+// - import { createWebTokenStorage } from '@automatize/supabase-auth/adapters/web'
+// - import { createMobileTokenStorage } from '@automatize/supabase-auth/adapters/mobile'
 
 // ============================================================================
 // HOOKS

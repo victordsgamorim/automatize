@@ -122,7 +122,7 @@ This builds all packages in the correct order (respecting dependencies).
 ✓ @automatize/ui built successfully
 ✓ @automatize/sync built successfully
 ✓ @automatize/storage built successfully
-✓ @automatize/auth built successfully
+✓ @automatize/supabase-auth built successfully
 ```
 
 ### 4. Run Tests
@@ -244,7 +244,7 @@ automatize/
 │   │
 │   ├── sync/             # Sync engine (Phase 2)
 │   ├── storage/          # WatermelonDB (Phase 2)
-│   └── auth/             # Authentication (Phase 1)
+│   └── supabase/auth/    # Authentication (Phase 1) — @automatize/supabase-auth
 │
 ├── docs/
 │   ├── adr/              # Architecture decisions

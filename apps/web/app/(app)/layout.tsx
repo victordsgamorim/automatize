@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useIsAuthenticated } from '@automatize/auth';
+import { useIsAuthenticated } from '@automatize/supabase-auth';
 import { useRouter } from 'next/navigation';
 import styles from './app-layout.module.css';
 import Navigation from './navigation';

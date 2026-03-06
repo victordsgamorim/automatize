@@ -622,10 +622,6 @@ project/
 │   ├── types/    # TypeScript types/interfaces
 │   └── utils/    # Pure helpers
 ├── integration/          # Plain folder container — no package.json, no src/
-│   ├── auth/             # @automatize/auth — Auth logic (Supabase)
-│   │   ├── hooks/
-│   │   ├── providers/
-│   │   └── utils/
 │   ├── storage/          # @automatize/storage — DB adapters (WatermelonDB)
 │   │   ├── models/
 │   │   ├── schemas/
@@ -634,8 +630,12 @@ project/
 │   │   ├── engine/
 │   │   ├── operations/
 │   │   └── migrations/
-│   ├── supabase/         # Supabase CLI project (migrations, config)
-│   │   └── migrations/   # SQL migration files
+│   ├── supabase/         # Supabase container (plain folder, no package.json)
+│   │   ├── auth/         # @automatize/supabase-auth — Auth logic (Supabase SDK)
+│   │   │   ├── hooks/
+│   │   │   ├── providers/
+│   │   │   └── utils/
+│   │   └── migrations/   # Supabase CLI SQL migration files
 │   ├── payment/          # @automatize/integration-payment (future)
 │   ├── nfe/              # @automatize/integration-nfe (future)
 │   └── <domain>/         # One sub-package per integration domain
@@ -660,7 +660,8 @@ Rules:
 - UI is a thin wrapper over core
 - Each sub-package inside integration/ has its own package.json
 - integration/ is a plain folder (no package.json, no src/): it is a pure container
-- pnpm-workspace.yaml includes `integration/*` so every sub-package is automatically discovered by Turborepo and CI
+- integration/supabase/ is a second-level plain container (no package.json, no src/) grouping all packages that use the Supabase SDK directly
+- pnpm-workspace.yaml lists every package explicitly (no globs); each new package requires a conscious addition to the file
 
 ---
 
@@ -673,20 +674,32 @@ Rules:
 - `integration/` has no `package.json` and no `src/` — it is a pure container
 - Each integration domain lives in its own sub-package (e.g. `integration/payment/`)
 - Sub-packages are independent workspace members with their own `package.json`, `tsconfig.json`, `tsup.config.ts` and tests
-- Infrastructure sub-packages keep their direct names: `@automatize/auth`, `@automatize/storage`, `@automatize/sync`
+- Infrastructure sub-packages keep their direct names: `@automatize/storage`, `@automatize/sync`
 - External integration sub-packages are named `@automatize/integration-<domain>` (e.g. `@automatize/integration-payment`)
-- `pnpm-workspace.yaml` includes `integration/*` so every sub-package is automatically discovered by Turborepo and CI
+- `pnpm-workspace.yaml` lists every package explicitly (no globs); each new package requires a conscious addition to the file
+
+### Supabase sub-container (`integration/supabase/`)
+
+`integration/supabase/` is a **second-level plain container**: it has no `package.json` and no `src/` — it is a pure container grouping all sub-packages that depend directly on the Supabase SDK.
+
+Rules:
+
+- `integration/supabase/` has no `package.json` and no `src/` — pure container
+- All packages inside use the Supabase SDK directly
+- Package names follow the convention `@automatize/supabase-<domain>` (e.g. `@automatize/supabase-auth`, `@automatize/supabase-functions`)
+- New Supabase packages are created at `integration/supabase/<domain>/` and listed explicitly in `pnpm-workspace.yaml` under the "Integration — Supabase ecosystem" section
+- `integration/supabase/migrations/` holds Supabase CLI SQL migration files and is **not** a package — it has no `package.json`
 
 ### When to create a new sub-package
 
-Create a new sub-package for each external integration domain (payment, fiscal/NFe, ERP, CRM, shipping, etc.). Infrastructure packages (auth, storage, sync) already live here. Do not mix domains inside a single sub-package.
+Create a new sub-package for each external integration domain (payment, fiscal/NFe, ERP, CRM, shipping, etc.). Infrastructure packages (storage, sync) already live directly under `integration/`. Packages that use the Supabase SDK directly must live under `integration/supabase/<domain>/`. Do not mix domains inside a single sub-package.
 
 ### Sub-package scaffolding checklist
 
 Every sub-package must have:
 
-- `package.json` (name: `@automatize/integration-<domain>` for external domains, or `@automatize/<name>` for infrastructure packages; `private: true`)
-- `tsconfig.json` (extends `"../../tools/tsconfig/base.json"`)
+- `package.json` (name: `@automatize/integration-<domain>` for external domains, `@automatize/supabase-<domain>` for Supabase packages, or `@automatize/<name>` for other infrastructure packages; `private: true`)
+- `tsconfig.json` (extends `"../../tools/tsconfig/base.json"` for direct sub-packages, or `"../../../tools/tsconfig/base.json"` for Supabase sub-packages)
 - `tsup.config.ts`
 - `vitest.config.ts`
 - `.eslintrc.js`

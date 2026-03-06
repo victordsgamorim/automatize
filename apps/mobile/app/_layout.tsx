@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
-import { useAuth, useIsAuthenticated } from '@automatize/auth';
+import { useAuth, useIsAuthenticated } from '@automatize/supabase-auth';
 import { RootErrorBoundary } from '@automatize/ui';
 import { router } from 'expo-router';
 import { AuthProviderWrapper } from './auth-provider';
