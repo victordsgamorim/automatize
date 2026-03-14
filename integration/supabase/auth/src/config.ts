@@ -4,9 +4,23 @@
  * This prevents direct imports of platform-specific modules at bundle time
  */
 
+import type { ISecureStorageAdapter } from './storage/secure-storage.adapter';
+
 export interface AuthConfig {
   supabaseUrl: string;
   supabaseAnonKey: string;
+  /**
+   * Custom storage adapter for Supabase session persistence.
+   *
+   * Provide a secure adapter to prevent XSS token theft:
+   * - Web (SSR / Next.js): `CookieStorageAdapter` backed by httpOnly cookies.
+   * - Mobile (iOS / Android): `MobileTokenStorage` via expo-secure-store.
+   * - Tests / SSR (no persistence): `InMemoryStorageAdapter`.
+   *
+   * When omitted Supabase will use its built-in storage (localStorage in the
+   * browser, in-memory on Node/RN).
+   */
+  storage?: ISecureStorageAdapter;
 }
 
 export interface ITokenStorage {

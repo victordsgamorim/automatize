@@ -135,6 +135,75 @@ export { AuthProvider, AuthContext } from './providers/AuthProvider';
 export type { AuthProviderProps } from './providers/AuthProvider';
 
 // ============================================================================
+// DATA LAYER HOOK
+// ============================================================================
+
+export { useAuthRepository } from './hooks/useAuthRepository';
+export type {
+  AuthRepositoryState,
+  AuthRepositoryActions,
+  UseAuthRepositoryReturn,
+} from './hooks/useAuthRepository';
+
+// ============================================================================
+// DATA LAYER (domain model + repository interface + remote data source)
+// ============================================================================
+
+// User data model
+export type {
+  SupabaseUser,
+  SupabaseIdentity,
+  SupabaseAppMetadata,
+  SupabaseUserMetadata,
+  SupabaseUserSource,
+} from './data/user.model';
+export {
+  createSupabaseUser,
+  isEmailConfirmed,
+  isPhoneConfirmed,
+  getPrimaryProvider,
+  getProviders,
+} from './data/user.model';
+
+// Repository interface + result / event types
+export type {
+  AuthRepository,
+  AuthSuccess,
+  AuthPendingConfirmation,
+  AuthFailure,
+  AuthFailureCode,
+  SignUpResult,
+  SignInResult,
+  SignOutResult,
+  GetCurrentUserResult,
+  AuthEvent,
+  AuthStateChangePayload,
+  AuthStateChangeCallback,
+  AuthStateSubscription,
+} from './data/auth.repository';
+
+// Remote data source
+export { SupabaseAuthRemoteDataSource } from './data/supabase-auth.datasource';
+
+// ============================================================================
+// SECURE STORAGE ADAPTERS
+// ============================================================================
+
+export type {
+  ISecureStorageAdapter,
+  CookieCallbacks,
+} from './storage/secure-storage.adapter';
+export {
+  InMemoryStorageAdapter,
+  CookieStorageAdapter,
+  createInMemoryStorage,
+  createCookieStorage,
+} from './storage/secure-storage.adapter';
+
+// Supabase client factory (for use with custom storage)
+export { createSupabaseClient } from './client';
+
+// ============================================================================
 // VERSION
 // ============================================================================
 

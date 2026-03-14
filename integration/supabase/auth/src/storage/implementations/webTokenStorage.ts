@@ -1,8 +1,22 @@
 /**
- * Web Token Storage Implementation
- * Uses localStorage for web applications
- * Note: This is NOT recommended for production without encryption
- * Consider using @supabase/auth-js which handles this automatically
+ * Web Token Storage Implementation (Legacy / Development only)
+ *
+ * @deprecated
+ * This implementation uses `localStorage`, which is accessible to any
+ * JavaScript on the page and therefore **vulnerable to XSS attacks**.
+ *
+ * For production web deployments, use `CookieStorageAdapter` from
+ * `../secure-storage.adapter` instead, backed by httpOnly cookies managed
+ * on the server side.
+ *
+ * This file is kept for:
+ * - Local development when a cookie endpoint is unavailable.
+ * - Reference / migration guide.
+ *
+ * Usage (production-safe alternative):
+ * ```ts
+ * import { CookieStorageAdapter } from '../secure-storage.adapter';
+ * ```
  */
 
 import { type ITokenStorage, type StoredTokens } from '../../config';
