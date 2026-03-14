@@ -7,14 +7,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@automatize/supabase-auth';
+import { useRouter } from 'next/navigation';
+import { useUserAuthentication } from '@automatize/supabase-auth';
 import { semanticColors } from '@automatize/ui/tokens';
 
 const theme = semanticColors.light;
 
 export default function LoginScreen() {
-  const auth = useAuth() as any;
-  const { login, isLoading, error } = auth;
+  const { login, isLoading, error } = useUserAuthentication();
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mfaCode, setMfaCode] = useState('');
@@ -29,6 +30,7 @@ export default function LoginScreen() {
     try {
       const code = useMfaCode ? mfaCode : undefined;
       await login(email, password, code);
+      router.push('/');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Login failed';
       setLocalError(message);

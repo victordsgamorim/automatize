@@ -1,11 +1,10 @@
 'use client';
 
-import { useAuth } from '@automatize/supabase-auth';
+import { useUserAuthentication } from '@automatize/supabase-auth';
 import styles from './dashboard.module.css';
 
 export default function DashboardPage() {
-  const auth = useAuth() as any;
-  const { user } = auth;
+  const { user } = useUserAuthentication();
 
   return (
     <div className={styles.container}>

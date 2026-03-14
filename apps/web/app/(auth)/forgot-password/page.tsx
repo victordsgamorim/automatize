@@ -6,15 +6,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@automatize/supabase-auth';
+import { useUserAuthentication } from '@automatize/supabase-auth';
 import { semanticColors } from '@automatize/ui/tokens';
 
 const theme = semanticColors.light;
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
-  const auth = useAuth() as any;
-  const { resetPassword, isLoading, error } = auth;
+  const { resetPassword, isLoading, error } = useUserAuthentication();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);

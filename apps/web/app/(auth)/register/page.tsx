@@ -7,7 +7,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@automatize/supabase-auth';
+import { useUserAuthentication } from '@automatize/supabase-auth';
 import { semanticColors } from '@automatize/ui/tokens';
 
 const theme = semanticColors.light;
@@ -29,8 +29,7 @@ function getPasswordStrength(password: string): {
 }
 
 export default function RegisterScreen() {
-  const auth = useAuth() as any;
-  const { register, isLoading, error } = auth;
+  const { register, isLoading, error } = useUserAuthentication();
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

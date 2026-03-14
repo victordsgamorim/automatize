@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useAuth } from '@automatize/supabase-auth';
+import { useUserAuthentication } from '@automatize/supabase-auth';
 import { semanticColors } from '@automatize/ui/tokens';
 
 const theme = semanticColors.light;
@@ -15,8 +15,7 @@ export default function ResetPasswordScreen() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get('token');
-  const auth = useAuth() as any;
-  const { updatePassword, isLoading, error } = auth;
+  const { updatePassword, isLoading, error } = useUserAuthentication();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [submitted, setSubmitted] = useState(false);

@@ -1,25 +1,60 @@
 /**
- * @automatize/supabase-auth
- * Authentication and multi-tenancy library for Automatize
+ * @automatize/supabase-auth — Public API
+ *
+ * The single entry point for all consumers.
+ *
+ * Public surface (what feature code is allowed to import):
+ *   - useUserAuthentication  ← the ONE hook consumers should use
+ *   - AuthProvider           ← wraps the app (real Supabase)
+ *   - MockAuthProvider       ← wraps the app (local dev / tests)
+ *   - USE_MOCK_AUTH          ← flag read by app bootstrap only
+ *   - Domain types           ← AuthUser, UserProfile, Tenant, UserRole
+ *   - Zod schemas            ← for form validation in feature code
+ *
+ * Everything else (AuthRepository, data sources, factory, JWT utils, storage,
+ * Supabase client, raw hooks) is intentionally NOT exported. Consumers must
+ * not reach into the internals of this package.
  */
 
 // ============================================================================
-// TYPES & SCHEMAS
+// PRIMARY HOOK  ← use this in all feature components
 // ============================================================================
 
-// Types
+export { useUserAuthentication } from './hooks/useUserAuthentication';
+export type { UserAuthentication } from './hooks/useUserAuthentication';
+
+// ============================================================================
+// PROVIDERS  ← used once in app bootstrap, not in feature code
+// ============================================================================
+
+export { AuthProvider } from './providers/AuthProvider';
+export type { AuthProviderProps } from './providers/AuthProvider';
+
+export { MockAuthProvider } from './providers/MockAuthProvider';
+export type { MockAuthProviderProps } from './providers/MockAuthProvider';
+
+// ============================================================================
+// FEATURE FLAG  ← read by app bootstrap to choose the right provider
+// ============================================================================
+
+export { USE_MOCK_AUTH } from './data/auth.factory';
+
+// ============================================================================
+// DOMAIN TYPES  ← used in component props, route params, etc.
+// ============================================================================
+
 export type {
   AuthUser,
   UserProfile,
   Tenant,
   TenantMember,
-  MFABackupCode,
-  JWTClaims,
-  AuthContextType,
   UserRole,
 } from './types/auth.types';
 
-// Schemas
+// ============================================================================
+// VALIDATION SCHEMAS  ← used in feature forms (login, register, etc.)
+// ============================================================================
+
 export {
   loginSchema,
   registerSchema,
@@ -35,173 +70,11 @@ export {
 } from './schemas/auth.schemas';
 
 // ============================================================================
-// CONFIGURATION & INITIALIZATION
+// APP INITIALISATION  ← called once in platform bootstrap (not feature code)
 // ============================================================================
 
-export {
-  initializeAuth,
-  getAuthConfig,
-  getTokenStorage,
-  isAuthConfigured,
-  resetAuthConfig,
-} from './config';
-export type { AuthConfig, ITokenStorage, StoredTokens } from './config';
-
-// ============================================================================
-// CLIENT & STORAGE
-// ============================================================================
-
-export {
-  supabase,
-  getSupabaseClient,
-  isSupabaseConfigured,
-  getSupabaseUrl,
-  getSupabaseProjectId,
-  resetSupabaseClient,
-} from './client';
-export {
-  tokenStorage,
-  isTokenExpired,
-  getTokenExpiresIn,
-} from './storage/tokenStorage';
-export type { ITokenStorage as TokenStorage } from './storage/tokenStorage';
-
-// Note: Storage implementations (createWebTokenStorage, createMobileTokenStorage)
-// are not exported here to prevent platform-specific code from being bundled.
-// Import directly from their respective files:
-// - import { createWebTokenStorage } from '@automatize/supabase-auth/adapters/web'
-// - import { createMobileTokenStorage } from '@automatize/supabase-auth/adapters/mobile'
-
-// ============================================================================
-// HOOKS
-// ============================================================================
-
-export {
-  useAuth,
-  useIsAuthenticated,
-  useCurrentUser,
-  useCurrentTenant,
-  useLogout,
-  useUserEmail,
-  useDisplayName,
-} from './hooks/useAuth';
-
-export {
-  useSession,
-  getSessionTimeRemaining,
-  shouldRefreshSession,
-} from './hooks/useSession';
-
-export { useMFA } from './hooks/useMFA';
-export type { MFASetupState } from './hooks/useMFA';
-
-export { useTenant } from './hooks/useTenant';
-
-// ============================================================================
-// UTILITIES
-// ============================================================================
-
-// JWT utilities
-export {
-  decodeJWT,
-  getJWTClaims,
-  getCurrentTenantId,
-  getCurrentRole,
-  getTenantIds,
-  isJWTExpired,
-  getJWTExpirationTime,
-  getJWTIssuedAt,
-  getJWTTimeRemaining,
-  shouldRefreshJWT,
-} from './utils/jwt';
-
-// Error utilities
-export {
-  createAuthError,
-  parseSupabaseError,
-  getErrorMessage,
-  parseValidationErrors,
-  isAuthError,
-  isRecoverableError,
-  getRetryDelay,
-  redactPIIFromError,
-} from './utils/errors';
-
-// ============================================================================
-// PROVIDERS
-// ============================================================================
-
-export { AuthProvider, AuthContext } from './providers/AuthProvider';
-export type { AuthProviderProps } from './providers/AuthProvider';
-
-// ============================================================================
-// DATA LAYER HOOK
-// ============================================================================
-
-export { useAuthRepository } from './hooks/useAuthRepository';
-export type {
-  AuthRepositoryState,
-  AuthRepositoryActions,
-  UseAuthRepositoryReturn,
-} from './hooks/useAuthRepository';
-
-// ============================================================================
-// DATA LAYER (domain model + repository interface + remote data source)
-// ============================================================================
-
-// User data model
-export type {
-  SupabaseUser,
-  SupabaseIdentity,
-  SupabaseAppMetadata,
-  SupabaseUserMetadata,
-  SupabaseUserSource,
-} from './data/user.model';
-export {
-  createSupabaseUser,
-  isEmailConfirmed,
-  isPhoneConfirmed,
-  getPrimaryProvider,
-  getProviders,
-} from './data/user.model';
-
-// Repository interface + result / event types
-export type {
-  AuthRepository,
-  AuthSuccess,
-  AuthPendingConfirmation,
-  AuthFailure,
-  AuthFailureCode,
-  SignUpResult,
-  SignInResult,
-  SignOutResult,
-  GetCurrentUserResult,
-  AuthEvent,
-  AuthStateChangePayload,
-  AuthStateChangeCallback,
-  AuthStateSubscription,
-} from './data/auth.repository';
-
-// Remote data source
-export { SupabaseAuthRemoteDataSource } from './data/supabase-auth.datasource';
-
-// ============================================================================
-// SECURE STORAGE ADAPTERS
-// ============================================================================
-
-export type {
-  ISecureStorageAdapter,
-  CookieCallbacks,
-} from './storage/secure-storage.adapter';
-export {
-  InMemoryStorageAdapter,
-  CookieStorageAdapter,
-  createInMemoryStorage,
-  createCookieStorage,
-} from './storage/secure-storage.adapter';
-
-// Supabase client factory (for use with custom storage)
-export { createSupabaseClient } from './client';
+export { initializeAuth, isAuthConfigured } from './config';
+export type { AuthConfig } from './config';
 
 // ============================================================================
 // VERSION
