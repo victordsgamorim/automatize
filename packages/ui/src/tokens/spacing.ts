@@ -1,6 +1,7 @@
 /**
- * Design tokens - Spacing
- * Based on 4px base unit
+ * GENERATED — do not edit.
+ * Run `pnpm tokens:build` to regenerate.
+ * Source: packages/ui/tokens/
  */
 
 export const spacing = {

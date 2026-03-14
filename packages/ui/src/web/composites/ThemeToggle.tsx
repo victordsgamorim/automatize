@@ -1,15 +1,21 @@
+'use client';
+
+/**
+ * ThemeToggle Composite
+ * Light/dark mode toggle button
+ */
+
 import { Moon, Sun } from 'lucide-react';
-import { Button } from '../ui/button';
 import { useEffect, useState } from 'react';
+import { Button } from '../button';
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
-    // Check system preference on mount
     const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    const initialTheme = savedTheme || (isDark ? 'dark' : 'light');
+    const initialTheme = savedTheme ?? (isDark ? 'dark' : 'light');
 
     setTheme(initialTheme);
     document.documentElement.classList.toggle('dark', initialTheme === 'dark');

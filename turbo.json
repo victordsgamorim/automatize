@@ -2,8 +2,11 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "tasks": {
+    "tokens:build": {
+      "outputs": ["src/tokens/**", "src/styles/_tokens.css"]
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["tokens:build", "^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**", ".expo/**"]
     },
     "dev": {

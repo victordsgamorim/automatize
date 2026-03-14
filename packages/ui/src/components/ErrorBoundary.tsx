@@ -8,8 +8,8 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { colors, spacing } from '../tokens';
-import { Text } from './Text';
-import { Button } from './Button';
+import { Text } from './Text.native';
+import { Button } from './Button.native';
 
 export interface ErrorBoundaryProps {
   /** Child components */

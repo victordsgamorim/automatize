@@ -1,0 +1,82 @@
+{
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "sans": {
+        "$value": "Inter, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
+      },
+      "mono": {
+        "$value": "JetBrains Mono, \"SF Mono\", Monaco, \"Cascadia Code\", \"Roboto Mono\", monospace"
+      }
+    },
+    "size": {
+      "$type": "dimension",
+      "xs": {
+        "$value": "12px"
+      },
+      "sm": {
+        "$value": "14px"
+      },
+      "base": {
+        "$value": "16px"
+      },
+      "lg": {
+        "$value": "18px"
+      },
+      "xl": {
+        "$value": "20px"
+      },
+      "2xl": {
+        "$value": "24px"
+      },
+      "3xl": {
+        "$value": "30px"
+      },
+      "4xl": {
+        "$value": "36px"
+      },
+      "5xl": {
+        "$value": "48px"
+      }
+    },
+    "weight": {
+      "$type": "fontWeight",
+      "normal": {
+        "$value": 400
+      },
+      "medium": {
+        "$value": 500
+      },
+      "semibold": {
+        "$value": 600
+      },
+      "bold": {
+        "$value": 700
+      }
+    },
+    "lineHeight": {
+      "$type": "number",
+      "tight": {
+        "$value": 1.25
+      },
+      "normal": {
+        "$value": 1.5
+      },
+      "relaxed": {
+        "$value": 1.75
+      }
+    },
+    "letterSpacing": {
+      "$type": "dimension",
+      "tight": {
+        "$value": "-0.5px"
+      },
+      "normal": {
+        "$value": "0px"
+      },
+      "wide": {
+        "$value": "0.5px"
+      }
+    }
+  }
+}

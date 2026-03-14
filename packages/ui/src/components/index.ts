@@ -1,34 +1,49 @@
 'use client';
 
 /**
- * UI Components
- * Exports all base components
+ * UI Components — Cross-Platform Entry
+ *
+ * The main @automatize/ui entry exports React Native (native) implementations.
+ * These are resolved by Metro (React Native) automatically via .native.tsx extensions.
+ *
+ * Web apps should import from @automatize/ui/web for shadcn/ui components,
+ * or @automatize/ui/composites for generic composites.
+ *
+ * The tsup build externalizes react-native (peer dep). The web app handles it
+ * via null-loader in next.config.js.
  */
 
-// Base components
-export { Button } from './Button';
-export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
+// Button (RN implementation — web app uses @automatize/ui/web)
+export { Button } from './Button.native';
+export type { ButtonProps, ButtonVariant, ButtonSize } from './Button.native';
 
-export { Input } from './Input';
-export type { InputProps } from './Input';
+// Input (RN implementation)
+export { Input } from './Input.native';
+export type { InputProps } from './Input.native';
 
-export { FormField } from './FormField';
-export type { FormFieldProps } from './FormField';
+// FormField (RN implementation)
+export { FormField } from './FormField.native';
+export type { FormFieldProps } from './FormField.native';
 
-export { Card } from './Card';
-export type { CardProps } from './Card';
+// Card (RN implementation)
+export { Card } from './Card.native';
+export type { CardProps } from './Card.native';
 
-export { Text } from './Text';
-export type { TextProps, TextVariant, TextColor } from './Text';
+// Text (RN implementation)
+export { Text } from './Text.native';
+export type { TextProps, TextVariant, TextColor } from './Text.native';
 
-export { Loading, Skeleton } from './Loading';
-export type { LoadingProps, SkeletonProps } from './Loading';
+// Loading / Skeleton (RN implementation)
+export { Loading, Skeleton } from './Loading.native';
+export type { LoadingProps, SkeletonProps } from './Loading.native';
 
-export { ErrorBoundary, RootErrorBoundary } from './ErrorBoundary';
+// ErrorBoundary — web version (no React Native dep, safe to include in main)
+export { ErrorBoundary, RootErrorBoundary } from './ErrorBoundary.web';
 export type {
   ErrorBoundaryProps,
   RootErrorBoundaryProps,
-} from './ErrorBoundary';
+} from './ErrorBoundary.web';
 
+// Icon (RN implementation)
 export { HomeIcon, UserIcon, BuildingIcon, LogOutIcon } from './Icon';
 export type { IconProps } from './Icon';

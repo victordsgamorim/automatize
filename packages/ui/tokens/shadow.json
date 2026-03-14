@@ -1,0 +1,41 @@
+{
+  "shadow": {
+    "$type": "shadow",
+    "sm": {
+      "$value": {
+        "color": "rgba(0, 0, 0, 0.05)",
+        "offsetX": "0px",
+        "offsetY": "1px",
+        "blur": "2px",
+        "spread": "0px"
+      },
+      "$extensions": {
+        "elevation": 1
+      }
+    },
+    "md": {
+      "$value": {
+        "color": "rgba(0, 0, 0, 0.1)",
+        "offsetX": "0px",
+        "offsetY": "2px",
+        "blur": "4px",
+        "spread": "0px"
+      },
+      "$extensions": {
+        "elevation": 2
+      }
+    },
+    "lg": {
+      "$value": {
+        "color": "rgba(0, 0, 0, 0.15)",
+        "offsetX": "0px",
+        "offsetY": "4px",
+        "blur": "8px",
+        "spread": "0px"
+      },
+      "$extensions": {
+        "elevation": 4
+      }
+    }
+  }
+}

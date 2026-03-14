@@ -5,7 +5,7 @@ import {
   BarChart3,
   Settings,
 } from 'lucide-react';
-import { cn } from '../ui/utils';
+import { cn } from '@automatize/ui/web';
 
 interface BottomNavProps {
   currentPage: string;

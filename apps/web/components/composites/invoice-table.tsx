@@ -8,23 +8,21 @@ import {
   Send,
 } from 'lucide-react';
 import { StatusBadge, InvoiceStatus } from './status-badge';
-import { Button } from '../ui/button';
 import {
+  Button,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table';
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import { Skeleton } from '../ui/skeleton';
+  Skeleton,
+} from '@automatize/ui/web';
 
 export interface Invoice {
   id: string;

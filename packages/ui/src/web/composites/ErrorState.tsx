@@ -1,5 +1,12 @@
+'use client';
+
+/**
+ * ErrorState Composite
+ * Generic error state component with optional retry action
+ */
+
 import { AlertCircle, RefreshCw } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../button';
 
 interface ErrorStateProps {
   title?: string;

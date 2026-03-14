@@ -750,3 +750,52 @@ module.exports = {
 - Adding `peerDependencies` for ESLint plugins directly in a module is forbidden — add them to `tools/eslint-config` instead.
 - Duplicating parser options, plugin lists, or rule overrides across modules is forbidden.
 - App-level `.eslintrc.js` files may only contain `root: true`, `extends`, `ignorePatterns`, and narrow `rules` overrides specific to that app (e.g., silencing a rule for a known exception with a comment explaining why).
+
+---
+
+## 24) UI Component Rule (Non-Negotiable)
+
+`packages/ui` (`@automatize/ui`) is the **SINGLE SOURCE OF TRUTH** for all UI components across the entire monorepo.
+
+### 24.1 Mandatory Rules
+
+- It is **FORBIDDEN** to create UI components inside `apps/mobile`, `apps/web`, or `apps/windows`
+- If a component does not exist in `packages/ui`, it **MUST** be added there before being used anywhere
+- Duplicated components found outside `packages/ui` **MUST** be migrated and deleted from their current location
+- All apps (`apps/web`, `apps/mobile`, `apps/windows`) MUST import components exclusively from `@automatize/ui`
+
+### 24.2 Package Entry Points
+
+`packages/ui` exposes the following entry points:
+
+| Import path                 | Contents                                                                 |
+| --------------------------- | ------------------------------------------------------------------------ |
+| `@automatize/ui`            | Cross-platform components (bundler resolves `.web.tsx` or `.native.tsx`) |
+| `@automatize/ui/web`        | Web-only components (shadcn/ui / Radix UI)                               |
+| `@automatize/ui/composites` | Reusable generic composite components                                    |
+| `@automatize/ui/tokens`     | Design tokens                                                            |
+
+### 24.3 Platform Extension Pattern
+
+Components with platform-specific implementations use file extensions:
+
+- `Button.web.tsx` — Web implementation (HTML/Radix UI/Tailwind)
+- `Button.native.tsx` — React Native implementation (StyleSheet/TouchableOpacity)
+
+The bundler resolves the correct file automatically:
+
+- Metro (React Native / Expo) → picks `.native.tsx`
+- webpack / Next.js → picks `.web.tsx`
+
+### 24.4 Adding a New Component
+
+When a new component is needed:
+
+1. Add it to `packages/ui/src/components/` (cross-platform) or `packages/ui/src/web/` (web-only)
+2. Export it from the appropriate `index.ts`
+3. Import it in the app via `@automatize/ui` or `@automatize/ui/web`
+4. Never create it inside an app directory
+
+### 24.5 Domain-Specific Composites
+
+Composites tightly coupled to a business domain (e.g., `InvoiceTable`, `AppSidebar`) may remain in `apps/<platform>/components/composites/` **only if** they import all their primitives from `@automatize/ui`. They must never define their own primitive components.

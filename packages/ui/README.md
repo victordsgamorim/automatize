@@ -10,32 +10,127 @@ A unified design system that provides reusable UI components and design tokens f
 
 The package has two main exports:
 
-**Design tokens** — Centralized definitions for colors, spacing, and typography. These are the foundational values that all components use. When you change a token, it propagates everywhere automatically.
+**Design tokens** — Centralized definitions for colors, spacing, typography, shadows, and border radius. Tokens are defined once in JSON ([W3C DTCG format](https://design-tokens.github.io/community-group/format/)) and generated into both TypeScript (for React Native) and CSS custom properties (for web/Tailwind) using [Style Dictionary](https://styledictionary.style).
 
 **UI components** — Pre-built, accessible components like buttons, inputs, cards, and text elements. Components are built on top of tokens, ensuring they always use the correct values.
 
-## Why this way?
-
-**Single source of truth for design**: Instead of defining colors or spacing in each app, tokens live in one place. A brand color change only happens once.
-
-**Cross-platform consistency**: The same component abstractions work on React Native and web. We use lucide-react-native which provides icons that adapt to each platform.
-
-**Design tokens approach**: Tokens are organized semantically (brand, background, state colors) rather than just listing hex codes. This makes it easy to swap entire themes or add dark mode later.
-
 ## Directory organization
 
-- **components/** — Reusable UI components, each in its own file.
-- **tokens/** — Design token definitions (colors, spacing, typography).
+- **tokens/** — Token source files (JSON, W3C DTCG format). **This is the single source of truth.**
+- **src/tokens/** — ⚠️ GENERATED TypeScript modules (do not edit). Run `pnpm tokens:build`.
+- **src/styles/\_tokens.css** — ⚠️ GENERATED CSS custom properties (do not edit). Run `pnpm tokens:build`.
+- **src/styles/globals.css** — Hand-authored semantic mappings (CSS vars). Imports `_tokens.css`. **Does not contain Tailwind directives.**
+- **src/components/** — Reusable UI components.
+- **src/web/** — Web-specific components (shadcn/ui / Radix UI).
+- **style-dictionary.config.ts** — Build config for token generation.
+
+## Token authoring guide
+
+### Workflow summary
+
+```
+Edit tokens/*.json
+      ↓
+pnpm --filter @automatize/ui build    ← runs tokens:build automatically
+      ↓
+Generated: src/tokens/*.ts + src/styles/_tokens.css
+```
+
+### Adding or modifying a token
+
+1. Edit the relevant JSON file in `tokens/`:
+
+   | File              | Contains                                    |
+   | ----------------- | ------------------------------------------- |
+   | `color.json`      | Color palettes + semantic color mappings    |
+   | `spacing.json`    | Spacing scale (4px base unit)               |
+   | `typography.json` | Font families, sizes, weights, line heights |
+   | `shadow.json`     | Shadow definitions (with RN elevation)      |
+   | `radius.json`     | Border radius values                        |
+
+2. **Build the project** (tokens are generated automatically):
+
+   ```sh
+   # Option 1: Build only this package
+   pnpm --filter @automatize/ui build
+
+   # Option 2: Build entire monorepo (tokens generated for all deps)
+   pnpm build
+   ```
+
+   The `tokens:build` script runs automatically as part of `pnpm build`.
+
+3. Verify the output in `src/tokens/*.ts` and `src/styles/_tokens.css`.
+
+4. If you added a **new semantic token** that maps to a shadcn/ui CSS variable, update `src/styles/globals.css` to reference it (e.g., `--primary: var(--semantic-primary)`).
+
+### Token format (W3C DTCG)
+
+```jsonc
+{
+  "color": {
+    "$type": "color",
+    "brand": {
+      "600": { "$value": "#2563EB" },
+    },
+  },
+  "semantic": {
+    "$type": "color",
+    "primary": { "$value": "{color.brand.600}" }, // ← reference, resolved at build time
+  },
+}
+```
+
+- Use `$value` for the token value and `$type` for the token type.
+- Use `{group.subgroup.name}` syntax for references — Style Dictionary resolves them at build time.
+- Shadows use `$extensions` for React Native `elevation` values.
+
+### What gets generated
+
+| Output                     | Consumer          | Format                              |
+| -------------------------- | ----------------- | ----------------------------------- |
+| `src/tokens/colors.ts`     | React Native      | `export const colors = { ... }`     |
+| `src/tokens/spacing.ts`    | React Native      | `export const spacing = { ... }`    |
+| `src/tokens/typography.ts` | React Native      | `export const typography = { ... }` |
+| `src/tokens/shadows.ts`    | React Native      | `export const shadows/borderRadius` |
+| `src/tokens/index.ts`      | Barrel re-export  | `export * from './...'`             |
+| `src/styles/_tokens.css`   | Web / Tailwind v4 | CSS custom properties in `:root`    |
+
+### Rules
+
+- **Never edit generated files** — they will be overwritten on next build.
+- **No hardcoded colors/spacing in features** — always import from `@automatize/ui/tokens`.
+- **Generated files are committed** — consumers don't need to run the generator.
+
+## Build behavior
+
+**The `tokens:build` script runs automatically** during `pnpm build`:
+
+```jsonc
+// packages/ui/package.json
+"scripts": {
+  "tokens:build": "tsx style-dictionary.config.ts",
+  "build": "pnpm tokens:build && tsup"  // ← automatic token generation
+}
+```
+
+**You never need to run `tokens:build` manually** unless you specifically want to regenerate tokens without building the package.
 
 ## Design decisions
 
-**Why tokens instead of CSS variables or StyleSheet?**
-Tokens provide a language-agnostic foundation. The same color token works whether rendered as CSS custom property or React Native StyleSheet object.
+**Why Style Dictionary?**
+It provides a single source of truth for design tokens. Change a value once in JSON, both platforms (React Native + Web CSS) update automatically. No drift possible.
+
+**Why W3C DTCG format?**
+Aligns with the emerging standard. Growing tooling ecosystem, future-proof.
+
+**Why tokens instead of raw CSS or StyleSheet?**
+Tokens provide a language-agnostic foundation. The same color token works whether rendered as a CSS custom property or a React Native StyleSheet value.
 
 **Why lucide icons?**
 Lucide provides consistent, clean icons that work across platforms. The library is actively maintained and has excellent accessibility.
 
-**Component philosophy**:
+**Component philosophy:**
 
 - Every component uses design tokens
 - Every component has size variants (sm, md, lg)
@@ -45,3 +140,28 @@ Lucide provides consistent, clean icons that work across platforms. The library 
 ## Usage pattern
 
 Apps import from this package instead of creating their own styling. This guarantees that every button, input, and card looks exactly the same across the entire application.
+
+### React Native
+
+```ts
+import { colors, spacing, typography } from '@automatize/ui/tokens';
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.neutral[50],
+    padding: spacing[4], // 16px
+  },
+});
+```
+
+### Web (CSS/Tailwind)
+
+```css
+@import '@automatize/ui/styles';
+
+/* Token variables are available globally */
+.custom {
+  color: var(--color-brand-600);
+  padding: var(--spacing-4);
+}
+```

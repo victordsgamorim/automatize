@@ -1,5 +1,7 @@
 /**
- * Design tokens - Typography
+ * GENERATED — do not edit.
+ * Run `pnpm tokens:build` to regenerate.
+ * Source: packages/ui/tokens/
  */
 
 export const typography = {
@@ -7,7 +9,6 @@ export const typography = {
     sans: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     mono: 'JetBrains Mono, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", monospace',
   },
-
   fontSize: {
     xs: 12,
     sm: 14,
@@ -19,20 +20,17 @@ export const typography = {
     '4xl': 36,
     '5xl': 48,
   },
-
   fontWeight: {
     normal: '400',
     medium: '500',
     semibold: '600',
     bold: '700',
   },
-
   lineHeight: {
     tight: 1.25,
     normal: 1.5,
     relaxed: 1.75,
   },
-
   letterSpacing: {
     tight: -0.5,
     normal: 0,
