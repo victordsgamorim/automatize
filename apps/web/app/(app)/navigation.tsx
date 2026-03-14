@@ -2,14 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAuth } from '@automatize/supabase-auth';
+import { useUserAuthentication } from '@automatize/supabase-auth';
 import styles from './navigation.module.css';
 
 export default function Navigation() {
   const pathname = usePathname();
   const router = useRouter();
-  const auth = useAuth() as any;
-  const { logout, user } = auth;
+  const { logout, user } = useUserAuthentication();
 
   const handleLogout = async () => {
     await logout?.();

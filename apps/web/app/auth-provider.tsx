@@ -2,11 +2,22 @@
 
 /**
  * Auth Provider (Client Component)
- * Initializes auth and wraps the app with AuthProvider
+ *
+ * Wraps the app with the appropriate AuthProvider:
+ * - USE_MOCK_AUTH = true  → MockAuthProvider (in-memory, no Supabase required)
+ * - USE_MOCK_AUTH = false → Real AuthProvider backed by Supabase
+ *
+ * Dummy credentials (mock mode):
+ *   email:    dev@automatize.local
+ *   password: Dev@123456
  */
 
 import React, { useEffect, useState } from 'react';
-import { AuthProvider } from '@automatize/supabase-auth';
+import {
+  AuthProvider,
+  MockAuthProvider,
+  USE_MOCK_AUTH,
+} from '@automatize/supabase-auth';
 import { initializeAuthForWeb } from '@/lib/auth-init';
 
 interface Props {
@@ -14,6 +25,21 @@ interface Props {
 }
 
 export function AuthProviderWrapper({ children }: Props) {
+  // -------------------------------------------------------------------------
+  // Mock mode — no initialization needed, render immediately
+  // -------------------------------------------------------------------------
+  if (USE_MOCK_AUTH) {
+    return <MockAuthProvider>{children}</MockAuthProvider>;
+  }
+
+  // -------------------------------------------------------------------------
+  // Real Supabase mode
+  // -------------------------------------------------------------------------
+  return <RealAuthProviderWrapper>{children}</RealAuthProviderWrapper>;
+}
+
+/** Inner wrapper for the real Supabase auth flow (requires async init). */
+function RealAuthProviderWrapper({ children }: Props) {
   const [isAuthInitialized, setIsAuthInitialized] = useState(false);
   const [initError, setInitError] = useState<Error | null>(null);
 

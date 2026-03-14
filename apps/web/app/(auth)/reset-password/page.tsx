@@ -4,19 +4,18 @@
  * Web Reset Password Screen
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useAuth } from '@automatize/supabase-auth';
+import { useUserAuthentication } from '@automatize/supabase-auth';
 import { semanticColors } from '@automatize/ui/tokens';
 
 const theme = semanticColors.light;
 
-export default function ResetPasswordScreen() {
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get('token');
-  const auth = useAuth() as any;
-  const { updatePassword, isLoading, error } = auth;
+  const { updatePassword, isLoading, error } = useUserAuthentication();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -417,5 +416,13 @@ export default function ResetPasswordScreen() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordScreen() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }

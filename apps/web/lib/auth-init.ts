@@ -2,14 +2,21 @@
  * Auth Initialization for Web App
  * Initialize auth with web-specific storage and configuration
  *
- * This file is imported at app startup to configure the @automatize/supabase-auth package
+ * This file is imported at app startup to configure the @automatize/supabase-auth package.
+ * When USE_MOCK_AUTH is true the Supabase initialization is skipped entirely – the
+ * MockAuthProvider handles authentication in-memory without any network calls.
  */
 
-import { initializeAuth, type AuthConfig } from '@automatize/supabase-auth';
+import {
+  initializeAuth,
+  type AuthConfig,
+  USE_MOCK_AUTH,
+} from '@automatize/supabase-auth';
 import { createWebTokenStorage } from '@automatize/supabase-auth/adapters/web';
 
 /**
- * Get Supabase configuration from environment variables
+ * Get Supabase configuration from environment variables.
+ * Only called when USE_MOCK_AUTH is false.
  */
 function getSupabaseConfig(): AuthConfig {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -28,17 +35,23 @@ function getSupabaseConfig(): AuthConfig {
 }
 
 /**
- * Initialize auth with web-specific configuration
- * Call this once at app startup (e.g., in layout or _document)
+ * Initialize auth with web-specific configuration.
+ * Call this once at app startup (e.g., in layout or _document).
+ *
+ * When USE_MOCK_AUTH is true this is a no-op – MockAuthProvider takes over.
  */
 export function initializeAuthForWeb(): void {
+  // Skip real Supabase initialization when running in mock mode.
+  // The MockAuthProvider will supply the AuthContext directly.
+  if (USE_MOCK_AUTH) {
+    return;
+  }
+
   try {
     const config = getSupabaseConfig();
     const tokenStorage = createWebTokenStorage();
 
     initializeAuth(config, tokenStorage);
-
-    // Auth initialized for web
   } catch (error) {
     console.error('Failed to initialize auth:', error);
     throw error;

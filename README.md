@@ -68,9 +68,9 @@ Automatize is a production-grade invoice management application supporting:
 
 ### State & Data
 
-- **Global State**: Zustand
 - **Server Cache**: TanStack Query
-- **UI State**: React Context
+- **Module State**: React Provider (scoped per module)
+- **Local State**: React `useState` / `useReducer`
 
 ### UI & Styling
 

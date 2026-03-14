@@ -104,20 +104,15 @@ Requirements:
 
 ### 5.3 State Management
 
-- **Global state:** Zustand
 - **Server/sync cache:** TanStack Query (React Query)
-- **Light UI-only state:** React Context **ONLY** for:
-  - themes
-  - i18n
-  - preferences
-
-React Context MUST NOT be used for business logic.
+- **Local component/module state:** React `useState` / `useReducer`
+- **Cross-component state:** React Provider, scoped to the module that owns it
 
 Responsibilities:
 
-- Zustand → global app state
 - TanStack Query → server/sync cache
-- React Context → themes/i18n/preferences only
+- React Provider → shared state within a bounded module (e.g. auth session, theme, i18n)
+- `useState` / `useReducer` → local or provider-owned state
 
 ### 5.4 Navigation
 
