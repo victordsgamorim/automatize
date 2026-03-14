@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { AuthProvider } from '@automatize/supabase-auth';
+import { AuthProviderFactory } from '@automatize/supabase-auth';
 import { initializeAuthForWeb } from '@/lib/auth-init';
 
 interface Props {
@@ -46,10 +46,5 @@ export function AuthProviderWrapper({ children }: Props) {
     return <div>Initializing authentication...</div>;
   }
 
-  // Type cast needed due to React 18/19 type incompatibility between @automatize/supabase-auth and this app
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const AuthProviderAny = AuthProvider as React.ComponentType<{
-    children: React.ReactNode;
-  }>;
-  return <AuthProviderAny>{children}</AuthProviderAny>;
+  return <AuthProviderFactory>{children}</AuthProviderFactory>;
 }

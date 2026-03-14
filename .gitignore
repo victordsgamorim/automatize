@@ -191,6 +191,8 @@ docker-compose.override.yml
 .supabase/
 supabase/.branches/
 supabase/seed.sql
+integration/supabase/docs/
+integration/supabase/auth/src/mock/
 
 # ============================================================================
 # CLAUDE CODE
