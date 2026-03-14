@@ -65,18 +65,14 @@ function buildClient(
 ) {
   return {
     auth: {
-      signUp: vi
-        .fn()
-        .mockResolvedValue({
-          data: { user: null, session: null },
-          error: null,
-        }),
-      signInWithPassword: vi
-        .fn()
-        .mockResolvedValue({
-          data: { user: null, session: null },
-          error: null,
-        }),
+      signUp: vi.fn().mockResolvedValue({
+        data: { user: null, session: null },
+        error: null,
+      }),
+      signInWithPassword: vi.fn().mockResolvedValue({
+        data: { user: null, session: null },
+        error: null,
+      }),
       signOut: vi.fn().mockResolvedValue({ error: null }),
       getUser: vi.fn().mockResolvedValue({ data: { user: null }, error: null }),
       onAuthStateChange: vi.fn().mockReturnValue({

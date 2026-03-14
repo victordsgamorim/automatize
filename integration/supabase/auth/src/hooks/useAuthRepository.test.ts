@@ -70,20 +70,16 @@ function buildRepository(overrides?: Partial<AuthRepository>): {
   const unsubscribeFn = vi.fn();
 
   const defaultRepo: AuthRepository = {
-    signUp: vi
-      .fn()
-      .mockResolvedValue({
-        kind: 'failure',
-        code: 'unknown',
-        message: 'not configured',
-      }),
-    signIn: vi
-      .fn()
-      .mockResolvedValue({
-        kind: 'failure',
-        code: 'unknown',
-        message: 'not configured',
-      }),
+    signUp: vi.fn().mockResolvedValue({
+      kind: 'failure',
+      code: 'unknown',
+      message: 'not configured',
+    }),
+    signIn: vi.fn().mockResolvedValue({
+      kind: 'failure',
+      code: 'unknown',
+      message: 'not configured',
+    }),
     signOut: vi.fn().mockResolvedValue({ kind: 'success' }),
     getCurrentUser: vi.fn().mockResolvedValue({ kind: 'unauthenticated' }),
     onAuthStateChange: vi
