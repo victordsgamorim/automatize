@@ -17,7 +17,26 @@
  */
 
 // ============================================================================
-// PRIMARY HOOK  ← use this in all feature components
+// HOOKS  ← use these in components
+// ============================================================================
+
+export {
+  useAuth,
+  useIsAuthenticated,
+  useCurrentUser,
+  useCurrentTenant,
+  useLogout,
+  useUserEmail,
+  useDisplayName,
+} from './hooks/useAuth';
+
+export { useMFA } from './hooks/useMFA';
+export type { MFASetupState } from './hooks/useMFA';
+
+export { useTenant } from './hooks/useTenant';
+
+// ============================================================================
+// PRIMARY HOOK  ← recommended for new code
 // ============================================================================
 
 export { useUserAuthentication } from './hooks/useUserAuthentication';
