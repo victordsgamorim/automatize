@@ -32,11 +32,23 @@ Complete authentication system using Supabase Auth. Handles login, registration,
 
 - **adapters/** — Platform-specific storage implementations
 - **hooks/** — React hooks for auth state
-- **providers/** — React Context for app-wide auth
+- **providers/** — React Context and Providers for app-wide auth
 - **schemas/** — Zod validation for all auth forms
 - **storage/** — Token storage abstraction
 - **types/** — TypeScript definitions
 - **utils/** — JWT parsing, error handling
+
+## Usage
+
+### Root Provider
+
+The authentication state is managed through a central provider. You must wrap the root of your application (normally in `App.tsx`, `layout.tsx` or `_layout.tsx`) using the provided factory component. This component automatically initializes the authentication context and makes it available to all child components in the tree.
+
+### Hooks
+
+To interact with the authentication system, the library provides several specialized hooks. These hooks allow components to check if a user is authenticated, access the current user's profile information, manage multi-tenancy (switching workspaces), and perform actions like login, registration, and logout.
+
+All hooks must be used within a component that is a child of the root provider.
 
 ## Security principles
 
@@ -55,7 +67,9 @@ All tables follow the base entity pattern with:
 - `deleted_at` — Soft delete (NULL = active)
 - `version` — Optimistic locking
 
-See `../docs/RLS_POLICIES.md` for database policies and templates.
+### Provider Architecture
+
+The authentication system uses a unified Provider architecture. All modules (Web, Mobile, and Development) consume the same authentication context, ensuring consistent behavior across all platforms and environments.
 
 ## JWT structure
 
@@ -87,7 +101,7 @@ The package supports deep links for:
 - Workspace invitation: `automatize://invite?token=xxx&tenant_id=xxx`
 - Workspace switch: `automatize://switch-workspace?tenant_id=xxx`
 
-See `../../docs/guides/DEEP_LINKING.md` for platform-specific setup.
+- Workspace switching: `automatize://switch-workspace?tenant_id=xxx`
 
 ## Design decisions
 
@@ -101,9 +115,4 @@ Mobile apps don't handle cookies the same way. Token-based auth works consistent
 
 ## Current status
 
-Fully implemented.
-
-## Related documentation
-
-- `../docs/RLS_POLICIES.md` — Database security policies
-- `../../docs/guides/DEEP_LINKING.md` — Deep link configuration
+Fully implemented with unified context and platform-agnostic initialization.

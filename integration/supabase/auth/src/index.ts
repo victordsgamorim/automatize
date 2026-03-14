@@ -131,8 +131,17 @@ export {
 // PROVIDERS
 // ============================================================================
 
+// Real Supabase-backed provider
 export { AuthProvider, AuthContext } from './providers/AuthProvider';
 export type { AuthProviderProps } from './providers/AuthProvider';
+
+// Factory — recommended entry point for apps (auto-selects mock vs real)
+export { AuthProviderFactory, IS_DEBUG } from './providers/AuthProviderFactory';
+export type { AuthProviderFactoryProps } from './providers/AuthProviderFactory';
+
+// Mock provider (debug/dev mode)
+export { MockAuthProvider, MockAuthContext } from './mock/MockAuthProvider';
+export type { MockAuthProviderProps } from './mock/MockAuthProvider';
 
 // ============================================================================
 // VERSION

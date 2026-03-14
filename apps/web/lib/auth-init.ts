@@ -5,7 +5,11 @@
  * This file is imported at app startup to configure the @automatize/supabase-auth package
  */
 
-import { initializeAuth, type AuthConfig } from '@automatize/supabase-auth';
+import {
+  initializeAuth,
+  type AuthConfig,
+  IS_DEBUG,
+} from '@automatize/supabase-auth';
 import { createWebTokenStorage } from '@automatize/supabase-auth/adapters/web';
 
 /**
@@ -16,6 +20,15 @@ function getSupabaseConfig(): AuthConfig {
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !anonKey) {
+    // In debug mode, we can provide placeholders to allow the app to start
+    // since we'll be using MockAuthProvider anyway.
+    if (IS_DEBUG) {
+      return {
+        supabaseUrl: 'https://mock.supabase.co',
+        supabaseAnonKey: 'mock-key',
+      };
+    }
+
     throw new Error(
       'Missing Supabase configuration. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.'
     );
