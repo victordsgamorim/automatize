@@ -1,13 +1,25 @@
 /**
- * Composite Business Components
- * Application-specific components built on top of base UI
+ * Composite Components
+ *
+ * Generic composites (EmptyState, ErrorState, StatsCard, ThemeToggle) have been
+ * moved to @automatize/ui/composites and are re-exported here for convenience.
+ *
+ * Domain-specific composites (AppSidebar, InvoiceTable, StatusBadge, BottomNav)
+ * remain here as they are tightly coupled to business domain logic.
  */
 
+// Generic composites — sourced from @automatize/ui/composites
+export {
+  EmptyState,
+  ErrorState,
+  StatsCard,
+  ThemeToggle,
+} from '@automatize/ui/composites';
+
+// Domain-specific composites
 export { AppSidebar } from './app-sidebar';
 export { BottomNav } from './bottom-nav';
-export { EmptyState } from './empty-state';
-export { ErrorState } from './error-state';
 export { InvoiceTable } from './invoice-table';
-export { StatsCard } from './stats-card';
+export type { Invoice } from './invoice-table';
 export { StatusBadge } from './status-badge';
-export { ThemeToggle } from './theme-toggle';
+export type { InvoiceStatus } from './status-badge';

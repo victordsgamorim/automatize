@@ -6,7 +6,7 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet, Dimensions } from 'react-native';
 import { colors } from '../tokens';
-import { Text } from './Text';
+import { Text } from './Text.native';
 
 export interface LoadingProps {
   /** Loading text to display */

@@ -1,10 +1,10 @@
 /**
- * Design tokens - Colors
- * Based on Tailwind/Radix color system
+ * GENERATED — do not edit.
+ * Run `pnpm tokens:build` to regenerate.
+ * Source: packages/ui/tokens/
  */
 
 export const colors = {
-  // Neutral colors (grayscale)
   neutral: {
     50: '#FAFAFA',
     100: '#F5F5F5',
@@ -18,8 +18,6 @@ export const colors = {
     900: '#171717',
     950: '#0A0A0A',
   },
-
-  // Brand colors (primary)
   brand: {
     50: '#EFF6FF',
     100: '#DBEAFE',
@@ -33,8 +31,6 @@ export const colors = {
     900: '#1E3A8A',
     950: '#172554',
   },
-
-  // State colors
   success: {
     50: '#F0FDF4',
     100: '#DCFCE7',
@@ -48,7 +44,6 @@ export const colors = {
     900: '#14532D',
     950: '#052E16',
   },
-
   error: {
     50: '#FEF2F2',
     100: '#FEE2E2',
@@ -62,7 +57,6 @@ export const colors = {
     900: '#7F1D1D',
     950: '#450A0A',
   },
-
   warning: {
     50: '#FFFBEB',
     100: '#FEF3C7',
@@ -76,7 +70,6 @@ export const colors = {
     900: '#78350F',
     950: '#451A03',
   },
-
   info: {
     50: '#EFF6FF',
     100: '#DBEAFE',
@@ -96,58 +89,63 @@ export const colors = {
  * Semantic color mappings
  */
 export const semanticColors = {
+  primary: '#2563EB',
+  destructive: '#DC2626',
+  success: '#16A34A',
+  warning: '#D97706',
+  info: '#2563EB',
   light: {
     background: {
-      primary: colors.neutral[50],
-      secondary: colors.neutral[100],
-      tertiary: colors.neutral[200],
-      error: colors.error[50],
-      success: colors.success[50],
-      warning: colors.warning[50],
+      primary: '#FAFAFA',
+      secondary: '#F5F5F5',
+      tertiary: '#E5E5E5',
+      error: '#FEF2F2',
+      success: '#F0FDF4',
+      warning: '#FFFBEB',
     },
     text: {
-      primary: colors.neutral[900],
-      secondary: colors.neutral[600],
-      tertiary: colors.neutral[500],
-      inverse: colors.neutral[50],
+      primary: '#171717',
+      secondary: '#525252',
+      tertiary: '#737373',
+      inverse: '#FAFAFA',
     },
     border: {
-      default: colors.neutral[200],
-      focus: colors.brand[500],
-      error: colors.error[500],
+      default: '#E5E5E5',
+      focus: '#3B82F6',
+      error: '#EF4444',
     },
     state: {
-      success: colors.success[600],
-      error: colors.error[600],
-      warning: colors.warning[600],
-      info: colors.info[600],
+      success: '#16A34A',
+      error: '#DC2626',
+      warning: '#D97706',
+      info: '#2563EB',
     },
   },
   dark: {
     background: {
-      primary: colors.neutral[950],
-      secondary: colors.neutral[900],
-      tertiary: colors.neutral[800],
-      error: colors.error[950],
-      success: colors.success[950],
-      warning: colors.warning[950],
+      primary: '#0A0A0A',
+      secondary: '#171717',
+      tertiary: '#262626',
+      error: '#450A0A',
+      success: '#052E16',
+      warning: '#451A03',
     },
     text: {
-      primary: colors.neutral[50],
-      secondary: colors.neutral[400],
-      tertiary: colors.neutral[500],
-      inverse: colors.neutral[900],
+      primary: '#FAFAFA',
+      secondary: '#A3A3A3',
+      tertiary: '#737373',
+      inverse: '#171717',
     },
     border: {
-      default: colors.neutral[700],
-      focus: colors.brand[400],
-      error: colors.error[400],
+      default: '#404040',
+      focus: '#60A5FA',
+      error: '#F87171',
     },
     state: {
-      success: colors.success[500],
-      error: colors.error[500],
-      warning: colors.warning[500],
-      info: colors.info[500],
+      success: '#22C55E',
+      error: '#EF4444',
+      warning: '#F59E0B',
+      info: '#3B82F6',
     },
   },
 } as const;

@@ -1,5 +1,12 @@
+'use client';
+
+/**
+ * EmptyState Composite
+ * Generic empty state component with icon, title, description and optional action
+ */
+
 import { FileText, AlertCircle, Inbox } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../button';
 
 interface EmptyStateProps {
   title: string;

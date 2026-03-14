@@ -1,6 +1,13 @@
+'use client';
+
+/**
+ * StatsCard Composite
+ * Displays a metric/KPI with optional trend indicator and loading skeleton
+ */
+
 import { LucideIcon } from 'lucide-react';
-import { Skeleton } from '../ui/skeleton';
-import { cn } from '../ui/utils';
+import { Skeleton } from '../skeleton';
+import { cn } from '../utils';
 
 interface StatsCardProps {
   title: string;

@@ -17,8 +17,8 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
-} from '../ui/sidebar';
-import { Button } from '../ui/button';
+} from '@automatize/ui/web';
+import { Button } from '@automatize/ui/web';
 
 interface AppSidebarProps {
   currentPage: string;

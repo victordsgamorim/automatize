@@ -1,4 +1,4 @@
-import { cn } from '../ui/utils';
+import { cn } from '@automatize/ui/web';
 
 export type InvoiceStatus = 'paid' | 'pending' | 'overdue' | 'draft';
 
