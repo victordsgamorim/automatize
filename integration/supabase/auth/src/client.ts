@@ -1,6 +1,16 @@
 /**
  * Supabase Client Initialization
- * Lazy-loaded client that avoids platform-specific imports at bundle time
+ * Lazy-loaded client that avoids platform-specific imports at bundle time.
+ *
+ * ## Secure storage
+ *
+ * Pass a `storage` adapter via `initializeAuth` (or directly to
+ * `createSupabaseClient`) to control where session tokens are persisted.
+ *
+ * Recommended adapters (see `./storage/secure-storage.adapter`):
+ * - `CookieStorageAdapter`  — httpOnly cookie delegation (web, SSR)
+ * - `InMemoryStorageAdapter` — non-persistent, XSS-safe (SSR, tests)
+ * - `MobileTokenStorage`    — expo-secure-store (iOS / Android)
  */
 
 import {
@@ -9,31 +19,53 @@ import {
 } from '@supabase/supabase-js';
 import { getAuthConfig } from './config';
 import type { Database } from './types/database.types';
+import type { ISecureStorageAdapter } from './storage/secure-storage.adapter';
 
 let supabaseInstance: SupabaseClientType<Database> | null = null;
 
 /**
- * Get or create the Supabase client (lazy initialization)
- * This avoids platform-specific imports until actually needed
+ * Create a new Supabase client with the given storage adapter.
+ *
+ * Call this directly when you want a one-off client (e.g. per-request in SSR)
+ * rather than using the global singleton.
+ */
+export function createSupabaseClient(
+  supabaseUrl: string,
+  supabaseAnonKey: string,
+  storage?: ISecureStorageAdapter
+): SupabaseClientType<Database> {
+  return createClient<Database>(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
+      ...(storage ? { storage } : {}),
+    },
+    // For React Native, use the native fetch
+    global: {
+      fetch: fetch.bind(globalThis),
+    },
+  });
+}
+
+/**
+ * Get or create the global Supabase client singleton (lazy initialization).
+ * This avoids platform-specific imports until actually needed.
+ *
+ * The first call reads config from `initializeAuth`.  Subsequent calls return
+ * the cached instance.  To force a new instance (e.g. after logout / config
+ * change) call `resetSupabaseClient()` first.
  */
 export function getSupabaseClient(): SupabaseClientType<Database> {
   if (!supabaseInstance) {
     const config = getAuthConfig();
 
-    supabaseInstance = createClient<Database>(
+    supabaseInstance = createSupabaseClient(
       config.supabaseUrl,
       config.supabaseAnonKey,
-      {
-        auth: {
-          autoRefreshToken: true,
-          persistSession: true,
-          detectSessionInUrl: true,
-        },
-        // For React Native, use the native fetch
-        global: {
-          fetch: fetch.bind(globalThis),
-        },
-      }
+      // Storage is optional — when absent Supabase falls back to localStorage
+      // in the browser or an in-memory store on Node/RN.
+      config.storage
     );
   }
 
