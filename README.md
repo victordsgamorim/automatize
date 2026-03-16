@@ -18,8 +18,9 @@ apps/                 # Platform applications
 
 core/                 # Dependency injection & interfaces
 
-packages/             # Feature modules
-└── ui/               # Design system
+  packages/             # Feature modules
+    ├── navigation/     # Cross-platform navigation logic
+    └── ui/             # Design system
 
 integration/          # Infrastructure implementations
 ├── supabase/        # Supabase clients & auth
@@ -360,6 +361,20 @@ See local documentation for details (not committed to git).
 - Write self-documenting code
 - Add comments only where logic is complex
 - Keep functions small and focused
+
+#### Enforced Lint Rules (`tools/eslint-config/base.js`)
+
+| Rule                                                | Severity  | Notes                                                                                                                             |
+| --------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `@typescript-eslint/no-unused-vars`                 | **error** | Unused variables/args MUST be prefixed with `_` (e.g. `_e`, `_unused`). Pattern: `argsIgnorePattern: ^_`, `varsIgnorePattern: ^_` |
+| `@typescript-eslint/no-explicit-any`                | warn      | Avoid `any`; use `unknown` or proper types                                                                                        |
+| `@typescript-eslint/no-non-null-assertion`          | warn      | Avoid `!` assertions; prefer optional chaining or guards                                                                          |
+| `@typescript-eslint/explicit-module-boundary-types` | off       | Return types are inferred                                                                                                         |
+| `no-console`                                        | warn      | Only `console.warn` and `console.error` are allowed                                                                               |
+| `prefer-const`                                      | **error** | Use `const` unless reassignment is needed                                                                                         |
+| `no-var`                                            | **error** | Never use `var`                                                                                                                   |
+
+**Key convention:** unused function parameters MUST start with `_` (underscore) to pass lint. Example: `(_event: MouseEvent) => { ... }`
 
 ### Definition of Done
 
