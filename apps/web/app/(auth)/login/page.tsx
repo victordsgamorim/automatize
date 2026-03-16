@@ -2,369 +2,314 @@
 
 /**
  * Web Login Screen
- * Email and password authentication for web
+ *
+ * Email/password authentication with optional MFA (TOTP / backup code).
+ * Uses @automatize/ui/web components exclusively — no inline styles.
+ * Validates via Zod + react-hook-form using the shared loginSchema.
  */
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useUserAuthentication } from '@automatize/supabase-auth';
-import { semanticColors } from '@automatize/ui/tokens';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { AlertCircle, Loader2, KeyRound, ShieldCheck } from 'lucide-react';
+import { useUserAuthentication, loginSchema } from '@automatize/supabase-auth';
+import {
+  Button,
+  Input,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  Alert,
+  AlertDescription,
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  Separator,
+  useForm,
+} from '@automatize/ui/web';
 
-const theme = semanticColors.light;
+type LoginFormValues = z.infer<typeof loginSchema>;
 
-export default function LoginScreen() {
-  const { login, isLoading, error } = useUserAuthentication();
+export default function LoginPage() {
+  const { login, isLoading, error: authError } = useUserAuthentication();
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [mfaCode, setMfaCode] = useState('');
-  const [useMfaCode, setUseMfaCode] = useState(false);
-  const [useBackupCode, setUseBackupCode] = useState(false);
-  const [localError, setLocalError] = useState<string | null>(null);
+  const [mfaStep, setMfaStep] = useState<'credentials' | 'totp' | 'backup'>(
+    'credentials'
+  );
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLocalError(null);
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      mfaCode: undefined,
+      backupCode: undefined,
+    },
+  });
+
+  const displayError = authError || submitError;
+
+  const onSubmit = async (values: LoginFormValues) => {
+    setSubmitError(null);
 
     try {
-      const code = useMfaCode ? mfaCode : undefined;
-      await login(email, password, code);
+      const code =
+        mfaStep === 'totp'
+          ? values.mfaCode
+          : mfaStep === 'backup'
+            ? values.backupCode
+            : undefined;
+
+      await login(values.email, values.password, code);
       router.push('/');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Login failed';
-      setLocalError(message);
+      setSubmitError(message);
     }
   };
 
-  const displayError = error || localError;
+  const handleShowMfa = () => {
+    setMfaStep('totp');
+    form.setValue('mfaCode', '');
+  };
+
+  const handleSwitchToBackup = () => {
+    setMfaStep('backup');
+    form.setValue('mfaCode', undefined);
+    form.setValue('backupCode', '');
+  };
+
+  const handleBackToCredentials = () => {
+    setMfaStep('credentials');
+    form.setValue('mfaCode', undefined);
+    form.setValue('backupCode', undefined);
+  };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100vh',
-        backgroundColor: '#FFFFFF',
-      }}
-    >
-      {/* Left Panel - Branding */}
-      <div
-        style={{
-          flex: 1,
-          backgroundColor: '#6366f1',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '40px',
-        }}
-      >
-        <div style={{ textAlign: 'center' }}>
-          <h1
-            style={{
-              fontSize: '48px',
-              fontWeight: 'bold',
-              marginBottom: '16px',
-              color: 'white',
-              margin: 0,
-            }}
-          >
-            Automatize
-          </h1>
-          <p
-            style={{
-              fontSize: '18px',
-              opacity: 0.9,
-              color: 'white',
-              margin: 0,
-            }}
-          >
-            Invoice Management System
-          </p>
-        </div>
-      </div>
+    <Card className="shadow-lg">
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl font-bold tracking-tight">
+          Automatize
+        </CardTitle>
+        <CardDescription>Sign in to your account to continue</CardDescription>
+      </CardHeader>
 
-      {/* Right Panel - Form */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '40px',
-        }}
-      >
-        <form
-          onSubmit={handleLogin}
-          style={{
-            width: '100%',
-            maxWidth: '400px',
-            backgroundColor: theme.background.secondary,
-            borderRadius: '8px',
-            padding: '32px 24px',
-          }}
-        >
-          <h2
-            style={{
-              marginBottom: '24px',
-              textAlign: 'center',
-              color: theme.text.primary,
-              fontSize: '24px',
-              margin: 0,
-            }}
-          >
-            Login
-          </h2>
+      <CardContent>
+        {displayError && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="size-4" />
+            <AlertDescription>{displayError}</AlertDescription>
+          </Alert>
+        )}
 
-          {displayError && (
-            <div
-              style={{
-                backgroundColor: '#fee2e2',
-                padding: '12px',
-                borderRadius: '8px',
-                marginBottom: '16px',
-                borderLeft: `4px solid ${'#dc2626'}`,
-                color: '#dc2626',
-                fontSize: '14px',
-              }}
-            >
-              {displayError}
-            </div>
-          )}
-
-          <div style={{ marginBottom: '16px' }}>
-            <label
-              style={{
-                display: 'block',
-                marginBottom: '6px',
-                color: theme.text.primary,
-                fontSize: '14px',
-                fontWeight: 500,
-              }}
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
-              required
-              data-testid="login-email-input"
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                border: `1px solid ${theme.border || '#e5e7eb'}`,
-                borderRadius: '6px',
-                fontSize: '14px',
-                backgroundColor: theme.background.primary,
-                color: theme.text.primary,
-                boxSizing: 'border-box',
-              }}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+            {/* Email */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="you@company.com"
+                      autoComplete="email"
+                      autoCapitalize="none"
+                      disabled={isLoading}
+                      data-testid="login-email-input"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div style={{ marginBottom: '16px' }}>
-            <label
-              style={{
-                display: 'block',
-                marginBottom: '6px',
-                color: theme.text.primary,
-                fontSize: '14px',
-                fontWeight: 500,
-              }}
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
-              required
-              data-testid="login-password-input"
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                border: `1px solid ${theme.border || '#e5e7eb'}`,
-                borderRadius: '6px',
-                fontSize: '14px',
-                backgroundColor: theme.background.primary,
-                color: theme.text.primary,
-                boxSizing: 'border-box',
-              }}
+            {/* Password */}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      autoComplete="current-password"
+                      disabled={isLoading}
+                      data-testid="login-password-input"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          {useMfaCode && (
-            <div style={{ marginBottom: '16px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '6px',
-                  color: theme.text.primary,
-                  fontSize: '14px',
-                  fontWeight: 500,
-                }}
-              >
-                {useBackupCode ? 'Backup Code' : 'MFA Code'}
-              </label>
-              <input
-                type={useBackupCode ? 'text' : 'number'}
-                placeholder={
-                  useBackupCode
-                    ? 'Enter 8-character backup code'
-                    : 'Enter 6-digit code'
-                }
-                value={mfaCode}
-                onChange={(e) => setMfaCode(e.target.value)}
-                maxLength={useBackupCode ? 8 : 6}
-                disabled={isLoading}
-                data-testid="login-mfa-input"
-                style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  border: `1px solid ${theme.border || '#e5e7eb'}`,
-                  borderRadius: '6px',
-                  fontSize: '14px',
-                  backgroundColor: theme.background.primary,
-                  color: theme.text.primary,
-                  boxSizing: 'border-box',
-                }}
+            {/* MFA: TOTP Code */}
+            {mfaStep === 'totp' && (
+              <FormField
+                control={form.control}
+                name="mfaCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Authentication Code</FormLabel>
+                    <FormControl>
+                      <InputOTP
+                        maxLength={6}
+                        disabled={isLoading}
+                        data-testid="login-mfa-input"
+                        value={field.value ?? ''}
+                        onChange={field.onChange}
+                      >
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
+            )}
+
+            {/* MFA: Backup Code */}
+            {mfaStep === 'backup' && (
+              <FormField
+                control={form.control}
+                name="backupCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Backup Code</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="8-character backup code"
+                        maxLength={8}
+                        autoCapitalize="characters"
+                        disabled={isLoading}
+                        data-testid="login-backup-input"
+                        {...field}
+                        value={field.value ?? ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            {/* MFA toggle buttons */}
+            <div className="flex flex-col gap-1">
+              {mfaStep === 'credentials' && (
+                <Button
+                  type="button"
+                  variant="link"
+                  size="sm"
+                  className="h-auto justify-start p-0 text-muted-foreground"
+                  onClick={handleShowMfa}
+                  disabled={isLoading}
+                >
+                  <ShieldCheck className="size-3.5" />
+                  Have an MFA code?
+                </Button>
+              )}
+
+              {mfaStep === 'totp' && (
+                <>
+                  <Button
+                    type="button"
+                    variant="link"
+                    size="sm"
+                    className="h-auto justify-start p-0 text-muted-foreground"
+                    onClick={handleSwitchToBackup}
+                    disabled={isLoading}
+                  >
+                    <KeyRound className="size-3.5" />
+                    Use backup code instead
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="link"
+                    size="sm"
+                    className="h-auto justify-start p-0 text-muted-foreground"
+                    onClick={handleBackToCredentials}
+                    disabled={isLoading}
+                  >
+                    Back to password login
+                  </Button>
+                </>
+              )}
+
+              {mfaStep === 'backup' && (
+                <Button
+                  type="button"
+                  variant="link"
+                  size="sm"
+                  className="h-auto justify-start p-0 text-muted-foreground"
+                  onClick={handleBackToCredentials}
+                  disabled={isLoading}
+                >
+                  Back to password login
+                </Button>
+              )}
             </div>
-          )}
 
-          {!useMfaCode && (
-            <button
-              onClick={() => setUseMfaCode(true)}
+            {/* Submit */}
+            <Button
+              type="submit"
+              size="lg"
+              className="mt-2 w-full"
               disabled={isLoading}
-              style={{
-                marginTop: '8px',
-                width: '100%',
-                padding: '10px',
-                backgroundColor: 'transparent',
-                color: '#6366f1',
-                border: 'none',
-                borderRadius: '6px',
-                fontSize: '14px',
-                fontWeight: 500,
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-              }}
+              data-testid="login-submit-button"
             >
-              Have a MFA or backup code?
-            </button>
-          )}
+              {isLoading && <Loader2 className="size-4 animate-spin" />}
+              {isLoading ? 'Signing in...' : 'Sign in'}
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
 
-          {useMfaCode && !useBackupCode && (
-            <button
-              onClick={() => setUseBackupCode(true)}
-              disabled={isLoading}
-              style={{
-                marginTop: '8px',
-                width: '100%',
-                padding: '10px',
-                backgroundColor: 'transparent',
-                color: '#6366f1',
-                border: 'none',
-                borderRadius: '6px',
-                fontSize: '14px',
-                fontWeight: 500,
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-              }}
-            >
-              Use backup code instead
-            </button>
-          )}
+      <Separator />
 
-          {useMfaCode && (
-            <button
-              onClick={() => {
-                setUseMfaCode(false);
-                setMfaCode('');
-                setUseBackupCode(false);
-              }}
-              disabled={isLoading}
-              style={{
-                marginTop: '8px',
-                width: '100%',
-                padding: '10px',
-                backgroundColor: 'transparent',
-                color: '#6366f1',
-                border: 'none',
-                borderRadius: '6px',
-                fontSize: '14px',
-                fontWeight: 500,
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-              }}
-            >
-              Back to password login
-            </button>
-          )}
+      <CardFooter className="flex flex-col gap-3 pt-6">
+        <Link
+          href="/(auth)/forgot-password"
+          className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+        >
+          Forgot your password?
+        </Link>
 
-          <button
-            type="submit"
-            disabled={
-              !email || !password || (useMfaCode && !mfaCode) || isLoading
-            }
-            style={{
-              marginTop: '24px',
-              width: '100%',
-              padding: '10px',
-              backgroundColor: '#6366f1',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              fontSize: '14px',
-              fontWeight: 500,
-              cursor:
-                isLoading || !email || !password ? 'not-allowed' : 'pointer',
-              opacity: isLoading || !email || !password ? 0.6 : 1,
-            }}
-          >
-            {isLoading ? 'Logging in...' : 'Login'}
-          </button>
-
+        <p className="text-sm text-muted-foreground">
+          Don&apos;t have an account?{' '}
           <Link
-            href="/(auth)/forgot-password"
-            style={{
-              display: 'block',
-              marginTop: '8px',
-              padding: '10px',
-              textAlign: 'center',
-              color: '#6366f1',
-              textDecoration: 'none',
-              borderRadius: '6px',
-              fontSize: '14px',
-              fontWeight: 500,
-            }}
+            href="/(auth)/register"
+            className="font-medium text-primary transition-colors hover:text-primary/80"
           >
-            Forgot your password?
+            Create account
           </Link>
-
-          <div
-            style={{
-              marginTop: '16px',
-              textAlign: 'center',
-              color: theme.text.secondary,
-              fontSize: '14px',
-            }}
-          >
-            Don&apos;t have an account?{' '}
-            <Link
-              href="/(auth)/register"
-              style={{
-                color: '#6366f1',
-                textDecoration: 'none',
-                fontWeight: 500,
-              }}
-            >
-              Register here
-            </Link>
-          </div>
-        </form>
-      </div>
-    </div>
+        </p>
+      </CardFooter>
+    </Card>
   );
 }

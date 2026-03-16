@@ -1,5 +1,6 @@
+'use client';
+
 import React from 'react';
-import styles from './auth-layout.module.css';
 
 export default function AuthLayout({
   children,
@@ -7,14 +8,8 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>Automatize</h1>
-          <p className={styles.subtitle}>Gestão de Faturas Profissional</p>
-        </div>
-        {children}
-      </div>
+    <div className="flex min-h-svh items-center justify-center bg-muted p-4">
+      <div className="w-full max-w-md">{children}</div>
     </div>
   );
 }
