@@ -29,6 +29,7 @@ Before performing any task, you **MUST** read `README.md` and treat it as the **
 - environment configuration
 - contribution and release rules
 - security constraints
+- documentation updates when architecture structure changes
 
 Conflict resolution order:
 
@@ -36,6 +37,8 @@ Conflict resolution order:
 2. This instruction
 3. Codebase reality (tests, types, lint rules)
 4. Everything else
+
+Additionally, when making changes that impact the architecture structure, you MUST update all relevant documentation files, including the root README.md and any module-specific README.md files that document the affected architecture. If the change also affects this CLAUDE.md document, update it as well to maintain documentation consistency.
 
 ---
 
