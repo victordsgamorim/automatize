@@ -55,6 +55,7 @@ export {
   FormMessage,
   useFormField,
 } from './form';
+export { useForm } from 'react-hook-form';
 export {
   InputOTP,
   InputOTPGroup,
