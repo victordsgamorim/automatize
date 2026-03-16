@@ -150,6 +150,7 @@ Requirements:
 
 - **Monorepo:** Turborepo
 - **Package manager:** pnpm (strict mode)
+- **Dependency versions:** pnpm catalogs (centralized in `pnpm-workspace.yaml`)
 
 ### 6.2 Testing
 
@@ -179,6 +180,35 @@ Requirements:
 - immutable operations
 - i18n-ready
 - prefer date-fns for performance and bundle efficiency
+
+### 6.5 Dependency Version Management
+
+**Mechanism:** pnpm catalogs
+
+All shared dependency versions are centralized in the `catalog:` section of `pnpm-workspace.yaml`. Packages reference them via the `catalog:` protocol instead of hardcoding version strings.
+
+Rules:
+
+- When a dependency is used by 2+ packages, its version MUST be defined in the catalog
+- All packages consuming a cataloged dependency MUST use `"dep": "catalog:"` (not explicit versions)
+- Named catalogs (`catalog:react18`, `catalog:react19`) handle platform-specific version splits
+- peerDependencies are NOT managed by catalog — they define compatibility ranges and remain explicit
+- The root `package.json` uses explicit versions (not catalog protocol) since it is not a workspace member
+- Run `pnpm scan:deps` after dependency changes to verify no conflicts or regressions
+
+Adding a new shared dependency:
+
+1. Add version to `catalog:` in `pnpm-workspace.yaml`
+2. In each consuming `package.json`, use `"dep-name": "catalog:"`
+3. Run `pnpm install` to verify resolution
+4. Run `pnpm scan:deps` to verify no new conflicts
+
+The dependency scanner (`scripts/scan-deps.ts`) provides:
+
+- Duplicate detection across all workspace packages
+- Version conflict identification with severity levels
+- Catalog coverage tracking (target: >80%)
+- Actionable recommendations for deduplication
 
 ---
 
@@ -421,6 +451,9 @@ project/
       tokens/
       theme/
       docs/
+
+  scripts/
+    scan-deps.ts         # Dependency deduplication scanner
 
   tools/
     eslint-config/
