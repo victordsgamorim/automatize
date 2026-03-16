@@ -1,136 +1,127 @@
 # @automatize/navigation
 
-Cross-platform navigation primitives and hooks for the Automatize invoicing system.
+Cross-platform navigation logic for the Automatize invoicing system.
 
-This package provides reusable navigation logic and components that work consistently across Web (Expo/Next.js), Mobile (Expo/React Native), and Windows Desktop (React Native Windows).
+## What is this?
 
-## Features
+A unified navigation solution that provides platform-agnostic hooks and components for handling routing and navigation state across Web (Expo/Next.js), Mobile (Expo/React Native), and Windows Desktop (React Native Windows). It eliminates duplicated navigation logic while ensuring consistent behavior and appearance across all platforms.
 
-- **Platform-agnostic hooks**: `useNavigation`, `useRoute`, `useFocusEffect`, `useNavigationSync`
-- **Adaptive components**: `NavigationLink`, `NavigationMenu`, `Breadcrumb` with platform-specific implementations
-- **Zero duplication**: Replaces scattered navigation logic in `apps/*` directories
-- **Full TypeScript support**: Exhaustive platform handling via discriminated unions
-- **Accessibility compliant**: WCAG 2.1 AA touch targets, ARIA labels, keyboard navigation
-- **Tree-shakeable**: Platform-specific code is excluded when unused
+## How it works
 
-## Installation
+The package separates navigation concerns into two layers:
 
-This is a workspace package — install is automatic via Turborepo/pnpm:
+- **Logic layer**: Platform-agnostic hooks and components that handle navigation state, route parsing, and navigation actions
+- **UI layer**: Thin adapters that render platform-appropriate primitives using components from `@automatize/ui`
 
-```bash
-# From workspace root
-pnpm install
-```
+This separation ensures that business logic never depends on platform-specific APIs, satisfying Automatize's core architectural requirement.
 
-## Usage
+## Directory organization
 
-### Navigation Hooks
+- **src/** — Source code for the navigation module
+  - **hooks/** — Platform-agnostic navigation hooks with .web/.native implementations
+  - **components/** — Adaptive navigation components with platform-specific rendering
+  - **utils/** — Shared navigation utilities and helpers
+  - **types.ts** — Public TypeScript interfaces and type guards
+  - **index.web.ts** — Web entry point (Next.js/Expo Web)
+  - **index.native.ts** — Native entry point (Expo/React Native)
+- \***\*tests**/\*\* — Unit tests for hooks and components
+
+## Design decisions
+
+### Why platform-agnostic hooks?
+
+Navigation logic (parsing routes, managing history, triggering navigation) is fundamentally the same across platforms. By abstracting this logic into hooks like `useNavigation()` and `useRoute()`, we ensure consistent behavior while allowing each platform to implement the underlying mechanics appropriately.
+
+### Why adaptive components instead of universal ones?
+
+While navigation logic is universal, the optimal UI presentation differs significantly:
+
+- Web: Horizontal navigation bars, sidebar navigators, breadcrumb trails
+- Mobile: Bottom tab bars, drawer navigators, stack navigators
+- Windows: Navigation rails, nav panes, tabs, menubar
+
+The `NavigationLink`, `NavigationMenu`, and `Breadcrumb` components adapt their rendering to follow each platform's established patterns while maintaining a consistent API for consumers.
+
+### How platform extension works
+
+Following Automatize's established pattern, platform-specific implementations use file extensions:
+
+- `NavigationLink.web.tsx` — Web implementation using Next.js Link
+- `NavigationLink.native.tsx` — Native implementation using Expo Router Link
+- `NavigationLink.windows.ts` — Windows-specific implementation (if needed)
+
+The bundler automatically selects the correct file based on the target platform, ensuring consumers only see the unified interface.
+
+### Design system integration
+
+All visual styling comes exclusively from `@automatize/ui`:
+
+- Navigation components use design tokens for spacing, colors, and typography
+- Icons are sourced from `@automatize/ui` icon set (lucide-react/lucide-react-native)
+- No hardcoded colors, spacing, or styling appears in the navigation module
+- Components accept `className` and `style` props for additional customization when needed
+
+## Usage pattern
+
+Applications import and use the navigation module through its unified interface:
 
 ```tsx
+// Consumers import from the package root
 import {
   useNavigation,
   useRoute,
-  useFocusEffect,
-  useNavigationSync,
+  NavigationLink,
+  NavigationMenu,
 } from '@automatize/navigation';
 
-function ProfileScreen() {
-  const { navigate, goBack } = useNavigation();
-  const { path, params } = useRoute();
-
-  useFocusEffect(() => {
-    // Analytics or data refresh when screen gains focus
-    trackScreenView(path);
-    return () => {
-      // Cleanup on blur
-    };
-  });
-
-  useNavigationSync(({ path }) => {
-    // Update breadcrumbs or analytics on route change
-    updateBreadcrumb(path);
-  });
-
-  return (
-    <View>
-      <Text>User ID: {params.userId}</Text>
-      <Button onPress={() => goBack()}>Back</Button>
-    </View>
-  );
-}
+// The same import works on web, mobile, and Windows
 ```
 
-### NavigationLink
+### Navigation hooks
 
-```tsx
-import { NavigationLink } from '@automatize/navigation';
+The hooks provide essential navigation capabilities:
 
-function Sidebar() {
-  return (
-    <NavigationLink href="/invoices" accessibilityLabel="Go to invoices list">
-      Invoices
-    </NavigationLink>
-  );
-}
-```
+- `useNavigation()` — Imperative navigation (navigate, goBack, replace)
+- `useRoute()` — Declarative access to current route parameters and path
+- `useFocusEffect()` — Run effects when screens gain/lose focus
+- `useNavigationSync()` — Respond to route changes for analytics or state updates
 
-### NavigationMenu
+These hooks encapsulate platform differences while providing identical APIs.
 
-```tsx
-import { NavigationMenu } from '@automatize/navigation';
+### Navigation components
 
-function MainNav() {
-  const items = [
-    { key: 'dashboard', label: 'Dashboard', href: '/' },
-    { key: 'invoices', label: 'Invoices', href: '/invoices' },
-    { key: 'clients', label: 'Clients', href: '/clients' },
-  ];
+Components adapt their rendering to each platform:
 
-  return <NavigationMenu items={items} />;
-}
-```
+- `NavigationLink` renders as `<a>`/Next.js Link on web, Pressable/Link on native
+- `NavigationMenu` renders as vertical sidebar on web, bottom tab bar on mobile
+- `Breadcrumb` renders as hierarchical trail with appropriate separators per platform
 
-### Breadcrumb
+All components meet accessibility requirements (WCAG 2.1 AA) including:
 
-```tsx
-import { Breadcrumb } from '@automatize/navigation';
-
-function InvoiceDetail() {
-  const segments = [
-    { label: 'Home', href: '/' },
-    { label: 'Invoices', href: '/invoices' },
-    { label: 'INV-00123' }, // current page
-  ];
-
-  return <Breadcrumb segments={segments} />;
-}
-```
-
-## API Reference
-
-See `src/types.ts` for the full TypeScript interface documentation.
-
-## Design
-
-- Follows the **Platform Extension Pattern**: `.web.tsx`, `.native.tsx`, `.windows.tsx`
-- UI primitives come from `@automatize/ui`; this package handles logic only
-- Web implementation uses Next.js/App Router primitives
-- Native implementation uses Expo Router primitives
-- Windows implementation shares native logic where appropriate
+- Minimum 44×44 dp touch targets
+- Proper ARIA labels and roles
+- Keyboard navigation support
+- Sufficient color contrast
 
 ## Testing
 
-```bash
-# Unit + integration tests
-pnpm test
+The navigation module includes comprehensive unit tests covering:
 
-# Unit tests only
-pnpm test:unit
+- Hook behavior and platform differences
+- Component rendering and prop handling
+- Accessibility attributes and event handling
+- Type safety and interface compliance
 
-# Watch mode
-pnpm test:watch
-```
+Tests run automatically as part of the monorepo's CI pipeline and can be executed locally with `pnpm test` from the package directory.
 
-## License
+## Integration with Automatize architecture
 
-See root [LICENSE](../LICENSE) file.
+This module follows Automatize's core architectural principles:
+
+- **Feature-modular architecture**: Navigation logic is encapsulated in its own package
+- **Platform independence**: No business logic depends on Expo, React Native, or web APIs
+- **True offline-first**: Navigation logic functions independently of connectivity state
+- **Shared core**: All domain logic lives outside platform-specific apps/
+- **UI separation**: Visual presentation is delegated to `@automatize/ui` components
+
+The module replaces duplicated navigation implementations in `apps/*` directories with a single, maintainable source of truth.

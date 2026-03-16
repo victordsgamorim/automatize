@@ -113,6 +113,7 @@ automatize/
 │   ├── storage/        # @automatize/storage
 │   └── sync/           # @automatize/sync
 ├── packages/
+│   ├── navigation/     # Cross-platform navigation logic
 │   └── ui/             # Design system + components
 │       └── README.md
 └── tools/
