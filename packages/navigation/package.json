@@ -1,0 +1,68 @@
+{
+  "name": "@automatize/navigation",
+  "version": "0.0.0",
+  "private": true,
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "react-native": {
+        "types": "./src/index.native.ts",
+        "default": "./src/index.native.ts"
+      },
+      "default": {
+        "types": "./src/index.web.ts",
+        "default": "./src/index.web.ts"
+      }
+    },
+    "./types": {
+      "types": "./src/types.ts",
+      "default": "./src/types.ts"
+    }
+  },
+  "main": "./src/index.web.ts",
+  "types": "./src/index.web.ts",
+  "scripts": {
+    "lint": "eslint src/ --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run --coverage",
+    "test:watch": "vitest",
+    "clean": "rm -rf node_modules .turbo"
+  },
+  "dependencies": {
+    "@automatize/ui": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-native": ">=0.73.0",
+    "expo-router": ">=3.0.0",
+    "next": ">=14.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    },
+    "expo-router": {
+      "optional": true
+    },
+    "next": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@automatize/eslint-config": "workspace:*",
+    "@automatize/tsconfig": "workspace:*",
+    "@testing-library/react": "^16.0.0",
+    "@types/react": "^18.3.0",
+    "@vitest/coverage-v8": "^1.2.1",
+    "eslint": "^8.56.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.1"
+  }
+}

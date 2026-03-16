@@ -7,6 +7,8 @@ packages:
   - 'core'
   # Design system
   - 'packages/ui'
+  # Navigation logic
+  - 'packages/navigation'
   # Integration — local infrastructure
   - 'integration/storage'
   - 'integration/sync'

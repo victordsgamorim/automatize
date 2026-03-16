@@ -2,19 +2,19 @@
 
 import React, { useEffect } from 'react';
 import { useUserAuthentication } from '@automatize/supabase-auth';
-import { useRouter } from 'next/navigation';
+import { useNavigation } from '@automatize/navigation';
 import styles from './app-layout.module.css';
 import Navigation from './navigation';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useUserAuthentication();
-  const router = useRouter();
+  const { navigate } = useNavigation();
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push('/login');
+      navigate('/login');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, navigate]);
 
   if (!isAuthenticated) {
     return null;

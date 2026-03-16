@@ -409,6 +409,10 @@ project/
     <domain>/            # One sub-package per integration domain
 
   packages/              # packages for features
+    navigation/          # Cross-platform navigation logic
+      hooks/
+      components/
+      utils/
     ui/                  # Design system + components
       components/
       tokens/
@@ -580,9 +584,23 @@ Rendering full datasets at once is forbidden.
 
 ESLint:
 
-- Use exactly the provided ESLint Flat Config model
+- Use exactly the provided ESLint config from `tools/eslint-config`
 - Do not rewrite rules from scratch
 - Size/complexity rules are refactoring triggers
+
+#### Enforced Lint Rules (`tools/eslint-config/base.js`)
+
+| Rule                                                | Severity  | Notes                                                                                                                             |
+| --------------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `@typescript-eslint/no-unused-vars`                 | **error** | Unused variables/args MUST be prefixed with `_` (e.g. `_e`, `_unused`). Pattern: `argsIgnorePattern: ^_`, `varsIgnorePattern: ^_` |
+| `@typescript-eslint/no-explicit-any`                | warn      | Avoid `any`; use `unknown` or proper types                                                                                        |
+| `@typescript-eslint/no-non-null-assertion`          | warn      | Avoid `!` assertions; prefer optional chaining or guards                                                                          |
+| `@typescript-eslint/explicit-module-boundary-types` | off       | Return types are inferred                                                                                                         |
+| `no-console`                                        | warn      | Only `console.warn` and `console.error` are allowed                                                                               |
+| `prefer-const`                                      | **error** | Use `const` unless reassignment is needed                                                                                         |
+| `no-var`                                            | **error** | Never use `var`                                                                                                                   |
+
+**Key convention:** unused function parameters MUST start with `_` (underscore) to pass lint. Example: `(_event: MouseEvent) => { ... }`
 
 Pre-commit:
 
