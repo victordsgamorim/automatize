@@ -61,7 +61,7 @@ Automatize is a production-grade invoice management application supporting:
 ### Core
 
 - **Monorepo**: Turborepo + pnpm
-- **Language**: TypeScript 5.3+
+- **Language**: TypeScript 5.9+
 - **Database (Local)**: WatermelonDB
 - **Database (Remote)**: Supabase (PostgreSQL)
 - **ID Generation**: ULID
@@ -87,6 +87,12 @@ Automatize is a production-grade invoice management application supporting:
 - **Linting**: ESLint + Prettier
 - **Git Hooks**: Husky + lint-staged
 - **Commit Convention**: Conventional Commits (enforced)
+
+### Dependency Management
+
+- **Version centralization**: pnpm catalogs (`pnpm-workspace.yaml`)
+- **Dependency scanner**: `pnpm scan:deps` (identifies duplicates, conflicts, catalog coverage)
+- **React version split**: Named catalogs `react18` (mobile/RN) and `react19` (web/Next.js)
 
 ### DevOps
 
@@ -116,6 +122,8 @@ automatize/
 │   ├── navigation/     # Cross-platform navigation logic
 │   └── ui/             # Design system + components
 │       └── README.md
+├── scripts/
+│   └── scan-deps.ts    # Dependency deduplication scanner
 └── tools/
     ├── eslint-config/  # Shared ESLint configs
     └── tsconfig/       # Shared TypeScript configs
@@ -128,7 +136,7 @@ automatize/
 ### Prerequisites
 
 - **Node.js**: 20.x or higher
-- **pnpm**: 8.x or higher
+- **pnpm**: 10.x or higher
 - **Git**: Latest version
 
 ### Installation
@@ -136,7 +144,7 @@ automatize/
 1. **Install pnpm** (if not installed):
 
 ```bash
-npm install -g pnpm@8
+npm install -g pnpm@10
 ```
 
 2. **Clone the repository**:
@@ -205,6 +213,9 @@ pnpm format
 - `pnpm typecheck` - Type-check all packages
 - `pnpm test` - Run all tests
 - `pnpm format` - Format all files with Prettier
+- `pnpm scan:deps` - Scan for duplicate/conflicting dependencies
+- `pnpm scan:deps:json` - Scan output in JSON format
+- `pnpm scan:deps:summary` - Scan output as summary
 - `pnpm clean` - Remove all build artifacts and node_modules
 
 ### Package Level
@@ -216,6 +227,53 @@ Each package has its own scripts:
 - `pnpm lint` - Lint the package
 - `pnpm typecheck` - Type-check the package
 - `pnpm test` - Run package tests
+
+---
+
+## Dependency Management
+
+This project uses **pnpm catalogs** for centralized dependency version management. All shared dependency versions are defined once in `pnpm-workspace.yaml` and referenced via the `catalog:` protocol in each package's `package.json`.
+
+### How It Works
+
+```yaml
+# pnpm-workspace.yaml
+catalog:
+  zod: ^3.25.76
+  vitest: ^1.2.1
+```
+
+```json
+// any package.json
+{ "dependencies": { "zod": "catalog:" } }
+```
+
+### Named Catalogs
+
+React has a version split (React 18 for mobile/RN, React 19 for web/Next.js). Named catalogs handle this:
+
+```json
+// apps/mobile/package.json
+{ "dependencies": { "react": "catalog:react18" } }
+
+// apps/web/package.json
+{ "dependencies": { "react": "catalog:react19" } }
+```
+
+### Adding a New Shared Dependency
+
+1. Add the version to the `catalog:` section in `pnpm-workspace.yaml`
+2. In each consuming package.json, use `"dep-name": "catalog:"`
+3. Run `pnpm install`
+4. Run `pnpm scan:deps` to verify no conflicts
+
+### Scanning for Issues
+
+```bash
+pnpm scan:deps          # Full report
+pnpm scan:deps --summary # Quick summary
+pnpm scan:deps --json    # Machine-readable output
+```
 
 ---
 
@@ -420,4 +478,4 @@ Built with:
 
 **Status:** ✅
 **Version:** 0.0.0
-**Last Updated:** 2026-01-04
+**Last Updated:** 2026-03-16
