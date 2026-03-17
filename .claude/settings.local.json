@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls D:/developer/automatize/apps/web/app/\\\\\\(auth\\\\\\)/login)",
+      "Bash(ls D:/developer/automatize/apps/web/app/\\\\\\(auth\\\\\\)/forgot-password D:/developer/automatize/apps/web/app/\\\\\\(auth\\\\\\)/register D:/developer/automatize/apps/web/app/\\\\\\(auth\\\\\\)/reset-password)",
+      "Bash(where pnpm)",
+      "Bash(command -v pnpm)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(/c/Users/victo/AppData/Roaming/npm/pnpm.cmd run build)"
+    ]
+  }
+}
