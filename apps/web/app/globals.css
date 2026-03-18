@@ -5,6 +5,7 @@
 
 /* Scan packages/ui/src so Tailwind detects classes used in shared components */
 @source "../../../packages/ui/src";
+@source "../../../packages/sign-in/src";
 
 @custom-variant dark (&:is(.dark *));
 
