@@ -86,6 +86,7 @@
   "devDependencies": {
     "@automatize/tsconfig": "workspace:*",
     "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitest/coverage-v8": "catalog:",
