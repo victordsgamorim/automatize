@@ -12,7 +12,8 @@
     "clean": "rm -rf node_modules .turbo .next"
   },
   "dependencies": {
-    "@automatize/core": "workspace:*",
+    "@automatize/auth": "workspace:*",
+    "@automatize/utils": "workspace:*",
     "@automatize/supabase-auth": "workspace:*",
     "@automatize/navigation": "workspace:*",
     "@automatize/sign-in": "workspace:*",
