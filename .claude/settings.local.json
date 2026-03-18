@@ -10,7 +10,12 @@
       "Bash(/c/Users/victo/AppData/Roaming/npm/pnpm.cmd typecheck:*)",
       "Bash(/c/Users/victo/AppData/Roaming/npm/pnpm.cmd install:*)",
       "Bash(/c/Users/victo/AppData/Roaming/npm/pnpm.cmd build:*)",
-      "Bash(pnpm install:*)"
+      "Bash(pnpm install:*)",
+      "Bash(find /d/developer/automatize/packages/ui/src/web -name *text* -o -name *heading* -o -name *typography*)",
+      "Bash(ls -la /d/developer/automatize/packages/ui/src/web/*.tsx)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //PID 29528 //F)",
+      "Bash(pnpm build:*)"
     ]
   }
 }

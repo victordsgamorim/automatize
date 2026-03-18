@@ -1,14 +1,9 @@
 import React from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { Button, Input, Label, Checkbox } from '@automatize/ui/web';
 import type { SignInScreenProps, Testimonial } from './SignInScreen.types';
 
 // --- SUB-COMPONENTS ---
-
-const GlassInputWrapper = ({ children }: { children: React.ReactNode }) => (
-  <div className="rounded-2xl border border-border bg-foreground/5 backdrop-blur-sm transition-colors focus-within:border-violet-400/70 focus-within:bg-violet-500/10">
-    {children}
-  </div>
-);
 
 const TestimonialCard = ({
   testimonial,
@@ -79,80 +74,68 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
             <form className="space-y-5" onSubmit={handleSubmit}>
               <div className="animate-element animate-delay-300">
-                <label className="text-sm font-medium text-muted-foreground">
-                  Email Address
-                </label>
-                <GlassInputWrapper>
-                  <input
-                    name="email"
-                    type="email"
-                    placeholder="Enter your email address"
-                    value={email}
-                    onChange={(e) => onEmailChange(e.target.value)}
-                    disabled={isLoading}
-                    className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none disabled:opacity-50"
-                  />
-                </GlassInputWrapper>
+                <Label htmlFor="sign-in-email">Email Address</Label>
+                <Input
+                  id="sign-in-email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={email}
+                  onChange={(e) => onEmailChange(e.target.value)}
+                  disabled={isLoading}
+                />
               </div>
 
               <div className="animate-element animate-delay-400">
-                <label className="text-sm font-medium text-muted-foreground">
-                  Password
-                </label>
-                <GlassInputWrapper>
-                  <div className="relative">
-                    <input
-                      name="password"
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => onPasswordChange(e.target.value)}
-                      disabled={isLoading}
-                      className="w-full bg-transparent text-sm p-4 pr-12 rounded-2xl focus:outline-none disabled:opacity-50"
-                    />
-                    <button
-                      type="button"
-                      onClick={onToggleShowPassword}
-                      className="absolute inset-y-0 right-3 flex items-center"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
-                      ) : (
-                        <Eye className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
-                      )}
-                    </button>
-                  </div>
-                </GlassInputWrapper>
+                <Label htmlFor="sign-in-password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="sign-in-password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => onPasswordChange(e.target.value)}
+                    disabled={isLoading}
+                    className="pr-12"
+                  />
+                  <button
+                    type="button"
+                    onClick={onToggleShowPassword}
+                    className="absolute inset-y-0 right-3 flex items-center"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                    ) : (
+                      <Eye className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <div className="animate-element animate-delay-500 flex items-center justify-between text-sm">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="rememberMe"
-                    className="custom-checkbox"
-                  />
+                <Label className="flex items-center gap-3 cursor-pointer">
+                  <Checkbox name="rememberMe" />
                   <span className="text-foreground/90">Keep me signed in</span>
-                </label>
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onResetPassword();
-                  }}
-                  className="hover:underline text-violet-400 transition-colors"
+                </Label>
+                <Button
+                  type="button"
+                  variant="link"
+                  size="sm"
+                  onClick={onResetPassword}
+                  className="p-0 h-auto"
                 >
                   Reset password
-                </a>
+                </Button>
               </div>
 
-              <button
+              <Button
                 type="submit"
                 disabled={isLoading || !email || !password}
-                className="animate-element animate-delay-600 w-full rounded-2xl bg-primary py-4 font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="animate-element animate-delay-600 w-full"
               >
                 {isLoading ? 'Signing in...' : 'Sign In'}
-              </button>
+              </Button>
             </form>
           </div>
         </div>
