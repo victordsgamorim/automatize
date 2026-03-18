@@ -1,0 +1,17 @@
+{
+  "app.title": "Automatize",
+  "app.loading": "Loading...",
+  "app.error": "Something went wrong",
+  "app.retry": "Try again",
+  "app.save": "Save",
+  "app.cancel": "Cancel",
+  "app.delete": "Delete",
+  "app.edit": "Edit",
+  "app.back": "Back",
+  "app.next": "Next",
+  "nav.invoices": "Invoices",
+  "nav.clients": "Clients",
+  "nav.products": "Products",
+  "nav.analytics": "Analytics",
+  "nav.settings": "Settings"
+}

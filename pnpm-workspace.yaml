@@ -16,6 +16,8 @@ packages:
   - 'integration/sync'
   # Integration — Supabase ecosystem
   - 'integration/supabase/auth'
+  # Localization
+  - 'packages/localization'
   # Tools
   - 'tools/eslint-config'
   - 'tools/tsconfig'
@@ -27,6 +29,9 @@ packages:
 
 catalog:
   # Runtime dependencies
+  i18next: ^23.16.8
+  react-i18next: ^14.1.3
+  i18next-resources-to-backend: ^1.2.1
   zod: ^3.25.76
   ulid: ^2.3.0
   lucide-react: ^0.487.0
