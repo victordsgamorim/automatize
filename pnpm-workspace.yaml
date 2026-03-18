@@ -4,7 +4,7 @@ packages:
   - 'apps/web'
   - 'apps/windows'
   # Core
-  - 'core'
+  - 'core/*'
   # Design system
   - 'packages/ui'
   # Navigation logic

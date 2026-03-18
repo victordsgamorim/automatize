@@ -11,7 +11,7 @@
     "dev:mobile:ios": "turbo run ios --filter=@automatize/mobile",
     "dev:mobile:web": "turbo run web --filter=@automatize/mobile",
     "dev:web": "turbo run dev --filter=@automatize/web",
-    "dev:packages": "turbo run dev --filter=@automatize/core --filter=@automatize/ui --filter=@automatize/supabase-auth --filter=@automatize/storage --filter=@automatize/sync",
+    "dev:packages": "turbo run dev --filter=@automatize/auth --filter=@automatize/utils --filter=@automatize/ui --filter=@automatize/supabase-auth --filter=@automatize/storage --filter=@automatize/sync",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",

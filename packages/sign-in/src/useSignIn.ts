@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useAuth, loginSchema } from '@automatize/core';
+import { useAuth, loginSchema } from '@automatize/auth';
 
 export interface UseSignInResult {
   email: string;

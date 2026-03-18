@@ -1,5 +1,5 @@
 {
-  "name": "@automatize/core",
+  "name": "@automatize/utils",
   "version": "0.0.0",
   "private": true,
   "main": "./dist/index.js",
@@ -24,24 +24,13 @@
   },
   "dependencies": {
     "date-fns": "^3.2.0",
-    "ulid": "catalog:",
-    "zod": "catalog:"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    }
+    "ulid": "catalog:"
   },
   "devDependencies": {
     "@automatize/tsconfig": "workspace:*",
     "@types/node": "catalog:",
-    "@types/react": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "eslint": "catalog:",
-    "react": "catalog:react18",
     "tsup": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

@@ -22,7 +22,8 @@
     "clean": "rm -rf dist node_modules .turbo"
   },
   "dependencies": {
-    "@automatize/core": "workspace:*",
+    "@automatize/auth": "workspace:*",
+    "@automatize/utils": "workspace:*",
     "@nozbe/watermelondb": "^0.27.1",
     "ulid": "catalog:",
     "zod": "catalog:"

@@ -93,7 +93,7 @@ export interface AuthSession {
 /**
  * Auth context type — full Supabase-backed auth surface.
  *
- * Structurally satisfies the minimal AuthContextValue from @automatize/core
+ * Structurally satisfies the minimal AuthContextValue from @automatize/auth
  * (login + isLoading), so AuthProvider can fill the shared AuthContext from
  * core without an explicit extends relationship.
  */

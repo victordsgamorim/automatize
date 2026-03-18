@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useState, useCallback, ReactNode } from 'react';
-import { AuthContext } from '@automatize/core';
+import { AuthContext } from '@automatize/auth';
 import { supabase } from '../client';
 import { tokenStorage } from '../storage/tokenStorage';
 import { loginSchema, registerSchema } from '../schemas/auth.schemas';

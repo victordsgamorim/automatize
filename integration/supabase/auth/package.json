@@ -32,7 +32,8 @@
     "clean": "rm -rf dist node_modules .turbo"
   },
   "dependencies": {
-    "@automatize/core": "workspace:*",
+    "@automatize/auth": "workspace:*",
+    "@automatize/utils": "workspace:*",
     "@supabase/supabase-js": "^2.39.3",
     "expo-constants": "catalog:",
     "expo-secure-store": "catalog:",

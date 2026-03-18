@@ -21,7 +21,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { AuthContext } from '@automatize/core';
+import { AuthContext } from '@automatize/auth';
 import { createAuthRepository } from '../data/auth.factory';
 import {
   MOCK_USER_EMAIL,

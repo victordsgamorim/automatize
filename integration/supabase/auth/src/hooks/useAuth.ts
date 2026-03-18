@@ -4,7 +4,7 @@
  */
 
 import { useContext } from 'react';
-import { AuthContext } from '@automatize/core';
+import { AuthContext } from '@automatize/auth';
 import { AuthContextType } from '../types/auth.types';
 
 /**
