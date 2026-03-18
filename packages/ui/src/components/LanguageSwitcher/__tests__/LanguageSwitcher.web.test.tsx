@@ -120,8 +120,9 @@ describe('LanguageSwitcher (web)', () => {
       await user.click(screen.getByRole('button', { name: 'Change language' }));
 
       const items = screen.getAllByRole('menuitem');
-      const enItem = items.find((el) => el.textContent?.includes('English'))!;
-      expect(enItem.querySelector('svg')).not.toBeNull();
+      const enItem = items.find((el) => el.textContent?.includes('English'));
+      expect(enItem).toBeDefined();
+      expect(enItem?.querySelector('svg')).not.toBeNull();
     });
 
     it('does not render a checkmark for non-current language items', async () => {
@@ -130,8 +131,9 @@ describe('LanguageSwitcher (web)', () => {
       await user.click(screen.getByRole('button', { name: 'Change language' }));
 
       const items = screen.getAllByRole('menuitem');
-      const ptItem = items.find((el) => el.textContent?.includes('Português'))!;
-      expect(ptItem.querySelector('svg')).toBeNull();
+      const ptItem = items.find((el) => el.textContent?.includes('Português'));
+      expect(ptItem).toBeDefined();
+      expect(ptItem?.querySelector('svg')).toBeNull();
     });
   });
 
@@ -143,8 +145,9 @@ describe('LanguageSwitcher (web)', () => {
       await user.click(screen.getByRole('button', { name: 'Change language' }));
 
       const items = screen.getAllByRole('menuitem');
-      const ptItem = items.find((el) => el.textContent?.includes('Português'))!;
-      await user.click(ptItem);
+      const ptItem = items.find((el) => el.textContent?.includes('Português'));
+      expect(ptItem).toBeDefined();
+      await user.click(ptItem as HTMLElement);
 
       expect(onLanguageChange).toHaveBeenCalledOnce();
       expect(onLanguageChange).toHaveBeenCalledWith('pt-BR');
@@ -157,8 +160,9 @@ describe('LanguageSwitcher (web)', () => {
       await user.click(screen.getByRole('button', { name: 'Change language' }));
 
       const items = screen.getAllByRole('menuitem');
-      const enItem = items.find((el) => el.textContent?.includes('English'))!;
-      await user.click(enItem);
+      const enItem = items.find((el) => el.textContent?.includes('English'));
+      expect(enItem).toBeDefined();
+      await user.click(enItem as HTMLElement);
 
       expect(onLanguageChange).toHaveBeenCalledOnce();
       expect(onLanguageChange).toHaveBeenCalledWith('en');
