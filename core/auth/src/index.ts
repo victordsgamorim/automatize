@@ -7,4 +7,3 @@ export * from './context';
 export * from './loginSchema';
 export * from './types';
 export * from './useAuth';
-export * from './services/authService';

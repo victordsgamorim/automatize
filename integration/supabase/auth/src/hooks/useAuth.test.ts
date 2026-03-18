@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { validateEmail, validatePasswordStrength } from '@automatize/auth';
+import { validateEmail, validatePasswordStrength } from '../utils/authService';
 
 describe('useAuth Hook - Validation Tests', () => {
   describe('Email Validation', () => {
