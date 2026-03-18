@@ -7,7 +7,10 @@
       "Bash(command -v pnpm)",
       "mcp__Claude_Preview__preview_start",
       "Bash(/c/Users/victo/AppData/Roaming/npm/pnpm.cmd run build)",
-      "Bash(/c/Users/victo/AppData/Roaming/npm/pnpm.cmd typecheck:*)"
+      "Bash(/c/Users/victo/AppData/Roaming/npm/pnpm.cmd typecheck:*)",
+      "Bash(/c/Users/victo/AppData/Roaming/npm/pnpm.cmd install:*)",
+      "Bash(/c/Users/victo/AppData/Roaming/npm/pnpm.cmd build:*)",
+      "Bash(pnpm install:*)"
     ]
   }
 }

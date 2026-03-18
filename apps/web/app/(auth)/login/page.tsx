@@ -1,35 +1,31 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { SignInScreen } from '@/components/screens/SignInScreen';
-import { useUserAuthentication } from '@automatize/supabase-auth';
+import { SignInScreen, useSignIn } from '@automatize/sign-in/web';
 
 export default function LoginPage() {
-  const { login } = useUserAuthentication();
   const router = useRouter();
+  const signIn = useSignIn();
 
-  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
-    try {
-      await login(email, password);
+  const handleSignIn = async () => {
+    const result = await signIn.handleSignIn();
+    if (result.success) {
       router.push('/');
-    } catch (err) {
-      console.error('Sign in failed:', err);
     }
-  };
-
-  const handleResetPassword = () => {
-    router.push('/forgot-password');
   };
 
   return (
     <SignInScreen
+      email={signIn.email}
+      onEmailChange={signIn.setEmail}
+      password={signIn.password}
+      onPasswordChange={signIn.setPassword}
+      showPassword={signIn.showPassword}
+      onToggleShowPassword={signIn.toggleShowPassword}
+      error={signIn.error}
+      isLoading={signIn.isLoading}
       onSignIn={handleSignIn}
-      onResetPassword={handleResetPassword}
+      onResetPassword={() => router.push('/forgot-password')}
     />
   );
 }

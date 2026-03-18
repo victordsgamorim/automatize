@@ -112,7 +112,6 @@ automatize/
 │   ├── mobile/         # Expo app (iOS + Android + Web)
 │   ├── web/            # Next.js web app
 │   │   └── components/
-│   │       ├── screens/  # Full-page components (SignInScreen, etc.)
 │   │       └── composites/ # Reusable UI pieces (AppSidebar, etc.)
 │   └── windows/        # Windows desktop app
 ├── core/               # Dependency injection & interfaces
@@ -126,6 +125,7 @@ automatize/
 │   └── sync/           # @automatize/sync
 ├── packages/
 │   ├── navigation/     # Cross-platform navigation logic
+│   ├── sign-in/        # Cross-platform sign-in screen + hook
 │   └── ui/             # Design system + components
 │       └── README.md
 ├── scripts/

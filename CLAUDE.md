@@ -879,8 +879,28 @@ Composites tightly coupled to a business domain (e.g., `InvoiceTable`, `AppSideb
 
 ### 24.6 Screens vs. Composites
 
-**Screens** — Full-page components tied to routing (e.g., `SignInScreen`, `DashboardScreen`). These are app-specific and should live in `apps/<platform>/components/screens/`.
+**Screens** — Full-page components tied to routing (e.g., `SignInScreen`, `DashboardScreen`).
 
 **Composites** — Reusable multi-component combinations (e.g., `InvoiceTable`, `StatusBadge`). Generic composites live in `packages/ui/src/web/composites/`. Domain-specific composites live in `apps/<platform>/components/composites/`.
 
-**Rule:** If a component is routable (has a corresponding route/page), it's a screen. If it's reusable across multiple pages, it's a composite. Screens MUST NOT live in the design system (`packages/ui`).
+**Rules:**
+
+- **Cross-platform screens** that need to run on multiple platforms use the `.web.tsx` / `.native.tsx` pattern and live in their own feature package under `packages/` (e.g., `packages/sign-in/`). Each package includes the screen implementations, shared hooks, and types.
+- **Platform-specific screens** (only needed on one platform) live in `apps/<platform>/components/screens/`.
+- Screens MUST NOT live in the design system (`packages/ui`).
+
+### 24.7 Feature Screen Packages
+
+Cross-platform screens are organized as feature packages:
+
+| Package             | Import path           | Contents                                                   |
+| ------------------- | --------------------- | ---------------------------------------------------------- |
+| `packages/sign-in/` | `@automatize/sign-in` | `SignInScreen` (.web.tsx / .native.tsx) + `useSignIn` hook |
+
+Each feature screen package:
+
+- Contains `.web.tsx` and `.native.tsx` implementations
+- Contains shared hooks that integrate with `@automatize/supabase-auth`
+- Exports a shared props interface
+- Is registered in `pnpm-workspace.yaml`
+- The barrel `index.ts` exports from `.native` (bundler resolves `.web.tsx` on web)

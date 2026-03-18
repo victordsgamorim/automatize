@@ -17,6 +17,7 @@
     "clean": "rm -rf .expo node_modules .turbo dist"
   },
   "dependencies": {
+    "@automatize/sign-in": "workspace:*",
     "@automatize/supabase-auth": "workspace:*",
     "@automatize/core": "workspace:*",
     "@automatize/storage": "workspace:*",

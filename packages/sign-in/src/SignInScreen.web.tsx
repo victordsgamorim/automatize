@@ -1,23 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-
-// --- TYPE DEFINITIONS ---
-
-export interface Testimonial {
-  avatarSrc: string;
-  name: string;
-  handle: string;
-  text: string;
-}
-
-export interface SignInScreenProps {
-  title?: React.ReactNode;
-  description?: React.ReactNode;
-  heroImageSrc?: string;
-  testimonials?: Testimonial[];
-  onSignIn?: (event: React.FormEvent<HTMLFormElement>) => void;
-  onResetPassword?: () => void;
-}
+import type { SignInScreenProps, Testimonial } from './SignInScreen.types';
 
 // --- SUB-COMPONENTS ---
 
@@ -53,16 +36,27 @@ const TestimonialCard = ({
 // --- MAIN COMPONENT ---
 
 export const SignInScreen: React.FC<SignInScreenProps> = ({
+  email,
+  onEmailChange,
+  password,
+  onPasswordChange,
+  showPassword,
+  onToggleShowPassword,
+  error,
+  isLoading,
+  onSignIn,
+  onResetPassword,
   title = (
     <span className="font-light text-foreground tracking-tighter">Welcome</span>
   ),
   description = 'Access your account and continue your journey with us',
   heroImageSrc,
   testimonials = [],
-  onSignIn,
-  onResetPassword,
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSignIn();
+  };
 
   return (
     <div className="h-[100dvh] flex flex-col md:flex-row font-geist w-[100dvw]">
@@ -77,7 +71,13 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
               {description}
             </p>
 
-            <form className="space-y-5" onSubmit={onSignIn}>
+            {error && (
+              <div className="animate-element rounded-2xl border border-red-300 bg-red-50 dark:bg-red-950/30 dark:border-red-800 p-4 text-sm text-red-600 dark:text-red-400">
+                {error}
+              </div>
+            )}
+
+            <form className="space-y-5" onSubmit={handleSubmit}>
               <div className="animate-element animate-delay-300">
                 <label className="text-sm font-medium text-muted-foreground">
                   Email Address
@@ -87,7 +87,10 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                     name="email"
                     type="email"
                     placeholder="Enter your email address"
-                    className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none"
+                    value={email}
+                    onChange={(e) => onEmailChange(e.target.value)}
+                    disabled={isLoading}
+                    className="w-full bg-transparent text-sm p-4 rounded-2xl focus:outline-none disabled:opacity-50"
                   />
                 </GlassInputWrapper>
               </div>
@@ -102,11 +105,14 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                       name="password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Enter your password"
-                      className="w-full bg-transparent text-sm p-4 pr-12 rounded-2xl focus:outline-none"
+                      value={password}
+                      onChange={(e) => onPasswordChange(e.target.value)}
+                      disabled={isLoading}
+                      className="w-full bg-transparent text-sm p-4 pr-12 rounded-2xl focus:outline-none disabled:opacity-50"
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={onToggleShowPassword}
                       className="absolute inset-y-0 right-3 flex items-center"
                     >
                       {showPassword ? (
@@ -132,7 +138,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    onResetPassword?.();
+                    onResetPassword();
                   }}
                   className="hover:underline text-violet-400 transition-colors"
                 >
@@ -142,9 +148,10 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
               <button
                 type="submit"
-                className="animate-element animate-delay-600 w-full rounded-2xl bg-primary py-4 font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                disabled={isLoading || !email || !password}
+                className="animate-element animate-delay-600 w-full rounded-2xl bg-primary py-4 font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Sign In
+                {isLoading ? 'Signing in...' : 'Sign In'}
               </button>
             </form>
           </div>
