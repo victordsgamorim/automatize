@@ -18,10 +18,13 @@ The package has two main exports:
 
 - **tokens/** — Token source files (JSON, W3C DTCG format). **This is the single source of truth.**
 - **src/tokens/** — ⚠️ GENERATED TypeScript modules (do not edit). Run `pnpm tokens:build`.
+
+**Important:** Full-page screens (e.g., `SignInScreen`, `DashboardScreen`) do NOT belong in the design system. Cross-platform screens live in their own feature packages under `packages/` (e.g., `packages/sign-in/` → `@automatize/sign-in`). Platform-specific screens live in `apps/<platform>/components/screens/`. The design system contains only reusable primitives, tokens, and generic composites.
+
 - **src/styles/\_tokens.css** — ⚠️ GENERATED CSS custom properties (do not edit). Run `pnpm tokens:build`.
 - **src/styles/globals.css** — Hand-authored semantic mappings (CSS vars). Imports `_tokens.css`. **Does not contain Tailwind directives.**
-- **src/components/** — Reusable UI components.
-- **src/web/** — Web-specific components (shadcn/ui / Radix UI).
+- **src/components/** — Reusable UI components organized in folders. Each folder contains platform-specific implementations (`.web.tsx` / `.native.tsx`) and barrel files (`index.ts` for web, `index.native.ts` for native).
+- **src/web/** — Web entry point and web-only components (shadcn/ui / Radix UI). Imports from `src/components/` barrels — does not duplicate components. Will be phased out in favor of direct barrel resolution.
 - **style-dictionary.config.ts** — Build config for token generation.
 
 ## Token authoring guide
@@ -129,6 +132,23 @@ Tokens provide a language-agnostic foundation. The same color token works whethe
 
 **Why lucide icons?**
 Lucide provides consistent, clean icons that work across platforms. The library is actively maintained and has excellent accessibility.
+
+**Component folder structure:**
+
+Cross-platform components live in `src/components/<Name>/` with platform-specific files and barrel exports:
+
+```text
+src/components/Button/
+  Button.web.tsx        # Web implementation (Radix UI / Tailwind)
+  Button.native.tsx     # React Native implementation
+  index.ts              # Barrel — exports web (default for webpack/tsup)
+  index.native.ts       # Barrel — exports native (Metro picks this)
+```
+
+- `index.ts` → web version (default barrel, resolved by webpack/tsup/esbuild)
+- `index.native.ts` → native version (Metro prefers `.native.ts` over `.ts`)
+- `src/web/index.ts` imports from component barrels (e.g., `../components/Button`), not from `.web.tsx` files directly
+- `src/components/index.ts` (native main entry) imports from explicit `.native` paths
 
 **Component philosophy:**
 

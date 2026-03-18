@@ -13,13 +13,17 @@
  * via null-loader in next.config.js.
  */
 
-// Button (RN implementation — web app uses @automatize/ui/web)
-export { Button } from './Button.native';
-export type { ButtonProps, ButtonVariant, ButtonSize } from './Button.native';
+// Button (RN implementation)
+export { Button } from './Button/Button.native';
+export type {
+  ButtonProps,
+  ButtonVariant,
+  ButtonSize,
+} from './Button/Button.native';
 
 // Input (RN implementation)
-export { Input } from './Input.native';
-export type { InputProps } from './Input.native';
+export { Input } from './Input/Input.native';
+export type { InputProps } from './Input/Input.native';
 
 // FormField (RN implementation)
 export { FormField } from './FormField.native';

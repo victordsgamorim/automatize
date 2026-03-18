@@ -14,6 +14,9 @@ This project follows a **Modular Monolith** architecture with **Core-Driven Depe
 apps/                 # Platform applications
 ├── mobile/           # Expo app (iOS + Android + Web)
 ├── web/              # Next.js web app
+│   └── components/
+│       ├── screens/  # Full-page components (auth, dashboard, etc.)
+│       └── composites/ # Reusable UI pieces
 └── windows/          # Windows desktop app
 
 core/                 # Dependency injection & interfaces
@@ -108,6 +111,8 @@ automatize/
 ├── apps/
 │   ├── mobile/         # Expo app (iOS + Android + Web)
 │   ├── web/            # Next.js web app
+│   │   └── components/
+│   │       └── composites/ # Reusable UI pieces (AppSidebar, etc.)
 │   └── windows/        # Windows desktop app
 ├── core/               # Dependency injection & interfaces
 │   └── README.md
@@ -120,7 +125,13 @@ automatize/
 │   └── sync/           # @automatize/sync
 ├── packages/
 │   ├── navigation/     # Cross-platform navigation logic
+│   ├── sign-in/        # Cross-platform sign-in screen + hook
 │   └── ui/             # Design system + components
+│       ├── src/
+│       │   ├── components/  # Cross-platform components (Button/, Input/, Label/, etc.)
+│       │   │   └── <Name>/  # Each has .web.tsx, .native.tsx, index.ts, index.native.ts
+│       │   ├── web/         # Web entry point + web-only shadcn/ui components
+│       │   └── tokens/      # Generated design tokens
 │       └── README.md
 ├── scripts/
 │   └── scan-deps.ts    # Dependency deduplication scanner
@@ -478,4 +489,4 @@ Built with:
 
 **Status:** ✅
 **Version:** 0.0.0
-**Last Updated:** 2026-03-16
+**Last Updated:** 2026-03-18

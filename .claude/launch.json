@@ -1,0 +1,31 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "pnpm",
+        "--filter",
+        "@automatize/web",
+        "run",
+        "dev"
+      ],
+      "port": 3000
+    },
+    {
+      "name": "mobile",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "pnpm",
+        "--filter",
+        "@automatize/mobile",
+        "run",
+        "dev"
+      ],
+      "port": 8081
+    }
+  ]
+}

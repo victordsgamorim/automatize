@@ -15,6 +15,7 @@
     "@automatize/core": "workspace:*",
     "@automatize/supabase-auth": "workspace:*",
     "@automatize/navigation": "workspace:*",
+    "@automatize/sign-in": "workspace:*",
     "@automatize/ui": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
     "lucide-react": "catalog:",

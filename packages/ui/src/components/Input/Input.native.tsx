@@ -14,7 +14,7 @@ import {
   Text,
   TextInputProps as RNTextInputProps,
 } from 'react-native';
-import { colors, spacing, typography } from '../tokens';
+import { colors, spacing, typography } from '../../tokens';
 
 export interface InputProps extends RNTextInputProps {
   /** Label for the input */

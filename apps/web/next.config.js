@@ -27,6 +27,12 @@ const nextConfig = {
       use: 'null-loader',
     });
 
+    // Add alias for @ui to point to packages/ui/src
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@ui': require('path').join(__dirname, '../packages/ui/src'),
+    };
+
     return config;
   },
 };
