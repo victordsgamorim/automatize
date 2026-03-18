@@ -26,15 +26,7 @@ export default function LoginPage() {
     router.push('/forgot-password');
   };
 
-  const handleCreateAccount = () => {
-    router.push('/register');
-  };
-
   return (
-    <SignInPage
-      onSignIn={handleSignIn}
-      onResetPassword={handleResetPassword}
-      onCreateAccount={handleCreateAccount}
-    />
+    <SignInPage onSignIn={handleSignIn} onResetPassword={handleResetPassword} />
   );
 }
