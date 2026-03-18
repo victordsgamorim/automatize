@@ -845,33 +845,60 @@ module.exports = {
 
 `packages/ui` exposes the following entry points:
 
-| Import path                 | Contents                                                                 |
-| --------------------------- | ------------------------------------------------------------------------ |
-| `@automatize/ui`            | Cross-platform components (bundler resolves `.web.tsx` or `.native.tsx`) |
-| `@automatize/ui/web`        | Web-only components (shadcn/ui / Radix UI)                               |
-| `@automatize/ui/composites` | Reusable generic composite components                                    |
-| `@automatize/ui/tokens`     | Design tokens                                                            |
+| Import path                 | Contents                                                             |
+| --------------------------- | -------------------------------------------------------------------- |
+| `@automatize/ui`            | Cross-platform components (native entry; web uses barrel resolution) |
+| `@automatize/ui/web`        | Web entry — re-exports from component barrels + web-only shadcn/ui   |
+| `@automatize/ui/composites` | Reusable generic composite components                                |
+| `@automatize/ui/tokens`     | Design tokens                                                        |
 
-### 24.3 Platform Extension Pattern
+### 24.3 Component Folder Structure (Non-Negotiable)
 
-Components with platform-specific implementations use file extensions:
+Every UI component with a `.web.tsx` or `.native.tsx` implementation **MUST** live inside its own folder under `src/components/`. Flat files like `Button.web.tsx` directly in `src/components/` are **FORBIDDEN** — they must be placed inside a `src/components/Button/` folder with a barrel `index.ts`.
 
-- `Button.web.tsx` — Web implementation (HTML/Radix UI/Tailwind)
-- `Button.native.tsx` — React Native implementation (StyleSheet/TouchableOpacity)
+**Required folder structure:**
 
-The bundler resolves the correct file automatically:
+```text
+src/components/
+  Button/
+    Button.web.tsx        # Web implementation (HTML/Radix UI/Tailwind)
+    Button.native.tsx     # React Native implementation (StyleSheet/TouchableOpacity)
+    index.ts              # Barrel — exports web version (default for bundlers)
+    index.native.ts       # Barrel — exports native version (Metro picks this)
+  Input/
+    Input.web.tsx
+    Input.native.tsx
+    index.ts
+    index.native.ts
+  Label/
+    Label.web.tsx          # Web-only (no native counterpart yet)
+    index.ts
+  Checkbox/
+    Checkbox.web.tsx       # Web-only (no native counterpart yet)
+    index.ts
+```
 
-- Metro (React Native / Expo) → picks `.native.tsx`
-- webpack / Next.js → picks `.web.tsx`
+**Rules:**
+
+- Every `.web.tsx` or `.native.tsx` component file **MUST** be inside its own named folder (e.g., `Button/Button.web.tsx`, never `Button.web.tsx` loose in `src/components/`)
+- Every component folder **MUST** have an `index.ts` barrel file
+- Cross-platform components (with both `.web.tsx` and `.native.tsx`) **MUST** also have an `index.native.ts` barrel
+- `index.ts` exports the **web** implementation (default for webpack/tsup/esbuild)
+- `index.native.ts` exports the **native** implementation (Metro prefers `.native.ts`)
+- All internal imports within `packages/ui` (including `src/web/` files) **MUST** import from the barrel path (e.g., `../components/Button`), never from `.web.tsx` files directly
 
 ### 24.4 Adding a New Component
 
 When a new component is needed:
 
-1. Add it to `packages/ui/src/components/` (cross-platform) or `packages/ui/src/web/` (web-only)
-2. Export it from the appropriate `index.ts`
-3. Import it in the app via `@automatize/ui` or `@automatize/ui/web`
-4. Never create it inside an app directory
+1. Create a folder in `packages/ui/src/components/<ComponentName>/`
+2. Add `<ComponentName>.web.tsx` and/or `<ComponentName>.native.tsx` inside the folder
+3. Add `index.ts` barrel exporting the web version
+4. If cross-platform, add `index.native.ts` barrel exporting the native version
+5. Export from `src/components/index.ts` (native main entry uses explicit `.native` path)
+6. If web-only (shadcn/ui), also export from `src/web/index.ts` via the barrel
+7. Never create components as flat files in `src/components/` — always use a folder
+8. Never create components inside an app directory
 
 ### 24.5 Domain-Specific Composites
 

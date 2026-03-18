@@ -6,7 +6,7 @@
  */
 
 import { FileText, AlertCircle, Inbox } from 'lucide-react';
-import { Button } from '../button';
+import { Button } from '../../components/Button';
 
 interface EmptyStateProps {
   title: string;

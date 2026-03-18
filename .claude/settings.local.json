@@ -15,7 +15,9 @@
       "Bash(ls -la /d/developer/automatize/packages/ui/src/web/*.tsx)",
       "Bash(netstat -ano)",
       "Bash(taskkill //PID 29528 //F)",
-      "Bash(pnpm build:*)"
+      "Bash(pnpm build:*)",
+      "Bash(pnpm --filter @automatize/ui build)",
+      "Bash(pnpm --filter @automatize/sign-in build)"
     ]
   }
 }

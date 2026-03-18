@@ -27,11 +27,11 @@ export {
 } from './resizable';
 
 // Forms
-export { Button, buttonVariants } from './button';
-export { Input } from './input';
+export { Button, buttonVariants } from '../components/Button';
+export { Input } from '../components/Input';
 export { Textarea } from './textarea';
-export { Label } from './label';
-export { Checkbox } from './checkbox';
+export { Label } from '../components/Label';
+export { Checkbox } from '../components/Checkbox';
 export { RadioGroup, RadioGroupItem } from './radio-group';
 export {
   Select,

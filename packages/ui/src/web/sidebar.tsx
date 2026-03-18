@@ -7,8 +7,8 @@ import { PanelLeftIcon } from 'lucide-react';
 
 import { useIsMobile } from './use-mobile';
 import { cn } from './utils';
-import { Button } from './button';
-import { Input } from './input';
+import { Button } from '../components/Button';
+import { Input } from '../components/Input';
 import { Separator } from './separator';
 import {
   Sheet,

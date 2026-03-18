@@ -1,2 +1,2 @@
-export { Input } from './Input.native';
-export type { InputProps } from './Input.native';
+export { Input } from './Input.web';
+export type { InputProps } from './Input.web';
