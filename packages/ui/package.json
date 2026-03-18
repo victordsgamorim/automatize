@@ -85,11 +85,13 @@
   },
   "devDependencies": {
     "@automatize/tsconfig": "workspace:*",
+    "@testing-library/react": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "eslint": "catalog:",
     "react": "catalog:react18",
+    "react-dom": "catalog:react18",
     "react-native": "catalog:",
     "style-dictionary": "^4.3.0",
     "tsup": "catalog:",
