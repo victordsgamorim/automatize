@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import { AuthProviderWrapper } from './auth-provider';
+import { LocalizationWrapper } from './localization-provider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -18,7 +19,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           fontFamily: 'Inter, system-ui, sans-serif',
         }}
       >
-        <AuthProviderWrapper>{children}</AuthProviderWrapper>
+        <LocalizationWrapper>
+          <AuthProviderWrapper>{children}</AuthProviderWrapper>
+        </LocalizationWrapper>
       </body>
     </html>
   );

@@ -13,5 +13,20 @@
   "nav.clients": "Clientes",
   "nav.products": "Produtos",
   "nav.analytics": "Análise",
-  "nav.settings": "Configurações"
+  "nav.settings": "Configurações",
+  "sign-in.title": "Entrar",
+  "sign-in.welcome": "Bem-vindo",
+  "sign-in.subtitle": "Acesse sua conta e continue sua jornada conosco",
+  "sign-in.email.label": "E-mail",
+  "sign-in.email.placeholder": "Digite seu e-mail",
+  "sign-in.password.label": "Senha",
+  "sign-in.password.placeholder": "Digite sua senha",
+  "sign-in.password.show": "Mostrar senha",
+  "sign-in.password.hide": "Ocultar senha",
+  "sign-in.remember": "Manter-me conectado",
+  "sign-in.reset-password": "Redefinir senha",
+  "sign-in.forgot-password": "Esqueceu sua senha?",
+  "sign-in.submit": "Entrar",
+  "sign-in.submitting": "Entrando...",
+  "app.subtitle": "Sistema de Gestão de Faturas"
 }

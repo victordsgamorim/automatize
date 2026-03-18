@@ -1,9 +1,10 @@
 import React from 'react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { useTranslation } from 'react-i18next';
 
 import { LocalizationProvider } from '../src/LocalizationProvider';
+import { initLocalization, _resetLocalization } from '../src/singleton';
 import { createLocalLoader } from '../src/loaders/LocalLoader';
 import type { TranslationLoader } from '../src/loaders/types';
 
@@ -17,10 +18,15 @@ function TranslatedSave() {
   return <span>{t('app.save')}</span>;
 }
 
+// Each test gets a clean singleton so they don't bleed into each other.
+beforeEach(() => _resetLocalization());
+afterEach(() => _resetLocalization());
+
 describe('LocalizationProvider', () => {
   it('renders children after i18next initialization', async () => {
+    initLocalization(createLocalLoader());
     render(
-      <LocalizationProvider loader={createLocalLoader()}>
+      <LocalizationProvider>
         <div>Hello world</div>
       </LocalizationProvider>
     );
@@ -31,8 +37,9 @@ describe('LocalizationProvider', () => {
   });
 
   it('provides en translations by default', async () => {
+    initLocalization(createLocalLoader());
     render(
-      <LocalizationProvider loader={createLocalLoader()}>
+      <LocalizationProvider>
         <TranslatedTitle />
       </LocalizationProvider>
     );
@@ -42,9 +49,10 @@ describe('LocalizationProvider', () => {
     });
   });
 
-  it('provides en translations when defaultLanguage="en"', async () => {
+  it('provides en translations when initLocalization is called with "en"', async () => {
+    initLocalization(createLocalLoader(), 'en');
     render(
-      <LocalizationProvider loader={createLocalLoader()} defaultLanguage="en">
+      <LocalizationProvider>
         <TranslatedSave />
       </LocalizationProvider>
     );
@@ -54,12 +62,10 @@ describe('LocalizationProvider', () => {
     });
   });
 
-  it('provides pt-BR translations when defaultLanguage="pt-BR"', async () => {
+  it('provides pt-BR translations when initLocalization is called with "pt-BR"', async () => {
+    initLocalization(createLocalLoader(), 'pt-BR');
     render(
-      <LocalizationProvider
-        loader={createLocalLoader()}
-        defaultLanguage="pt-BR"
-      >
+      <LocalizationProvider>
         <TranslatedSave />
       </LocalizationProvider>
     );
@@ -74,8 +80,9 @@ describe('LocalizationProvider', () => {
       load: vi.fn().mockRejectedValue(new Error('network error')),
     };
 
+    initLocalization(failingLoader);
     render(
-      <LocalizationProvider loader={failingLoader}>
+      <LocalizationProvider>
         <div>Fallback content</div>
       </LocalizationProvider>
     );
@@ -85,14 +92,52 @@ describe('LocalizationProvider', () => {
     });
   });
 
+  it('calling initLocalization more than once has no effect (singleton)', async () => {
+    const loader1 = createLocalLoader();
+    const loader2 = { load: vi.fn().mockResolvedValue({}) };
+
+    initLocalization(loader1, 'en');
+    initLocalization(loader2 as TranslationLoader, 'pt-BR'); // second call ignored
+
+    render(
+      <LocalizationProvider>
+        <TranslatedSave />
+      </LocalizationProvider>
+    );
+
+    // loader2.load should never be called — singleton was already started
+    await waitFor(() => {
+      expect(screen.getByText('Save')).toBeTruthy(); // en, from loader1
+    });
+    expect(loader2.load).not.toHaveBeenCalled();
+  });
+
   it('renders null before initialization (no flash of untranslated content)', () => {
+    initLocalization(createLocalLoader());
     const { container } = render(
-      <LocalizationProvider loader={createLocalLoader()}>
+      <LocalizationProvider>
         <div>Content</div>
       </LocalizationProvider>
     );
 
-    // On the initial synchronous render, provider returns null
+    // Synchronous render: i18next init is async so instance is not yet ready
     expect(container.firstChild).toBeNull();
+  });
+
+  it('skips the async wait and renders immediately when instance is already ready', async () => {
+    initLocalization(createLocalLoader());
+
+    // Wait for init to complete before mounting
+    await new Promise<void>((resolve) => setTimeout(resolve, 200));
+
+    const { container } = render(
+      <LocalizationProvider>
+        <div>Instant content</div>
+      </LocalizationProvider>
+    );
+
+    // Instance was already set — first render should produce content, not null
+    expect(container.firstChild).not.toBeNull();
+    expect(screen.getByText('Instant content')).toBeTruthy();
   });
 });

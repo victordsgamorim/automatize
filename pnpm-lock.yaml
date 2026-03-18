@@ -122,6 +122,9 @@ importers:
       '@automatize/auth':
         specifier: workspace:*
         version: link:../../core/auth
+      '@automatize/localization':
+        specifier: workspace:*
+        version: link:../../packages/localization
       '@automatize/sign-in':
         specifier: workspace:*
         version: link:../../packages/sign-in
@@ -213,6 +216,9 @@ importers:
       '@automatize/auth':
         specifier: workspace:*
         version: link:../../core/auth
+      '@automatize/localization':
+        specifier: workspace:*
+        version: link:../../packages/localization
       '@automatize/navigation':
         specifier: workspace:*
         version: link:../../packages/navigation
@@ -590,6 +596,9 @@ importers:
       '@automatize/auth':
         specifier: workspace:*
         version: link:../../core/auth
+      '@automatize/localization':
+        specifier: workspace:*
+        version: link:../localization
       '@automatize/ui':
         specifier: workspace:*
         version: link:../ui

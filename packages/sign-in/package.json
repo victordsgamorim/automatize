@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@automatize/auth": "workspace:*",
+    "@automatize/localization": "workspace:*",
     "@automatize/utils": "workspace:*",
     "@automatize/ui": "workspace:*",
     "lucide-react": "catalog:",

@@ -1,57 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import i18next, { type i18n } from 'i18next';
-import { I18nextProvider, initReactI18next } from 'react-i18next';
-import resourcesToBackend from 'i18next-resources-to-backend';
+import { type i18n } from 'i18next';
+import { I18nextProvider } from 'react-i18next';
 
-import type {
-  TranslationLoader,
-  SupportedLanguage,
-  SupportedNamespace,
-} from './loaders/types';
+import {
+  getLocalizationInstanceSync,
+  getLocalizationInstanceAsync,
+} from './singleton';
 
 export interface LocalizationProviderProps {
-  loader: TranslationLoader;
-  defaultLanguage?: SupportedLanguage;
   children: React.ReactNode;
 }
 
-export function LocalizationProvider({
-  loader,
-  defaultLanguage = 'en',
-  children,
-}: LocalizationProviderProps) {
-  const [instance, setInstance] = useState<i18n | null>(null);
+export function LocalizationProvider({ children }: LocalizationProviderProps) {
+  // Seed state synchronously — if initLocalization() already completed before
+  // this component mounts, there is no null render at all.
+  const [instance, setInstance] = useState<i18n | null>(
+    getLocalizationInstanceSync
+  );
 
   useEffect(() => {
-    const i18nInstance = i18next.createInstance();
+    // Instance was already ready on mount — nothing to do.
+    if (instance !== null) return;
 
-    i18nInstance
-      .use(initReactI18next)
-      .use(
-        resourcesToBackend((language: string, namespace: string) =>
-          loader
-            .load(
-              language as SupportedLanguage,
-              namespace as SupportedNamespace
-            )
-            .catch(() => ({}) as Record<string, string>)
-        )
-      )
-      .init({
-        lng: defaultLanguage,
-        fallbackLng: 'en',
-        ns: ['common'],
-        defaultNS: 'common',
-        interpolation: { escapeValue: false },
-        react: { useSuspense: false },
-      })
-      .then(() => {
-        setInstance(i18nInstance);
+    let cancelled = false;
+
+    getLocalizationInstanceAsync()
+      .then((inst) => {
+        if (!cancelled) setInstance(inst);
       })
       .catch((_err) => {
-        setInstance(i18nInstance);
+        console.warn(
+          '[localization] initLocalization() was not called before mounting LocalizationProvider.'
+        );
       });
-  }, [loader, defaultLanguage]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (!instance) return null;
 
