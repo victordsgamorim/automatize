@@ -19,7 +19,9 @@ apps/                 # Platform applications
 │       └── composites/ # Reusable UI pieces
 └── windows/          # Windows desktop app
 
-core/                 # Dependency injection & interfaces
+core/                 # Workspace boundary for abstract "Wirer" modules
+  auth/                 # @automatize/auth (Interfaces & Contexts)
+  utils/                # @automatize/utils (Abstract utilities)
 
   packages/             # Feature modules
     ├── navigation/     # Cross-platform navigation logic
@@ -114,7 +116,9 @@ automatize/
 │   │   └── components/
 │   │       └── composites/ # Reusable UI pieces (AppSidebar, etc.)
 │   └── windows/        # Windows desktop app
-├── core/               # Dependency injection & interfaces
+├── core/               # Workspace boundary for abstract "Wirer" modules
+│   ├── auth/           # @automatize/auth (Interfaces & Contexts)
+│   ├── utils/          # @automatize/utils (Abstract utilities)
 │   └── README.md
 ├── integration/        # Infrastructure implementations
 │   ├── supabase/       # Supabase ecosystem

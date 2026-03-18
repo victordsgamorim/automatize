@@ -39,7 +39,8 @@
     "clean": "rm -rf dist node_modules .turbo"
   },
   "dependencies": {
-    "@automatize/core": "workspace:*",
+    "@automatize/auth": "workspace:*",
+    "@automatize/utils": "workspace:*",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.6",
     "@radix-ui/react-aspect-ratio": "^1.1.2",

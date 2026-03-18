@@ -5,8 +5,11 @@
 
 import { useState, useCallback } from 'react';
 import { supabase } from '../client';
-import { generateBackupCodes } from '@automatize/core';
-import { validateTOTPCode, validateBackupCode } from '@automatize/core';
+import {
+  generateBackupCodes,
+  validateTOTPCode,
+  validateBackupCode,
+} from '../utils/authService';
 
 export interface MFASetupState {
   secret?: string;

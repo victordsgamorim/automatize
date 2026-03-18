@@ -1,36 +1,22 @@
-# @automatize/core
+# Core Modules Workspace
 
-Dependency injection container and interface contracts.
+The `core/` directory acts as a logical workspace boundary for foundational, backend-agnostic contracts and utilities within the monorepo.
 
-## What is this?
+**Note:** `core/` is **not** a monolithic package. It is a monorepo workspace folder that allocates and organizes independent sub-modules (like `@automatize/auth` and `@automatize/utils`).
 
-This package contains:
+## Architectural Philosophy (The "Wirer" Pattern)
 
-- **DI container** — Dependency injection setup
-- **Repository interfaces** — Contracts that define how features access data
-- **Service interfaces** — Contracts for business services
+Modules inside the `core/` workspace function purely as abstract interfaces or "wirers."
 
-## Current Structure
+They adhere strictly to the **Dependency Inversion Principle**:
 
-```
-src/
-├── di/                 # Dependency injection (planned)
-└── interfaces/         # Repository & service contracts (planned)
-```
+1. **Core modules** provide the generic "socket" and define the precise "plug shape" (via TypeScript Interfaces, React Contexts, and strict schemas like Zod). They contain **no heavy structural logic or backend constraints**.
+2. **Integration modules** (like `@automatize/supabase-auth`) handle the massive computing logic (e.g. session management, TOTP validation) and inject that data globally by satisfying the core interface requirements.
+3. **UI Packages** (like `@automatize/sign-in`) strictly consume their hooks from `core/` modules and remain totally completely ignorant of the actual backend implementation.
 
-## Purpose
+This strict logical separation guarantees that generic frontend packages do not implicitly inherit external providers. If the project's backend stack rotates from Supabase to Firebase, your UI packages and core logic remain **entirely untouched**.
 
-The core package defines **contracts** (interfaces) that feature packages implement. This enables:
+## Active Modules
 
-- **Loose coupling** — Features don't depend on concrete implementations
-- **Testability** — Easy to mock interfaces
-- **Flexibility** — Swap implementations without touching feature code
-
-## Current Status
-
-Placeholder. DI container and interfaces will be defined as features are built.
-
-## Related
-
-- See `packages/` for feature modules with business logic
-- See `integration/` for concrete implementations
+- **`@automatize/auth`** (`core/auth/`): The strict authentication boundary defining the minimum required standard for authentication. Exposes `useAuth()`, `AuthContext`, and validation properties like `loginSchema`.
+- **`@automatize/utils`** (`core/utils/`): Pure, abstract utility scripts shared universally across multiple endpoints in the monorepo.

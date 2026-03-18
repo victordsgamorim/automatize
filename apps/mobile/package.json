@@ -19,7 +19,8 @@
   "dependencies": {
     "@automatize/sign-in": "workspace:*",
     "@automatize/supabase-auth": "workspace:*",
-    "@automatize/core": "workspace:*",
+    "@automatize/auth": "workspace:*",
+    "@automatize/utils": "workspace:*",
     "@automatize/storage": "workspace:*",
     "@automatize/sync": "workspace:*",
     "@automatize/ui": "workspace:*",

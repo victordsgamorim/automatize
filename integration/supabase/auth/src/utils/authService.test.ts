@@ -13,7 +13,7 @@ import {
   shouldRefreshSession,
   getSessionTimeRemaining,
   isSessionExpired,
-} from '../../services/authService';
+} from './authService';
 
 describe('Auth Service', () => {
   describe('validatePasswordStrength', () => {

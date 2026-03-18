@@ -23,7 +23,8 @@
     "clean": "rm -rf dist node_modules .turbo"
   },
   "dependencies": {
-    "@automatize/core": "workspace:*",
+    "@automatize/auth": "workspace:*",
+    "@automatize/utils": "workspace:*",
     "@automatize/storage": "workspace:*",
     "@react-native-community/netinfo": "catalog:",
     "ky": "^1.1.3",

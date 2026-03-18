@@ -10,7 +10,7 @@ Native Windows desktop application for Windows 10/11 users. Built with React Nat
 
 React Native Windows compiles React Native code to native Windows applications. It uses the same component model as React Native but renders native Windows controls instead of iOS/Android views.
 
-The app will share the same core business logic (@automatize/core), authentication (@automatize/supabase-auth), storage (@automatize/storage), and sync (@automatize/sync) packages as the mobile app.
+The app will share the same core business logic (@automatize/auth, @automatize/utils), authentication (@automatize/supabase-auth), storage (@automatize/storage), and sync (@automatize/sync) packages as the mobile app.
 
 UI will use @automatize/ui which provides cross-platform components that adapt to each platform.
 

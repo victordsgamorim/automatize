@@ -4,7 +4,7 @@
  */
 
 import { useContext } from 'react';
-import { AuthContext } from '../providers/AuthProvider';
+import { AuthContext } from '@automatize/auth';
 import { AuthContextType } from '../types/auth.types';
 
 /**
@@ -43,7 +43,9 @@ export function useAuth(): AuthContextType {
     );
   }
 
-  return context;
+  // Cast is safe: AuthProvider and MockAuthProvider always provide a full
+  // AuthContextType value (superset of AuthContextValue) into this context.
+  return context as AuthContextType;
 }
 
 /**

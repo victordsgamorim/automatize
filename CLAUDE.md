@@ -446,7 +446,9 @@ project/
     web/                 # Expo Web
     windows/             # RN Windows
 
-  core/                  #  Bridge module wiring integration, features, etc
+  core/                  # Workspace boundary for abstract "Wirer" modules
+    auth/                # @automatize/auth — Dependency inversion for auth
+    utils/               # @automatize/utils — Abstract utility functions
 
   integration/           # infrastructure with services, client-sdk, database
     storage/             # @automatize/storage — DB adapters (WatermelonDB)
