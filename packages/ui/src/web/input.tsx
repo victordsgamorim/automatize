@@ -1,6 +1,6 @@
 /**
  * Re-export from cross-platform source.
- * Source of truth: ../components/Input.web.tsx
+ * Source of truth: ../components/Input/Input.web.tsx
  */
-export { Input } from '../components/Input.web';
-export type { InputProps } from '../components/Input.web';
+export { Input } from '../components/Input/Input.web';
+export type { InputProps } from '../components/Input/Input.web';

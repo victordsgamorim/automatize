@@ -14,12 +14,12 @@
  */
 
 // Button (RN implementation — web app uses @automatize/ui/web)
-export { Button } from './Button.native';
-export type { ButtonProps, ButtonVariant, ButtonSize } from './Button.native';
+export { Button } from './Button';
+export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
 
 // Input (RN implementation)
-export { Input } from './Input.native';
-export type { InputProps } from './Input.native';
+export { Input } from './Input';
+export type { InputProps } from './Input';
 
 // FormField (RN implementation)
 export { FormField } from './FormField.native';

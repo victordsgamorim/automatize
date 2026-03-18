@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   ViewStyle,
 } from 'react-native';
-import { colors, spacing, typography } from '../tokens';
+import { colors, spacing, typography } from '../../tokens';
 
 export type ButtonVariant =
   | 'primary'
