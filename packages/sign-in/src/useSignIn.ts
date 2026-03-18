@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useUserAuthentication, loginSchema } from '@automatize/supabase-auth';
+import { useAuth, loginSchema } from '@automatize/core';
 
 export interface UseSignInResult {
   email: string;
@@ -14,7 +14,7 @@ export interface UseSignInResult {
 }
 
 export function useSignIn(): UseSignInResult {
-  const { login, isLoading: authLoading } = useUserAuthentication();
+  const { login, isLoading: authLoading } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -287,12 +287,18 @@ importers:
       '@types/node':
         specifier: 'catalog:'
         version: 20.19.35
+      '@types/react':
+        specifier: ^18.3.0
+        version: 18.3.28
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 1.6.1(vitest@1.6.1(@types/node@20.19.35)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.0))
       eslint:
         specifier: 'catalog:'
         version: 8.57.1
+      react:
+        specifier: catalog:react18
+        version: 18.2.0
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
@@ -492,9 +498,9 @@ importers:
 
   packages/sign-in:
     dependencies:
-      '@automatize/supabase-auth':
+      '@automatize/core':
         specifier: workspace:*
-        version: link:../../integration/supabase/auth
+        version: link:../../core
       '@automatize/ui':
         specifier: workspace:*
         version: link:../ui
@@ -507,9 +513,6 @@ importers:
       react-dom:
         specifier: ^18.0.0
         version: 18.2.0(react@18.2.0)
-      zod:
-        specifier: 'catalog:'
-        version: 3.25.76
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*

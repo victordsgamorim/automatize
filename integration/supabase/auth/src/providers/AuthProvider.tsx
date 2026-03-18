@@ -4,13 +4,8 @@
  * Manages session state, login/register, and user data
  */
 
-import {
-  createContext,
-  useEffect,
-  useState,
-  useCallback,
-  ReactNode,
-} from 'react';
+import { useEffect, useState, useCallback, ReactNode } from 'react';
+import { AuthContext } from '@automatize/core';
 import { supabase } from '../client';
 import { tokenStorage } from '../storage/tokenStorage';
 import { loginSchema, registerSchema } from '../schemas/auth.schemas';
@@ -21,13 +16,6 @@ import type {
   Tenant,
   AuthContextType,
 } from '../types/auth.types';
-
-/**
- * Auth context (replaces placeholder in useAuth hook)
- */
-export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
-);
 
 export interface AuthProviderProps {
   children: ReactNode;

@@ -14,3 +14,6 @@ export { type UserRoleType } from './types';
 
 // Domain entities (including UserRole type)
 export * from './domain';
+
+// Auth contract (context, hook, schema) — implementation lives in integration/supabase/auth
+export * from './auth';
