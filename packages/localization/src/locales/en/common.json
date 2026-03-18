@@ -29,7 +29,9 @@
   "sign-in.submit": "Sign In",
   "sign-in.submitting": "Signing in...",
   "app.subtitle": "Invoice Management System",
-  "language.en": "English",
-  "language.pt-BR": "Portuguese",
+  "app.language.en": "English",
+  "app.language.en.ext": "US",
+  "app.language.pt-BR": "Portuguese",
+  "app.language.pt-BR.ext": "BR",
   "language.switch-label": "Change language"
 }

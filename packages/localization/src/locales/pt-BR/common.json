@@ -29,7 +29,9 @@
   "sign-in.submit": "Entrar",
   "sign-in.submitting": "Entrando...",
   "app.subtitle": "Sistema de Gestão de Faturas",
-  "language.en": "Inglês",
-  "language.pt-BR": "Português",
+  "app.language.en": "Inglês",
+  "app.language.en.ext": "US",
+  "app.language.pt-BR": "Português",
+  "app.language.pt-BR.ext": "BR",
   "language.switch-label": "Alterar idioma"
 }

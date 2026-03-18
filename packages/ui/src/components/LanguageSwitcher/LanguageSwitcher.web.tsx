@@ -12,8 +12,10 @@ import {
 export interface LanguageOption {
   /** BCP-47 language code, e.g. "en" or "pt-BR" */
   code: string;
-  /** Display label shown in the dropdown, e.g. "English" */
+  /** Full display name shown in the dropdown list, e.g. "English" */
   label: string;
+  /** Short country/region extension shown in the trigger, e.g. "US" or "BR" */
+  ext?: string;
 }
 
 export interface LanguageSwitcherProps {
@@ -31,9 +33,9 @@ export function LanguageSwitcher({
   triggerAriaLabel,
 }: LanguageSwitcherProps) {
   const currentOption = languages.find((l) => l.code === currentLanguage);
-  const triggerCode = (currentOption?.code ?? currentLanguage)
-    .split('-')[0]
-    .toUpperCase();
+  const triggerCode =
+    currentOption?.ext ??
+    (currentOption?.code ?? currentLanguage).split('-')[0].toUpperCase();
 
   return (
     <DropdownMenu>
@@ -55,7 +57,14 @@ export function LanguageSwitcher({
             onClick={() => onLanguageChange(lang.code)}
             className="flex items-center justify-between gap-3 cursor-pointer"
           >
-            <span>{lang.label}</span>
+            <div className="flex items-center gap-2">
+              {lang.ext && (
+                <span className="text-xs font-semibold text-muted-foreground w-6">
+                  {lang.ext}
+                </span>
+              )}
+              <span>{lang.label}</span>
+            </div>
             {lang.code === currentLanguage && (
               <Check className="w-3.5 h-3.5 opacity-70" />
             )}

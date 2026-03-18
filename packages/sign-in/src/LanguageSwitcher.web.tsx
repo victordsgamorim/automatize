@@ -12,7 +12,8 @@ export function LanguageSwitcher() {
 
   const languages = LANGUAGES.map((lang) => ({
     code: lang,
-    label: t(`language.${lang}` as const),
+    label: t(`app.language.${lang}` as const),
+    ext: t(`app.language.${lang}.ext` as const),
   }));
 
   return (
