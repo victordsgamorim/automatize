@@ -28,5 +28,8 @@
   "sign-in.forgot-password": "Esqueceu sua senha?",
   "sign-in.submit": "Entrar",
   "sign-in.submitting": "Entrando...",
-  "app.subtitle": "Sistema de Gestão de Faturas"
+  "app.subtitle": "Sistema de Gestão de Faturas",
+  "language.en": "Inglês",
+  "language.pt-BR": "Português",
+  "language.switch-label": "Alterar idioma"
 }

@@ -9,6 +9,7 @@ import {
 import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
 import { useTranslation } from '@automatize/localization';
 import type { SignInScreenProps } from './SignInScreen.types';
+import { LanguageSwitcher } from './LanguageSwitcher.native';
 
 const theme = semanticColors.light;
 
@@ -116,6 +117,11 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
           >
             {t('sign-in.forgot-password')}
           </Button>
+
+          {/* Language Switcher */}
+          <View style={styles.languageSwitcher}>
+            <LanguageSwitcher />
+          </View>
         </Card>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -158,5 +164,9 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 20,
+  },
+  languageSwitcher: {
+    alignItems: 'center',
+    marginTop: 8,
   },
 });

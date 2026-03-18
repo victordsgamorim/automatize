@@ -28,5 +28,8 @@
   "sign-in.forgot-password": "Forgot your password?",
   "sign-in.submit": "Sign In",
   "sign-in.submitting": "Signing in...",
-  "app.subtitle": "Invoice Management System"
+  "app.subtitle": "Invoice Management System",
+  "language.en": "English",
+  "language.pt-BR": "Portuguese",
+  "language.switch-label": "Change language"
 }

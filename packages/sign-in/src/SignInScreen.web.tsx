@@ -3,6 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Button, Input, Label, Checkbox } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/localization';
 import type { SignInScreenProps } from './SignInScreen.types';
+import { LanguageSwitcher } from './LanguageSwitcher.web';
 
 // --- MAIN COMPONENT ---
 
@@ -27,6 +28,11 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
   return (
     <div className="h-[100dvh] flex flex-col md:flex-row font-geist w-[100dvw]">
+      {/* Top-right: language switcher */}
+      <div className="absolute top-4 right-4 z-10">
+        <LanguageSwitcher />
+      </div>
+
       {/* Left column: sign-in form */}
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
