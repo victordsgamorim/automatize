@@ -1,6 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
+import {
+  LocalizationProvider,
+  initLocalization,
+  _resetLocalization,
+  createLocalLoader,
+} from '@automatize/localization';
 
 import { SignInScreen } from '../SignInScreen.web';
 import type { SignInScreenProps } from '../SignInScreen.types';
@@ -18,107 +24,119 @@ const defaultProps: SignInScreenProps = {
   onResetPassword: vi.fn(),
 };
 
-function renderScreen(props: Partial<SignInScreenProps> = {}) {
-  return render(<SignInScreen {...defaultProps} {...props} />);
+async function renderScreen(props: Partial<SignInScreenProps> = {}) {
+  render(
+    <LocalizationProvider>
+      <SignInScreen {...defaultProps} {...props} />
+    </LocalizationProvider>
+  );
+  // Wait for i18next to initialize — LocalizationProvider renders null until ready
+  await waitFor(() => screen.getByLabelText('Email'));
 }
 
 describe('SignInScreen (web)', () => {
   beforeEach(() => {
+    _resetLocalization();
+    initLocalization(createLocalLoader(), 'en');
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    _resetLocalization();
+  });
+
   describe('rendering', () => {
-    it('renders the email input', () => {
-      renderScreen();
-      expect(screen.getByLabelText('Email Address')).toBeDefined();
+    it('renders the email input', async () => {
+      await renderScreen();
+      expect(screen.getByLabelText('Email')).toBeDefined();
     });
 
-    it('renders the password input', () => {
-      renderScreen();
+    it('renders the password input', async () => {
+      await renderScreen();
       expect(screen.getByLabelText('Password')).toBeDefined();
     });
 
-    it('renders the Sign In submit button', () => {
-      renderScreen({ email: 'u@e.com', password: 'pass' });
+    it('renders the Sign In submit button', async () => {
+      await renderScreen({ email: 'u@e.com', password: 'pass' });
       expect(screen.getByRole('button', { name: 'Sign In' })).toBeDefined();
     });
 
-    it('renders the Reset password link button', () => {
-      renderScreen();
+    it('renders the Reset password link button', async () => {
+      await renderScreen();
       expect(
         screen.getByRole('button', { name: 'Reset password' })
       ).toBeDefined();
     });
 
-    it('renders the "Keep me signed in" checkbox', () => {
-      renderScreen();
+    it('renders the "Keep me signed in" checkbox', async () => {
+      await renderScreen();
       expect(screen.getByRole('checkbox')).toBeDefined();
     });
 
-    it('does not render an error element when error is null', () => {
-      renderScreen({ error: null });
+    it('does not render an error element when error is null', async () => {
+      await renderScreen({ error: null });
       expect(screen.queryByText(/invalid|error|failed/i)).toBeNull();
     });
 
-    it('renders the error message when error is set', () => {
-      renderScreen({ error: 'Invalid credentials' });
+    it('renders the error message when error is set', async () => {
+      await renderScreen({ error: 'Invalid credentials' });
       expect(screen.getByText('Invalid credentials')).toBeDefined();
     });
   });
 
   describe('field state', () => {
-    it('reflects email value from props', () => {
-      renderScreen({ email: 'user@example.com' });
-      const input = screen.getByLabelText('Email Address') as HTMLInputElement;
+    it('reflects email value from props', async () => {
+      await renderScreen({ email: 'user@example.com' });
+      const input = screen.getByLabelText('Email') as HTMLInputElement;
       expect(input.value).toBe('user@example.com');
     });
 
-    it('reflects password value from props', () => {
-      renderScreen({ password: 'mypassword' });
+    it('reflects password value from props', async () => {
+      await renderScreen({ password: 'mypassword' });
       const input = screen.getByLabelText('Password') as HTMLInputElement;
       expect(input.value).toBe('mypassword');
     });
 
-    it('renders password as type="password" when showPassword is false', () => {
-      renderScreen({ showPassword: false });
+    it('renders password as type="password" when showPassword is false', async () => {
+      await renderScreen({ showPassword: false });
       const input = screen.getByLabelText('Password') as HTMLInputElement;
       expect(input.type).toBe('password');
     });
 
-    it('renders password as type="text" when showPassword is true', () => {
-      renderScreen({ showPassword: true });
+    it('renders password as type="text" when showPassword is true', async () => {
+      await renderScreen({ showPassword: true });
       const input = screen.getByLabelText('Password') as HTMLInputElement;
       expect(input.type).toBe('text');
     });
   });
 
   describe('submit button state', () => {
-    it('is disabled when email is empty', () => {
-      renderScreen({ email: '', password: 'pass123' });
+    it('is disabled when email is empty', async () => {
+      await renderScreen({ email: '', password: 'pass123' });
       const btn = screen.getByRole('button', {
         name: 'Sign In',
       }) as HTMLButtonElement;
       expect(btn.disabled).toBe(true);
     });
 
-    it('is disabled when password is empty', () => {
-      renderScreen({ email: 'user@example.com', password: '' });
+    it('is disabled when password is empty', async () => {
+      await renderScreen({ email: 'user@example.com', password: '' });
       const btn = screen.getByRole('button', {
         name: 'Sign In',
       }) as HTMLButtonElement;
       expect(btn.disabled).toBe(true);
     });
 
-    it('is enabled when both email and password are provided', () => {
-      renderScreen({ email: 'user@example.com', password: 'pass123' });
+    it('is enabled when both email and password are provided', async () => {
+      await renderScreen({ email: 'user@example.com', password: 'pass123' });
       const btn = screen.getByRole('button', {
         name: 'Sign In',
       }) as HTMLButtonElement;
       expect(btn.disabled).toBe(false);
     });
 
-    it('is disabled and shows "Signing in..." when isLoading is true', () => {
-      renderScreen({
+    it('is disabled and shows "Signing in..." when isLoading is true', async () => {
+      await renderScreen({
         email: 'user@example.com',
         password: 'pass123',
         isLoading: true,
@@ -131,42 +149,42 @@ describe('SignInScreen (web)', () => {
   });
 
   describe('interactions', () => {
-    it('calls onEmailChange when email input changes', () => {
+    it('calls onEmailChange when email input changes', async () => {
       const onEmailChange = vi.fn();
-      renderScreen({ onEmailChange });
-      fireEvent.change(screen.getByLabelText('Email Address'), {
+      await renderScreen({ onEmailChange });
+      fireEvent.change(screen.getByLabelText('Email'), {
         target: { value: 'new@example.com' },
       });
       expect(onEmailChange).toHaveBeenCalledWith('new@example.com');
     });
 
-    it('calls onPasswordChange when password input changes', () => {
+    it('calls onPasswordChange when password input changes', async () => {
       const onPasswordChange = vi.fn();
-      renderScreen({ onPasswordChange });
+      await renderScreen({ onPasswordChange });
       fireEvent.change(screen.getByLabelText('Password'), {
         target: { value: 'newpass' },
       });
       expect(onPasswordChange).toHaveBeenCalledWith('newpass');
     });
 
-    it('calls onSignIn when the form is submitted', () => {
+    it('calls onSignIn when the form is submitted', async () => {
       const onSignIn = vi.fn();
-      renderScreen({ email: 'u@e.com', password: 'pass123', onSignIn });
+      await renderScreen({ email: 'u@e.com', password: 'pass123', onSignIn });
       const form = document.querySelector('form') as HTMLFormElement;
       fireEvent.submit(form);
       expect(onSignIn).toHaveBeenCalledOnce();
     });
 
-    it('calls onResetPassword when Reset password is clicked', () => {
+    it('calls onResetPassword when Reset password is clicked', async () => {
       const onResetPassword = vi.fn();
-      renderScreen({ onResetPassword });
+      await renderScreen({ onResetPassword });
       fireEvent.click(screen.getByRole('button', { name: 'Reset password' }));
       expect(onResetPassword).toHaveBeenCalledOnce();
     });
 
-    it('calls onToggleShowPassword when the password visibility button is clicked', () => {
+    it('calls onToggleShowPassword when the password visibility button is clicked', async () => {
       const onToggleShowPassword = vi.fn();
-      renderScreen({ onToggleShowPassword });
+      await renderScreen({ onToggleShowPassword });
       // The toggle button lives inside the relative wrapper around the password input
       const passwordInput = screen.getByLabelText('Password');
       const wrapper = passwordInput.closest('.relative') as HTMLElement;

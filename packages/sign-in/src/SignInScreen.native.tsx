@@ -7,7 +7,9 @@ import {
   Platform,
 } from 'react-native';
 import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
+import { useTranslation } from '@automatize/localization';
 import type { SignInScreenProps } from './SignInScreen.types';
+import { LanguageSwitcher } from './LanguageSwitcher.native';
 
 const theme = semanticColors.light;
 
@@ -23,6 +25,8 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
   onSignIn,
   onResetPassword,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -35,17 +39,17 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
         {/* Header */}
         <View style={styles.header}>
           <Text variant="h1" color="primary">
-            Automatize
+            {t('app.title')}
           </Text>
           <Text variant="body" color="secondary" style={styles.subtitle}>
-            Invoice Management System
+            {t('app.subtitle')}
           </Text>
         </View>
 
         {/* Login Form Card */}
         <Card style={styles.card}>
           <Text variant="h2" color="primary" style={styles.title}>
-            Sign In
+            {t('sign-in.title')}
           </Text>
 
           {/* Error Message */}
@@ -59,8 +63,8 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
           {/* Email Input */}
           <FormField
-            label="Email"
-            placeholder="Enter your email"
+            label={t('sign-in.email.label')}
+            placeholder={t('sign-in.email.placeholder')}
             value={email}
             onChangeText={onEmailChange}
             keyboardType="email-address"
@@ -71,8 +75,8 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
           {/* Password Input */}
           <FormField
-            label="Password"
-            placeholder="Enter your password"
+            label={t('sign-in.password.label')}
+            placeholder={t('sign-in.password.placeholder')}
             value={password}
             onChangeText={onPasswordChange}
             secureTextEntry={!showPassword}
@@ -87,7 +91,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             disabled={isLoading}
             testID="sign-in-toggle-password"
           >
-            {showPassword ? 'Hide password' : 'Show password'}
+            {showPassword
+              ? t('sign-in.password.hide')
+              : t('sign-in.password.show')}
           </Button>
 
           {/* Sign In Button */}
@@ -99,7 +105,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             testID="sign-in-submit-button"
             style={styles.submitButton}
           >
-            Sign In
+            {t('sign-in.submit')}
           </Button>
 
           {/* Forgot Password Link */}
@@ -109,8 +115,13 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             disabled={isLoading}
             testID="sign-in-forgot-password"
           >
-            Forgot your password?
+            {t('sign-in.forgot-password')}
           </Button>
+
+          {/* Language Switcher */}
+          <View style={styles.languageSwitcher}>
+            <LanguageSwitcher />
+          </View>
         </Card>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -153,5 +164,9 @@ const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 20,
+  },
+  languageSwitcher: {
+    alignItems: 'center',
+    marginTop: 8,
   },
 });

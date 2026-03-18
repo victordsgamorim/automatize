@@ -77,6 +77,7 @@ Automatize is a production-grade invoice management application supporting:
 - **Server Cache**: TanStack Query
 - **Module State**: React Provider (scoped per module)
 - **Local State**: React `useState` / `useReducer`
+- **Internationalization**: i18next + react-i18next (`@automatize/localization`)
 
 ### UI & Styling
 
@@ -128,6 +129,7 @@ automatize/
 │   ├── storage/        # @automatize/storage
 │   └── sync/           # @automatize/sync
 ├── packages/
+│   ├── localization/   # @automatize/localization (i18n singleton, adapter pattern)
 │   ├── navigation/     # Cross-platform navigation logic
 │   ├── sign-in/        # Cross-platform sign-in screen + hook
 │   └── ui/             # Design system + components

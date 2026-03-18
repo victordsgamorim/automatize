@@ -296,3 +296,10 @@ export {
   SidebarTrigger,
   useSidebar,
 } from './sidebar';
+
+// Composites
+export { LanguageSwitcher } from '../components/LanguageSwitcher';
+export type {
+  LanguageSwitcherProps,
+  LanguageOption,
+} from '../components/LanguageSwitcher';

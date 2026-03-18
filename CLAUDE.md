@@ -366,6 +366,7 @@ Use a consistent asset structure and enforce:
 ## 11) Internationalization (i18n)
 
 **Library:** i18next + react-i18next
+**Package:** `@automatize/localization` (`packages/localization/`)
 
 Requirements:
 
@@ -373,6 +374,76 @@ Requirements:
 - lazy loading translations
 - full TypeScript support
 - fallback language: `en`
+- flat dot-notation keys (`keySeparator: false`, `nsSeparator: false`)
+
+### 11.1 Architecture
+
+The localization package uses a **singleton + adapter pattern**:
+
+- **Singleton** (`singleton.ts`): one i18n instance per JS runtime. Initialized once via `initLocalization(loader, defaultLanguage?)`. Subsequent calls are no-ops (idempotent).
+- **Adapter** (`TranslationLoader` interface): abstracts translation source. Phase 1 = `createLocalLoader()` (bundled JSON). Phase 2 = future remote loader (same interface, different implementation).
+- **Provider** (`LocalizationProvider`): seeds React state synchronously via `getLocalizationInstanceSync()` (zero-flash), with async fallback via `useEffect`.
+
+### 11.2 Package Exports
+
+```ts
+import {
+  LocalizationProvider, // React provider — wrap app root
+  createLocalLoader, // Phase 1: bundled JSON loader
+  initLocalization, // Call once before mounting (module level)
+  useTranslation, // Re-exported from react-i18next
+} from '@automatize/localization';
+import type {
+  TranslationLoader,
+  SupportedLanguage,
+  SupportedNamespace,
+} from '@automatize/localization';
+```
+
+### 11.3 Integration Pattern
+
+Call `initLocalization` at **module level** (before React tree mounts) to fetch translations eagerly:
+
+```ts
+// apps/web/app/localization-provider.tsx  ('use client')
+import { initLocalization, LocalizationProvider, createLocalLoader } from '@automatize/localization';
+initLocalization(createLocalLoader(), 'pt-BR');
+export function LocalizationWrapper({ children }) {
+  return <LocalizationProvider>{children}</LocalizationProvider>;
+}
+```
+
+```ts
+// apps/mobile/app/_layout.tsx
+import {
+  initLocalization,
+  LocalizationProvider,
+  createLocalLoader,
+} from '@automatize/localization';
+initLocalization(createLocalLoader(), 'pt-BR');
+// wrap root JSX with <LocalizationProvider>
+```
+
+### 11.4 Adding a New Translation Key
+
+1. Add the key to `packages/localization/src/locales/en/common.json`
+2. Add the translated value to `packages/localization/src/locales/pt-BR/common.json`
+3. Both locale files **MUST** always have identical key sets
+4. Use `t('your.key')` inside any component wrapped by `LocalizationProvider`
+
+### 11.5 Supported Languages and Namespaces
+
+| Language            | Code    |
+| ------------------- | ------- |
+| English             | `en`    |
+| Portuguese (Brazil) | `pt-BR` |
+
+Single namespace: `common` (all keys share one bundle per language).
+
+### 11.6 Testing
+
+- Use `_resetLocalization()` in `beforeEach`/`afterEach` to reset the singleton between tests
+- Wrap renders with `<LocalizationProvider>` and call `initLocalization(createLocalLoader())` in setup
 
 ---
 

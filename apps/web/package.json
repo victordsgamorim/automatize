@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@automatize/auth": "workspace:*",
+    "@automatize/localization": "workspace:*",
     "@automatize/utils": "workspace:*",
     "@automatize/supabase-auth": "workspace:*",
     "@automatize/navigation": "workspace:*",

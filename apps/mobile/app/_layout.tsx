@@ -7,7 +7,17 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useAuth, useIsAuthenticated } from '@automatize/supabase-auth';
 import { RootErrorBoundary } from '@automatize/ui';
+import {
+  LocalizationProvider,
+  initLocalization,
+  createLocalLoader,
+} from '@automatize/localization';
 import { router } from 'expo-router';
+
+// Start fetching translations immediately when the app module loads —
+// before the React tree is mounted. Singleton guarantees this runs once
+// per JS runtime session (i.e. once per app open).
+initLocalization(createLocalLoader(), 'pt-BR');
 import { AuthProviderWrapper } from './auth-provider';
 
 /**
@@ -45,10 +55,12 @@ function RootLayoutContent() {
  */
 export default function RootLayout() {
   return (
-    <RootErrorBoundary>
-      <AuthProviderWrapper>
-        <RootLayoutContent />
-      </AuthProviderWrapper>
-    </RootErrorBoundary>
+    <LocalizationProvider>
+      <RootErrorBoundary>
+        <AuthProviderWrapper>
+          <RootLayoutContent />
+        </AuthProviderWrapper>
+      </RootErrorBoundary>
+    </LocalizationProvider>
   );
 }

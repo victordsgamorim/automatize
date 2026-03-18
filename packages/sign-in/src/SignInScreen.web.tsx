@@ -1,7 +1,9 @@
 import React from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Button, Input, Label, Checkbox } from '@automatize/ui/web';
+import { useTranslation } from '@automatize/localization';
 import type { SignInScreenProps } from './SignInScreen.types';
+import { LanguageSwitcher } from './LanguageSwitcher.web';
 
 // --- MAIN COMPONENT ---
 
@@ -17,6 +19,8 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
   onSignIn,
   onResetPassword,
 }) => {
+  const { t } = useTranslation();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSignIn();
@@ -24,17 +28,22 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
   return (
     <div className="h-[100dvh] flex flex-col md:flex-row font-geist w-[100dvw]">
+      {/* Top-right: language switcher */}
+      <div className="absolute top-4 right-4 z-10">
+        <LanguageSwitcher />
+      </div>
+
       {/* Left column: sign-in form */}
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="flex flex-col gap-6">
             <h1 className="animate-element animate-delay-100 text-4xl md:text-5xl font-semibold leading-tight">
               <span className="font-light text-foreground tracking-tighter">
-                Welcome
+                {t('sign-in.welcome')}
               </span>
             </h1>
             <p className="animate-element animate-delay-200 text-muted-foreground">
-              Access your account and continue your journey with us
+              {t('sign-in.subtitle')}
             </p>
 
             {error && (
@@ -45,12 +54,14 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
             <form className="space-y-5" onSubmit={handleSubmit}>
               <div className="animate-element animate-delay-300">
-                <Label htmlFor="sign-in-email">Email Address</Label>
+                <Label htmlFor="sign-in-email">
+                  {t('sign-in.email.label')}
+                </Label>
                 <Input
                   id="sign-in-email"
                   name="email"
                   type="email"
-                  placeholder="Enter your email address"
+                  placeholder={t('sign-in.email.placeholder')}
                   value={email}
                   onChange={(e) => onEmailChange(e.target.value)}
                   disabled={isLoading}
@@ -58,13 +69,15 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
               </div>
 
               <div className="animate-element animate-delay-400">
-                <Label htmlFor="sign-in-password">Password</Label>
+                <Label htmlFor="sign-in-password">
+                  {t('sign-in.password.label')}
+                </Label>
                 <div className="relative">
                   <Input
                     id="sign-in-password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
+                    placeholder={t('sign-in.password.placeholder')}
                     value={password}
                     onChange={(e) => onPasswordChange(e.target.value)}
                     disabled={isLoading}
@@ -87,7 +100,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
               <div className="animate-element animate-delay-500 flex items-center justify-between text-sm">
                 <Label className="flex items-center gap-3 cursor-pointer">
                   <Checkbox name="rememberMe" />
-                  <span className="text-foreground/90">Keep me signed in</span>
+                  <span className="text-foreground/90">
+                    {t('sign-in.remember')}
+                  </span>
                 </Label>
                 <Button
                   type="button"
@@ -96,7 +111,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                   onClick={onResetPassword}
                   className="p-0 h-auto"
                 >
-                  Reset password
+                  {t('sign-in.reset-password')}
                 </Button>
               </div>
 
@@ -105,7 +120,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 disabled={isLoading || !email || !password}
                 className="animate-element animate-delay-600 w-full"
               >
-                {isLoading ? 'Signing in...' : 'Sign In'}
+                {isLoading ? t('sign-in.submitting') : t('sign-in.submit')}
               </Button>
             </form>
           </div>
