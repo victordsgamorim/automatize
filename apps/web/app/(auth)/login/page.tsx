@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { SignInPage } from '@automatize/ui/web';
+import { SignInScreen } from '@/components/screens/SignInScreen';
 import { useUserAuthentication } from '@automatize/supabase-auth';
 
 export default function LoginPage() {
@@ -27,6 +27,9 @@ export default function LoginPage() {
   };
 
   return (
-    <SignInPage onSignIn={handleSignIn} onResetPassword={handleResetPassword} />
+    <SignInScreen
+      onSignIn={handleSignIn}
+      onResetPassword={handleResetPassword}
+    />
   );
 }

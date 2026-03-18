@@ -10,7 +10,7 @@ export interface Testimonial {
   text: string;
 }
 
-export interface SignInPageProps {
+export interface SignInScreenProps {
   title?: React.ReactNode;
   description?: React.ReactNode;
   heroImageSrc?: string;
@@ -52,7 +52,7 @@ const TestimonialCard = ({
 
 // --- MAIN COMPONENT ---
 
-export const SignInPage: React.FC<SignInPageProps> = ({
+export const SignInScreen: React.FC<SignInScreenProps> = ({
   title = (
     <span className="font-light text-foreground tracking-tighter">Welcome</span>
   ),

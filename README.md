@@ -14,6 +14,9 @@ This project follows a **Modular Monolith** architecture with **Core-Driven Depe
 apps/                 # Platform applications
 ├── mobile/           # Expo app (iOS + Android + Web)
 ├── web/              # Next.js web app
+│   └── components/
+│       ├── screens/  # Full-page components (auth, dashboard, etc.)
+│       └── composites/ # Reusable UI pieces
 └── windows/          # Windows desktop app
 
 core/                 # Dependency injection & interfaces
@@ -108,6 +111,9 @@ automatize/
 ├── apps/
 │   ├── mobile/         # Expo app (iOS + Android + Web)
 │   ├── web/            # Next.js web app
+│   │   └── components/
+│   │       ├── screens/  # Full-page components (SignInScreen, etc.)
+│   │       └── composites/ # Reusable UI pieces (AppSidebar, etc.)
 │   └── windows/        # Windows desktop app
 ├── core/               # Dependency injection & interfaces
 │   └── README.md

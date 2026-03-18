@@ -21,7 +21,11 @@ The product and its UX/UI must be defined **incrementally**, without compromisin
 
 ## 2) Mandatory First Step (Non-Negotiable)
 
-Before performing any task, you **MUST** read `README.md` and treat it as the **highest-priority source of truth** for:
+Before performing any task, you **MUST**:
+
+### 2.1 Read the Root README.md
+
+Read `README.md` and treat it as the **highest-priority source of truth** for:
 
 - bootstrapping steps
 - scripts and workflows
@@ -31,14 +35,38 @@ Before performing any task, you **MUST** read `README.md` and treat it as the **
 - security constraints
 - documentation updates when architecture structure changes
 
-Conflict resolution order:
+### 2.2 Read Module-Specific README.md (MANDATORY)
 
-1. `README.md`
-2. This instruction
-3. Codebase reality (tests, types, lint rules)
-4. Everything else
+**When working on any module** (core/, packages/_, integration/_, apps/\*), you **MUST** read that module's `README.md` file. Module-specific documentation takes precedence over general guidelines for that module.
 
-Additionally, when making changes that impact the architecture structure, you MUST update all relevant documentation files, including the root README.md and any module-specific README.md files that document the affected architecture. If the change also affects this CLAUDE.md document, update it as well to maintain documentation consistency.
+Examples:
+
+- Before modifying `packages/ui/` → read `packages/ui/README.md`
+- Before modifying `integration/storage/` → read `integration/storage/README.md`
+- Before modifying `apps/web/` → read `apps/web/README.md`
+
+Module READMEs contain:
+
+- module-specific architecture decisions
+- build/test/deploy procedures
+- API contracts
+- internal conventions and patterns
+
+### 2.3 Conflict Resolution Order
+
+1. Root `README.md`
+2. Module-specific `README.md` (if applicable)
+3. This instruction (CLAUDE.md)
+4. Codebase reality (tests, types, lint rules)
+5. Everything else
+
+### 2.4 Documentation Updates
+
+When making changes that impact architecture or structure, you **MUST** update all relevant documentation files:
+
+- Root `README.md` (if architecture/structure changes)
+- Module-specific `README.md` (if module behavior/structure changes)
+- This `CLAUDE.md` file (if project guidelines change)
 
 ---
 
@@ -848,3 +876,11 @@ When a new component is needed:
 ### 24.5 Domain-Specific Composites
 
 Composites tightly coupled to a business domain (e.g., `InvoiceTable`, `AppSidebar`) may remain in `apps/<platform>/components/composites/` **only if** they import all their primitives from `@automatize/ui`. They must never define their own primitive components.
+
+### 24.6 Screens vs. Composites
+
+**Screens** — Full-page components tied to routing (e.g., `SignInScreen`, `DashboardScreen`). These are app-specific and should live in `apps/<platform>/components/screens/`.
+
+**Composites** — Reusable multi-component combinations (e.g., `InvoiceTable`, `StatusBadge`). Generic composites live in `packages/ui/src/web/composites/`. Domain-specific composites live in `apps/<platform>/components/composites/`.
+
+**Rule:** If a component is routable (has a corresponding route/page), it's a screen. If it's reusable across multiple pages, it's a composite. Screens MUST NOT live in the design system (`packages/ui`).

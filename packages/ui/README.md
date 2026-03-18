@@ -18,6 +18,9 @@ The package has two main exports:
 
 - **tokens/** — Token source files (JSON, W3C DTCG format). **This is the single source of truth.**
 - **src/tokens/** — ⚠️ GENERATED TypeScript modules (do not edit). Run `pnpm tokens:build`.
+
+**Important:** Full-page screens (e.g., `SignInScreen`, `DashboardScreen`) do NOT belong in the design system. They are routable components that should live in `apps/<platform>/components/screens/`. The design system contains only reusable primitives, tokens, and generic composites.
+
 - **src/styles/\_tokens.css** — ⚠️ GENERATED CSS custom properties (do not edit). Run `pnpm tokens:build`.
 - **src/styles/globals.css** — Hand-authored semantic mappings (CSS vars). Imports `_tokens.css`. **Does not contain Tailwind directives.**
 - **src/components/** — Reusable UI components.

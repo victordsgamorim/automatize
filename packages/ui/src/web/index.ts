@@ -269,10 +269,6 @@ export { ToggleGroup, ToggleGroupItem } from './toggle-group';
 export { Alert, AlertDescription, AlertTitle } from './alert';
 export { Toaster } from './sonner';
 
-// SignInPage (web-only page component)
-export { SignInPage } from '../components/ui/sign-in';
-export type { SignInPageProps, Testimonial } from '../components/ui/sign-in';
-
 // Sidebar
 export {
   Sidebar,
