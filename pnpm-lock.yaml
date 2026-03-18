@@ -293,9 +293,6 @@ importers:
       '@types/react':
         specifier: ^18.3.0
         version: 18.3.28
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 1.6.1(vitest@1.6.1(@types/node@20.19.35)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.0))
       eslint:
         specifier: 'catalog:'
         version: 8.57.1
@@ -308,9 +305,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
-      vitest:
-        specifier: 'catalog:'
-        version: 1.6.1(@types/node@20.19.35)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.0)
 
   core/utils:
     dependencies:
@@ -556,13 +550,13 @@ importers:
       lucide-react-native:
         specifier: ^0.309.0
         version: 0.309.0(react-native-svg@14.2.0(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0)
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.2.0(react@18.2.0)
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*
         version: link:../../tools/tsconfig
+      '@testing-library/react':
+        specifier: 'catalog:'
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@types/react':
         specifier: ^18.3.0
         version: 18.3.28
@@ -572,6 +566,9 @@ importers:
       react:
         specifier: catalog:react18
         version: 18.2.0
+      react-dom:
+        specifier: catalog:react18
+        version: 18.2.0(react@18.2.0)
       react-native:
         specifier: 'catalog:'
         version: 0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0)
@@ -698,9 +695,6 @@ importers:
       react-day-picker:
         specifier: ^8.10.1
         version: 8.10.1(date-fns@4.1.0)(react@18.2.0)
-      react-dom:
-        specifier: ^18.0.0
-        version: 18.2.0(react@18.2.0)
       react-hook-form:
         specifier: ^7.54.2
         version: 7.71.2(react@18.2.0)
@@ -723,6 +717,9 @@ importers:
       '@automatize/tsconfig':
         specifier: workspace:*
         version: link:../../tools/tsconfig
+      '@testing-library/react':
+        specifier: 'catalog:'
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.28))(@types/react@18.3.28)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@types/react':
         specifier: ^18.3.0
         version: 18.3.28
@@ -738,6 +735,9 @@ importers:
       react:
         specifier: catalog:react18
         version: 18.2.0
+      react-dom:
+        specifier: catalog:react18
+        version: 18.2.0(react@18.2.0)
       react-native:
         specifier: 'catalog:'
         version: 0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0)

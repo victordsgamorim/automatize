@@ -17,9 +17,6 @@
     "dev": "tsup --watch",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:unit": "vitest run --coverage",
-    "test:watch": "vitest",
     "clean": "rm -rf dist node_modules .turbo"
   },
   "dependencies": {
@@ -37,11 +34,9 @@
     "@automatize/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
-    "@vitest/coverage-v8": "catalog:",
     "eslint": "catalog:",
     "react": "catalog:react18",
     "tsup": "catalog:",
-    "typescript": "catalog:",
-    "vitest": "catalog:"
+    "typescript": "catalog:"
   }
 }

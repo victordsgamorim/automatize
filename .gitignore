@@ -196,6 +196,8 @@ supabase/seed.sql
 # CLAUDE CODE
 # ============================================================================
 .claude/
+.claude/settings.json
+.claude/launch.json
 
 # ============================================================================
 # MISC DIRECTORIES

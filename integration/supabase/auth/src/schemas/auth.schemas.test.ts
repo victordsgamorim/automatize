@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { loginSchema } from './loginSchema';
+import { loginSchema } from './auth.schemas';
 
 describe('loginSchema', () => {
   describe('valid inputs', () => {
@@ -23,17 +23,35 @@ describe('loginSchema', () => {
       }
     });
 
-    it('accepts a single-character password', () => {
+    it('accepts single-character password', () => {
       const result = loginSchema.safeParse({
         email: 'user@example.com',
         password: 'x',
       });
       expect(result.success).toBe(true);
     });
+
+    it('accepts valid MFA code', () => {
+      const result = loginSchema.safeParse({
+        email: 'user@example.com',
+        password: 'secret',
+        mfaCode: '123456',
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it('accepts valid backup code', () => {
+      const result = loginSchema.safeParse({
+        email: 'user@example.com',
+        password: 'secret',
+        backupCode: 'ABC12345',
+      });
+      expect(result.success).toBe(true);
+    });
   });
 
   describe('invalid inputs', () => {
-    it('rejects an invalid email format', () => {
+    it('rejects invalid email format', () => {
       const result = loginSchema.safeParse({
         email: 'not-an-email',
         password: 'secret',
@@ -44,7 +62,7 @@ describe('loginSchema', () => {
       }
     });
 
-    it('rejects an empty email', () => {
+    it('rejects empty email', () => {
       const result = loginSchema.safeParse({
         email: '',
         password: 'secret',
@@ -52,7 +70,7 @@ describe('loginSchema', () => {
       expect(result.success).toBe(false);
     });
 
-    it('rejects an empty password', () => {
+    it('rejects empty password', () => {
       const result = loginSchema.safeParse({
         email: 'user@example.com',
         password: '',
@@ -73,8 +91,44 @@ describe('loginSchema', () => {
       expect(result.success).toBe(false);
     });
 
-    it('rejects an empty object', () => {
+    it('rejects empty object', () => {
       const result = loginSchema.safeParse({});
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects invalid MFA code (too short)', () => {
+      const result = loginSchema.safeParse({
+        email: 'user@example.com',
+        password: 'secret',
+        mfaCode: '12345',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects invalid MFA code (non-numeric)', () => {
+      const result = loginSchema.safeParse({
+        email: 'user@example.com',
+        password: 'secret',
+        mfaCode: 'abcdef',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects invalid backup code (too short)', () => {
+      const result = loginSchema.safeParse({
+        email: 'user@example.com',
+        password: 'secret',
+        backupCode: 'ABC1234',
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it('rejects invalid backup code (lowercase)', () => {
+      const result = loginSchema.safeParse({
+        email: 'user@example.com',
+        password: 'secret',
+        backupCode: 'abc12345',
+      });
       expect(result.success).toBe(false);
     });
   });

@@ -447,7 +447,7 @@ project/
     windows/             # RN Windows
 
   core/                  # Workspace boundary for abstract "Wirer" modules
-    auth/                # @automatize/auth — Dependency inversion for auth
+    auth/                # @automatize/auth — Interfaces, types, React contexts (NO implementation, NO tests)
     utils/               # @automatize/utils — Abstract utility functions
 
   integration/           # infrastructure with services, client-sdk, database
@@ -462,9 +462,10 @@ project/
       migrations/
       docs/
     supabase/            # Plain container (no package.json, no src/)
-      auth/              # @automatize/supabase-auth — Auth logic (Supabase SDK)
+      auth/              # @automatize/supabase-auth — Auth implementation + tests (NO interfaces)
         hooks/
         providers/
+        schemas/         # Zod schemas + their tests
         utils/
       migrations/        # Supabase CLI SQL migration files (NOT a package)
     payment/             # @automatize/integration-payment (future)
