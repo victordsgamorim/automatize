@@ -20,7 +20,7 @@ apps/                 # Platform applications
 └── windows/          # Windows desktop app
 
 core/                 # Workspace boundary for abstract "Wirer" modules
-  auth/                 # @automatize/auth (Interfaces & Contexts)
+  auth/                 # @automatize/auth (Interfaces, types, contexts — NO implementation, NO tests)
   utils/                # @automatize/utils (Abstract utilities)
 
   packages/             # Feature modules
@@ -117,12 +117,12 @@ automatize/
 │   │       └── composites/ # Reusable UI pieces (AppSidebar, etc.)
 │   └── windows/        # Windows desktop app
 ├── core/               # Workspace boundary for abstract "Wirer" modules
-│   ├── auth/           # @automatize/auth (Interfaces & Contexts)
+│   ├── auth/           # @automatize/auth (Interfaces, types, contexts — NO implementation, NO tests)
 │   ├── utils/          # @automatize/utils (Abstract utilities)
 │   └── README.md
 ├── integration/        # Infrastructure implementations
 │   ├── supabase/       # Supabase ecosystem
-│   │   ├── auth/       # @automatize/supabase-auth
+│   │   ├── auth/       # @automatize/supabase-auth (Auth implementation + tests, NO interfaces)
 │   │   │   └── README.md
 │   │   └── docs/       # Auth config, RLS policies
 │   ├── storage/        # @automatize/storage

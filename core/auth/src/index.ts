@@ -1,9 +1,10 @@
 /**
  * @automatize/auth
- * Platform-agnostic authentication business logic
+ * Platform-agnostic authentication interfaces, types, and React contexts
+ *
+ * NO implementation, NO tests — those live in @automatize/supabase-auth
  */
 
 export * from './context';
-export * from './loginSchema';
 export * from './types';
 export * from './useAuth';
