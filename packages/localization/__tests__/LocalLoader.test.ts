@@ -13,6 +13,16 @@ describe('createLocalLoader', () => {
     expect(result['nav.invoices']).toBe('Invoices');
   });
 
+  it('loads en/common language keys', async () => {
+    const loader = createLocalLoader();
+    const result = await loader.load('en', 'common');
+
+    expect(result['app.language.en']).toBe('English');
+    expect(result['app.language.en.ext']).toBe('US');
+    expect(result['app.language.pt-BR']).toBe('Portuguese');
+    expect(result['app.language.pt-BR.ext']).toBe('BR');
+  });
+
   it('loads pt-BR/common translations', async () => {
     const loader = createLocalLoader();
     const result = await loader.load('pt-BR', 'common');
@@ -22,6 +32,16 @@ describe('createLocalLoader', () => {
     expect(result['app.loading']).toBe('Carregando...');
     expect(result['app.save']).toBe('Salvar');
     expect(result['nav.invoices']).toBe('Faturas');
+  });
+
+  it('loads pt-BR/common language keys', async () => {
+    const loader = createLocalLoader();
+    const result = await loader.load('pt-BR', 'common');
+
+    expect(result['app.language.en']).toBe('Inglês');
+    expect(result['app.language.en.ext']).toBe('US');
+    expect(result['app.language.pt-BR']).toBe('Português');
+    expect(result['app.language.pt-BR.ext']).toBe('BR');
   });
 
   it('pt-BR has the same keys as en', async () => {
