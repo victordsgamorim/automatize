@@ -14,11 +14,11 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useAuth } from '@automatize/supabase-auth';
-import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
-
-const theme = semanticColors.light;
+import { Button, Text, FormField, Card } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 
 export default function ResetPasswordScreen() {
+  const { colors: theme } = useTheme();
   const { token } = useLocalSearchParams();
   const { updatePassword, isLoading, error } = useAuth();
   const [password, setPassword] = useState('');
@@ -74,6 +74,60 @@ export default function ResetPasswordScreen() {
   };
 
   const displayError = error || localError;
+
+  const styles = StyleSheet.create({
+    button: {
+      marginTop: 16,
+    },
+    card: {
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 24,
+    },
+    container: {
+      backgroundColor: theme.background.primary,
+      flex: 1,
+    },
+    errorContainer: {
+      backgroundColor: theme.background.error,
+      borderLeftColor: theme.state.error,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    header: {
+      marginBottom: 32,
+    },
+    requirementsContainer: {
+      backgroundColor: theme.background.secondary,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      padding: 16,
+    },
+    subtitle: {
+      marginTop: 8,
+    },
+    successContainer: {
+      backgroundColor: theme.background.secondary,
+      borderLeftColor: theme.state.success,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 16,
+    },
+    successTitle: {
+      marginBottom: 8,
+    },
+    title: {
+      marginBottom: 16,
+    },
+  });
 
   if (!token) {
     return (
@@ -225,57 +279,3 @@ export default function ResetPasswordScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    marginTop: 16,
-  },
-  card: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-  },
-  container: {
-    backgroundColor: theme.background.primary,
-    flex: 1,
-  },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    borderLeftColor: theme.state.error,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  header: {
-    marginBottom: 32,
-  },
-  requirementsContainer: {
-    backgroundColor: theme.background.secondary,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
-  successContainer: {
-    backgroundColor: theme.background.secondary,
-    borderLeftColor: theme.state.success,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 16,
-  },
-  successTitle: {
-    marginBottom: 8,
-  },
-  title: {
-    marginBottom: 16,
-  },
-});

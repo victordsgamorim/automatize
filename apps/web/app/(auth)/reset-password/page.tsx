@@ -7,11 +7,10 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useUserAuthentication } from '@automatize/supabase-auth';
-import { semanticColors } from '@automatize/ui/tokens';
-
-const theme = semanticColors.light;
+import { useTheme } from '@automatize/theme';
 
 function ResetPasswordContent() {
+  const { colors: theme } = useTheme();
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get('token');

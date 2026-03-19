@@ -7,21 +7,15 @@
 import { useColorScheme } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useAuth } from '@automatize/supabase-auth';
-import {
-  HomeIcon,
-  UserIcon,
-  BuildingIcon,
-  colors,
-  semanticColors,
-} from '@automatize/ui';
-
-const theme = semanticColors.light;
+import { HomeIcon, UserIcon, BuildingIcon, colors } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 
 /**
  * App Tabs Layout Component
  * Provides tab navigation for authenticated users
  */
 export default function AppLayout() {
+  const { colors: theme } = useTheme();
   const { currentTenant } = useAuth();
   const _colorScheme = useColorScheme();
 

@@ -6,12 +6,11 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
+import { Button, Text, FormField, Card } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 import { useTranslation } from '@automatize/localization';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { LanguageSwitcher } from './LanguageSwitcher.native';
-
-const theme = semanticColors.light;
 
 export const SignInScreen: React.FC<SignInScreenProps> = ({
   email,
@@ -25,7 +24,51 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
   onSignIn,
   onResetPassword,
 }) => {
+  const { colors: theme } = useTheme();
   const { t } = useTranslation();
+
+  const styles = StyleSheet.create({
+    card: {
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 24,
+    },
+    container: {
+      backgroundColor: theme.background.primary,
+      flex: 1,
+    },
+    errorContainer: {
+      backgroundColor: theme.background.error,
+      borderLeftColor: theme.state.error,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    header: {
+      alignItems: 'center' as const,
+      marginBottom: 32,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: 'center' as const,
+      padding: 16,
+    },
+    submitButton: {
+      marginBottom: 8,
+      marginTop: 16,
+    },
+    subtitle: {
+      marginTop: 8,
+    },
+    title: {
+      marginBottom: 20,
+    },
+    languageSwitcher: {
+      alignItems: 'center' as const,
+      marginTop: 8,
+    },
+  });
 
   return (
     <KeyboardAvoidingView
@@ -127,46 +170,3 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-  },
-  container: {
-    backgroundColor: theme.background.primary,
-    flex: 1,
-  },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    borderLeftColor: theme.state.error,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  submitButton: {
-    marginBottom: 8,
-    marginTop: 16,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
-  title: {
-    marginBottom: 20,
-  },
-  languageSwitcher: {
-    alignItems: 'center',
-    marginTop: 8,
-  },
-});

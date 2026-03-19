@@ -12,12 +12,21 @@ import {
   initLocalization,
   createLocalLoader,
 } from '@automatize/localization';
+import {
+  ThemeProvider,
+  initTheme,
+  createNativeStorageAdapter,
+} from '@automatize/theme';
 import { router } from 'expo-router';
 
 // Start fetching translations immediately when the app module loads —
 // before the React tree is mounted. Singleton guarantees this runs once
 // per JS runtime session (i.e. once per app open).
 initLocalization(createLocalLoader(), 'pt-BR');
+
+// Start reading stored theme preference immediately.
+initTheme({ storageAdapter: createNativeStorageAdapter() });
+
 import { AuthProviderWrapper } from './auth-provider';
 
 /**
@@ -55,12 +64,14 @@ function RootLayoutContent() {
  */
 export default function RootLayout() {
   return (
-    <LocalizationProvider>
-      <RootErrorBoundary>
-        <AuthProviderWrapper>
-          <RootLayoutContent />
-        </AuthProviderWrapper>
-      </RootErrorBoundary>
-    </LocalizationProvider>
+    <ThemeProvider>
+      <LocalizationProvider>
+        <RootErrorBoundary>
+          <AuthProviderWrapper>
+            <RootLayoutContent />
+          </AuthProviderWrapper>
+        </RootErrorBoundary>
+      </LocalizationProvider>
+    </ThemeProvider>
   );
 }

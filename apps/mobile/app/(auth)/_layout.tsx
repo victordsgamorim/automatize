@@ -4,11 +4,11 @@
  */
 
 import { Stack } from 'expo-router';
-import { semanticColors } from '@automatize/ui';
-
-const theme = semanticColors.light;
+import { useTheme } from '@automatize/theme';
 
 export default function AuthLayout() {
+  const { colors: theme } = useTheme();
+
   return (
     <Stack
       screenOptions={{

@@ -4,9 +4,8 @@
  */
 
 import { View, ViewStyle } from 'react-native';
-import { semanticColors } from '../tokens';
 
-const theme = semanticColors.light;
+const DEFAULT_ICON_COLOR = '#171717';
 
 export interface IconProps {
   color?: string;
@@ -18,7 +17,7 @@ export interface IconProps {
  * HomeIcon - House/home symbol
  */
 export function HomeIcon({
-  color = theme.text.primary,
+  color = DEFAULT_ICON_COLOR,
   size = 24,
   style,
 }: IconProps) {
@@ -65,7 +64,7 @@ export function HomeIcon({
  * UserIcon - Person/profile symbol
  */
 export function UserIcon({
-  color = theme.text.primary,
+  color = DEFAULT_ICON_COLOR,
   size = 24,
   style,
 }: IconProps) {
@@ -114,7 +113,7 @@ export function UserIcon({
  * BuildingIcon - Building/organization symbol
  */
 export function BuildingIcon({
-  color = theme.text.primary,
+  color = DEFAULT_ICON_COLOR,
   size = 24,
   style,
 }: IconProps) {
@@ -179,7 +178,7 @@ export function BuildingIcon({
  * LogOutIcon - Sign out symbol
  */
 export function LogOutIcon({
-  color = theme.text.primary,
+  color = DEFAULT_ICON_COLOR,
   size = 24,
   style,
 }: IconProps) {

@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@automatize/localization": "workspace:*",
+    "@automatize/theme": "workspace:*",
     "@automatize/sign-in": "workspace:*",
     "@automatize/supabase-auth": "workspace:*",
     "@automatize/auth": "workspace:*",

@@ -5,11 +5,11 @@
 
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useAuth } from '@automatize/supabase-auth';
-import { Button, Text, Card, semanticColors } from '@automatize/ui';
-
-const theme = semanticColors.light;
+import { Button, Text, Card } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 
 export default function HomeScreen() {
+  const { colors: theme } = useTheme();
   const { userProfile, currentTenant, logout } = useAuth();
 
   const handleLogout = async () => {
@@ -20,6 +20,59 @@ export default function HomeScreen() {
       console.error('Logout failed:', err);
     }
   };
+
+  const styles = StyleSheet.create({
+    actionContainer: {
+      marginBottom: 24,
+    },
+    container: {
+      backgroundColor: theme.background.primary,
+      flex: 1,
+      padding: 16,
+    },
+    featureCard: {
+      backgroundColor: theme.background.secondary,
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 20,
+    },
+    featureText: {
+      lineHeight: 24,
+    },
+    featureTitle: {
+      marginBottom: 12,
+    },
+    statCard: {
+      alignItems: 'center',
+      flex: 1,
+      justifyContent: 'center',
+      paddingHorizontal: 12,
+      paddingVertical: 20,
+    },
+    statCard1: {
+      backgroundColor: theme.background.secondary,
+    },
+    statCard2: {
+      backgroundColor: theme.background.secondary,
+    },
+    statCard3: {
+      backgroundColor: theme.background.secondary,
+    },
+    statsContainer: {
+      flexDirection: 'row',
+      gap: 8,
+      justifyContent: 'space-between',
+      marginBottom: 24,
+    },
+    subtitle: {
+      marginTop: 8,
+    },
+    welcomeCard: {
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 20,
+    },
+  });
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -87,56 +140,3 @@ export default function HomeScreen() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  actionContainer: {
-    marginBottom: 24,
-  },
-  container: {
-    backgroundColor: theme.background.primary,
-    flex: 1,
-    padding: 16,
-  },
-  featureCard: {
-    backgroundColor: theme.background.secondary,
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-  },
-  featureText: {
-    lineHeight: 24,
-  },
-  featureTitle: {
-    marginBottom: 12,
-  },
-  statCard: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 20,
-  },
-  statCard1: {
-    backgroundColor: theme.background.secondary,
-  },
-  statCard2: {
-    backgroundColor: theme.background.secondary,
-  },
-  statCard3: {
-    backgroundColor: theme.background.secondary,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
-  welcomeCard: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-  },
-});

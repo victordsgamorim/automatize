@@ -14,14 +14,18 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@automatize/supabase-auth';
-import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
+import { Button, Text, FormField, Card } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 
-const theme = semanticColors.light;
+import type { ThemeContextValue } from '@automatize/theme';
 
 /**
  * Password strength indicators
  */
-function getPasswordStrength(password: string): {
+function getPasswordStrength(
+  password: string,
+  theme: ThemeContextValue['colors']
+): {
   score: number;
   label: string;
   color: string;
@@ -47,6 +51,7 @@ function getPasswordStrength(password: string): {
 }
 
 export default function RegisterScreen() {
+  const { colors: theme } = useTheme();
   const { register, isLoading, error } = useAuth();
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
@@ -55,7 +60,7 @@ export default function RegisterScreen() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const passwordStrength = getPasswordStrength(password);
+  const passwordStrength = getPasswordStrength(password, theme);
   const passwordMatch = password === confirmPassword && password.length > 0;
 
   const handleRegister = async () => {
@@ -109,6 +114,75 @@ export default function RegisterScreen() {
     passwordMatch &&
     agreedToTerms &&
     !isLoading;
+
+  const styles = StyleSheet.create({
+    card: {
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 24,
+    },
+    checkbox: {
+      height: 44,
+      marginRight: 8,
+      minWidth: 44,
+      width: 44,
+    },
+    container: {
+      backgroundColor: theme.background.primary,
+      flex: 1,
+    },
+    errorContainer: {
+      backgroundColor: theme.background.error,
+      borderLeftColor: theme.state.error,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    footer: {
+      alignItems: 'center',
+      marginTop: 16,
+    },
+    header: {
+      alignItems: 'center',
+      marginBottom: 32,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      padding: 16,
+    },
+    strengthBar: {
+      borderRadius: 2,
+      height: 4,
+      marginBottom: 4,
+    },
+    strengthContainer: {
+      marginBottom: 16,
+    },
+    strengthLabel: {
+      marginTop: 4,
+    },
+    submitButton: {
+      marginBottom: 8,
+      marginTop: 16,
+    },
+    subtitle: {
+      marginTop: 8,
+    },
+    termsContainer: {
+      alignItems: 'flex-start',
+      flexDirection: 'row',
+      marginBottom: 16,
+    },
+    termsText: {
+      flex: 1,
+      paddingTop: 12,
+    },
+    title: {
+      marginBottom: 20,
+    },
+  });
 
   return (
     <KeyboardAvoidingView
@@ -261,72 +335,3 @@ export default function RegisterScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-  },
-  checkbox: {
-    height: 44,
-    marginRight: 8,
-    minWidth: 44,
-    width: 44,
-  },
-  container: {
-    backgroundColor: theme.background.primary,
-    flex: 1,
-  },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    borderLeftColor: theme.state.error,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  footer: {
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  strengthBar: {
-    borderRadius: 2,
-    height: 4,
-    marginBottom: 4,
-  },
-  strengthContainer: {
-    marginBottom: 16,
-  },
-  strengthLabel: {
-    marginTop: 4,
-  },
-  submitButton: {
-    marginBottom: 8,
-    marginTop: 16,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
-  termsContainer: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
-  termsText: {
-    flex: 1,
-    paddingTop: 12,
-  },
-  title: {
-    marginBottom: 20,
-  },
-});

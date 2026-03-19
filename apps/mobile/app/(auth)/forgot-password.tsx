@@ -14,18 +14,11 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@automatize/supabase-auth';
-import {
-  Button,
-  Text,
-  FormField,
-  Card,
-  colors,
-  semanticColors,
-} from '@automatize/ui';
-
-const theme = semanticColors.light;
+import { Button, Text, FormField, Card, colors } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 
 export default function ForgotPasswordScreen() {
+  const { colors: theme } = useTheme();
   const { resetPassword, isLoading, error } = useAuth();
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -54,6 +47,70 @@ export default function ForgotPasswordScreen() {
   };
 
   const displayError = error || localError;
+
+  const styles = StyleSheet.create({
+    button: {
+      marginTop: 12,
+    },
+    card: {
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 24,
+    },
+    container: {
+      backgroundColor: theme.background.primary,
+      flex: 1,
+    },
+    emailHighlight: {
+      fontWeight: '600',
+    },
+    errorContainer: {
+      backgroundColor: theme.background.error,
+      borderLeftColor: theme.state.error,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    header: {
+      marginBottom: 32,
+    },
+    instructionText: {
+      lineHeight: 24,
+    },
+    instructionTitle: {
+      fontWeight: '600',
+      marginBottom: 8,
+    },
+    instructionsContainer: {
+      backgroundColor: theme.background.secondary,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 16,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      padding: 16,
+    },
+    subtitle: {
+      marginTop: 8,
+    },
+    successContainer: {
+      backgroundColor: theme.background.secondary,
+      borderLeftColor: theme.state.success,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 16,
+    },
+    successMessage: {
+      marginBottom: 8,
+    },
+    successTitle: {
+      marginBottom: 8,
+    },
+  });
 
   return (
     <KeyboardAvoidingView
@@ -200,67 +257,3 @@ export default function ForgotPasswordScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    marginTop: 12,
-  },
-  card: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-  },
-  container: {
-    backgroundColor: theme.background.primary,
-    flex: 1,
-  },
-  emailHighlight: {
-    fontWeight: '600',
-  },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    borderLeftColor: theme.state.error,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  header: {
-    marginBottom: 32,
-  },
-  instructionText: {
-    lineHeight: 24,
-  },
-  instructionTitle: {
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  instructionsContainer: {
-    backgroundColor: theme.background.secondary,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 16,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
-  successContainer: {
-    backgroundColor: theme.background.secondary,
-    borderLeftColor: theme.state.success,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 16,
-  },
-  successMessage: {
-    marginBottom: 8,
-  },
-  successTitle: {
-    marginBottom: 8,
-  },
-});
