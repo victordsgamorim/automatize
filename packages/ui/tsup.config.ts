@@ -2,11 +2,7 @@ import { defineConfig } from 'tsup';
 import { readFileSync, writeFileSync } from 'fs';
 
 export default defineConfig({
-  entry: [
-    'src/index.ts',
-    'src/tokens/index.ts',
-    'src/web.ts',
-  ],
+  entry: ['src/index.ts', 'src/tokens/index.ts', 'src/web.ts'],
   format: ['cjs', 'esm'],
   dts: true,
   splitting: true,
