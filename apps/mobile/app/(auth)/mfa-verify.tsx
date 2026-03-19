@@ -14,11 +14,11 @@ import {
 } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useMFA } from '@automatize/supabase-auth';
-import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
-
-const theme = semanticColors.light;
+import { Button, Text, FormField, Card } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 
 export default function MFAVerifyScreen() {
+  const { colors: theme } = useTheme();
   const {
     verifyChallengeWithTOTP,
     verifyChallengeWithBackupCode,
@@ -80,6 +80,46 @@ export default function MFAVerifyScreen() {
   };
 
   const displayError = error || localError;
+
+  const styles = StyleSheet.create({
+    button: {
+      marginTop: 16,
+    },
+    card: {
+      marginBottom: 16,
+      paddingHorizontal: 16,
+      paddingVertical: 24,
+    },
+    container: {
+      backgroundColor: theme.background.primary,
+      flex: 1,
+    },
+    errorContainer: {
+      backgroundColor: theme.background.error,
+      borderLeftColor: theme.state.error,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    header: {
+      marginBottom: 32,
+    },
+    infoCard: {
+      backgroundColor: theme.background.secondary,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      padding: 16,
+    },
+    subtitle: {
+      marginTop: 8,
+    },
+    toggleButton: {
+      marginTop: 8,
+    },
+  });
 
   return (
     <KeyboardAvoidingView
@@ -166,43 +206,3 @@ export default function MFAVerifyScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    marginTop: 16,
-  },
-  card: {
-    marginBottom: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-  },
-  container: {
-    backgroundColor: theme.background.primary,
-    flex: 1,
-  },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    borderLeftColor: theme.state.error,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  header: {
-    marginBottom: 32,
-  },
-  infoCard: {
-    backgroundColor: theme.background.secondary,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
-  toggleButton: {
-    marginTop: 8,
-  },
-});

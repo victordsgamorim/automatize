@@ -10,3 +10,9 @@ export { EmptyState } from './EmptyState';
 export { ErrorState } from './ErrorState';
 export { StatsCard } from './StatsCard';
 export { ThemeToggle } from './ThemeToggle';
+export { ThemeSwitcher } from './ThemeSwitcher';
+export type {
+  ThemeSwitcherProps,
+  ThemeSwitcherOption,
+  ThemePreferenceOption,
+} from './ThemeSwitcher';

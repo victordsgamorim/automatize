@@ -18,6 +18,8 @@ packages:
   - 'integration/supabase/auth'
   # Localization
   - 'packages/localization'
+  # Theme
+  - 'packages/theme'
   # Tools
   - 'tools/eslint-config'
   - 'tools/tsconfig'

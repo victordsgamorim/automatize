@@ -12,19 +12,11 @@ import {
   Alert,
 } from 'react-native';
 import { useTenant } from '@automatize/supabase-auth';
-import {
-  Button,
-  Text,
-  Card,
-  FormField,
-  Loading,
-  colors,
-  semanticColors,
-} from '@automatize/ui';
-
-const theme = semanticColors.light;
+import { Button, Text, Card, FormField, Loading, colors } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 
 export default function TenantsScreen() {
+  const { colors: theme } = useTheme();
   const {
     tenants,
     currentTenant,
@@ -76,6 +68,104 @@ export default function TenantsScreen() {
   if (isLoading && !tenants.length) {
     return <Loading />;
   }
+
+  const styles = StyleSheet.create({
+    actionContainer: {
+      marginBottom: 24,
+    },
+    badge: {
+      borderRadius: 4,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+    },
+    badgeText: {
+      color: colors.neutral[50],
+    },
+    button: {
+      marginTop: 8,
+    },
+    container: {
+      backgroundColor: theme.background.primary,
+      flex: 1,
+      padding: 16,
+    },
+    createActions: {
+      gap: 8,
+      marginTop: 16,
+    },
+    createCard: {
+      backgroundColor: theme.background.secondary,
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 20,
+    },
+    createTitle: {
+      marginBottom: 16,
+    },
+    currentTenantCard: {
+      backgroundColor: theme.background.secondary,
+      borderLeftColor: colors.brand[600],
+      borderLeftWidth: 4,
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 16,
+    },
+    currentTenantHeader: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: 8,
+    },
+    errorCard: {
+      backgroundColor: theme.background.error,
+      borderLeftColor: theme.state.error,
+      borderLeftWidth: 4,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+    },
+    errorContainer: {
+      backgroundColor: theme.background.error,
+      borderLeftColor: theme.state.error,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    headerCard: {
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 20,
+    },
+    listContainer: {
+      marginBottom: 24,
+    },
+    listTitle: {
+      marginBottom: 12,
+    },
+    subtitle: {
+      marginTop: 8,
+    },
+    switchButton: {
+      marginTop: 8,
+    },
+    tenantCard: {
+      marginBottom: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 16,
+    },
+    tenantHeader: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: 12,
+    },
+    tenantInfo: {
+      flex: 1,
+    },
+    tenantName: {
+      marginBottom: 4,
+    },
+  });
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -221,101 +311,3 @@ export default function TenantsScreen() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  actionContainer: {
-    marginBottom: 24,
-  },
-  badge: {
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  badgeText: {
-    color: colors.neutral[50],
-  },
-  button: {
-    marginTop: 8,
-  },
-  container: {
-    backgroundColor: theme.background.primary,
-    flex: 1,
-    padding: 16,
-  },
-  createActions: {
-    gap: 8,
-    marginTop: 16,
-  },
-  createCard: {
-    backgroundColor: theme.background.secondary,
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-  },
-  createTitle: {
-    marginBottom: 16,
-  },
-  currentTenantCard: {
-    backgroundColor: theme.background.secondary,
-    borderLeftColor: colors.brand[600],
-    borderLeftWidth: 4,
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  currentTenantHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  errorCard: {
-    backgroundColor: theme.background.error,
-    borderLeftColor: theme.state.error,
-    borderLeftWidth: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    borderLeftColor: theme.state.error,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  headerCard: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-  },
-  listContainer: {
-    marginBottom: 24,
-  },
-  listTitle: {
-    marginBottom: 12,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
-  switchButton: {
-    marginTop: 8,
-  },
-  tenantCard: {
-    marginBottom: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  tenantHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  tenantInfo: {
-    flex: 1,
-  },
-  tenantName: {
-    marginBottom: 4,
-  },
-});

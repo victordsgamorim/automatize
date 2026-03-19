@@ -12,18 +12,11 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useAuth } from '@automatize/supabase-auth';
-import {
-  Button,
-  Text,
-  Card,
-  FormField,
-  colors,
-  semanticColors,
-} from '@automatize/ui';
-
-const theme = semanticColors.light;
+import { Button, Text, Card, FormField, colors } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 
 export default function ProfileScreen() {
+  const { colors: theme } = useTheme();
   const { user, userProfile, logout } = useAuth();
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
@@ -75,6 +68,107 @@ export default function ProfileScreen() {
       },
     ]);
   };
+
+  const styles = StyleSheet.create({
+    avatar: {
+      alignItems: 'center',
+      backgroundColor: colors.brand[600],
+      borderRadius: 40,
+      height: 80,
+      justifyContent: 'center',
+      width: 80,
+    },
+    avatarContainer: {
+      marginBottom: 16,
+    },
+    avatarText: {
+      color: colors.neutral[50],
+    },
+    button: {
+      marginTop: 8,
+    },
+    changePasswordCard: {
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 20,
+    },
+    container: {
+      backgroundColor: theme.background.primary,
+      flex: 1,
+      padding: 16,
+    },
+    dangerCard: {
+      backgroundColor: theme.background.error,
+      borderLeftColor: theme.state.error,
+      borderLeftWidth: 4,
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 20,
+    },
+    displayName: {
+      marginBottom: 4,
+    },
+    email: {
+      marginTop: 4,
+    },
+    infoCard: {
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 16,
+    },
+    infoLabel: {
+      marginRight: 8,
+    },
+    infoRow: {
+      alignItems: 'center',
+      borderBottomColor: theme.border.default,
+      borderBottomWidth: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingVertical: 12,
+    },
+    logoutButton: {
+      marginTop: 12,
+    },
+    passwordActions: {
+      gap: 8,
+      marginTop: 16,
+    },
+    profileCard: {
+      alignItems: 'center',
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 24,
+    },
+    sectionTitle: {
+      marginBottom: 16,
+    },
+    securityButton: {
+      marginTop: 8,
+    },
+    securityCard: {
+      backgroundColor: theme.background.secondary,
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 16,
+    },
+    securityInfo: {
+      flex: 1,
+    },
+    securityRow: {
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    statusBadge: {
+      borderRadius: 4,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+    },
+    statusBadgeText: {
+      color: colors.neutral[50],
+    },
+  });
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -265,104 +359,3 @@ export default function ProfileScreen() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  avatar: {
-    alignItems: 'center',
-    backgroundColor: colors.brand[600],
-    borderRadius: 40,
-    height: 80,
-    justifyContent: 'center',
-    width: 80,
-  },
-  avatarContainer: {
-    marginBottom: 16,
-  },
-  avatarText: {
-    color: colors.neutral[50],
-  },
-  button: {
-    marginTop: 8,
-  },
-  changePasswordCard: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-  },
-  container: {
-    backgroundColor: theme.background.primary,
-    flex: 1,
-    padding: 16,
-  },
-  dangerCard: {
-    backgroundColor: theme.background.error,
-    borderLeftColor: theme.state.error,
-    borderLeftWidth: 4,
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-  },
-  displayName: {
-    marginBottom: 4,
-  },
-  email: {
-    marginTop: 4,
-  },
-  infoCard: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  infoLabel: {
-    marginRight: 8,
-  },
-  infoRow: {
-    alignItems: 'center',
-    borderBottomColor: theme.border.default,
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-  },
-  logoutButton: {
-    marginTop: 12,
-  },
-  passwordActions: {
-    gap: 8,
-    marginTop: 16,
-  },
-  profileCard: {
-    alignItems: 'center',
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-  },
-  sectionTitle: {
-    marginBottom: 16,
-  },
-  securityButton: {
-    marginTop: 8,
-  },
-  securityCard: {
-    backgroundColor: theme.background.secondary,
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  securityInfo: {
-    flex: 1,
-  },
-  securityRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  statusBadge: {
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  statusBadgeText: {
-    color: colors.neutral[50],
-  },
-});

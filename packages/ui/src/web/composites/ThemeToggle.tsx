@@ -2,49 +2,36 @@
 
 /**
  * ThemeToggle Composite
- * Light/dark mode toggle button
+ * Light/dark mode toggle button.
+ * Receives theme state via props — no dependency on @automatize/theme.
  */
 
 import { Moon, Sun } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { Button } from '../../components/Button';
 
-export function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+export interface ThemeToggleProps {
+  isDark: boolean;
+  onToggle: () => void;
+}
 
-  useEffect(() => {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    const initialTheme = savedTheme ?? (isDark ? 'dark' : 'light');
-
-    setTheme(initialTheme);
-    document.documentElement.classList.toggle('dark', initialTheme === 'dark');
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
-  };
-
+export function ThemeToggle({ isDark, onToggle }: ThemeToggleProps) {
   return (
     <Button
       variant="outline"
       size="sm"
-      onClick={toggleTheme}
-      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      onClick={onToggle}
+      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
       className="gap-2"
     >
-      {theme === 'light' ? (
-        <>
-          <Moon className="size-4" aria-hidden="true" />
-          <span className="hidden sm:inline">Dark</span>
-        </>
-      ) : (
+      {isDark ? (
         <>
           <Sun className="size-4" aria-hidden="true" />
           <span className="hidden sm:inline">Light</span>
+        </>
+      ) : (
+        <>
+          <Moon className="size-4" aria-hidden="true" />
+          <span className="hidden sm:inline">Dark</span>
         </>
       )}
     </Button>

@@ -7,11 +7,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserAuthentication } from '@automatize/supabase-auth';
-import { semanticColors } from '@automatize/ui/tokens';
-
-const theme = semanticColors.light;
+import { useTheme } from '@automatize/theme';
 
 export default function ForgotPasswordScreen() {
+  const { colors: theme } = useTheme();
   const router = useRouter();
   const { resetPassword, isLoading, error } = useUserAuthentication();
   const [email, setEmail] = useState('');

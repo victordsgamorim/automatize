@@ -14,11 +14,11 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useAuth } from '@automatize/supabase-auth';
-import { Button, Text, Card, colors, semanticColors } from '@automatize/ui';
-
-const theme = semanticColors.light;
+import { Button, Text, Card, colors } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 
 export default function InviteScreen() {
+  const { colors: theme } = useTheme();
   const {
     id,
     email: invitationEmail,
@@ -135,6 +135,62 @@ export default function InviteScreen() {
       setError(message);
     }
   };
+
+  const styles = StyleSheet.create({
+    button: {
+      marginTop: 12,
+    },
+    card: {
+      marginBottom: 24,
+      paddingHorizontal: 16,
+      paddingVertical: 24,
+    },
+    container: {
+      alignItems: 'center',
+      backgroundColor: theme.background.primary,
+      flex: 1,
+      justifyContent: 'center',
+    },
+    detailRow: {
+      marginBottom: 16,
+    },
+    detailsContainer: {
+      backgroundColor: theme.background.secondary,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 16,
+    },
+    emailContainer: {
+      backgroundColor: theme.background.secondary,
+      borderLeftColor: theme.state.info,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    errorContainer: {
+      backgroundColor: theme.background.error,
+      borderLeftColor: theme.state.error,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    header: {
+      marginBottom: 32,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      padding: 16,
+    },
+    subtitle: {
+      marginTop: 8,
+    },
+    title: {
+      marginBottom: 16,
+    },
+  });
 
   if (!invitationId) {
     return (
@@ -314,59 +370,3 @@ export default function InviteScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    marginTop: 12,
-  },
-  card: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-  },
-  container: {
-    alignItems: 'center',
-    backgroundColor: theme.background.primary,
-    flex: 1,
-    justifyContent: 'center',
-  },
-  detailRow: {
-    marginBottom: 16,
-  },
-  detailsContainer: {
-    backgroundColor: theme.background.secondary,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 16,
-  },
-  emailContainer: {
-    backgroundColor: theme.background.secondary,
-    borderLeftColor: theme.state.info,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    borderLeftColor: theme.state.error,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  header: {
-    marginBottom: 32,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
-  title: {
-    marginBottom: 16,
-  },
-});

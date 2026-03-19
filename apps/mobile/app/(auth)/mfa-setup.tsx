@@ -13,15 +13,15 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useMFA } from '@automatize/supabase-auth';
-import { Button, Text, FormField, Card, semanticColors } from '@automatize/ui';
-
-const theme = semanticColors.light;
+import { Button, Text, FormField, Card } from '@automatize/ui';
+import { useTheme } from '@automatize/theme';
 
 /**
  * MFA Setup Screen Component
  * Guides users through TOTP setup and backup code generation
  */
 export default function MFASetupScreen() {
+  const { colors: theme } = useTheme();
   const { enrollMFA, verifyMFA, isLoading, error } = useMFA();
   const [step, setStep] = useState<
     'generate' | 'verify' | 'backup' | 'complete'
@@ -94,6 +94,89 @@ export default function MFASetupScreen() {
   };
 
   const displayError = error || localError;
+
+  const styles = StyleSheet.create({
+    backupCodeRow: {
+      borderBottomColor: theme.border.default,
+      borderBottomWidth: 1,
+      paddingVertical: 8,
+    },
+    backupCodesContainer: {
+      backgroundColor: theme.background.secondary,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    button: {
+      marginTop: 16,
+    },
+    card: {
+      paddingHorizontal: 16,
+      paddingVertical: 24,
+    },
+    checkbox: {
+      height: 44,
+      marginRight: 8,
+      minWidth: 44,
+      width: 44,
+    },
+    confirmContainer: {
+      alignItems: 'flex-start',
+      flexDirection: 'row',
+      marginBottom: 16,
+    },
+    confirmText: {
+      flex: 1,
+      paddingTop: 12,
+    },
+    container: {
+      backgroundColor: theme.background.primary,
+      flex: 1,
+    },
+    description: {
+      lineHeight: 22,
+      marginBottom: 16,
+    },
+    errorContainer: {
+      backgroundColor: theme.background.error,
+      borderLeftColor: theme.state.error,
+      borderLeftWidth: 4,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    header: {
+      marginBottom: 32,
+    },
+    qrContainer: {
+      alignItems: 'center',
+      backgroundColor: theme.background.secondary,
+      borderRadius: 8,
+      height: 250,
+      justifyContent: 'center',
+      marginBottom: 16,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      padding: 16,
+    },
+    secretCode: {
+      fontFamily: 'monospace',
+      marginTop: 8,
+    },
+    secretContainer: {
+      backgroundColor: theme.background.secondary,
+      borderRadius: 8,
+      marginBottom: 16,
+      padding: 12,
+    },
+    subtitle: {
+      marginTop: 8,
+    },
+    title: {
+      marginBottom: 12,
+    },
+  });
 
   return (
     <KeyboardAvoidingView
@@ -299,86 +382,3 @@ export default function MFASetupScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  backupCodeRow: {
-    borderBottomColor: theme.border.default,
-    borderBottomWidth: 1,
-    paddingVertical: 8,
-  },
-  backupCodesContainer: {
-    backgroundColor: theme.background.secondary,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  button: {
-    marginTop: 16,
-  },
-  card: {
-    paddingHorizontal: 16,
-    paddingVertical: 24,
-  },
-  checkbox: {
-    height: 44,
-    marginRight: 8,
-    minWidth: 44,
-    width: 44,
-  },
-  confirmContainer: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    marginBottom: 16,
-  },
-  confirmText: {
-    flex: 1,
-    paddingTop: 12,
-  },
-  container: {
-    backgroundColor: theme.background.primary,
-    flex: 1,
-  },
-  description: {
-    lineHeight: 22,
-    marginBottom: 16,
-  },
-  errorContainer: {
-    backgroundColor: theme.background.error,
-    borderLeftColor: theme.state.error,
-    borderLeftWidth: 4,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  header: {
-    marginBottom: 32,
-  },
-  qrContainer: {
-    alignItems: 'center',
-    backgroundColor: theme.background.secondary,
-    borderRadius: 8,
-    height: 250,
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    padding: 16,
-  },
-  secretCode: {
-    fontFamily: 'monospace',
-    marginTop: 8,
-  },
-  secretContainer: {
-    backgroundColor: theme.background.secondary,
-    borderRadius: 8,
-    marginBottom: 16,
-    padding: 12,
-  },
-  subtitle: {
-    marginTop: 8,
-  },
-  title: {
-    marginBottom: 12,
-  },
-});
