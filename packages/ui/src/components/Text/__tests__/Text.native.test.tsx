@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
+import type { Text as RNText } from 'react-native';
 
 vi.mock('react-native', async () => {
   const { forwardRef, createElement } = await import('react');
@@ -74,7 +75,7 @@ describe('Text (native)', () => {
   });
 
   it('forwards ref to the underlying RNText', () => {
-    const ref = React.createRef<HTMLSpanElement>();
+    const ref = React.createRef<RNText>();
     render(<Text ref={ref}>Content</Text>);
     expect(ref.current).toBeDefined();
   });

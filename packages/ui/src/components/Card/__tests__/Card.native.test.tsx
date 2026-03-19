@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
+import type { View as RNView } from 'react-native';
 
 vi.mock('react-native', async () => {
   const { forwardRef, createElement } = await import('react');
@@ -44,7 +45,7 @@ describe('Card (native)', () => {
   });
 
   it('forwards ref to the underlying View', () => {
-    const ref = React.createRef<HTMLDivElement>();
+    const ref = React.createRef<RNView>();
     render(<Card ref={ref}>Content</Card>);
     expect(ref.current).toBeDefined();
   });

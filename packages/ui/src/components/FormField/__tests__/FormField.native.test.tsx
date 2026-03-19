@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
+import type { TextInput as RNTextInput } from 'react-native';
 
 vi.mock('react-native', async () => {
   const { forwardRef, createElement } = await import('react');
@@ -49,7 +50,7 @@ describe('FormField (native)', () => {
   });
 
   it('forwards ref to the underlying Input', () => {
-    const ref = React.createRef<HTMLInputElement>();
+    const ref = React.createRef<RNTextInput>();
     render(<FormField ref={ref} />);
     expect(ref.current).toBeDefined();
   });

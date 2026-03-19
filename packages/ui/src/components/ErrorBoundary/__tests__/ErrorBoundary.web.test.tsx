@@ -77,7 +77,7 @@ describe('ErrorBoundary (web)', () => {
       </ErrorBoundary>
     );
     expect(capturedError).toBeInstanceOf(Error);
-    expect((capturedError as Error).message).toBe('Test error');
+    expect(capturedError!.message).toBe('Test error');
   });
 
   it('passes a reset function to the custom fallback', () => {
