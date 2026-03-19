@@ -10,7 +10,7 @@ import {
   AlertTriangle,
   XCircle,
 } from 'lucide-react';
-import { cn } from '../../web/utils';
+import { cn } from '../../utils';
 import { Button } from '../Button';
 
 export type ToastType = 'message' | 'success' | 'warning' | 'error';

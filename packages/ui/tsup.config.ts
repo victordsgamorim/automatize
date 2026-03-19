@@ -5,8 +5,8 @@ export default defineConfig({
   entry: [
     'src/index.ts',
     'src/tokens/index.ts',
-    'src/web/index.ts',
-    'src/web/composites/index.ts',
+    'src/web.ts',
+    'src/composites.ts',
   ],
   format: ['cjs', 'esm'],
   dts: true,
@@ -29,10 +29,10 @@ export default defineConfig({
       'dist/index.mjs',
       'dist/tokens/index.js',
       'dist/tokens/index.mjs',
-      'dist/web/index.js',
-      'dist/web/index.mjs',
-      'dist/composites/index.js',
-      'dist/composites/index.mjs',
+      'dist/web.js',
+      'dist/web.mjs',
+      'dist/composites.js',
+      'dist/composites.mjs',
     ];
     for (const file of files) {
       try {
@@ -40,7 +40,7 @@ export default defineConfig({
         if (!content.startsWith('"use client"')) {
           writeFileSync(file, `"use client";\n${content}`);
         }
-      } catch (e) {
+      } catch (_e) {
         // File may not exist
       }
     }

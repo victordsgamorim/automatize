@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { cn } from '../web/utils';
+import { cn } from '../utils';
 
 export interface CardProps extends React.ComponentProps<'div'> {}
 

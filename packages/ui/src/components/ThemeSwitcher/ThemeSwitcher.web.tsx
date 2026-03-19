@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * ThemeSwitcher Composite
+ * ThemeSwitcher Component
  * Dropdown menu with Light / Dark / System options.
  * Receives theme state via props — no dependency on @automatize/theme.
  */
@@ -13,7 +13,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../web/dropdown-menu';
+} from '../DropdownMenu';
 
 export type ThemePreferenceOption = 'light' | 'dark' | 'system';
 

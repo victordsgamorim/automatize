@@ -17,14 +17,14 @@
       "require": "./dist/tokens/index.js"
     },
     "./web": {
-      "types": "./dist/web/index.d.ts",
-      "import": "./dist/web/index.mjs",
-      "require": "./dist/web/index.js"
+      "types": "./dist/web.d.ts",
+      "import": "./dist/web.mjs",
+      "require": "./dist/web.js"
     },
     "./composites": {
-      "types": "./dist/web/composites/index.d.ts",
-      "import": "./dist/web/composites/index.mjs",
-      "require": "./dist/web/composites/index.js"
+      "types": "./dist/composites.d.ts",
+      "import": "./dist/composites.mjs",
+      "require": "./dist/composites.js"
     },
     "./styles": "./src/styles/globals.css"
   },
