@@ -89,6 +89,8 @@ Global rules:
 - Implement **resilient sync**: async, idempotent, retryable, circuit-breaker protected.
 - Enforce **tenant isolation** at every layer.
 - Treat personal data as **PII** and apply strict redaction and isolation.
+- Write **performant code by default**: avoid unnecessary re-renders, memoize expensive computations, prefer lazy evaluation, and profile before optimizing.
+- Enforce **clean code structure**: functions must be small and single-purpose, modules must be cohesive, and abstractions must earn their place (no premature generalization).
 
 ---
 
@@ -103,6 +105,47 @@ You MUST implement and continuously maintain:
 - Remote backend via Supabase MCP
 - Tooling with automatic enforcement (CI / lint / pre-commit)
 - Mandatory unit and integration tests (plus E2E where applicable)
+
+### 4.1 Performance Standards (All Platforms)
+
+- Avoid unnecessary re-renders: use `React.memo`, `useMemo`, `useCallback` only where profiling shows benefit
+- Lazy-load routes, screens, and heavy modules (dynamic `import()`)
+- Prefer virtualized lists over full renders (FlashList / react-native-virtualized-list — see §20)
+- Keep bundle size in check: no large dependencies without justification
+- Database queries must use indexed fields and avoid full-table scans
+- Async operations must never block the UI thread
+
+#### Mobile (iOS / Android)
+
+- Minimize JS bridge calls; batch native calls where possible
+- Avoid layout thrashing: use `StyleSheet.create` instead of inline style objects
+- Use `InteractionManager.runAfterInteractions` for expensive post-navigation work
+- Images must be properly sized and cached (`expo-image` or equivalent)
+- Animations must run on the native thread (`useNativeDriver: true`)
+
+#### Web
+
+- Apply code splitting per route using dynamic imports
+- Optimize Core Web Vitals: LCP, CLS, INP must stay within "Good" thresholds
+- Use `next/image` (or equivalent) for automatic image optimization
+- Minimize third-party script impact; defer non-critical scripts
+- CSS must not block rendering; critical CSS inlined, rest deferred
+
+#### Windows Desktop
+
+- Avoid blocking the main UI thread with synchronous I/O or heavy computation
+- Use background workers / native modules for CPU-intensive tasks
+- Minimize memory allocations in hot paths; profile with Windows Performance Analyzer
+- Application startup time must remain under 2 seconds on reference hardware
+
+### 4.2 Code Structure Standards
+
+- Functions: single responsibility, max ~30 lines; extract if longer
+- Files: max ~200 lines; split by concern if exceeded
+- No deeply nested conditionals (max 3 levels); extract guard clauses or helpers
+- Prefer composition over inheritance
+- Shared logic belongs in `core/` or `packages/`; never duplicated across modules
+- No dead code; no commented-out blocks left in production files
 
 ---
 
