@@ -33,5 +33,6 @@
   "app.language.en.ext": "US",
   "app.language.pt-BR": "Portuguese",
   "app.language.pt-BR.ext": "BR",
-  "language.switch-label": "Change language"
+  "language.switch-label": "Change language",
+  "toast.dismiss": "Dismiss"
 }
