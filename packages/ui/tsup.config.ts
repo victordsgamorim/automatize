@@ -2,12 +2,7 @@ import { defineConfig } from 'tsup';
 import { readFileSync, writeFileSync } from 'fs';
 
 export default defineConfig({
-  entry: [
-    'src/index.ts',
-    'src/tokens/index.ts',
-    'src/web/index.ts',
-    'src/web/composites/index.ts',
-  ],
+  entry: ['src/index.ts', 'src/tokens/index.ts', 'src/web.ts'],
   format: ['cjs', 'esm'],
   dts: true,
   splitting: true,
@@ -29,10 +24,8 @@ export default defineConfig({
       'dist/index.mjs',
       'dist/tokens/index.js',
       'dist/tokens/index.mjs',
-      'dist/web/index.js',
-      'dist/web/index.mjs',
-      'dist/composites/index.js',
-      'dist/composites/index.mjs',
+      'dist/web.js',
+      'dist/web.mjs',
     ];
     for (const file of files) {
       try {
@@ -40,7 +33,7 @@ export default defineConfig({
         if (!content.startsWith('"use client"')) {
           writeFileSync(file, `"use client";\n${content}`);
         }
-      } catch (e) {
+      } catch (_e) {
         // File may not exist
       }
     }

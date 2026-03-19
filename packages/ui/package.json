@@ -17,14 +17,9 @@
       "require": "./dist/tokens/index.js"
     },
     "./web": {
-      "types": "./dist/web/index.d.ts",
-      "import": "./dist/web/index.mjs",
-      "require": "./dist/web/index.js"
-    },
-    "./composites": {
-      "types": "./dist/web/composites/index.d.ts",
-      "import": "./dist/web/composites/index.mjs",
-      "require": "./dist/web/composites/index.js"
+      "types": "./dist/web.d.ts",
+      "import": "./dist/web.mjs",
+      "require": "./dist/web.js"
     },
     "./styles": "./src/styles/globals.css"
   },
