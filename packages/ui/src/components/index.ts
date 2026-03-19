@@ -36,10 +36,6 @@ export type { CardProps } from './Card.native';
 export { Text } from './Text.native';
 export type { TextProps, TextVariant, TextColor } from './Text.native';
 
-// Loading / Skeleton (RN implementation)
-export { Loading, Skeleton } from './Loading.native';
-export type { LoadingProps, SkeletonProps } from './Loading.native';
-
 // ErrorBoundary — web version (no React Native dep, safe to include in main)
 export { ErrorBoundary, RootErrorBoundary } from './ErrorBoundary.web';
 export type {
