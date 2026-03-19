@@ -21,3 +21,9 @@ export type {
   LanguageSwitcherProps,
   LanguageOption,
 } from './components/LanguageSwitcher';
+export { ThemeSwitcher } from './components/ThemeSwitcher';
+export type {
+  ThemeSwitcherProps,
+  ThemeSwitcherOption,
+  ThemePreferenceOption,
+} from './components/ThemeSwitcher';

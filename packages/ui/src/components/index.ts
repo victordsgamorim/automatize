@@ -6,8 +6,7 @@
  * The main @automatize/ui entry exports React Native (native) implementations.
  * These are resolved by Metro (React Native) automatically via .native.tsx extensions.
  *
- * Web apps should import from @automatize/ui/web for shadcn/ui components,
- * or @automatize/ui/composites for generic composites.
+ * Web apps should import from @automatize/ui/web for web components.
  *
  * The tsup build externalizes react-native (peer dep). The web app handles it
  * via null-loader in next.config.js.

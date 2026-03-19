@@ -21,11 +21,6 @@
       "import": "./dist/web.mjs",
       "require": "./dist/web.js"
     },
-    "./composites": {
-      "types": "./dist/composites.d.ts",
-      "import": "./dist/composites.mjs",
-      "require": "./dist/composites.js"
-    },
     "./styles": "./src/styles/globals.css"
   },
   "scripts": {

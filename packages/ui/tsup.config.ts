@@ -6,7 +6,6 @@ export default defineConfig({
     'src/index.ts',
     'src/tokens/index.ts',
     'src/web.ts',
-    'src/composites.ts',
   ],
   format: ['cjs', 'esm'],
   dts: true,
@@ -31,8 +30,6 @@ export default defineConfig({
       'dist/tokens/index.mjs',
       'dist/web.js',
       'dist/web.mjs',
-      'dist/composites.js',
-      'dist/composites.mjs',
     ];
     for (const file of files) {
       try {

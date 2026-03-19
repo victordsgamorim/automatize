@@ -1,6 +1,6 @@
 import React from 'react';
-import { ThemeSwitcher as UiThemeSwitcher } from '@automatize/ui/composites';
-import type { ThemePreferenceOption } from '@automatize/ui/composites';
+import { ThemeSwitcher as UiThemeSwitcher } from '@automatize/ui/web';
+import type { ThemePreferenceOption } from '@automatize/ui/web';
 import { useTheme } from '@automatize/theme';
 import { useTranslation } from '@automatize/localization';
 
