@@ -2,14 +2,10 @@
 
 /**
  * @automatize/ui — Composites
- * Reusable generic composite components built on top of @automatize/ui/web primitives.
- * These composites are NOT domain-specific and can be used across all web apps.
+ * Reusable generic composite components built on top of @automatize/ui primitives.
+ * Only exports composites actively used. New composites are added as features are built.
  */
 
-export { EmptyState } from './EmptyState';
-export { ErrorState } from './ErrorState';
-export { StatsCard } from './StatsCard';
-export { ThemeToggle } from './ThemeToggle';
 export { ThemeSwitcher } from './ThemeSwitcher';
 export type {
   ThemeSwitcherProps,

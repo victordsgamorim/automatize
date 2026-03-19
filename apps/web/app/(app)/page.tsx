@@ -1,9 +1,4 @@
-'use client';
-
+// TODO: Dashboard — not yet implemented. Will be built in a future iteration.
 export default function DashboardPage() {
-  return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
-      <p className="text-muted-foreground">Dashboard — coming soon</p>
-    </div>
-  );
+  return null;
 }
