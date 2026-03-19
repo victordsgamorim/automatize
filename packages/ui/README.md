@@ -24,7 +24,8 @@ The package has two main exports:
 - **src/styles/\_tokens.css** — ⚠️ GENERATED CSS custom properties (do not edit). Run `pnpm tokens:build`.
 - **src/styles/globals.css** — Hand-authored semantic mappings (CSS vars). Imports `_tokens.css`. **Does not contain Tailwind directives.**
 - **src/components/** — Reusable UI components organized in folders. Each folder contains platform-specific implementations (`.web.tsx` / `.native.tsx`) and barrel files (`index.ts` for web, `index.native.ts` for native).
-- **src/web/** — Web entry point and web-only components (shadcn/ui / Radix UI). Imports from `src/components/` barrels — does not duplicate components. Will be phased out in favor of direct barrel resolution.
+- **src/index.ts** — Main package entry (`@automatize/ui`). Exports native implementations directly from each `src/components/<Name>/` folder.
+- **src/web.ts** — Web entry (`@automatize/ui/web`). Re-exports web implementations from each `src/components/<Name>/` folder.
 - **style-dictionary.config.ts** — Build config for token generation.
 
 ## Token authoring guide
@@ -147,8 +148,8 @@ src/components/Button/
 
 - `index.ts` → web version (default barrel, resolved by webpack/tsup/esbuild)
 - `index.native.ts` → native version (Metro prefers `.native.ts` over `.ts`)
-- `src/web/index.ts` imports from component barrels (e.g., `../components/Button`), not from `.web.tsx` files directly
-- `src/components/index.ts` (native main entry) imports from explicit `.native` paths
+- `src/index.ts` (main entry) exports native implementations via explicit `.native` paths — no intermediate barrel
+- `src/web.ts` (web entry) exports web implementations directly from component folders
 
 **Component philosophy:**
 

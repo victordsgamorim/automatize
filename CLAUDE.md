@@ -962,12 +962,11 @@ module.exports = {
 
 `packages/ui` exposes the following entry points:
 
-| Import path                 | Contents                                                             |
-| --------------------------- | -------------------------------------------------------------------- |
-| `@automatize/ui`            | Cross-platform components (native entry; web uses barrel resolution) |
-| `@automatize/ui/web`        | Web entry — re-exports from component barrels + web-only shadcn/ui   |
-| `@automatize/ui/composites` | Reusable generic composite components                                |
-| `@automatize/ui/tokens`     | Design tokens                                                        |
+| Import path             | Contents                                                                            |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `@automatize/ui`        | Cross-platform entry — exports native implementations from `src/components/<Name>`  |
+| `@automatize/ui/web`    | Web entry (`src/web.ts`) — exports web implementations from `src/components/<Name>` |
+| `@automatize/ui/tokens` | Design tokens                                                                       |
 
 ### 24.3 Component Folder Structure (Non-Negotiable)
 
@@ -1002,7 +1001,7 @@ src/components/
 - Cross-platform components (with both `.web.tsx` and `.native.tsx`) **MUST** also have an `index.native.ts` barrel
 - `index.ts` exports the **web** implementation (default for webpack/tsup/esbuild)
 - `index.native.ts` exports the **native** implementation (Metro prefers `.native.ts`)
-- All internal imports within `packages/ui` (including `src/web/` files) **MUST** import from the barrel path (e.g., `../components/Button`), never from `.web.tsx` files directly
+- All internal imports within `packages/ui` **MUST** import from the barrel path (e.g., `../components/Button`), never from `.web.tsx` files directly
 
 ### 24.4 Adding a New Component
 
@@ -1012,8 +1011,8 @@ When a new component is needed:
 2. Add `<ComponentName>.web.tsx` and/or `<ComponentName>.native.tsx` inside the folder
 3. Add `index.ts` barrel exporting the web version
 4. If cross-platform, add `index.native.ts` barrel exporting the native version
-5. Export from `src/components/index.ts` (native main entry uses explicit `.native` path)
-6. If web-only (shadcn/ui), also export from `src/web/index.ts` via the barrel
+5. Export from `src/index.ts` using the explicit `.native` path (e.g., `./components/Button/Button.native`)
+6. Export from `src/web.ts` using the barrel path (e.g., `./components/Button`)
 7. Never create components as flat files in `src/components/` — always use a folder
 8. Never create components inside an app directory
 
@@ -1025,7 +1024,7 @@ Composites tightly coupled to a business domain (e.g., `InvoiceTable`, `AppSideb
 
 **Screens** — Full-page components tied to routing (e.g., `SignInScreen`, `DashboardScreen`).
 
-**Composites** — Reusable multi-component combinations (e.g., `InvoiceTable`, `StatusBadge`). Generic composites live in `packages/ui/src/web/composites/`. Domain-specific composites live in `apps/<platform>/components/composites/`.
+**Composites** — Reusable multi-component combinations (e.g., `InvoiceTable`, `StatusBadge`). Generic composites live in `packages/ui/src/components/` (as their own folder, same pattern as primitives). Domain-specific composites live in `apps/<platform>/components/composites/`.
 
 **Rules:**
 
