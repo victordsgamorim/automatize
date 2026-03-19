@@ -34,5 +34,9 @@
   "app.language.pt-BR": "Portuguese",
   "app.language.pt-BR.ext": "BR",
   "language.switch-label": "Change language",
-  "toast.dismiss": "Dismiss"
+  "toast.dismiss": "Dismiss",
+  "theme.light": "Light",
+  "theme.dark": "Dark",
+  "theme.system": "System",
+  "theme.switch-label": "Change theme"
 }

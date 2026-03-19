@@ -20,10 +20,11 @@ export interface ThemeProviderProps {
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const systemTheme = useSystemColorScheme();
 
-  // Seed state synchronously from singleton if ready
-  const [preference, setPreference] = useState<ThemePreference | null>(() => {
+  // Seed state synchronously from singleton if ready, default to 'system'/'light'
+  // so server and client both render children on first pass (no hydration mismatch).
+  const [preference, setPreference] = useState<ThemePreference>(() => {
     const sync = getThemeSync();
-    return sync?.preference ?? null;
+    return sync?.preference ?? 'system';
   });
 
   const [resolvedTheme, setResolvedTheme] = useState<Theme>(() => {
@@ -31,9 +32,11 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     return sync?.resolvedTheme ?? 'light';
   });
 
-  // Async fallback if singleton wasn't ready on mount
+  // Async fallback — hydrate from storage if singleton wasn't ready on mount
+  const [hydrated, setHydrated] = useState(() => getThemeSync() !== null);
+
   useEffect(() => {
-    if (preference !== null) return;
+    if (hydrated) return;
 
     let cancelled = false;
 
@@ -42,12 +45,14 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         if (!cancelled) {
           setPreference(state.preference);
           setResolvedTheme(state.resolvedTheme);
+          setHydrated(true);
         }
       })
       .catch((_err) => {
         if (!cancelled) {
           setPreference('system');
           setResolvedTheme(systemTheme);
+          setHydrated(true);
         }
       });
 
@@ -92,9 +97,6 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   const colors =
     resolvedTheme === 'dark' ? semanticColors.dark : semanticColors.light;
-
-  // Don't render until we have a preference
-  if (preference === null) return null;
 
   const value: ThemeContextValue = {
     preference,

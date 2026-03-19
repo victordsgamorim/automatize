@@ -26,6 +26,9 @@ export function createNativeStorageAdapter(
     },
     set: async (preference: ThemePreference) => {
       try {
+        const AsyncStorage = (
+          await import('@react-native-async-storage/async-storage')
+        ).default;
         await AsyncStorage.setItem(key, preference);
       } catch (_e) {
         // Swallow storage errors
