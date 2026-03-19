@@ -268,7 +268,7 @@ export { ToggleGroup, ToggleGroupItem } from './toggle-group';
 // Feedback
 export { Alert, AlertDescription, AlertTitle } from './alert';
 export { Toaster } from './sonner';
-export { useToasts } from '../components/Toast';
+export { useToasts, ToastProvider } from '../components/Toast';
 export type { ToastType } from '../components/Toast';
 
 // Sidebar

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { Button, Input, Label, Checkbox } from '@automatize/ui/web';
+import { Button, Input, Label, Checkbox, useToasts } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/localization';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { LanguageSwitcher } from './LanguageSwitcher.web';
@@ -20,6 +20,11 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
   onResetPassword,
 }) => {
   const { t } = useTranslation();
+  const toast = useToasts();
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,12 +50,6 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             <p className="animate-element animate-delay-200 text-muted-foreground">
               {t('sign-in.subtitle')}
             </p>
-
-            {error && (
-              <div className="animate-element rounded-2xl border border-red-300 bg-red-50 dark:bg-red-950/30 dark:border-red-800 p-4 text-sm text-red-600 dark:text-red-400">
-                {error}
-              </div>
-            )}
 
             <form className="space-y-5" onSubmit={handleSubmit}>
               <div className="animate-element animate-delay-300">

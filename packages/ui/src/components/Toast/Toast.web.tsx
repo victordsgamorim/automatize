@@ -1,8 +1,15 @@
 'use client';
 
 import { ReactNode, useCallback, useEffect, useState } from 'react';
-import { createRoot } from 'react-dom/client';
-import { X, Undo2 } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import {
+  X,
+  Undo2,
+  Info,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+} from 'lucide-react';
 import { cn } from '../../web/utils';
 import { Button } from '../Button';
 
@@ -24,7 +31,6 @@ type Toast = {
   type: ToastType;
 };
 
-let root: ReturnType<typeof createRoot> | null = null;
 let toastId = 0;
 
 const toastStore = {
@@ -109,15 +115,15 @@ export const _resetToastStore = () => {
   });
   toastStore.toasts = [];
   toastStore.listeners.clear();
-  root = null;
   toastId = 0;
 };
 
-const TYPE_CLASSES: Record<ToastType, string> = {
-  message: 'bg-background text-foreground border border-border',
-  success: 'bg-success text-success-foreground',
-  warning: 'bg-warning text-warning-foreground',
-  error: 'bg-destructive text-white',
+// All toast types share the surface background — only the icon is colored.
+const TYPE_ICONS: Record<ToastType, ReactNode> = {
+  message: <Info className="size-[18px] shrink-0 text-muted-foreground" />,
+  success: <CheckCircle2 className="size-[18px] shrink-0 text-success" />,
+  warning: <AlertTriangle className="size-[18px] shrink-0 text-warning" />,
+  error: <XCircle className="size-[18px] shrink-0 text-destructive" />,
 };
 
 const LAST_VISIBLE_COUNT = 3;
@@ -142,7 +148,6 @@ const ToastContainer = () => {
     });
   }, []);
 
-  // Trigger the enter animation on the next frame after a toast appears.
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       setShownIds((prev) => {
@@ -185,14 +190,14 @@ const ToastContainer = () => {
 
   const containerHeight = toasts
     .slice(lastVisibleStart)
-    .reduce((acc, toast) => {
-      return acc + (toast.measuredHeight ?? DEFAULT_HEIGHT);
-    }, 0);
+    .reduce((acc, toast) => acc + (toast.measuredHeight ?? DEFAULT_HEIGHT), 0);
+
+  const TOAST_W = 400;
 
   return (
     <div
-      className="fixed bottom-4 right-4 z-[9999] pointer-events-none w-[420px]"
-      style={{ height: containerHeight }}
+      className="fixed bottom-4 right-4 z-[9999] pointer-events-none"
+      style={{ width: TOAST_W, height: containerHeight }}
     >
       <div
         className="relative pointer-events-auto w-full"
@@ -202,73 +207,87 @@ const ToastContainer = () => {
       >
         {toasts.map((toast, index) => {
           const isVisible = index >= lastVisibleStart;
+
           return (
             <div
               key={toast.id}
               ref={measureRef(toast)}
               className={cn(
-                'absolute right-0 bottom-0 shadow-toast rounded-xl leading-[21px] p-4 h-fit',
-                TYPE_CLASSES[toast.type],
+                'absolute right-0 bottom-0 h-fit',
+                'rounded-md border border-border shadow-md',
+                'bg-popover text-popover-foreground',
+                'px-4 py-3',
                 isVisible ? 'opacity-100' : 'opacity-0',
                 index < lastVisibleStart && 'pointer-events-none'
               )}
               style={{
-                width: 420,
-                transition: 'all .35s cubic-bezier(.25,.75,.6,.98)',
+                width: TOAST_W,
+                transition: 'all .4s cubic-bezier(.22,.68,0,1.2)',
                 transform: shownIds.has(toast.id)
                   ? getFinalTransform(index, toasts.length)
-                  : 'translate3d(0, 100%, 150px) scale(1)',
+                  : 'translate3d(0, 110%, 120px) scale(0.96)',
               }}
             >
-              <div className="flex flex-col text-[.875rem]">
-                <div className="w-full flex items-center justify-between gap-4">
-                  <span>{toast.text}</span>
-                  {!toast.action && (
-                    <div className="flex gap-1 shrink-0">
-                      {toast.onUndoAction && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => {
-                            toast.onUndoAction?.();
-                            toastStore.remove(toast.id);
-                          }}
-                        >
-                          <Undo2 />
-                        </Button>
-                      )}
+              {/* Main row: icon + message + actions */}
+              <div className="flex items-center gap-3">
+                {/* Type icon (only the icon carries the type color) */}
+                <span className="shrink-0">{TYPE_ICONS[toast.type]}</span>
+
+                {/* Text */}
+                <span className="flex-1 min-w-0 text-sm font-medium leading-snug">
+                  {toast.text}
+                </span>
+
+                {/* Close / undo buttons */}
+                {!toast.action && (
+                  <div className="flex items-center gap-0.5 shrink-0 -mr-1.5">
+                    {toast.onUndoAction && (
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => toastStore.remove(toast.id)}
+                        className="size-8"
+                        onClick={() => {
+                          toast.onUndoAction?.();
+                          toastStore.remove(toast.id);
+                        }}
                       >
-                        <X />
+                        <Undo2 className="size-3.5" />
                       </Button>
-                    </div>
-                  )}
-                </div>
-                {toast.action && (
-                  <div className="w-full flex items-center justify-end gap-2 mt-2">
+                    )}
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="icon"
+                      className="size-8"
                       onClick={() => toastStore.remove(toast.id)}
                     >
-                      Dismiss
-                    </Button>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={() => {
-                        toast.onAction?.();
-                        toastStore.remove(toast.id);
-                      }}
-                    >
-                      {toast.action}
+                      <X className="size-3.5" />
                     </Button>
                   </div>
                 )}
               </div>
+
+              {/* Action row */}
+              {toast.action && (
+                <div className="flex items-center justify-end gap-2 mt-3 pt-2.5 border-t border-border">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toastStore.remove(toast.id)}
+                  >
+                    Dismiss
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => {
+                      toast.onAction?.();
+                      toastStore.remove(toast.id);
+                    }}
+                  >
+                    {toast.action}
+                  </Button>
+                </div>
+              )}
             </div>
           );
         })}
@@ -277,13 +296,25 @@ const ToastContainer = () => {
   );
 };
 
-const mountContainer = () => {
-  if (typeof document === 'undefined' || root) return;
-  const el = document.createElement('div');
-  document.body.appendChild(el);
-  root = createRoot(el);
-  root.render(<ToastContainer />);
-};
+/**
+ * Place <ToastProvider> at the root layout, wrapping {children}.
+ * It renders the ToastContainer as a portal directly into document.body,
+ * so toasts always overlay everything regardless of page layout.
+ */
+export function ToastProvider({ children }: { children: ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return (
+    <>
+      {children}
+      {mounted && createPortal(<ToastContainer />, document.body)}
+    </>
+  );
+}
 
 interface ToastMessage {
   text: string | ReactNode;
@@ -297,7 +328,6 @@ export const useToasts = () => {
   return {
     message: useCallback(
       ({ text, preserve, action, onAction, onUndoAction }: ToastMessage) => {
-        mountContainer();
         toastStore.add(
           text,
           'message',
@@ -310,15 +340,12 @@ export const useToasts = () => {
       []
     ),
     success: useCallback((text: string) => {
-      mountContainer();
       toastStore.add(text, 'success');
     }, []),
     warning: useCallback((text: string) => {
-      mountContainer();
       toastStore.add(text, 'warning');
     }, []),
     error: useCallback((text: string) => {
-      mountContainer();
       toastStore.add(text, 'error');
     }, []),
   };

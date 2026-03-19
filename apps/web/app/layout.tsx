@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import { AuthProviderWrapper } from './auth-provider';
 import { LocalizationWrapper } from './localization-provider';
+import { ToastProvider } from '@automatize/ui/web';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -20,7 +21,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         }}
       >
         <LocalizationWrapper>
-          <AuthProviderWrapper>{children}</AuthProviderWrapper>
+          <AuthProviderWrapper>
+            <ToastProvider>{children}</ToastProvider>
+          </AuthProviderWrapper>
         </LocalizationWrapper>
       </body>
     </html>
