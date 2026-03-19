@@ -9,7 +9,7 @@ import {
   TextProps as RNTextProps,
   TextStyle,
 } from 'react-native';
-import { colors, typography } from '../tokens';
+import { colors, typography } from '../../tokens';
 
 export type TextVariant =
   | 'h1'

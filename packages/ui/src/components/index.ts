@@ -25,24 +25,27 @@ export { Input } from './Input/Input.native';
 export type { InputProps } from './Input/Input.native';
 
 // FormField (RN implementation)
-export { FormField } from './FormField.native';
-export type { FormFieldProps } from './FormField.native';
+export { FormField } from './FormField/FormField.native';
+export type { FormFieldProps } from './FormField/FormField.native';
 
 // Card (RN implementation)
-export { Card } from './Card.native';
-export type { CardProps } from './Card.native';
+export { Card } from './Card/Card.native';
+export type { CardProps } from './Card/Card.native';
 
 // Text (RN implementation)
-export { Text } from './Text.native';
-export type { TextProps, TextVariant, TextColor } from './Text.native';
+export { Text } from './Text/Text.native';
+export type { TextProps, TextVariant, TextColor } from './Text/Text.native';
 
 // ErrorBoundary — web version (no React Native dep, safe to include in main)
-export { ErrorBoundary, RootErrorBoundary } from './ErrorBoundary.web';
+export {
+  ErrorBoundary,
+  RootErrorBoundary,
+} from './ErrorBoundary/ErrorBoundary.web';
 export type {
   ErrorBoundaryProps,
   RootErrorBoundaryProps,
-} from './ErrorBoundary.web';
+} from './ErrorBoundary/ErrorBoundary.web';
 
 // Icon (RN implementation)
-export { HomeIcon, UserIcon, BuildingIcon, LogOutIcon } from './Icon';
-export type { IconProps } from './Icon';
+export { HomeIcon, UserIcon, BuildingIcon, LogOutIcon } from './Icon/Icon';
+export type { IconProps } from './Icon/Icon';

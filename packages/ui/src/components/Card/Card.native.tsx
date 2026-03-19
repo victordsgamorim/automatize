@@ -5,7 +5,7 @@
 
 import React, { ReactNode } from 'react';
 import { View, StyleSheet, ViewProps } from 'react-native';
-import { colors, spacing } from '../tokens';
+import { colors, spacing } from '../../tokens';
 
 export interface CardProps extends ViewProps {
   /** Content of the card */

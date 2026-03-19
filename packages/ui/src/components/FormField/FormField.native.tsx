@@ -5,8 +5,8 @@
 
 import React from 'react';
 import { View, TextInput as RNTextInput } from 'react-native';
-import { spacing } from '../tokens';
-import { Input, InputProps } from './Input/Input.native';
+import { spacing } from '../../tokens';
+import { Input, InputProps } from '../Input/Input.native';
 
 export interface FormFieldProps extends InputProps {
   /** Help text displayed below the input */
