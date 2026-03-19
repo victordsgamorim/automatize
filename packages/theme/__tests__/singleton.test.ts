@@ -114,7 +114,7 @@ describe('singleton', () => {
       await getThemeAsync();
       const sync = getThemeSync();
       expect(sync).not.toBeNull();
-      expect(sync!.preference).toBe('light');
+      expect((sync as NonNullable<typeof sync>).preference).toBe('light');
     });
   });
 
@@ -137,7 +137,10 @@ describe('singleton', () => {
     it('clears state and allows re-init', async () => {
       initTheme({ defaultPreference: 'dark' });
       await getThemeAsync();
-      expect(getThemeSync()!.preference).toBe('dark');
+      expect(
+        (getThemeSync() as NonNullable<ReturnType<typeof getThemeSync>>)
+          .preference
+      ).toBe('dark');
 
       _resetTheme();
       expect(getThemeSync()).toBeNull();
