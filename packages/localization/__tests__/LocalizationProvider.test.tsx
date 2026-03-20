@@ -112,7 +112,7 @@ describe('LocalizationProvider', () => {
     expect(loader2.load).not.toHaveBeenCalled();
   });
 
-  it('renders null before initialization (no flash of untranslated content)', () => {
+  it('renders children immediately when loader has pre-loaded resources (sync init)', () => {
     initLocalization(createLocalLoader());
     const { container } = render(
       <LocalizationProvider>
@@ -120,8 +120,9 @@ describe('LocalizationProvider', () => {
       </LocalizationProvider>
     );
 
-    // Synchronous render: i18next init is async so instance is not yet ready
-    expect(container.firstChild).toBeNull();
+    // With pre-loaded resources, init is synchronous — children render immediately
+    expect(container.firstChild).not.toBeNull();
+    expect(screen.getByText('Content')).toBeTruthy();
   });
 
   it('skips the async wait and renders immediately when instance is already ready', async () => {

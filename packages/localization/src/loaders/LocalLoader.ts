@@ -21,6 +21,7 @@ const LOCALES: Record<
 
 export function createLocalLoader(): TranslationLoader {
   return {
+    resources: LOCALES,
     load: async (
       language: SupportedLanguage,
       namespace: SupportedNamespace

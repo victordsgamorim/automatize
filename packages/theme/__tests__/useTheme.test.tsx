@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import React from 'react';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { ThemeProvider } from '../src/ThemeProvider';
 import { useTheme } from '../src/useTheme';
 import { initTheme, _resetTheme } from '../src/singleton';
@@ -29,7 +29,12 @@ describe('useTheme', () => {
 
     const { result } = renderHook(() => useTheme(), { wrapper });
 
-    expect(result.current.preference).toBe('light');
+    // ThemeProvider starts with deterministic defaults ('system'/'light')
+    // to avoid SSR hydration mismatch, then hydrates from storage in useEffect.
+    await waitFor(() => {
+      expect(result.current.preference).toBe('light');
+    });
+
     expect(result.current.resolvedTheme).toBe('light');
     expect(result.current.isDark).toBe(false);
     expect(result.current.isLight).toBe(true);
