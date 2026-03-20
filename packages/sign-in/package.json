@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "@automatize/auth": "workspace:*",
+    "@automatize/core-localization": "workspace:*",
+    "@automatize/core-theme": "workspace:*",
     "@automatize/localization": "workspace:*",
     "@automatize/theme": "workspace:*",
     "@automatize/utils": "workspace:*",

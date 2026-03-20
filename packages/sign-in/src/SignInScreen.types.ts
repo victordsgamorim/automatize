@@ -1,26 +1,8 @@
-export interface LanguageOption {
-  code: string;
-  label: string;
-  ext?: string;
-}
+import type { LocaleData } from '@automatize/core-localization';
+import type { ThemeData } from '@automatize/core-theme';
 
-export interface ThemeOption {
-  value: 'light' | 'dark' | 'system';
-  label: string;
-}
-
-export interface LocaleData {
-  languages: LanguageOption[];
-  currentLanguage: string;
-  onLanguageChange: (code: string) => void;
-}
-
-export interface ThemeData {
-  currentTheme: 'light' | 'dark' | 'system';
-  isDarkTheme: boolean;
-  themeOptions: ThemeOption[];
-  onThemeChange: (preference: 'light' | 'dark' | 'system') => void;
-}
+export type { LanguageOption, LocaleData } from '@automatize/core-localization';
+export type { ThemeData, ThemeOption } from '@automatize/core-theme';
 
 export interface SignInScreenProps {
   /** Called after a successful sign-in */
