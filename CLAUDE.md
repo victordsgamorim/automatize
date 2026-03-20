@@ -970,7 +970,7 @@ module.exports = {
 
 ### 24.3 Component Folder Structure (Non-Negotiable)
 
-Every UI component with a `.web.tsx` or `.native.tsx` implementation **MUST** live inside its own folder under `src/components/`. Flat files like `Button.web.tsx` directly in `src/components/` are **FORBIDDEN** — they must be placed inside a `src/components/Button/` folder with a barrel `index.ts`.
+Every UI component with a `.web.tsx` or `.native.tsx` implementation **MUST** live inside its own folder under `src/components/`. Flat files like `Button.web.tsx` directly in `src/components/` are **FORBIDDEN** — they must be placed inside a `src/components/Button/` folder. There are **no per-component barrel files** (`index.ts` / `index.native.ts`).
 
 **Required folder structure:**
 
@@ -979,29 +979,24 @@ src/components/
   Button/
     Button.web.tsx        # Web implementation (HTML/Radix UI/Tailwind)
     Button.native.tsx     # React Native implementation (StyleSheet/TouchableOpacity)
-    index.ts              # Barrel — exports web version (default for bundlers)
-    index.native.ts       # Barrel — exports native version (Metro picks this)
   Input/
     Input.web.tsx
     Input.native.tsx
-    index.ts
-    index.native.ts
   Label/
     Label.web.tsx          # Web-only (no native counterpart yet)
-    index.ts
   Checkbox/
     Checkbox.web.tsx       # Web-only (no native counterpart yet)
-    index.ts
+  FormField/
+    FormField.web.tsx      # Web-only (label + spacing wrapper)
 ```
 
 **Rules:**
 
 - Every `.web.tsx` or `.native.tsx` component file **MUST** be inside its own named folder (e.g., `Button/Button.web.tsx`, never `Button.web.tsx` loose in `src/components/`)
-- Every component folder **MUST** have an `index.ts` barrel file
-- Cross-platform components (with both `.web.tsx` and `.native.tsx`) **MUST** also have an `index.native.ts` barrel
-- `index.ts` exports the **web** implementation (default for webpack/tsup/esbuild)
-- `index.native.ts` exports the **native** implementation (Metro prefers `.native.ts`)
-- All internal imports within `packages/ui` **MUST** import from the barrel path (e.g., `../components/Button`), never from `.web.tsx` files directly
+- Component folders do **NOT** have `index.ts` or `index.native.ts` barrel files
+- `src/index.ts` (main entry) exports native implementations via explicit `.native.tsx` paths (e.g., `'./components/Button/Button.native'`)
+- `src/web.ts` (web entry) exports web implementations via explicit `.web.tsx` paths (e.g., `'./components/Button/Button.web'`)
+- All internal imports within `packages/ui` **MUST** use explicit `.web.tsx` or `.native.tsx` paths (e.g., `'../Button/Button.web'`), never relative folder paths
 
 ### 24.4 Adding a New Component
 
@@ -1009,12 +1004,11 @@ When a new component is needed:
 
 1. Create a folder in `packages/ui/src/components/<ComponentName>/`
 2. Add `<ComponentName>.web.tsx` and/or `<ComponentName>.native.tsx` inside the folder
-3. Add `index.ts` barrel exporting the web version
-4. If cross-platform, add `index.native.ts` barrel exporting the native version
-5. Export from `src/index.ts` using the explicit `.native` path (e.g., `./components/Button/Button.native`)
-6. Export from `src/web.ts` using the barrel path (e.g., `./components/Button`)
-7. Never create components as flat files in `src/components/` — always use a folder
-8. Never create components inside an app directory
+3. Export from `src/index.ts` using the explicit `.native.tsx` path (e.g., `'./components/Button/Button.native'`)
+4. Export from `src/web.ts` using the explicit `.web.tsx` path (e.g., `'./components/Button/Button.web'`)
+5. Never add `index.ts` or `index.native.ts` barrel files inside the component folder
+6. Never create components as flat files in `src/components/` — always use a folder
+7. Never create components inside an app directory
 
 ### 24.5 Domain-Specific Composites
 
@@ -1046,4 +1040,4 @@ Each feature screen package:
 - Contains shared hooks that integrate with `@automatize/supabase-auth`
 - Exports a shared props interface
 - Is registered in `pnpm-workspace.yaml`
-- The barrel `index.ts` exports from `.native` (bundler resolves `.web.tsx` on web)
+- The package `index.ts` (main entry) exports from explicit `.native` paths (bundler resolves `.web.tsx` on web)

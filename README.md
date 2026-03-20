@@ -135,7 +135,7 @@ automatize/
 │   └── ui/             # Design system + components
 │       ├── src/
 │       │   ├── components/  # Cross-platform components (Button/, Input/, etc.)
-│       │   │   └── <Name>/  # Each has .web.tsx/.native.tsx, index.ts, index.native.ts
+│       │   │   └── <Name>/  # Each has .web.tsx/.native.tsx (no per-component barrels)
 │       │   ├── index.ts     # Main entry — exports native implementations
 │       │   ├── web.ts       # Web entry — exports web implementations
 │       │   └── tokens/      # Generated design tokens
