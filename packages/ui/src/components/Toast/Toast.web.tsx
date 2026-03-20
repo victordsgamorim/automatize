@@ -11,7 +11,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { cn } from '../../utils';
-import { Button } from '../Button';
+import { Button } from '../Button/Button.web';
 
 export type ToastType = 'message' | 'success' | 'warning' | 'error';
 

@@ -15,22 +15,24 @@ The app uses Next.js 15 App Router conventions:
 
 Components use React Server Components by default for performance. Client components are marked with 'use client' directive only where interactivity is needed.
 
-UI is built with Radix UI primitives styled with Tailwind CSS v4. This provides accessible, well-tested components with full styling control.
+UI components come exclusively from `@automatize/ui` (imported via `@automatize/ui/web`). No local component wrappers — all primitives live in the shared design system package.
 
 ## Why this way?
 
 **Next.js 15**: Chosen for its mature ecosystem, excellent performance (SSR, streaming, edge runtime), and good TypeScript support. App Router provides the best developer experience.
 
-**Radix UI**: Headless components with excellent accessibility. We style them with Tailwind, giving us full control while inheriting proper ARIA behavior.
+**`@automatize/ui`**: Single source of truth for all UI components. Web entry (`@automatize/ui/web`) exports Radix UI + Tailwind-based implementations. No local primitive wrappers allowed in the app.
 
-**Tailwind CSS v4**: Latest version with improved performance, simpler configuration, and excellent developer experience. Works naturally with the design tokens in @automatize/ui.
+**Tailwind CSS v4**: Latest version with improved performance, simpler configuration, and excellent developer experience. Works naturally with the design tokens in `@automatize/ui`.
 
 ## Directory structure
 
 - **app/** — Next.js App Router pages and layouts
-- **components/composites/** — Business-specific components (sidebar, table, cards)
-- **components/ui/** — Radix UI wrappers and primitives
+  - **(auth)/** — Public auth routes (login, register, forgot/reset password)
+  - **(app)/** — Protected routes requiring login
 - **lib/** — Utilities and initialization
+
+Domain-specific composites (sidebar, tables, etc.) go in `app/(app)/components/composites/` when needed. All UI primitives come from `@automatize/ui/web` — no local component folder exists.
 
 ## Current status
 

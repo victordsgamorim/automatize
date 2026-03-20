@@ -1,43 +1,70 @@
 import React, { useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { Button, Input, Label, Checkbox, useToasts } from '@automatize/ui/web';
-import { useTranslation } from '@automatize/localization';
+import {
+  Button,
+  Input,
+  Label,
+  Checkbox,
+  useToasts,
+  ThemeSwitcher,
+  LanguageSwitcher,
+  FormField,
+} from '@automatize/ui/web';
+import { useTranslation } from 'react-i18next';
 import type { SignInScreenProps } from './SignInScreen.types';
-import { LanguageSwitcher } from './LanguageSwitcher.web';
-import { ThemeSwitcher } from './ThemeSwitcher.web';
+import { useSignIn } from './useSignIn';
 
 // --- MAIN COMPONENT ---
 
 export const SignInScreen: React.FC<SignInScreenProps> = ({
-  email,
-  onEmailChange,
-  password,
-  onPasswordChange,
-  showPassword,
-  onToggleShowPassword,
-  error,
-  isLoading,
-  onSignIn,
+  onSuccess,
   onResetPassword,
+  locale,
+  theme,
 }) => {
   const { t } = useTranslation();
   const toast = useToasts();
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    showPassword,
+    toggleShowPassword,
+    error,
+    isLoading,
+    handleSignIn,
+  } = useSignIn();
 
   useEffect(() => {
     if (error) toast.error(error);
   }, [error]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSignIn();
+    const result = await handleSignIn();
+    if (result.success) onSuccess();
   };
 
   return (
     <div className="h-[100dvh] flex flex-col md:flex-row font-geist w-[100dvw]">
       {/* Top-right: language & theme switchers */}
       <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-        <ThemeSwitcher />
-        <LanguageSwitcher />
+        {theme && (
+          <ThemeSwitcher
+            currentPreference={theme.currentTheme}
+            isDark={theme.isDarkTheme}
+            options={theme.themeOptions}
+            onPreferenceChange={theme.onThemeChange}
+            triggerAriaLabel={t('theme.switch-label')}
+          />
+        )}
+        <LanguageSwitcher
+          languages={locale.languages}
+          currentLanguage={locale.currentLanguage}
+          onLanguageChange={locale.onLanguageChange}
+          triggerAriaLabel={t('language.switch-label')}
+        />
       </div>
 
       {/* Left column: sign-in form */}
@@ -54,25 +81,27 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             </p>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
-              <div className="animate-element animate-delay-300">
-                <Label htmlFor="sign-in-email">
-                  {t('sign-in.email.label')}
-                </Label>
+              <FormField
+                label={t('sign-in.email.label')}
+                htmlFor="sign-in-email"
+                className="animate-element animate-delay-300"
+              >
                 <Input
                   id="sign-in-email"
                   name="email"
                   type="email"
                   placeholder={t('sign-in.email.placeholder')}
                   value={email}
-                  onChange={(e) => onEmailChange(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}
                 />
-              </div>
+              </FormField>
 
-              <div className="animate-element animate-delay-400">
-                <Label htmlFor="sign-in-password">
-                  {t('sign-in.password.label')}
-                </Label>
+              <FormField
+                label={t('sign-in.password.label')}
+                htmlFor="sign-in-password"
+                className="animate-element animate-delay-400"
+              >
                 <div className="relative">
                   <Input
                     id="sign-in-password"
@@ -80,13 +109,13 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                     type={showPassword ? 'text' : 'password'}
                     placeholder={t('sign-in.password.placeholder')}
                     value={password}
-                    onChange={(e) => onPasswordChange(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
                     className="pr-12"
                   />
                   <button
                     type="button"
-                    onClick={onToggleShowPassword}
+                    onClick={toggleShowPassword}
                     className="absolute inset-y-0 right-3 flex items-center"
                   >
                     {showPassword ? (
@@ -96,7 +125,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                     )}
                   </button>
                 </div>
-              </div>
+              </FormField>
 
               <div className="animate-element animate-delay-500 flex items-center justify-between text-sm">
                 <Label className="flex items-center gap-3 cursor-pointer">

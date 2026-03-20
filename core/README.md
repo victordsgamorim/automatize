@@ -18,5 +18,7 @@ This strict logical separation guarantees that generic frontend packages do not 
 
 ## Active Modules
 
-- **`@automatize/auth`** (`core/auth/`): The strict authentication boundary defining the minimum required standard for authentication. Exposes `useAuth()`, `AuthContext`, and validation properties like `loginSchema`.
-- **`@automatize/utils`** (`core/utils/`): Pure, abstract utility scripts shared universally across multiple endpoints in the monorepo.
+- **`@automatize/auth`** (`core/auth/`): The strict authentication boundary. Exposes `useAuth()`, `AuthContext`, and `loginSchema`. No implementation — backed by `@automatize/supabase-auth`.
+- **`@automatize/utils`** (`core/utils/`): Pure, platform-agnostic utility functions shared across the monorepo (`generateId`, `getCurrentTimestamp`).
+- **`@automatize/core-localization`** (`core/localization/`): Types-only. Defines `LocaleData` and `LanguageOption` — the data contract between app-level i18n providers and UI feature packages.
+- **`@automatize/core-theme`** (`core/theme/`): Types-only. Defines `ThemeData` and `ThemeOption` — the data contract between app-level theme providers and UI feature packages.

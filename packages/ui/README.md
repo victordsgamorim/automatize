@@ -23,9 +23,9 @@ The package has two main exports:
 
 - **src/styles/\_tokens.css** — ⚠️ GENERATED CSS custom properties (do not edit). Run `pnpm tokens:build`.
 - **src/styles/globals.css** — Hand-authored semantic mappings (CSS vars). Imports `_tokens.css`. **Does not contain Tailwind directives.**
-- **src/components/** — Reusable UI components organized in folders. Each folder contains platform-specific implementations (`.web.tsx` / `.native.tsx`) and barrel files (`index.ts` for web, `index.native.ts` for native).
-- **src/index.ts** — Main package entry (`@automatize/ui`). Exports native implementations directly from each `src/components/<Name>/` folder.
-- **src/web.ts** — Web entry (`@automatize/ui/web`). Re-exports web implementations from each `src/components/<Name>/` folder.
+- **src/components/** — Reusable UI components organized in folders. Each folder contains platform-specific implementations (`.web.tsx` / `.native.tsx`). No per-component barrel files.
+- **src/index.ts** — Main package entry (`@automatize/ui`). Exports native implementations using explicit `.native.tsx` paths (e.g., `./components/Button/Button.native`).
+- **src/web.ts** — Web entry (`@automatize/ui/web`). Exports web implementations using explicit `.web.tsx` paths (e.g., `./components/Button/Button.web`).
 - **style-dictionary.config.ts** — Build config for token generation.
 
 ## Token authoring guide
@@ -136,20 +136,17 @@ Lucide provides consistent, clean icons that work across platforms. The library 
 
 **Component folder structure:**
 
-Cross-platform components live in `src/components/<Name>/` with platform-specific files and barrel exports:
+Cross-platform components live in `src/components/<Name>/` with platform-specific files only — no per-component barrel files:
 
 ```text
 src/components/Button/
   Button.web.tsx        # Web implementation (Radix UI / Tailwind)
   Button.native.tsx     # React Native implementation
-  index.ts              # Barrel — exports web (default for webpack/tsup)
-  index.native.ts       # Barrel — exports native (Metro picks this)
 ```
 
-- `index.ts` → web version (default barrel, resolved by webpack/tsup/esbuild)
-- `index.native.ts` → native version (Metro prefers `.native.ts` over `.ts`)
-- `src/index.ts` (main entry) exports native implementations via explicit `.native` paths — no intermediate barrel
-- `src/web.ts` (web entry) exports web implementations directly from component folders
+- `src/index.ts` — exports native implementations via explicit `.native.tsx` paths (e.g., `'./components/Button/Button.native'`)
+- `src/web.ts` — exports web implementations via explicit `.web.tsx` paths (e.g., `'./components/Button/Button.web'`)
+- Internal imports within `packages/ui` MUST use explicit `.web.tsx` or `.native.tsx` paths — never relative folder paths
 
 **Component philosophy:**
 
