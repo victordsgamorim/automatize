@@ -2,12 +2,7 @@ import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { semanticColors } from '@automatize/ui/tokens';
 
 import type { Theme, ThemePreference, ThemeContextValue } from './types';
-import {
-  getThemeSync,
-  getThemeAsync,
-  getStorageAdapter,
-  resolveTheme,
-} from './singleton';
+import { getThemeAsync, getStorageAdapter, resolveTheme } from './singleton';
 import { useSystemColorScheme } from './useSystemColorScheme.web';
 import { applyThemeEffect } from './effects/web';
 
@@ -20,24 +15,14 @@ export interface ThemeProviderProps {
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const systemTheme = useSystemColorScheme();
 
-  // Seed state synchronously from singleton if ready, default to 'system'/'light'
-  // so server and client both render children on first pass (no hydration mismatch).
-  const [preference, setPreference] = useState<ThemePreference>(() => {
-    const sync = getThemeSync();
-    return sync?.preference ?? 'system';
-  });
+  // Always initialise with deterministic defaults so server and client produce
+  // the same first render (no hydration mismatch).  The real stored preference
+  // is picked up in the useEffect below, after hydration.
+  const [preference, setPreference] = useState<ThemePreference>('system');
+  const [resolvedTheme, setResolvedTheme] = useState<Theme>('light');
 
-  const [resolvedTheme, setResolvedTheme] = useState<Theme>(() => {
-    const sync = getThemeSync();
-    return sync?.resolvedTheme ?? 'light';
-  });
-
-  // Async fallback — hydrate from storage if singleton wasn't ready on mount
-  const [hydrated, setHydrated] = useState(() => getThemeSync() !== null);
-
+  // After hydration, read the real preference from the singleton / storage.
   useEffect(() => {
-    if (hydrated) return;
-
     let cancelled = false;
 
     getThemeAsync()
@@ -45,14 +30,12 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         if (!cancelled) {
           setPreference(state.preference);
           setResolvedTheme(state.resolvedTheme);
-          setHydrated(true);
         }
       })
       .catch((_err) => {
         if (!cancelled) {
           setPreference('system');
           setResolvedTheme(systemTheme);
-          setHydrated(true);
         }
       });
 

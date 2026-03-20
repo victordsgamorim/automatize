@@ -1,45 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { type i18n } from 'i18next';
+import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 
-import {
-  getLocalizationInstanceSync,
-  getLocalizationInstanceAsync,
-} from './singleton';
+import { getLocalizationInstanceSync } from './singleton';
 
 export interface LocalizationProviderProps {
   children: React.ReactNode;
 }
 
 export function LocalizationProvider({ children }: LocalizationProviderProps) {
-  // Seed state synchronously — if initLocalization() already completed before
-  // this component mounts, there is no null render at all.
-  const [instance, setInstance] = useState<i18n | null>(
-    getLocalizationInstanceSync
-  );
+  // After initLocalization() is called (at module level in the app entry),
+  // the instance is available synchronously — even before async init resolves.
+  // This guarantees children are always rendered, avoiding SSR hydration mismatch.
+  const instance = getLocalizationInstanceSync();
 
-  useEffect(() => {
-    // Instance was already ready on mount — nothing to do.
-    if (instance !== null) return;
-
-    let cancelled = false;
-
-    getLocalizationInstanceAsync()
-      .then((inst) => {
-        if (!cancelled) setInstance(inst);
-      })
-      .catch((_err) => {
-        console.warn(
-          '[localization] initLocalization() was not called before mounting LocalizationProvider.'
-        );
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  if (!instance) return null;
+  if (!instance) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        '[localization] initLocalization() must be called before mounting LocalizationProvider.'
+      );
+    }
+    return <>{children}</>;
+  }
 
   return <I18nextProvider i18n={instance}>{children}</I18nextProvider>;
 }

@@ -5,35 +5,17 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  eslint: {
-    // Disable ESLint checking during build
-    ignoreDuringBuilds: true,
-  },
   typescript: {
-    // Allow build to proceed with type errors
     ignoreBuildErrors: true,
   },
-  webpack: (config, { isServer }) => {
-    // Prevent webpack from trying to parse react-native modules
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      'react-native': false,
-      'react-native/Libraries/Animated/NativeAnimatedHelper': false,
-    };
-
-    // Add rule to exclude react-native from bundle
-    config.module.rules.push({
-      test: /node_modules[/\\](react-native|@react-native-community)[/\\]/,
-      use: 'null-loader',
-    });
-
-    // Add alias for @ui to point to packages/ui/src
-    config.resolve.alias = {
-      ...(config.resolve.alias || {}),
-      '@ui': require('path').join(__dirname, '../packages/ui/src'),
-    };
-
-    return config;
+  turbopack: {
+    resolveAlias: {
+      // Prevent Turbopack from trying to resolve react-native modules on web
+      'react-native': '',
+      'react-native/Libraries/Animated/NativeAnimatedHelper': '',
+      '@react-native-community/netinfo': '',
+      '@react-native-async-storage/async-storage': '',
+    },
   },
 };
 

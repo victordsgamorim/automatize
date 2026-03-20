@@ -46,19 +46,39 @@ Additional namespaces can be added as the app grows to enable code-splitting of 
 
 ### The adapter pattern
 
-The core design principle is that `LocalizationProvider` does not know where translations come from. It only knows _how_ to initialize i18next using a `TranslationLoader` — an interface with a single `load(language, namespace)` method.
+The core design principle is that `LocalizationProvider` does not know where translations come from. It only knows _how_ to initialize i18next using a `TranslationLoader` — an interface with a `load(language, namespace)` method and an optional `resources` property for synchronous initialization.
 
 This means:
 
-- **Phase 1** ships `createLocalLoader()`, which reads bundled JSON files. Works offline, zero latency, no network calls.
-- **Phase 2** will ship `createRemoteLoader(url)`, which fetches JSON from a remote server. The app integration point stays identical — only the loader passed to the provider changes.
+- **Phase 1** ships `createLocalLoader()`, which reads bundled JSON files. Works offline, zero latency, no network calls. Because the translations are bundled, the loader exposes a `resources` property that enables **synchronous initialization** — critical for SSR hydration safety.
+- **Phase 2** will ship `createRemoteLoader(url)`, which fetches JSON from a remote server. The app integration point stays identical — only the loader passed to the provider changes. Remote loaders use the async `load()` path since resources are not available at startup.
+
+### Singleton + eager initialization
+
+The package uses a **singleton pattern**. `initLocalization(loader, defaultLanguage)` must be called once at the app entry point — at module level, before the React tree mounts. This is critical for two reasons:
+
+1. It ensures the i18n instance is ready by the time `LocalizationProvider` renders.
+2. On SSR (Next.js), it guarantees server and client produce identical HTML on the first pass, preventing hydration mismatches.
+
+Calling `initLocalization()` more than once is safe — subsequent calls are no-ops.
 
 ### Translation flow
 
-1. The app wraps its root with `LocalizationProvider`, passing a loader and a default language.
-2. On mount, the provider creates an isolated i18next instance and calls the loader to fetch the initial translations.
-3. Once initialized, the provider renders its children and all nested components can call `useTranslation()` to access translated strings.
-4. Until initialization is complete, the provider renders nothing — preventing any flash of untranslated content.
+1. The app calls `initLocalization(loader, defaultLanguage)` at module level (outside any component).
+2. The app wraps its root with `LocalizationProvider`.
+3. If the loader provides pre-loaded `resources`, initialization is **synchronous** — translations are available immediately on the first render (both server and client).
+4. If the loader only provides an async `load()` method, initialization is **asynchronous** — the provider renders children without translations until loading completes, then re-renders.
+5. All nested components call `useTranslation()` to access translated strings.
+
+### SSR hydration safety
+
+When using `createLocalLoader()` (Phase 1), the entire initialization is synchronous. This means:
+
+- The server renders translated content (not raw keys).
+- The client's first render produces identical translated content.
+- No hydration mismatch occurs.
+
+This is achieved by passing bundled translations directly to `i18next.init()` via the `resources` option, bypassing the async backend plugin entirely.
 
 ### Isolation
 
@@ -73,17 +93,20 @@ packages/localization/
   src/
     loaders/
       types.ts             — TranslationLoader interface + SupportedLanguage / SupportedNamespace types
-      LocalLoader.ts       — Phase 1 implementation: loads bundled JSON files
+      LocalLoader.ts       — Phase 1 implementation: loads bundled JSON files with sync resources
     locales/
       en/
         common.json        — English translation strings
       pt-BR/
         common.json        — Brazilian Portuguese translation strings
-    LocalizationProvider.tsx  — React provider: initializes i18next, renders children
+    singleton.ts           — Module-level singleton: initLocalization, sync/async instance access
+    LocalizationProvider.tsx  — React provider: wraps children with I18nextProvider
     index.ts               — Public API barrel (the only import path consumers should use)
   __tests__/
     LocalLoader.test.ts
     LocalizationProvider.test.tsx
+    singleton.test.ts
+    changeLanguage.test.tsx
   package.json
   tsconfig.json
   .eslintrc.js
@@ -97,14 +120,15 @@ packages/localization/
 
 Everything the rest of the app needs is exported from the package root (`@automatize/localization`):
 
-| Export                 | Kind             | Description                                                                   |
-| ---------------------- | ---------------- | ----------------------------------------------------------------------------- |
-| `LocalizationProvider` | Component        | Wraps the app root; accepts a loader and default language                     |
-| `createLocalLoader`    | Factory function | Returns a loader backed by bundled JSON files                                 |
-| `useTranslation`       | Hook (re-export) | Re-export of `react-i18next`'s `useTranslation` — use this in every component |
-| `TranslationLoader`    | Type             | The interface contract for loaders (used to implement Phase 2)                |
-| `SupportedLanguage`    | Type             | Union of all valid language codes (`'en' \| 'pt-BR'`)                         |
-| `SupportedNamespace`   | Type             | Union of all valid namespace keys (`'common'`)                                |
+| Export                 | Kind             | Description                                                                             |
+| ---------------------- | ---------------- | --------------------------------------------------------------------------------------- |
+| `initLocalization`     | Function         | Call once at module level before React mounts; starts i18n initialization               |
+| `LocalizationProvider` | Component        | Wraps the app root; provides the i18n instance to all descendants                       |
+| `createLocalLoader`    | Factory function | Returns a loader backed by bundled JSON files (sync resources for SSR hydration safety) |
+| `useTranslation`       | Hook (re-export) | Re-export of `react-i18next`'s `useTranslation` — use this in every component           |
+| `TranslationLoader`    | Type             | The interface contract for loaders (used to implement Phase 2)                          |
+| `SupportedLanguage`    | Type             | Union of all valid language codes (`'en' \| 'pt-BR'`)                                   |
+| `SupportedNamespace`   | Type             | Union of all valid namespace keys (`'common'`)                                          |
 
 ---
 
@@ -129,11 +153,16 @@ In the app's `package.json` (e.g., `apps/web/package.json` or `apps/mobile/packa
 
 From the monorepo root, run `pnpm install` to resolve the new dependency across the workspace.
 
-### Step 3 — Wrap the app root
+### Step 3 — Initialize and wrap the app root
 
-Find the root component of the app — typically the layout entry point on web, or the root `_layout` file on mobile. Import `LocalizationProvider` and `createLocalLoader` from `@automatize/localization`, and wrap the entire component tree with the provider.
+Create a client wrapper component (e.g., `localization-provider.tsx`). In this file:
 
-Pass `createLocalLoader()` as the `loader` prop. Optionally specify a `defaultLanguage` — it defaults to `'en'` if omitted.
+1. Import `initLocalization`, `LocalizationProvider`, and `createLocalLoader` from `@automatize/localization`.
+2. Call `initLocalization(createLocalLoader(), 'pt-BR')` **at module level** — outside any component, before the React tree mounts. This is critical for SSR hydration safety.
+3. Export a wrapper component that renders `<LocalizationProvider>{children}</LocalizationProvider>`.
+4. Use this wrapper in your root layout to wrap the entire component tree.
+
+The `defaultLanguage` argument defaults to `'en'` if omitted.
 
 ### Step 4 — Use translations in components
 
@@ -196,7 +225,9 @@ No changes to `LocalizationProvider`, `useTranslation` usage, or translation key
 The package includes unit tests covering:
 
 - `LocalLoader` — correct translations for `en` and `pt-BR`, graceful handling of unsupported languages, key parity between locales
-- `LocalizationProvider` — renders children after initialization, correct language resolution, graceful fallback when the loader fails, no flash of untranslated content on first render
+- `singleton` — synchronous and async instance access, idempotency, reset behaviour, default language resolution
+- `LocalizationProvider` — immediate rendering with sync resources, correct language resolution, graceful fallback when the loader fails
+- `changeLanguage` — runtime language switching, key resolution in both locales, ext values
 
 Run tests from the package directory or from the monorepo root:
 
