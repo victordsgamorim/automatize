@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { cn } from '../../utils';
-import { Label } from '../Label';
+import { Label } from '../Label/Label.web';
 
 export interface FormFieldProps {
   label: string;
