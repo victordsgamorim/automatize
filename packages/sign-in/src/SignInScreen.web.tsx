@@ -80,8 +80,8 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             </p>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
-              <div className="animate-element animate-delay-300">
-                <Label htmlFor="sign-in-email">
+              <div className="animate-element animate-delay-300 space-y-1.5">
+                <Label htmlFor="sign-in-email" className="pl-4">
                   {t('sign-in.email.label')}
                 </Label>
                 <Input
@@ -95,8 +95,8 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 />
               </div>
 
-              <div className="animate-element animate-delay-400">
-                <Label htmlFor="sign-in-password">
+              <div className="animate-element animate-delay-400 space-y-1.5">
+                <Label htmlFor="sign-in-password" className="pl-4">
                   {t('sign-in.password.label')}
                 </Label>
                 <div className="relative">
