@@ -6,6 +6,9 @@ export type Theme = 'light' | 'dark';
 /** User's preference — 'system' defers to OS setting */
 export type ThemePreference = 'light' | 'dark' | 'system';
 
+/** All available theme preferences as a runtime array */
+export const THEME_PREFERENCES: ThemePreference[] = ['light', 'dark', 'system'];
+
 /** Semantic color set (union of light and dark) */
 export type SemanticColorSet =
   | (typeof semanticColors)['light']

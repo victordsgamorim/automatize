@@ -14,6 +14,7 @@ export { createNativeStorageAdapter } from './storage/native';
 export { THEME_ANTI_FLASH_SCRIPT } from './anti-flash-script';
 
 // Types
+export { THEME_PREFERENCES } from './types';
 export type {
   Theme,
   ThemePreference,

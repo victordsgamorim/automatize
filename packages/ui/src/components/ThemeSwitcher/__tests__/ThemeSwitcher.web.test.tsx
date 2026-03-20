@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 // Mock DropdownMenu to avoid Radix UI portal/pointer-event issues in jsdom
-vi.mock('../../DropdownMenu', async () => {
+vi.mock('../../DropdownMenu/DropdownMenu.web', async () => {
   const { createElement } = await import('react');
 
   type WithChildren = { children?: React.ReactNode };

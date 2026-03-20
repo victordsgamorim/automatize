@@ -1,31 +1,37 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { SignInScreen, useSignIn } from '@automatize/sign-in/web';
+import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
+import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
+import { SignInScreen } from '@automatize/sign-in/web';
 
 export default function LoginPage() {
   const router = useRouter();
-  const signIn = useSignIn();
-
-  const handleSignIn = async () => {
-    const result = await signIn.handleSignIn();
-    if (result.success) {
-      router.push('/');
-    }
-  };
+  const { i18n, t } = useTranslation();
+  const { preference, isDark, setTheme } = useTheme();
 
   return (
     <SignInScreen
-      email={signIn.email}
-      onEmailChange={signIn.setEmail}
-      password={signIn.password}
-      onPasswordChange={signIn.setPassword}
-      showPassword={signIn.showPassword}
-      onToggleShowPassword={signIn.toggleShowPassword}
-      error={signIn.error}
-      isLoading={signIn.isLoading}
-      onSignIn={handleSignIn}
+      onSuccess={() => router.push('/')}
       onResetPassword={() => router.push('/forgot-password')}
+      locale={{
+        languages: SUPPORTED_LANGUAGES.map((lang) => ({
+          code: lang,
+          label: t(`app.language.${lang}`),
+          ext: t(`app.language.${lang}.ext`),
+        })),
+        currentLanguage: i18n.language,
+        onLanguageChange: (code) => void i18n.changeLanguage(code),
+      }}
+      theme={{
+        currentTheme: preference,
+        isDarkTheme: isDark,
+        themeOptions: THEME_PREFERENCES.map((pref) => ({
+          value: pref,
+          label: t(`theme.${pref}`),
+        })),
+        onThemeChange: setTheme,
+      }}
     />
   );
 }

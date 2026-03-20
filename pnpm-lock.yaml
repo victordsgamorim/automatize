@@ -327,6 +327,42 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
+  core/localization:
+    devDependencies:
+      '@automatize/tsconfig':
+        specifier: workspace:*
+        version: link:../../tools/tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 20.19.35
+      eslint:
+        specifier: 'catalog:'
+        version: 8.57.1
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
+  core/theme:
+    devDependencies:
+      '@automatize/tsconfig':
+        specifier: workspace:*
+        version: link:../../tools/tsconfig
+      '@types/node':
+        specifier: 'catalog:'
+        version: 20.19.35
+      eslint:
+        specifier: 'catalog:'
+        version: 8.57.1
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
   core/utils:
     dependencies:
       date-fns:
@@ -602,12 +638,12 @@ importers:
       '@automatize/auth':
         specifier: workspace:*
         version: link:../../core/auth
-      '@automatize/localization':
+      '@automatize/core-localization':
         specifier: workspace:*
-        version: link:../localization
-      '@automatize/theme':
+        version: link:../../core/localization
+      '@automatize/core-theme':
         specifier: workspace:*
-        version: link:../theme
+        version: link:../../core/theme
       '@automatize/ui':
         specifier: workspace:*
         version: link:../ui
@@ -620,6 +656,9 @@ importers:
       lucide-react-native:
         specifier: ^0.309.0
         version: 0.309.0(react-native-svg@14.2.0(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0)
+      react-i18next:
+        specifier: '>=14.0.0'
+        version: 14.1.3(i18next@23.16.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0)
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*

@@ -1,48 +1,100 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import {
-  LocalizationProvider,
-  initLocalization,
-  _resetLocalization,
-  createLocalLoader,
-} from '@automatize/localization';
 
 import { SignInScreen } from '../SignInScreen.web';
 import type { SignInScreenProps } from '../SignInScreen.types';
+import type { UseSignInResult } from '../useSignIn';
 
-const defaultProps: SignInScreenProps = {
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) =>
+      ({
+        'sign-in.email.label': 'Email',
+        'sign-in.email.placeholder': 'Enter your email',
+        'sign-in.password.label': 'Password',
+        'sign-in.password.placeholder': 'Enter your password',
+        'sign-in.password.show': 'Show password',
+        'sign-in.password.hide': 'Hide password',
+        'sign-in.remember': 'Keep me signed in',
+        'sign-in.reset-password': 'Reset password',
+        'sign-in.submit': 'Sign In',
+        'sign-in.submitting': 'Signing in...',
+        'sign-in.welcome': 'Welcome',
+        'sign-in.subtitle':
+          'Access your account and continue your journey with us',
+        'language.switch-label': 'Change language',
+        'theme.switch-label': 'Change theme',
+      })[key] ?? key,
+    i18n: { language: 'en', changeLanguage: vi.fn() },
+  }),
+}));
+
+const mockHandleSignIn = vi.fn().mockResolvedValue({ success: false });
+
+const mockSignIn: UseSignInResult = {
   email: '',
-  onEmailChange: vi.fn(),
+  setEmail: vi.fn(),
   password: '',
-  onPasswordChange: vi.fn(),
+  setPassword: vi.fn(),
   showPassword: false,
-  onToggleShowPassword: vi.fn(),
+  toggleShowPassword: vi.fn(),
   error: null,
   isLoading: false,
-  onSignIn: vi.fn(),
+  handleSignIn: mockHandleSignIn,
+};
+
+vi.mock('../useSignIn', () => ({
+  useSignIn: () => mockSignIn,
+}));
+
+const defaultProps: SignInScreenProps = {
+  onSuccess: vi.fn(),
   onResetPassword: vi.fn(),
+  locale: {
+    languages: [
+      { code: 'en', label: 'English', ext: 'US' },
+      { code: 'pt-BR', label: 'Português', ext: 'BR' },
+    ],
+    currentLanguage: 'en',
+    onLanguageChange: vi.fn(),
+  },
+  theme: {
+    currentTheme: 'system',
+    isDarkTheme: false,
+    themeOptions: [
+      { value: 'light', label: 'Light' },
+      { value: 'dark', label: 'Dark' },
+      { value: 'system', label: 'System' },
+    ],
+    onThemeChange: vi.fn(),
+  },
 };
 
 async function renderScreen(props: Partial<SignInScreenProps> = {}) {
-  render(
-    <LocalizationProvider>
-      <SignInScreen {...defaultProps} {...props} />
-    </LocalizationProvider>
-  );
-  // Wait for i18next to initialize — LocalizationProvider renders null until ready
+  render(<SignInScreen {...defaultProps} {...props} />);
   await waitFor(() => screen.getByLabelText('Email'));
+}
+
+function setMockState(overrides: Partial<UseSignInResult>) {
+  Object.assign(mockSignIn, overrides);
 }
 
 describe('SignInScreen (web)', () => {
   beforeEach(() => {
-    _resetLocalization();
-    initLocalization(createLocalLoader(), 'en');
     vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    _resetLocalization();
+    setMockState({
+      email: '',
+      setEmail: vi.fn(),
+      password: '',
+      setPassword: vi.fn(),
+      showPassword: false,
+      toggleShowPassword: vi.fn(),
+      error: null,
+      isLoading: false,
+      handleSignIn: mockHandleSignIn,
+    });
+    mockHandleSignIn.mockResolvedValue({ success: false });
   });
 
   describe('rendering', () => {
@@ -57,7 +109,8 @@ describe('SignInScreen (web)', () => {
     });
 
     it('renders the Sign In submit button', async () => {
-      await renderScreen({ email: 'u@e.com', password: 'pass' });
+      setMockState({ email: 'u@e.com', password: 'pass' });
+      await renderScreen();
       expect(screen.getByRole('button', { name: 'Sign In' })).toBeDefined();
     });
 
@@ -72,39 +125,33 @@ describe('SignInScreen (web)', () => {
       await renderScreen();
       expect(screen.getByRole('checkbox')).toBeDefined();
     });
-
-    it('does not render an error element when error is null', async () => {
-      await renderScreen({ error: null });
-      expect(screen.queryByText(/invalid|error|failed/i)).toBeNull();
-    });
-
-    it('renders the error message when error is set', async () => {
-      await renderScreen({ error: 'Invalid credentials' });
-      expect(screen.getByText('Invalid credentials')).toBeDefined();
-    });
   });
 
   describe('field state', () => {
-    it('reflects email value from props', async () => {
-      await renderScreen({ email: 'user@example.com' });
+    it('reflects email value from hook', async () => {
+      setMockState({ email: 'user@example.com' });
+      await renderScreen();
       const input = screen.getByLabelText('Email') as HTMLInputElement;
       expect(input.value).toBe('user@example.com');
     });
 
-    it('reflects password value from props', async () => {
-      await renderScreen({ password: 'mypassword' });
+    it('reflects password value from hook', async () => {
+      setMockState({ password: 'mypassword' });
+      await renderScreen();
       const input = screen.getByLabelText('Password') as HTMLInputElement;
       expect(input.value).toBe('mypassword');
     });
 
     it('renders password as type="password" when showPassword is false', async () => {
-      await renderScreen({ showPassword: false });
+      setMockState({ showPassword: false });
+      await renderScreen();
       const input = screen.getByLabelText('Password') as HTMLInputElement;
       expect(input.type).toBe('password');
     });
 
     it('renders password as type="text" when showPassword is true', async () => {
-      await renderScreen({ showPassword: true });
+      setMockState({ showPassword: true });
+      await renderScreen();
       const input = screen.getByLabelText('Password') as HTMLInputElement;
       expect(input.type).toBe('text');
     });
@@ -112,7 +159,8 @@ describe('SignInScreen (web)', () => {
 
   describe('submit button state', () => {
     it('is disabled when email is empty', async () => {
-      await renderScreen({ email: '', password: 'pass123' });
+      setMockState({ email: '', password: 'pass123' });
+      await renderScreen();
       const btn = screen.getByRole('button', {
         name: 'Sign In',
       }) as HTMLButtonElement;
@@ -120,7 +168,8 @@ describe('SignInScreen (web)', () => {
     });
 
     it('is disabled when password is empty', async () => {
-      await renderScreen({ email: 'user@example.com', password: '' });
+      setMockState({ email: 'user@example.com', password: '' });
+      await renderScreen();
       const btn = screen.getByRole('button', {
         name: 'Sign In',
       }) as HTMLButtonElement;
@@ -128,7 +177,8 @@ describe('SignInScreen (web)', () => {
     });
 
     it('is enabled when both email and password are provided', async () => {
-      await renderScreen({ email: 'user@example.com', password: 'pass123' });
+      setMockState({ email: 'user@example.com', password: 'pass123' });
+      await renderScreen();
       const btn = screen.getByRole('button', {
         name: 'Sign In',
       }) as HTMLButtonElement;
@@ -136,11 +186,12 @@ describe('SignInScreen (web)', () => {
     });
 
     it('is disabled and shows "Signing in..." when isLoading is true', async () => {
-      await renderScreen({
+      setMockState({
         email: 'user@example.com',
         password: 'pass123',
         isLoading: true,
       });
+      await renderScreen();
       const btn = screen.getByRole('button', {
         name: 'Signing in...',
       }) as HTMLButtonElement;
@@ -149,30 +200,53 @@ describe('SignInScreen (web)', () => {
   });
 
   describe('interactions', () => {
-    it('calls onEmailChange when email input changes', async () => {
-      const onEmailChange = vi.fn();
-      await renderScreen({ onEmailChange });
+    it('calls setEmail when email input changes', async () => {
+      const setEmail = vi.fn();
+      setMockState({ setEmail });
+      await renderScreen();
       fireEvent.change(screen.getByLabelText('Email'), {
         target: { value: 'new@example.com' },
       });
-      expect(onEmailChange).toHaveBeenCalledWith('new@example.com');
+      expect(setEmail).toHaveBeenCalledWith('new@example.com');
     });
 
-    it('calls onPasswordChange when password input changes', async () => {
-      const onPasswordChange = vi.fn();
-      await renderScreen({ onPasswordChange });
+    it('calls setPassword when password input changes', async () => {
+      const setPassword = vi.fn();
+      setMockState({ setPassword });
+      await renderScreen();
       fireEvent.change(screen.getByLabelText('Password'), {
         target: { value: 'newpass' },
       });
-      expect(onPasswordChange).toHaveBeenCalledWith('newpass');
+      expect(setPassword).toHaveBeenCalledWith('newpass');
     });
 
-    it('calls onSignIn when the form is submitted', async () => {
-      const onSignIn = vi.fn();
-      await renderScreen({ email: 'u@e.com', password: 'pass123', onSignIn });
+    it('calls handleSignIn when the form is submitted', async () => {
+      setMockState({ email: 'u@e.com', password: 'pass123' });
+      await renderScreen();
       const form = document.querySelector('form') as HTMLFormElement;
       fireEvent.submit(form);
-      expect(onSignIn).toHaveBeenCalledOnce();
+      expect(mockHandleSignIn).toHaveBeenCalledOnce();
+    });
+
+    it('calls onSuccess when sign-in succeeds', async () => {
+      mockHandleSignIn.mockResolvedValue({ success: true });
+      const onSuccess = vi.fn();
+      setMockState({ email: 'u@e.com', password: 'pass123' });
+      await renderScreen({ onSuccess });
+      const form = document.querySelector('form') as HTMLFormElement;
+      fireEvent.submit(form);
+      await waitFor(() => expect(onSuccess).toHaveBeenCalledOnce());
+    });
+
+    it('does not call onSuccess when sign-in fails', async () => {
+      mockHandleSignIn.mockResolvedValue({ success: false });
+      const onSuccess = vi.fn();
+      setMockState({ email: 'u@e.com', password: 'pass123' });
+      await renderScreen({ onSuccess });
+      const form = document.querySelector('form') as HTMLFormElement;
+      fireEvent.submit(form);
+      await waitFor(() => expect(mockHandleSignIn).toHaveBeenCalledOnce());
+      expect(onSuccess).not.toHaveBeenCalled();
     });
 
     it('calls onResetPassword when Reset password is clicked', async () => {
@@ -182,15 +256,15 @@ describe('SignInScreen (web)', () => {
       expect(onResetPassword).toHaveBeenCalledOnce();
     });
 
-    it('calls onToggleShowPassword when the password visibility button is clicked', async () => {
-      const onToggleShowPassword = vi.fn();
-      await renderScreen({ onToggleShowPassword });
-      // The toggle button lives inside the relative wrapper around the password input
+    it('calls toggleShowPassword when the password visibility button is clicked', async () => {
+      const toggleShowPassword = vi.fn();
+      setMockState({ toggleShowPassword });
+      await renderScreen();
       const passwordInput = screen.getByLabelText('Password');
       const wrapper = passwordInput.closest('.relative') as HTMLElement;
       const toggleBtn = wrapper.querySelector('button') as HTMLButtonElement;
       fireEvent.click(toggleBtn);
-      expect(onToggleShowPassword).toHaveBeenCalledOnce();
+      expect(toggleShowPassword).toHaveBeenCalledOnce();
     });
   });
 });

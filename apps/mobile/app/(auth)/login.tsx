@@ -4,30 +4,27 @@
  */
 
 import { router } from 'expo-router';
-import { SignInScreen, useSignIn } from '@automatize/sign-in';
+import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
+import { SignInScreen } from '@automatize/sign-in';
 
 export default function LoginScreen() {
-  const signIn = useSignIn();
-
-  const handleSignIn = async () => {
-    const result = await signIn.handleSignIn();
-    if (result.success) {
-      // Navigation handled by AuthProvider state change
-    }
-  };
+  const { i18n, t } = useTranslation();
 
   return (
     <SignInScreen
-      email={signIn.email}
-      onEmailChange={signIn.setEmail}
-      password={signIn.password}
-      onPasswordChange={signIn.setPassword}
-      showPassword={signIn.showPassword}
-      onToggleShowPassword={signIn.toggleShowPassword}
-      error={signIn.error}
-      isLoading={signIn.isLoading}
-      onSignIn={handleSignIn}
+      onSuccess={() => {
+        // Navigation handled by AuthProvider state change
+      }}
       onResetPassword={() => router.push('/(auth)/forgot-password')}
+      locale={{
+        languages: SUPPORTED_LANGUAGES.map((lang) => ({
+          code: lang,
+          label: t(`app.language.${lang}`),
+          ext: t(`app.language.${lang}.ext`),
+        })),
+        currentLanguage: i18n.language,
+        onLanguageChange: (code) => void i18n.changeLanguage(code),
+      }}
     />
   );
 }

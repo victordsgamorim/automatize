@@ -5,27 +5,38 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  useColorScheme,
 } from 'react-native';
 import { Button, Text, FormField, Card } from '@automatize/ui';
-import { useTheme } from '@automatize/theme';
-import { useTranslation } from '@automatize/localization';
+import { semanticColors } from '@automatize/ui/tokens';
+import { useTranslation } from 'react-i18next';
 import type { SignInScreenProps } from './SignInScreen.types';
-import { LanguageSwitcher } from './LanguageSwitcher.native';
+import { useSignIn } from './useSignIn';
 
 export const SignInScreen: React.FC<SignInScreenProps> = ({
-  email,
-  onEmailChange,
-  password,
-  onPasswordChange,
-  showPassword,
-  onToggleShowPassword,
-  error,
-  isLoading,
-  onSignIn,
+  onSuccess,
   onResetPassword,
+  locale,
 }) => {
-  const { colors: theme } = useTheme();
+  const colorScheme = useColorScheme() ?? 'light';
+  const themeColors = semanticColors[colorScheme];
   const { t } = useTranslation();
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    showPassword,
+    toggleShowPassword,
+    error,
+    isLoading,
+    handleSignIn,
+  } = useSignIn();
+
+  const onSignIn = async () => {
+    const result = await handleSignIn();
+    if (result.success) onSuccess();
+  };
 
   const styles = StyleSheet.create({
     card: {
@@ -34,12 +45,12 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
       paddingVertical: 24,
     },
     container: {
-      backgroundColor: theme.background.primary,
+      backgroundColor: themeColors.background.primary,
       flex: 1,
     },
     errorContainer: {
-      backgroundColor: theme.background.error,
-      borderLeftColor: theme.state.error,
+      backgroundColor: themeColors.background.error,
+      borderLeftColor: themeColors.state.error,
       borderLeftWidth: 4,
       borderRadius: 8,
       marginBottom: 16,
@@ -69,6 +80,10 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
       marginTop: 8,
     },
   });
+
+  const currentLangLabel =
+    locale.languages.find((l) => l.code === locale.currentLanguage)?.label ??
+    locale.currentLanguage;
 
   return (
     <KeyboardAvoidingView
@@ -109,7 +124,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             label={t('sign-in.email.label')}
             placeholder={t('sign-in.email.placeholder')}
             value={email}
-            onChangeText={onEmailChange}
+            onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
             editable={!isLoading}
@@ -121,7 +136,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             label={t('sign-in.password.label')}
             placeholder={t('sign-in.password.placeholder')}
             value={password}
-            onChangeText={onPasswordChange}
+            onChangeText={setPassword}
             secureTextEntry={!showPassword}
             editable={!isLoading}
             testID="sign-in-password-input"
@@ -130,7 +145,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
           {/* Toggle Password Visibility */}
           <Button
             variant="ghost"
-            onPress={onToggleShowPassword}
+            onPress={toggleShowPassword}
             disabled={isLoading}
             testID="sign-in-toggle-password"
           >
@@ -163,7 +178,21 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
           {/* Language Switcher */}
           <View style={styles.languageSwitcher}>
-            <LanguageSwitcher />
+            <Button
+              variant="ghost"
+              onPress={() => {
+                const idx = locale.languages.findIndex(
+                  (l) => l.code === locale.currentLanguage
+                );
+                const next =
+                  locale.languages[(idx + 1) % locale.languages.length];
+                if (next) locale.onLanguageChange(next.code);
+              }}
+              testID="language-switcher"
+              accessibilityLabel={t('language.switch-label')}
+            >
+              {currentLangLabel}
+            </Button>
           </View>
         </Card>
       </ScrollView>

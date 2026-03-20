@@ -10,20 +10,31 @@
 export { cn } from './utils';
 
 // Components (source of truth: src/components/)
-export { Button, buttonVariants } from './components/Button';
-export { Input } from './components/Input';
-export { Label } from './components/Label';
-export { Checkbox } from './components/Checkbox';
-export { useToasts, ToastProvider } from './components/Toast';
-export type { ToastType } from './components/Toast';
-export { LanguageSwitcher } from './components/LanguageSwitcher';
+export { Button, buttonVariants } from './components/Button/Button.web';
+export { FormField } from './components/FormField/FormField.web';
+export type { FormFieldProps } from './components/FormField/FormField.web';
+export { Input } from './components/Input/Input.web';
+export { Label } from './components/Label/Label.web';
+export type { LabelProps } from './components/Label/Label.web';
+export { Checkbox } from './components/Checkbox/Checkbox.web';
+export { useToasts, ToastProvider } from './components/Toast/Toast.web';
+export type { ToastType } from './components/Toast/Toast.web';
+export { LanguageSwitcher } from './components/LanguageSwitcher/LanguageSwitcher.web';
 export type {
   LanguageSwitcherProps,
   LanguageOption,
-} from './components/LanguageSwitcher';
-export { ThemeSwitcher } from './components/ThemeSwitcher';
+} from './components/LanguageSwitcher/LanguageSwitcher.web';
+export { ThemeSwitcher } from './components/ThemeSwitcher/ThemeSwitcher.web';
 export type {
   ThemeSwitcherProps,
   ThemeSwitcherOption,
   ThemePreferenceOption,
-} from './components/ThemeSwitcher';
+} from './components/ThemeSwitcher/ThemeSwitcher.web';
+export {
+  ErrorBoundary,
+  RootErrorBoundary,
+} from './components/ErrorBoundary/ErrorBoundary.web';
+export type {
+  ErrorBoundaryProps,
+  RootErrorBoundaryProps,
+} from './components/ErrorBoundary/ErrorBoundary.web';
