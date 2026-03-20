@@ -644,12 +644,6 @@ importers:
       '@automatize/core-theme':
         specifier: workspace:*
         version: link:../../core/theme
-      '@automatize/localization':
-        specifier: workspace:*
-        version: link:../localization
-      '@automatize/theme':
-        specifier: workspace:*
-        version: link:../theme
       '@automatize/ui':
         specifier: workspace:*
         version: link:../ui
@@ -662,6 +656,9 @@ importers:
       lucide-react-native:
         specifier: ^0.309.0
         version: 0.309.0(react-native-svg@14.2.0(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0)
+      react-i18next:
+        specifier: '>=14.0.0'
+        version: 14.1.3(i18next@23.16.8)(react-dom@18.2.0(react@18.2.0))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0)
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*

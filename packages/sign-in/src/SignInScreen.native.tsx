@@ -5,10 +5,11 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  useColorScheme,
 } from 'react-native';
 import { Button, Text, FormField, Card } from '@automatize/ui';
-import { useTheme } from '@automatize/theme';
-import { useTranslation } from '@automatize/localization';
+import { semanticColors } from '@automatize/ui/tokens';
+import { useTranslation } from 'react-i18next';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { useSignIn } from './useSignIn';
 
@@ -17,7 +18,8 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
   onResetPassword,
   locale,
 }) => {
-  const { colors: theme } = useTheme();
+  const colorScheme = useColorScheme() ?? 'light';
+  const themeColors = semanticColors[colorScheme];
   const { t } = useTranslation();
   const {
     email,
@@ -43,12 +45,12 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
       paddingVertical: 24,
     },
     container: {
-      backgroundColor: theme.background.primary,
+      backgroundColor: themeColors.background.primary,
       flex: 1,
     },
     errorContainer: {
-      backgroundColor: theme.background.error,
-      borderLeftColor: theme.state.error,
+      backgroundColor: themeColors.background.error,
+      borderLeftColor: themeColors.state.error,
       borderLeftWidth: 4,
       borderRadius: 8,
       marginBottom: 16,

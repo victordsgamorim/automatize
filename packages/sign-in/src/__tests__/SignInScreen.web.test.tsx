@@ -1,16 +1,34 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import {
-  LocalizationProvider,
-  initLocalization,
-  _resetLocalization,
-  createLocalLoader,
-} from '@automatize/localization';
 
 import { SignInScreen } from '../SignInScreen.web';
 import type { SignInScreenProps } from '../SignInScreen.types';
 import type { UseSignInResult } from '../useSignIn';
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) =>
+      ({
+        'sign-in.email.label': 'Email',
+        'sign-in.email.placeholder': 'Enter your email',
+        'sign-in.password.label': 'Password',
+        'sign-in.password.placeholder': 'Enter your password',
+        'sign-in.password.show': 'Show password',
+        'sign-in.password.hide': 'Hide password',
+        'sign-in.remember': 'Keep me signed in',
+        'sign-in.reset-password': 'Reset password',
+        'sign-in.submit': 'Sign In',
+        'sign-in.submitting': 'Signing in...',
+        'sign-in.welcome': 'Welcome',
+        'sign-in.subtitle':
+          'Access your account and continue your journey with us',
+        'language.switch-label': 'Change language',
+        'theme.switch-label': 'Change theme',
+      })[key] ?? key,
+    i18n: { language: 'en', changeLanguage: vi.fn() },
+  }),
+}));
 
 const mockHandleSignIn = vi.fn().mockResolvedValue({ success: false });
 
@@ -54,11 +72,7 @@ const defaultProps: SignInScreenProps = {
 };
 
 async function renderScreen(props: Partial<SignInScreenProps> = {}) {
-  render(
-    <LocalizationProvider>
-      <SignInScreen {...defaultProps} {...props} />
-    </LocalizationProvider>
-  );
+  render(<SignInScreen {...defaultProps} {...props} />);
   await waitFor(() => screen.getByLabelText('Email'));
 }
 
@@ -68,10 +82,7 @@ function setMockState(overrides: Partial<UseSignInResult>) {
 
 describe('SignInScreen (web)', () => {
   beforeEach(() => {
-    _resetLocalization();
-    initLocalization(createLocalLoader(), 'en');
     vi.clearAllMocks();
-    // Reset mock state to defaults
     setMockState({
       email: '',
       setEmail: vi.fn(),
@@ -84,10 +95,6 @@ describe('SignInScreen (web)', () => {
       handleSignIn: mockHandleSignIn,
     });
     mockHandleSignIn.mockResolvedValue({ success: false });
-  });
-
-  afterEach(() => {
-    _resetLocalization();
   });
 
   describe('rendering', () => {

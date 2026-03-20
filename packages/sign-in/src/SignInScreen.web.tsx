@@ -9,7 +9,7 @@ import {
   ThemeSwitcher,
   LanguageSwitcher,
 } from '@automatize/ui/web';
-import { useTranslation } from '@automatize/localization';
+import { useTranslation } from 'react-i18next';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { useSignIn } from './useSignIn';
 
