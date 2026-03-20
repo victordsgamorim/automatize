@@ -11,6 +11,8 @@ export { cn } from './utils';
 
 // Components (source of truth: src/components/)
 export { Button, buttonVariants } from './components/Button';
+export { FormField } from './components/FormField';
+export type { FormFieldProps } from './components/FormField';
 export { Input } from './components/Input';
 export { Label } from './components/Label';
 export { Checkbox } from './components/Checkbox';

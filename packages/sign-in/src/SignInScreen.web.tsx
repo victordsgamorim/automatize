@@ -8,6 +8,7 @@ import {
   useToasts,
   ThemeSwitcher,
   LanguageSwitcher,
+  FormField,
 } from '@automatize/ui/web';
 import { useTranslation } from 'react-i18next';
 import type { SignInScreenProps } from './SignInScreen.types';
@@ -80,10 +81,11 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             </p>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
-              <div className="animate-element animate-delay-300 space-y-1.5">
-                <Label htmlFor="sign-in-email" className="pl-4">
-                  {t('sign-in.email.label')}
-                </Label>
+              <FormField
+                label={t('sign-in.email.label')}
+                htmlFor="sign-in-email"
+                className="animate-element animate-delay-300"
+              >
                 <Input
                   id="sign-in-email"
                   name="email"
@@ -93,12 +95,13 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}
                 />
-              </div>
+              </FormField>
 
-              <div className="animate-element animate-delay-400 space-y-1.5">
-                <Label htmlFor="sign-in-password" className="pl-4">
-                  {t('sign-in.password.label')}
-                </Label>
+              <FormField
+                label={t('sign-in.password.label')}
+                htmlFor="sign-in-password"
+                className="animate-element animate-delay-400"
+              >
                 <div className="relative">
                   <Input
                     id="sign-in-password"
@@ -122,7 +125,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                     )}
                   </button>
                 </div>
-              </div>
+              </FormField>
 
               <div className="animate-element animate-delay-500 flex items-center justify-between text-sm">
                 <Label className="flex items-center gap-3 cursor-pointer">
