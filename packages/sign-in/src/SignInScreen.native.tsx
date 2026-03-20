@@ -11,11 +11,11 @@ import { useTheme } from '@automatize/theme';
 import { useTranslation } from '@automatize/localization';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { useSignIn } from './useSignIn';
-import { LanguageSwitcher } from './LanguageSwitcher.native';
 
 export const SignInScreen: React.FC<SignInScreenProps> = ({
   onSuccess,
   onResetPassword,
+  locale,
 }) => {
   const { colors: theme } = useTheme();
   const { t } = useTranslation();
@@ -78,6 +78,10 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
       marginTop: 8,
     },
   });
+
+  const currentLangLabel =
+    locale.languages.find((l) => l.code === locale.currentLanguage)?.label ??
+    locale.currentLanguage;
 
   return (
     <KeyboardAvoidingView
@@ -172,7 +176,21 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
           {/* Language Switcher */}
           <View style={styles.languageSwitcher}>
-            <LanguageSwitcher />
+            <Button
+              variant="ghost"
+              onPress={() => {
+                const idx = locale.languages.findIndex(
+                  (l) => l.code === locale.currentLanguage
+                );
+                const next =
+                  locale.languages[(idx + 1) % locale.languages.length];
+                if (next) locale.onLanguageChange(next.code);
+              }}
+              testID="language-switcher"
+              accessibilityLabel={t('language.switch-label')}
+            >
+              {currentLangLabel}
+            </Button>
           </View>
         </Card>
       </ScrollView>

@@ -1,3 +1,8 @@
 export { SignInScreen } from './SignInScreen.native';
-export type { SignInScreenProps } from './SignInScreen.types';
-export { LanguageSwitcher } from './LanguageSwitcher.native';
+export type {
+  SignInScreenProps,
+  LanguageOption,
+  ThemeOption,
+  LocaleData,
+  ThemeData,
+} from './SignInScreen.types';

@@ -1,17 +1,25 @@
 import React, { useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { Button, Input, Label, Checkbox, useToasts } from '@automatize/ui/web';
+import {
+  Button,
+  Input,
+  Label,
+  Checkbox,
+  useToasts,
+  ThemeSwitcher,
+  LanguageSwitcher,
+} from '@automatize/ui/web';
 import { useTranslation } from '@automatize/localization';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { useSignIn } from './useSignIn';
-import { LanguageSwitcher } from './LanguageSwitcher.web';
-import { ThemeSwitcher } from './ThemeSwitcher.web';
 
 // --- MAIN COMPONENT ---
 
 export const SignInScreen: React.FC<SignInScreenProps> = ({
   onSuccess,
   onResetPassword,
+  locale,
+  theme,
 }) => {
   const { t } = useTranslation();
   const toast = useToasts();
@@ -41,8 +49,21 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
     <div className="h-[100dvh] flex flex-col md:flex-row font-geist w-[100dvw]">
       {/* Top-right: language & theme switchers */}
       <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-        <ThemeSwitcher />
-        <LanguageSwitcher />
+        {theme && (
+          <ThemeSwitcher
+            currentPreference={theme.currentTheme}
+            isDark={theme.isDarkTheme}
+            options={theme.themeOptions}
+            onPreferenceChange={theme.onThemeChange}
+            triggerAriaLabel={t('theme.switch-label')}
+          />
+        )}
+        <LanguageSwitcher
+          languages={locale.languages}
+          currentLanguage={locale.currentLanguage}
+          onLanguageChange={locale.onLanguageChange}
+          triggerAriaLabel={t('language.switch-label')}
+        />
       </div>
 
       {/* Left column: sign-in form */}

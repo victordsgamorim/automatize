@@ -30,13 +30,27 @@ vi.mock('../useSignIn', () => ({
   useSignIn: () => mockSignIn,
 }));
 
-vi.mock('../ThemeSwitcher.web', () => ({
-  ThemeSwitcher: () => null,
-}));
-
 const defaultProps: SignInScreenProps = {
   onSuccess: vi.fn(),
   onResetPassword: vi.fn(),
+  locale: {
+    languages: [
+      { code: 'en', label: 'English', ext: 'US' },
+      { code: 'pt-BR', label: 'Português', ext: 'BR' },
+    ],
+    currentLanguage: 'en',
+    onLanguageChange: vi.fn(),
+  },
+  theme: {
+    currentTheme: 'system',
+    isDarkTheme: false,
+    themeOptions: [
+      { value: 'light', label: 'Light' },
+      { value: 'dark', label: 'Dark' },
+      { value: 'system', label: 'System' },
+    ],
+    onThemeChange: vi.fn(),
+  },
 };
 
 async function renderScreen(props: Partial<SignInScreenProps> = {}) {
