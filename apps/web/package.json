@@ -15,6 +15,7 @@
     "@automatize/auth": "workspace:*",
     "@automatize/localization": "workspace:*",
     "@automatize/navigation": "workspace:*",
+    "@automatize/forgot-password": "workspace:*",
     "@automatize/sign-in": "workspace:*",
     "@automatize/supabase-auth": "workspace:*",
     "@automatize/theme": "workspace:*",

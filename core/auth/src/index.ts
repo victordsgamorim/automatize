@@ -7,5 +7,6 @@
 
 export * from './context';
 export * from './loginSchema';
+export * from './resetPasswordSchema';
 export * from './types';
 export * from './useAuth';

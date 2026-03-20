@@ -38,5 +38,14 @@
   "theme.light": "Light",
   "theme.dark": "Dark",
   "theme.system": "System",
-  "theme.switch-label": "Change theme"
+  "theme.switch-label": "Change theme",
+  "forgot-password.title": "Reset your password",
+  "forgot-password.subtitle": "Enter your email and we'll send you a link to reset your password",
+  "forgot-password.email.label": "Email",
+  "forgot-password.email.placeholder": "Enter your email",
+  "forgot-password.submit": "Send reset link",
+  "forgot-password.submitting": "Sending...",
+  "forgot-password.success.title": "Check your inbox",
+  "forgot-password.success.message": "If an account exists for that email, we've sent a password reset link.",
+  "forgot-password.back-to-sign-in": "Back to sign in"
 }

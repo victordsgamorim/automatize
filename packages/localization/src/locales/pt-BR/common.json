@@ -38,5 +38,14 @@
   "theme.light": "Claro",
   "theme.dark": "Escuro",
   "theme.system": "Sistema",
-  "theme.switch-label": "Alterar tema"
+  "theme.switch-label": "Alterar tema",
+  "forgot-password.title": "Redefinir sua senha",
+  "forgot-password.subtitle": "Digite seu e-mail e enviaremos um link para redefinir sua senha",
+  "forgot-password.email.label": "E-mail",
+  "forgot-password.email.placeholder": "Digite seu e-mail",
+  "forgot-password.submit": "Enviar link de redefinição",
+  "forgot-password.submitting": "Enviando...",
+  "forgot-password.success.title": "Verifique sua caixa de entrada",
+  "forgot-password.success.message": "Se existir uma conta com esse e-mail, enviamos um link para redefinição de senha.",
+  "forgot-password.back-to-sign-in": "Voltar para o login"
 }

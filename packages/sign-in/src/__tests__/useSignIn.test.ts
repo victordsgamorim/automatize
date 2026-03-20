@@ -15,7 +15,11 @@ const mockLogin = vi.fn();
 describe('useSignIn', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    (useAuth as Mock).mockReturnValue({ login: mockLogin, isLoading: false });
+    (useAuth as Mock).mockReturnValue({
+      login: mockLogin,
+      resetPassword: vi.fn(),
+      isLoading: false,
+    });
   });
 
   describe('initial state', () => {
@@ -69,7 +73,11 @@ describe('useSignIn', () => {
 
   describe('isLoading', () => {
     it('reflects authLoading from useAuth', () => {
-      (useAuth as Mock).mockReturnValue({ login: mockLogin, isLoading: true });
+      (useAuth as Mock).mockReturnValue({
+        login: mockLogin,
+        resetPassword: vi.fn(),
+        isLoading: true,
+      });
       const { result } = renderHook(() => useSignIn());
       expect(result.current.isLoading).toBe(true);
     });
