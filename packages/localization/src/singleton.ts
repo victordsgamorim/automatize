@@ -17,6 +17,11 @@ let _promise: Promise<i18n> | null = null;
  * Starts i18next initialization eagerly.
  * Call this at the app entry point, before mounting the React tree.
  * Calling it more than once is safe and has no effect.
+ *
+ * When the loader provides pre-loaded `resources`, init is synchronous —
+ * `getLocalizationInstanceSync()` returns a fully-initialised instance
+ * immediately after this call.  This is critical for SSR: both server
+ * and client render translated text on the first pass (no hydration mismatch).
  */
 export function initLocalization(
   loader: TranslationLoader,
@@ -26,29 +31,48 @@ export function initLocalization(
 
   const inst = i18next.createInstance();
 
-  _promise = inst
-    .use(initReactI18next)
-    .use(
-      resourcesToBackend((language: string, namespace: string) =>
-        loader
-          .load(language as SupportedLanguage, namespace as SupportedNamespace)
-          .catch(() => ({}) as Record<string, string>)
+  const sharedOpts = {
+    lng: defaultLanguage,
+    fallbackLng: 'en',
+    ns: ['common'],
+    defaultNS: 'common',
+    keySeparator: false,
+    nsSeparator: false,
+    interpolation: { escapeValue: false },
+    react: { useSuspense: false },
+  } as const;
+
+  if (loader.resources) {
+    // Synchronous path — resources are already in memory.
+    // Pass them directly to init() so translations are available immediately.
+    inst.use(initReactI18next).init({
+      ...sharedOpts,
+      resources: loader.resources,
+      initImmediate: false,
+    } as Parameters<typeof inst.init>[0]);
+
+    _instance = inst;
+    _promise = Promise.resolve(inst);
+  } else {
+    // Async path — resources loaded via backend plugin.
+    _promise = inst
+      .use(initReactI18next)
+      .use(
+        resourcesToBackend((language: string, namespace: string) =>
+          loader
+            .load(
+              language as SupportedLanguage,
+              namespace as SupportedNamespace
+            )
+            .catch(() => ({}) as Record<string, string>)
+        )
       )
-    )
-    .init({
-      lng: defaultLanguage,
-      fallbackLng: 'en',
-      ns: ['common'],
-      defaultNS: 'common',
-      keySeparator: false,
-      nsSeparator: false,
-      interpolation: { escapeValue: false },
-      react: { useSuspense: false },
-    })
-    .then(() => {
-      _instance = inst;
-      return inst;
-    });
+      .init(sharedOpts)
+      .then(() => {
+        _instance = inst;
+        return inst;
+      });
+  }
 }
 
 /**

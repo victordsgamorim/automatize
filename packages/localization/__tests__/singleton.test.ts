@@ -75,10 +75,10 @@ describe('singleton', () => {
   });
 
   describe('getLocalizationInstanceSync', () => {
-    it('returns null immediately after initLocalization (init is async)', () => {
+    it('returns instance immediately after initLocalization (sync when loader has resources)', () => {
       initLocalization(createLocalLoader());
-      // Synchronous check — init promise is still pending
-      expect(getLocalizationInstanceSync()).toBeNull();
+      // With pre-loaded resources, init is synchronous
+      expect(getLocalizationInstanceSync()).not.toBeNull();
     });
 
     it('returns the instance once init has completed', async () => {
