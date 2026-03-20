@@ -3,33 +3,38 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Button, Input, Label, Checkbox, useToasts } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/localization';
 import type { SignInScreenProps } from './SignInScreen.types';
+import { useSignIn } from './useSignIn';
 import { LanguageSwitcher } from './LanguageSwitcher.web';
 import { ThemeSwitcher } from './ThemeSwitcher.web';
 
 // --- MAIN COMPONENT ---
 
 export const SignInScreen: React.FC<SignInScreenProps> = ({
-  email,
-  onEmailChange,
-  password,
-  onPasswordChange,
-  showPassword,
-  onToggleShowPassword,
-  error,
-  isLoading,
-  onSignIn,
+  onSuccess,
   onResetPassword,
 }) => {
   const { t } = useTranslation();
   const toast = useToasts();
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    showPassword,
+    toggleShowPassword,
+    error,
+    isLoading,
+    handleSignIn,
+  } = useSignIn();
 
   useEffect(() => {
     if (error) toast.error(error);
   }, [error]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSignIn();
+    const result = await handleSignIn();
+    if (result.success) onSuccess();
   };
 
   return (
@@ -64,7 +69,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                   type="email"
                   placeholder={t('sign-in.email.placeholder')}
                   value={email}
-                  onChange={(e) => onEmailChange(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}
                 />
               </div>
@@ -80,13 +85,13 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                     type={showPassword ? 'text' : 'password'}
                     placeholder={t('sign-in.password.placeholder')}
                     value={password}
-                    onChange={(e) => onPasswordChange(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     disabled={isLoading}
                     className="pr-12"
                   />
                   <button
                     type="button"
-                    onClick={onToggleShowPassword}
+                    onClick={toggleShowPassword}
                     className="absolute inset-y-0 right-3 flex items-center"
                   >
                     {showPassword ? (

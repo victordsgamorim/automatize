@@ -10,22 +10,31 @@ import { Button, Text, FormField, Card } from '@automatize/ui';
 import { useTheme } from '@automatize/theme';
 import { useTranslation } from '@automatize/localization';
 import type { SignInScreenProps } from './SignInScreen.types';
+import { useSignIn } from './useSignIn';
 import { LanguageSwitcher } from './LanguageSwitcher.native';
 
 export const SignInScreen: React.FC<SignInScreenProps> = ({
-  email,
-  onEmailChange,
-  password,
-  onPasswordChange,
-  showPassword,
-  onToggleShowPassword,
-  error,
-  isLoading,
-  onSignIn,
+  onSuccess,
   onResetPassword,
 }) => {
   const { colors: theme } = useTheme();
   const { t } = useTranslation();
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    showPassword,
+    toggleShowPassword,
+    error,
+    isLoading,
+    handleSignIn,
+  } = useSignIn();
+
+  const onSignIn = async () => {
+    const result = await handleSignIn();
+    if (result.success) onSuccess();
+  };
 
   const styles = StyleSheet.create({
     card: {
@@ -109,7 +118,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             label={t('sign-in.email.label')}
             placeholder={t('sign-in.email.placeholder')}
             value={email}
-            onChangeText={onEmailChange}
+            onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
             editable={!isLoading}
@@ -121,7 +130,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
             label={t('sign-in.password.label')}
             placeholder={t('sign-in.password.placeholder')}
             value={password}
-            onChangeText={onPasswordChange}
+            onChangeText={setPassword}
             secureTextEntry={!showPassword}
             editable={!isLoading}
             testID="sign-in-password-input"
@@ -130,7 +139,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
           {/* Toggle Password Visibility */}
           <Button
             variant="ghost"
-            onPress={onToggleShowPassword}
+            onPress={toggleShowPassword}
             disabled={isLoading}
             testID="sign-in-toggle-password"
           >
