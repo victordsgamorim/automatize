@@ -4,7 +4,7 @@
  */
 
 import { router } from 'expo-router';
-import { useTranslation } from '@automatize/localization';
+import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { SignInScreen } from '@automatize/sign-in';
 
 export default function LoginScreen() {
@@ -17,7 +17,7 @@ export default function LoginScreen() {
       }}
       onResetPassword={() => router.push('/(auth)/forgot-password')}
       locale={{
-        languages: (['en', 'pt-BR'] as const).map((lang) => ({
+        languages: SUPPORTED_LANGUAGES.map((lang) => ({
           code: lang,
           label: t(`app.language.${lang}`),
           ext: t(`app.language.${lang}.ext`),

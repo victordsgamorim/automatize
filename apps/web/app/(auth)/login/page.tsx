@@ -1,8 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useTranslation } from '@automatize/localization';
-import { useTheme } from '@automatize/theme';
+import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
+import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { SignInScreen } from '@automatize/sign-in/web';
 
 export default function LoginPage() {
@@ -15,7 +15,7 @@ export default function LoginPage() {
       onSuccess={() => router.push('/')}
       onResetPassword={() => router.push('/forgot-password')}
       locale={{
-        languages: (['en', 'pt-BR'] as const).map((lang) => ({
+        languages: SUPPORTED_LANGUAGES.map((lang) => ({
           code: lang,
           label: t(`app.language.${lang}`),
           ext: t(`app.language.${lang}.ext`),
@@ -26,11 +26,10 @@ export default function LoginPage() {
       theme={{
         currentTheme: preference,
         isDarkTheme: isDark,
-        themeOptions: [
-          { value: 'light', label: t('theme.light') },
-          { value: 'dark', label: t('theme.dark') },
-          { value: 'system', label: t('theme.system') },
-        ],
+        themeOptions: THEME_PREFERENCES.map((pref) => ({
+          value: pref,
+          label: t(`theme.${pref}`),
+        })),
         onThemeChange: setTheme,
       }}
     />

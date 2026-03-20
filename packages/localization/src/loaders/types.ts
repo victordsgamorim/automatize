@@ -1,5 +1,8 @@
 export type SupportedLanguage = 'en' | 'pt-BR';
 
+/** All supported languages as a runtime array */
+export const SUPPORTED_LANGUAGES: SupportedLanguage[] = ['en', 'pt-BR'];
+
 export type SupportedNamespace = 'common';
 
 export interface TranslationLoader {
