@@ -42,6 +42,20 @@ describe('Button (web)', () => {
     );
   });
 
+  it('applies greyed-out styling classes when disabled', () => {
+    render(<Button disabled>Click</Button>);
+    const className = screen.getByRole('button').className;
+    expect(className).toContain('disabled:!opacity-40');
+    expect(className).toContain('disabled:!saturate-0');
+    expect(className).toContain('disabled:cursor-default');
+  });
+
+  it('does not use cursor-not-allowed when disabled', () => {
+    render(<Button disabled>Click</Button>);
+    const className = screen.getByRole('button').className;
+    expect(className).not.toContain('cursor-not-allowed');
+  });
+
   it('calls onClick handler when clicked', () => {
     const onClick = vi.fn();
     render(<Button onClick={onClick}>Click</Button>);
