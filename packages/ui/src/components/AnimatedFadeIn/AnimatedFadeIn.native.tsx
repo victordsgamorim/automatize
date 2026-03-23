@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, ViewStyle } from 'react-native';
+import { Animated, Easing, type ViewStyle } from 'react-native';
 import { animation } from '../../tokens/animation';
 
 export interface AnimatedFadeInProps {
@@ -20,14 +20,16 @@ export const AnimatedFadeIn: React.FC<AnimatedFadeInProps> = ({
   const translate = useRef(
     new Animated.Value(
       'translateX' in config
-        ? (config as any).translateX
+        ? (config as typeof animation.slideRightIn).translateX
         : 'translateY' in config
-          ? (config as any).translateY
+          ? (config as typeof animation.fadeSlideIn).translateY
           : 0
     )
   ).current;
   const scale = useRef(
-    new Animated.Value('scale' in config ? (config as any).scale : 1)
+    new Animated.Value(
+      'scale' in config ? (config as typeof animation.testimonialIn).scale : 1
+    )
   ).current;
 
   useEffect(() => {
@@ -62,14 +64,14 @@ export const AnimatedFadeIn: React.FC<AnimatedFadeInProps> = ({
     ]).start();
   }, [config, delay, opacity, translate, scale]);
 
-  const animatedStyle: ViewStyle = {
+  const animatedStyle = {
     opacity,
     transform: [
       'translateX' in config
         ? { translateX: translate }
         : { translateY: translate },
       { scale },
-    ] as any,
+    ],
   };
 
   return (

@@ -930,7 +930,7 @@ describe('Web (CSS) — animation tokens cross-check', () => {
       if (key.startsWith('$')) continue;
       if (key === 'delay') continue;
 
-      const group = val as Record<string, any>;
+      const group = val as Record<string, unknown>;
       if (group['duration']) {
         expect(cssContent).toContain(`--animation-${key}-duration`);
       }
