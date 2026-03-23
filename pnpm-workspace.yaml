@@ -11,6 +11,8 @@ packages:
   - 'packages/navigation'
   # Sign-in (cross-platform screen + hook)
   - 'packages/sign-in'
+  # Forgot-password (cross-platform screen + hook)
+  - 'packages/forgot-password'
   # Integration — local infrastructure
   - 'integration/storage'
   - 'integration/sync'

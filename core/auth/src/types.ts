@@ -13,4 +13,5 @@
 export interface AuthContextValue {
   readonly isLoading: boolean;
   login(email: string, password: string): Promise<void>;
+  resetPassword(email: string): Promise<void>;
 }
