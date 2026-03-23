@@ -9,6 +9,7 @@ import {
   ThemeSwitcher,
   LanguageSwitcher,
   FormField,
+  AnimatedFadeIn,
 } from '@automatize/ui/web';
 import { useTranslation } from 'react-i18next';
 import type { SignInScreenProps } from './SignInScreen.types';
@@ -71,63 +72,71 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="flex flex-col gap-6">
-            <h1 className="animate-element animate-delay-100 text-4xl md:text-5xl font-semibold leading-tight">
-              <span className="font-light text-foreground tracking-tighter">
-                {t('sign-in.welcome')}
-              </span>
-            </h1>
-            <p className="animate-element animate-delay-200 text-muted-foreground">
-              {t('sign-in.subtitle')}
-            </p>
+            <AnimatedFadeIn delay={100}>
+              <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
+                <span className="font-light text-foreground tracking-tighter">
+                  {t('sign-in.welcome')}
+                </span>
+              </h1>
+            </AnimatedFadeIn>
+
+            <AnimatedFadeIn delay={200}>
+              <p className="text-muted-foreground">{t('sign-in.subtitle')}</p>
+            </AnimatedFadeIn>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
-              <FormField
-                label={t('sign-in.email.label')}
-                htmlFor="sign-in-email"
-                className="animate-element animate-delay-300"
-              >
-                <Input
-                  id="sign-in-email"
-                  name="email"
-                  type="email"
-                  placeholder={t('sign-in.email.placeholder')}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={isLoading}
-                />
-              </FormField>
-
-              <FormField
-                label={t('sign-in.password.label')}
-                htmlFor="sign-in-password"
-                className="animate-element animate-delay-400"
-              >
-                <div className="relative">
+              <AnimatedFadeIn delay={300}>
+                <FormField
+                  label={t('sign-in.email.label')}
+                  htmlFor="sign-in-email"
+                >
                   <Input
-                    id="sign-in-password"
-                    name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder={t('sign-in.password.placeholder')}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    id="sign-in-email"
+                    name="email"
+                    type="email"
+                    placeholder={t('sign-in.email.placeholder')}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     disabled={isLoading}
-                    className="pr-12"
                   />
-                  <button
-                    type="button"
-                    onClick={toggleShowPassword}
-                    className="absolute inset-y-0 right-3 flex items-center"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
-                    ) : (
-                      <Eye className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
-                    )}
-                  </button>
-                </div>
-              </FormField>
+                </FormField>
+              </AnimatedFadeIn>
 
-              <div className="animate-element animate-delay-500 flex items-center justify-between text-sm">
+              <AnimatedFadeIn delay={400}>
+                <FormField
+                  label={t('sign-in.password.label')}
+                  htmlFor="sign-in-password"
+                >
+                  <div className="relative">
+                    <Input
+                      id="sign-in-password"
+                      name="password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder={t('sign-in.password.placeholder')}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isLoading}
+                      className="pr-12"
+                    />
+                    <button
+                      type="button"
+                      onClick={toggleShowPassword}
+                      className="absolute inset-y-0 right-3 flex items-center"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                      ) : (
+                        <Eye className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
+                      )}
+                    </button>
+                  </div>
+                </FormField>
+              </AnimatedFadeIn>
+
+              <AnimatedFadeIn
+                delay={500}
+                className="flex items-center justify-between text-sm"
+              >
                 <Label className="flex items-center gap-3 cursor-pointer">
                   <Checkbox name="rememberMe" />
                   <span className="text-foreground/90">
@@ -143,15 +152,17 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 >
                   {t('sign-in.reset-password')}
                 </Button>
-              </div>
+              </AnimatedFadeIn>
 
-              <Button
-                type="submit"
-                disabled={isLoading || !email || !password}
-                className="animate-element animate-delay-600 w-full"
-              >
-                {isLoading ? t('sign-in.submitting') : t('sign-in.submit')}
-              </Button>
+              <AnimatedFadeIn delay={600}>
+                <Button
+                  type="submit"
+                  disabled={isLoading || !email || !password}
+                  className="w-full"
+                >
+                  {isLoading ? t('sign-in.submitting') : t('sign-in.submit')}
+                </Button>
+              </AnimatedFadeIn>
             </form>
           </div>
         </div>

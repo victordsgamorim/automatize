@@ -6,6 +6,7 @@
 /* Scan packages/ui/src so Tailwind detects classes used in shared components */
 @source "../../../packages/ui/src";
 @source "../../../packages/sign-in/src";
+@source "../../../packages/forgot-password/src";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -58,6 +59,28 @@
 
   /* Toast shadow */
   --shadow-toast: var(--toast-shadow);
+
+  /* Animation / Transitions — Mapping shared design tokens to Tailwind v4 theme */
+  --animate-fade-in: fadeSlideIn var(--animation-fadeSlideIn-duration)
+    var(--animation-fadeSlideIn-easing) forwards;
+  --animate-slide-right: slideRightIn var(--animation-slideRightIn-duration)
+    var(--animation-slideRightIn-easing) forwards;
+  --animate-testimonial: testimonialIn var(--animation-testimonialIn-duration)
+    var(--animation-testimonialIn-easing) forwards;
+
+  /* Animation Delays — These generate utility classes like 'delay-100' or 'animate-delay-100' */
+  --animation-delay-100: var(--animation-delay-100);
+  --animation-delay-200: var(--animation-delay-200);
+  --animation-delay-300: var(--animation-delay-300);
+  --animation-delay-400: var(--animation-delay-400);
+  --animation-delay-500: var(--animation-delay-500);
+  --animation-delay-600: var(--animation-delay-600);
+  --animation-delay-700: var(--animation-delay-700);
+  --animation-delay-800: var(--animation-delay-800);
+  --animation-delay-900: var(--animation-delay-900);
+  --animation-delay-1000: var(--animation-delay-1000);
+  --animation-delay-1200: var(--animation-delay-1200);
+  --animation-delay-1400: var(--animation-delay-1400);
 }
 
 /* ─── Base Styles ─────────────────────────────────────────────────────────── */
@@ -131,87 +154,4 @@
   }
 }
 
-/* ─── Custom Animations ───────────────────────────────────────────────────── */
-@layer utilities {
-  @keyframes fadeSlideIn {
-    to {
-      opacity: 1;
-      filter: blur(0px);
-      transform: translateY(0px);
-    }
-  }
 
-  @keyframes slideRightIn {
-    to {
-      opacity: 1;
-      filter: blur(0px);
-      transform: translateX(0px);
-    }
-  }
-
-  @keyframes testimonialIn {
-    to {
-      opacity: 1;
-      filter: blur(0px);
-      transform: translateY(0px) scale(1);
-    }
-  }
-
-  .animate-element {
-    opacity: 0;
-    filter: blur(8px);
-    transform: translateY(20px);
-    animation: fadeSlideIn 0.6s ease-out forwards;
-  }
-
-  .animate-slide-right {
-    opacity: 0;
-    filter: blur(8px);
-    transform: translateX(100px);
-    animation: slideRightIn 0.6s ease-out forwards;
-  }
-
-  .animate-testimonial {
-    opacity: 0;
-    filter: blur(8px);
-    transform: translateY(20px) scale(0.95);
-    animation: testimonialIn 0.6s ease-out forwards;
-  }
-
-  .animate-delay-100 {
-    animation-delay: 0.1s;
-  }
-  .animate-delay-200 {
-    animation-delay: 0.2s;
-  }
-  .animate-delay-300 {
-    animation-delay: 0.3s;
-  }
-  .animate-delay-400 {
-    animation-delay: 0.4s;
-  }
-  .animate-delay-500 {
-    animation-delay: 0.5s;
-  }
-  .animate-delay-600 {
-    animation-delay: 0.6s;
-  }
-  .animate-delay-700 {
-    animation-delay: 0.7s;
-  }
-  .animate-delay-800 {
-    animation-delay: 0.8s;
-  }
-  .animate-delay-900 {
-    animation-delay: 0.9s;
-  }
-  .animate-delay-1000 {
-    animation-delay: 1s;
-  }
-  .animate-delay-1200 {
-    animation-delay: 1.2s;
-  }
-  .animate-delay-1400 {
-    animation-delay: 1.4s;
-  }
-}

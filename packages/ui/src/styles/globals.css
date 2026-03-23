@@ -18,6 +18,9 @@
 /* Primitive palette + spacing + typography vars (generated) */
 @import './_tokens.css';
 
+/* Animation keyframes + utility classes (generated) */
+@import './_animation.css';
+
 /* ─── Semantic Tokens — Light Mode ───────────────────────────────────────── */
 :root {
   --font-size: 16px;

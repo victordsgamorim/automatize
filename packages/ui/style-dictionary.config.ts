@@ -234,6 +234,209 @@ StyleDictionary.registerFormat({
 });
 
 StyleDictionary.registerFormat({
+  name: 'ts/animation',
+  format: ({ dictionary }) => {
+    const tokens = dictionary.allTokens.filter(
+      (t) => t.path[0] === 'animation'
+    );
+
+    // Group tokens by animation name (fadeSlideIn, slideRightIn, etc.)
+    const animations: Record<string, Record<string, unknown>> = {};
+    const delays: Record<string, number> = {};
+
+    for (const token of tokens) {
+      const group = token.path[1]; // fadeSlideIn | slideRightIn | delay | ...
+      const prop = token.path[2]; // duration | easing | blur | ...
+      const rawValue = token.$value ?? token.value;
+
+      if (group === 'delay') {
+        // Delay tokens: convert '100ms' → 100
+        delays[prop] =
+          typeof rawValue === 'string'
+            ? parseInt(rawValue, 10) || 0
+            : Number(rawValue);
+      } else {
+        if (!animations[group]) animations[group] = {};
+
+        if (token.$type === 'duration') {
+          animations[group][prop] =
+            typeof rawValue === 'string'
+              ? parseInt(rawValue, 10) || 0
+              : Number(rawValue);
+        } else if (token.$type === 'cubicBezier') {
+          animations[group][prop] = rawValue;
+        } else if (token.$type === 'dimension') {
+          animations[group][prop] = dimToNumber(rawValue);
+        } else if (token.$type === 'number') {
+          animations[group][prop] = Number(rawValue);
+        } else {
+          animations[group][prop] = rawValue;
+        }
+      }
+    }
+
+    const result = { ...animations, delay: delays };
+
+    return [
+      TS_HEADER,
+      '',
+      `export const animation = ${toTs(result)} as const;`,
+      '',
+    ].join('\n');
+  },
+});
+
+StyleDictionary.registerFormat({
+  name: 'css/animation',
+  format: ({ dictionary }) => {
+    const tokens = dictionary.allTokens.filter(
+      (t) => t.path[0] === 'animation'
+    );
+
+    const lines: string[] = [FILE_HEADER, ''];
+
+    // Emit CSS custom properties
+    lines.push(':root {');
+    for (const token of tokens) {
+      const name = token.path.join('-');
+      const rawValue = token.$value ?? token.value;
+
+      if (token.$type === 'cubicBezier') {
+        const val = rawValue;
+        if (Array.isArray(val)) {
+          lines.push(
+            `  --${name}: cubic-bezier(${(val as number[]).join(', ')});`
+          );
+        } else {
+          // Already transformed by SD's css transformGroup
+          lines.push(`  --${name}: ${String(val)};`);
+        }
+      } else {
+        lines.push(`  --${name}: ${String(rawValue)};`);
+      }
+    }
+    lines.push('}', '');
+
+    // Helper to read a token value by path
+    const tokenVal = (
+      path: string[]
+    ): string | number | number[] | undefined => {
+      const t = tokens.find(
+        (tok) =>
+          tok.path.length === path.length &&
+          tok.path.every((p, i) => p === path[i])
+      );
+      return t ? (t.$value ?? t.value) : undefined;
+    };
+
+    const easingToken = tokens.find(
+      (tok) =>
+        tok.path.length === 3 &&
+        tok.path[0] === 'animation' &&
+        tok.path[1] === 'fadeSlideIn' &&
+        tok.path[2] === 'easing'
+    );
+    const easingRaw = easingToken
+      ? (easingToken.$value ?? easingToken.value)
+      : undefined;
+    let easingCss = 'ease-out';
+    if (easingRaw) {
+      if (Array.isArray(easingRaw)) {
+        easingCss = `cubic-bezier(${(easingRaw as number[]).join(', ')})`;
+      } else if (typeof easingRaw === 'string') {
+        // Already transformed — use as-is (might be 'cubic-bezier(...)' or keyword)
+        easingCss = easingRaw;
+      }
+    }
+
+    // ─── @keyframes ────────────────────────────────────────────────────
+    lines.push('/* ─── Keyframes (generated from animation tokens) ─── */');
+
+    // fadeSlideIn
+    lines.push('@keyframes fadeSlideIn {');
+    lines.push('  to {');
+    lines.push('    opacity: 1;');
+    lines.push('    filter: blur(0px);');
+    lines.push('    transform: translateY(0px);');
+    lines.push('  }');
+    lines.push('}', '');
+
+    // slideRightIn
+    lines.push('@keyframes slideRightIn {');
+    lines.push('  to {');
+    lines.push('    opacity: 1;');
+    lines.push('    filter: blur(0px);');
+    lines.push('    transform: translateX(0px);');
+    lines.push('  }');
+    lines.push('}', '');
+
+    // testimonialIn
+    lines.push('@keyframes testimonialIn {');
+    lines.push('  to {');
+    lines.push('    opacity: 1;');
+    lines.push('    filter: blur(0px);');
+    lines.push('    transform: translateY(0px) scale(1);');
+    lines.push('  }');
+    lines.push('}', '');
+
+    // ─── Utility classes ───────────────────────────────────────────────
+    lines.push('/* ─── Animation utility classes (generated) ─── */');
+
+    const fadeBlur = tokenVal(['animation', 'fadeSlideIn', 'blur']);
+    const fadeTransY = tokenVal(['animation', 'fadeSlideIn', 'translateY']);
+    const fadeDuration = tokenVal(['animation', 'fadeSlideIn', 'duration']);
+    lines.push('.animate-element {');
+    lines.push('  opacity: 0;');
+    lines.push(`  filter: blur(${fadeBlur ?? '8px'});`);
+    lines.push(`  transform: translateY(${fadeTransY ?? '20px'});`);
+    lines.push(
+      `  animation: fadeSlideIn ${fadeDuration ?? '600ms'} ${easingCss} forwards;`
+    );
+    lines.push('}', '');
+
+    const slideBlur = tokenVal(['animation', 'slideRightIn', 'blur']);
+    const slideTransX = tokenVal(['animation', 'slideRightIn', 'translateX']);
+    const slideDuration = tokenVal(['animation', 'slideRightIn', 'duration']);
+    lines.push('.animate-slide-right {');
+    lines.push('  opacity: 0;');
+    lines.push(`  filter: blur(${slideBlur ?? '8px'});`);
+    lines.push(`  transform: translateX(${slideTransX ?? '100px'});`);
+    lines.push(
+      `  animation: slideRightIn ${slideDuration ?? '600ms'} ${easingCss} forwards;`
+    );
+    lines.push('}', '');
+
+    const testBlur = tokenVal(['animation', 'testimonialIn', 'blur']);
+    const testTransY = tokenVal(['animation', 'testimonialIn', 'translateY']);
+    const testScale = tokenVal(['animation', 'testimonialIn', 'scale']);
+    const testDuration = tokenVal(['animation', 'testimonialIn', 'duration']);
+    lines.push('.animate-testimonial {');
+    lines.push('  opacity: 0;');
+    lines.push(`  filter: blur(${testBlur ?? '8px'});`);
+    lines.push(
+      `  transform: translateY(${testTransY ?? '20px'}) scale(${testScale ?? 0.95});`
+    );
+    lines.push(
+      `  animation: testimonialIn ${testDuration ?? '600ms'} ${easingCss} forwards;`
+    );
+    lines.push('}', '');
+
+    // Delay utilities
+    const delayTokens = tokens.filter((t) => t.path[1] === 'delay');
+    for (const dt of delayTokens) {
+      const delayName = dt.path[2];
+      const delayValue = dt.$value ?? dt.value;
+      lines.push(`.animate-delay-${delayName} {`);
+      lines.push(`  animation-delay: ${delayValue};`);
+      lines.push('}');
+    }
+
+    lines.push('');
+    return lines.join('\n');
+  },
+});
+
+StyleDictionary.registerFormat({
   name: 'ts/barrel',
   format: () => {
     return [
@@ -243,6 +446,7 @@ StyleDictionary.registerFormat({
       "export * from './spacing';",
       "export * from './typography';",
       "export * from './shadows';",
+      "export * from './animation';",
       '',
     ].join('\n');
   },
@@ -320,6 +524,11 @@ const config: Config = {
             token.path[0] === 'shadow' || token.path[0] === 'radius',
         },
         {
+          destination: 'animation.ts',
+          format: 'ts/animation',
+          filter: (token) => token.path[0] === 'animation',
+        },
+        {
           destination: 'index.ts',
           format: 'ts/barrel',
         },
@@ -332,7 +541,13 @@ const config: Config = {
         {
           destination: '_tokens.css',
           format: 'css/tokens',
+          filter: (token) => token.path[0] !== 'animation',
           options: { outputReferences: true },
+        },
+        {
+          destination: '_animation.css',
+          format: 'css/animation',
+          filter: (token) => token.path[0] === 'animation',
         },
       ],
     },
