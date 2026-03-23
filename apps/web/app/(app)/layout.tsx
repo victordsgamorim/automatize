@@ -3,6 +3,7 @@
 import React, { useEffect } from 'react';
 import { useUserAuthentication } from '@automatize/supabase-auth';
 import { useNavigation } from '@automatize/navigation';
+import { SidebarProvider } from '@automatize/ui/web';
 import styles from './app-layout.module.css';
 import Navigation from './navigation';
 
@@ -21,9 +22,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className={styles.container}>
+    <SidebarProvider>
       <Navigation />
       <main className={styles.main}>{children}</main>
-    </div>
+    </SidebarProvider>
   );
 }
