@@ -9,7 +9,7 @@ import {
   ThemeSwitcher,
   LanguageSwitcher,
   FormField,
-  AnimateIn,
+  AnimatedFadeIn,
 } from '@automatize/ui/web';
 import { useTranslation } from 'react-i18next';
 import type { SignInScreenProps } from './SignInScreen.types';
@@ -72,20 +72,20 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="flex flex-col gap-6">
-            <AnimateIn delay={100}>
+            <AnimatedFadeIn delay={100}>
               <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
                 <span className="font-light text-foreground tracking-tighter">
                   {t('sign-in.welcome')}
                 </span>
               </h1>
-            </AnimateIn>
+            </AnimatedFadeIn>
 
-            <AnimateIn delay={200}>
+            <AnimatedFadeIn delay={200}>
               <p className="text-muted-foreground">{t('sign-in.subtitle')}</p>
-            </AnimateIn>
+            </AnimatedFadeIn>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
-              <AnimateIn delay={300}>
+              <AnimatedFadeIn delay={300}>
                 <FormField
                   label={t('sign-in.email.label')}
                   htmlFor="sign-in-email"
@@ -100,9 +100,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                     disabled={isLoading}
                   />
                 </FormField>
-              </AnimateIn>
+              </AnimatedFadeIn>
 
-              <AnimateIn delay={400}>
+              <AnimatedFadeIn delay={400}>
                 <FormField
                   label={t('sign-in.password.label')}
                   htmlFor="sign-in-password"
@@ -131,9 +131,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                     </button>
                   </div>
                 </FormField>
-              </AnimateIn>
+              </AnimatedFadeIn>
 
-              <AnimateIn
+              <AnimatedFadeIn
                 delay={500}
                 className="flex items-center justify-between text-sm"
               >
@@ -152,9 +152,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 >
                   {t('sign-in.reset-password')}
                 </Button>
-              </AnimateIn>
+              </AnimatedFadeIn>
 
-              <AnimateIn delay={600}>
+              <AnimatedFadeIn delay={600}>
                 <Button
                   type="submit"
                   disabled={isLoading || !email || !password}
@@ -162,7 +162,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 >
                   {isLoading ? t('sign-in.submitting') : t('sign-in.submit')}
                 </Button>
-              </AnimateIn>
+              </AnimatedFadeIn>
             </form>
           </div>
         </div>

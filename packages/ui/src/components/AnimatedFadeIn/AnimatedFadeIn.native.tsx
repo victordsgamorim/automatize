@@ -2,14 +2,14 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, ViewStyle } from 'react-native';
 import { animation } from '../../tokens/animation';
 
-export interface AnimateInProps {
+export interface AnimatedFadeInProps {
   children: React.ReactNode;
   delay?: number;
   type?: keyof typeof animation;
   style?: ViewStyle;
 }
 
-export const AnimateIn: React.FC<AnimateInProps> = ({
+export const AnimatedFadeIn: React.FC<AnimatedFadeInProps> = ({
   children,
   delay = 0,
   type = 'fadeSlideIn',

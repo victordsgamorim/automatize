@@ -1,14 +1,14 @@
 import React from 'react';
 import { cn } from '../../utils';
 
-export interface AnimateInProps {
+export interface AnimatedFadeInProps {
   children: React.ReactNode;
   delay?: number;
   type?: 'fadeSlideIn' | 'slideRightIn' | 'testimonialIn';
   className?: string;
 }
 
-export const AnimateIn: React.FC<AnimateInProps> = ({
+export const AnimatedFadeIn: React.FC<AnimatedFadeInProps> = ({
   children,
   delay = 0,
   type = 'fadeSlideIn',
@@ -16,12 +16,12 @@ export const AnimateIn: React.FC<AnimateInProps> = ({
 }) => {
   const typeClass =
     type === 'fadeSlideIn'
-      ? 'animate-fade-in'
+      ? 'animate-element'
       : type === 'slideRightIn'
         ? 'animate-slide-right'
         : type === 'testimonialIn'
           ? 'animate-testimonial'
-          : 'animate-fade-in';
+          : 'animate-element';
 
   const delayClass = delay > 0 ? `animate-delay-${delay}` : '';
 

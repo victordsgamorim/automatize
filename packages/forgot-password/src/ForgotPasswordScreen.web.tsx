@@ -7,7 +7,7 @@ import {
   ThemeSwitcher,
   LanguageSwitcher,
   FormField,
-  AnimateIn,
+  AnimatedFadeIn,
 } from '@automatize/ui/web';
 import { useTranslation } from 'react-i18next';
 import type { ForgotPasswordScreenProps } from './ForgotPasswordScreen.types';
@@ -57,7 +57,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           {isSuccess ? (
-            <AnimateIn delay={100} className="flex flex-col gap-6">
+            <AnimatedFadeIn delay={100} className="flex flex-col gap-6">
               <div className="flex justify-center">
                 <MailCheck className="w-16 h-16 text-primary" />
               </div>
@@ -72,10 +72,10 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
               <Button type="button" onClick={onBackToSignIn} className="w-full">
                 {t('forgot-password.back-to-sign-in')}
               </Button>
-            </AnimateIn>
+            </AnimatedFadeIn>
           ) : (
             <div className="flex flex-col gap-6">
-              <AnimateIn
+              <AnimatedFadeIn
                 delay={100}
                 className="flex items-center justify-start gap-2"
               >
@@ -90,24 +90,24 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                 <span className="text-sm text-muted-foreground">
                   {t('forgot-password.back-to-sign-in')}
                 </span>
-              </AnimateIn>
+              </AnimatedFadeIn>
 
-              <AnimateIn delay={100}>
+              <AnimatedFadeIn delay={100}>
                 <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
                   <span className="font-light text-foreground tracking-tighter">
                     {t('forgot-password.title')}
                   </span>
                 </h1>
-              </AnimateIn>
+              </AnimatedFadeIn>
 
-              <AnimateIn delay={200}>
+              <AnimatedFadeIn delay={200}>
                 <p className="text-muted-foreground">
                   {t('forgot-password.subtitle')}
                 </p>
-              </AnimateIn>
+              </AnimatedFadeIn>
 
               <form className="space-y-5" onSubmit={onFormSubmit}>
-                <AnimateIn delay={300}>
+                <AnimatedFadeIn delay={300}>
                   <FormField
                     label={t('forgot-password.email.label')}
                     htmlFor="forgot-password-email"
@@ -122,9 +122,9 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                       disabled={isLoading}
                     />
                   </FormField>
-                </AnimateIn>
+                </AnimatedFadeIn>
 
-                <AnimateIn delay={400}>
+                <AnimatedFadeIn delay={400}>
                   <Button
                     type="submit"
                     disabled={isLoading || !email}
@@ -134,7 +134,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                       ? t('forgot-password.submitting')
                       : t('forgot-password.submit')}
                   </Button>
-                </AnimateIn>
+                </AnimatedFadeIn>
               </form>
             </div>
           )}

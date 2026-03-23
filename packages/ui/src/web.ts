@@ -39,5 +39,5 @@ export type {
   RootErrorBoundaryProps,
 } from './components/ErrorBoundary/ErrorBoundary.web';
 
-export { AnimateIn } from './components/AnimateIn/AnimateIn.web';
-export type { AnimateInProps } from './components/AnimateIn/AnimateIn.web';
+export { AnimatedFadeIn } from './components/AnimatedFadeIn/AnimatedFadeIn.web';
+export type { AnimatedFadeInProps } from './components/AnimatedFadeIn/AnimatedFadeIn.web';
