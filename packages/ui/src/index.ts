@@ -58,3 +58,7 @@ export {
   LogOutIcon,
 } from './components/Icon/Icon';
 export type { IconProps } from './components/Icon/Icon';
+
+// Animation (cross-platform helper)
+export { AnimateIn } from './components/AnimateIn/AnimateIn.native';
+export type { AnimateInProps } from './components/AnimateIn/AnimateIn.native';

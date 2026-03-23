@@ -58,6 +58,28 @@
 
   /* Toast shadow */
   --shadow-toast: var(--toast-shadow);
+
+  /* Animation / Transitions — Mapping shared design tokens to Tailwind v4 theme */
+  --animate-fade-in: fadeSlideIn var(--animation-fadeSlideIn-duration)
+    var(--animation-fadeSlideIn-easing) forwards;
+  --animate-slide-right: slideRightIn var(--animation-slideRightIn-duration)
+    var(--animation-slideRightIn-easing) forwards;
+  --animate-testimonial: testimonialIn var(--animation-testimonialIn-duration)
+    var(--animation-testimonialIn-easing) forwards;
+
+  /* Animation Delays — These generate utility classes like 'delay-100' or 'animate-delay-100' */
+  --animation-delay-100: var(--animation-delay-100);
+  --animation-delay-200: var(--animation-delay-200);
+  --animation-delay-300: var(--animation-delay-300);
+  --animation-delay-400: var(--animation-delay-400);
+  --animation-delay-500: var(--animation-delay-500);
+  --animation-delay-600: var(--animation-delay-600);
+  --animation-delay-700: var(--animation-delay-700);
+  --animation-delay-800: var(--animation-delay-800);
+  --animation-delay-900: var(--animation-delay-900);
+  --animation-delay-1000: var(--animation-delay-1000);
+  --animation-delay-1200: var(--animation-delay-1200);
+  --animation-delay-1400: var(--animation-delay-1400);
 }
 
 /* ─── Base Styles ─────────────────────────────────────────────────────────── */

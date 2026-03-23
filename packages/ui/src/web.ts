@@ -38,3 +38,6 @@ export type {
   ErrorBoundaryProps,
   RootErrorBoundaryProps,
 } from './components/ErrorBoundary/ErrorBoundary.web';
+
+export { AnimateIn } from './components/AnimateIn/AnimateIn.web';
+export type { AnimateInProps } from './components/AnimateIn/AnimateIn.web';
