@@ -22,6 +22,7 @@ The package has two main exports:
 **Important:** Full-page screens (e.g., `SignInScreen`, `DashboardScreen`) do NOT belong in the design system. Cross-platform screens live in their own feature packages under `packages/` (e.g., `packages/sign-in/` → `@automatize/sign-in`). Platform-specific screens live in `apps/<platform>/components/screens/`. The design system contains only reusable primitives, tokens, and generic composites.
 
 - **src/styles/\_tokens.css** — ⚠️ GENERATED CSS custom properties (do not edit). Run `pnpm tokens:build`.
+- **src/styles/\_animation.css** — ⚠️ GENERATED animation keyframes + utility classes (do not edit). Run `pnpm tokens:build`.
 - **src/styles/globals.css** — Hand-authored semantic mappings (CSS vars). Imports `_tokens.css`. **Does not contain Tailwind directives.**
 - **src/components/** — Reusable UI components organized in folders. Each folder contains platform-specific implementations (`.web.tsx` / `.native.tsx`). No per-component barrel files.
 - **src/index.ts** — Main package entry (`@automatize/ui`). Exports native implementations using explicit `.native.tsx` paths (e.g., `./components/Button/Button.native`).
@@ -37,20 +38,21 @@ Edit tokens/*.json
       ↓
 pnpm --filter @automatize/ui build    ← runs tokens:build automatically
       ↓
-Generated: src/tokens/*.ts + src/styles/_tokens.css
+Generated: src/tokens/*.ts + src/styles/_tokens.css + src/styles/_animation.css
 ```
 
 ### Adding or modifying a token
 
 1. Edit the relevant JSON file in `tokens/`:
 
-   | File              | Contains                                    |
-   | ----------------- | ------------------------------------------- |
-   | `color.json`      | Color palettes + semantic color mappings    |
-   | `spacing.json`    | Spacing scale (4px base unit)               |
-   | `typography.json` | Font families, sizes, weights, line heights |
-   | `shadow.json`     | Shadow definitions (with RN elevation)      |
-   | `radius.json`     | Border radius values                        |
+   | File              | Contains                                                     |
+   | ----------------- | ------------------------------------------------------------ |
+   | `color.json`      | Color palettes + semantic color mappings                     |
+   | `spacing.json`    | Spacing scale (4px base unit)                                |
+   | `typography.json` | Font families, sizes, weights, line heights                  |
+   | `shadow.json`     | Shadow definitions (with RN elevation)                       |
+   | `radius.json`     | Border radius values                                         |
+   | `animation.json`  | Animation values (duration, easing, blur, translate, delays) |
 
 2. **Build the project** (tokens are generated automatically):
 
@@ -91,14 +93,16 @@ Generated: src/tokens/*.ts + src/styles/_tokens.css
 
 ### What gets generated
 
-| Output                     | Consumer          | Format                              |
-| -------------------------- | ----------------- | ----------------------------------- |
-| `src/tokens/colors.ts`     | React Native      | `export const colors = { ... }`     |
-| `src/tokens/spacing.ts`    | React Native      | `export const spacing = { ... }`    |
-| `src/tokens/typography.ts` | React Native      | `export const typography = { ... }` |
-| `src/tokens/shadows.ts`    | React Native      | `export const shadows/borderRadius` |
-| `src/tokens/index.ts`      | Barrel re-export  | `export * from './...'`             |
-| `src/styles/_tokens.css`   | Web / Tailwind v4 | CSS custom properties in `:root`    |
+| Output                      | Consumer          | Format                                              |
+| --------------------------- | ----------------- | --------------------------------------------------- |
+| `src/tokens/colors.ts`      | React Native      | `export const colors = { ... }`                     |
+| `src/tokens/spacing.ts`     | React Native      | `export const spacing = { ... }`                    |
+| `src/tokens/typography.ts`  | React Native      | `export const typography = { ... }`                 |
+| `src/tokens/shadows.ts`     | React Native      | `export const shadows/borderRadius`                 |
+| `src/tokens/animation.ts`   | React Native      | `export const animation = { ... }`                  |
+| `src/tokens/index.ts`       | Barrel re-export  | `export * from './...'`                             |
+| `src/styles/_tokens.css`    | Web / Tailwind v4 | CSS custom properties in `:root`                    |
+| `src/styles/_animation.css` | Web / Tailwind v4 | Keyframes + utility classes + CSS custom properties |
 
 ### Rules
 
@@ -172,6 +176,24 @@ const styles = StyleSheet.create({
 });
 ```
 
+#### Animation tokens (React Native)
+
+```ts
+import { animation } from '@automatize/ui/tokens';
+import { Animated, Easing } from 'react-native';
+
+// Access shared animation values
+const fadeIn = Animated.timing(opacity, {
+  toValue: 1,
+  duration: animation.fadeSlideIn.duration, // 600
+  easing: Easing.bezier(...animation.fadeSlideIn.easing), // [0, 0, 0.2, 1]
+  useNativeDriver: true,
+});
+
+// Use delay tokens for staggered animations
+const delay = animation.delay[200]; // 200 (ms)
+```
+
 ### Web (CSS/Tailwind)
 
 ```css
@@ -181,5 +203,31 @@ const styles = StyleSheet.create({
 .custom {
   color: var(--color-brand-600);
   padding: var(--spacing-4);
+}
+```
+
+#### Animation utilities (Web)
+
+The `@automatize/ui/styles` import includes generated animation utility classes:
+
+```html
+<!-- Fade + slide up with staggered delays -->
+<h1 class="animate-element animate-delay-100">Title</h1>
+<p class="animate-element animate-delay-200">Subtitle</p>
+<div class="animate-element animate-delay-300">Content</div>
+
+<!-- Slide from right -->
+<div class="animate-slide-right animate-delay-100">Panel</div>
+
+<!-- Testimonial entrance -->
+<div class="animate-testimonial animate-delay-200">Quote</div>
+```
+
+CSS custom properties are also available for custom animations:
+
+```css
+.custom-animation {
+  animation-duration: var(--animation-fadeSlideIn-duration);
+  animation-timing-function: var(--animation-fadeSlideIn-easing);
 }
 ```

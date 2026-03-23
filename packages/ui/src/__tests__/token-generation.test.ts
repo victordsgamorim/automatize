@@ -65,12 +65,20 @@ beforeAll(() => {
 //  1. GENERATED FILES EXIST
 // ════════════════════════════════════════════════════════════════════════════
 
+const GENERATED_ANIMATION_CSS_PATH = path.join(
+  UI_ROOT,
+  'src',
+  'styles',
+  '_animation.css'
+);
+
 describe('Generated files existence', () => {
   const expectedTsFiles = [
     'colors.ts',
     'spacing.ts',
     'typography.ts',
     'shadows.ts',
+    'animation.ts',
     'index.ts',
   ];
 
@@ -87,6 +95,12 @@ describe('Generated files existence', () => {
   it('should generate CSS file: _tokens.css', () => {
     expect(fs.existsSync(GENERATED_CSS_PATH)).toBe(true);
     const content = fs.readFileSync(GENERATED_CSS_PATH, 'utf-8');
+    expect(content.length).toBeGreaterThan(0);
+  });
+
+  it('should generate CSS file: _animation.css', () => {
+    expect(fs.existsSync(GENERATED_ANIMATION_CSS_PATH)).toBe(true);
+    const content = fs.readFileSync(GENERATED_ANIMATION_CSS_PATH, 'utf-8');
     expect(content.length).toBeGreaterThan(0);
   });
 });
@@ -398,6 +412,134 @@ describe('Mobile (TypeScript) — index.ts barrel', () => {
 
   it('should re-export shadows', () => {
     expect(fileContent).toContain("export * from './shadows'");
+  });
+
+  it('should re-export animation', () => {
+    expect(fileContent).toContain("export * from './animation'");
+  });
+});
+
+// ════════════════════════════════════════════════════════════════════════════
+//  3b. MOBILE / React Native (TypeScript) — animation.ts
+// ════════════════════════════════════════════════════════════════════════════
+
+describe('Mobile (TypeScript) — animation.ts', () => {
+  const sourceAnimation = loadSourceJson('animation.json');
+  const animData = sourceAnimation['animation'] as Record<string, unknown>;
+
+  let fileContent: string;
+
+  beforeAll(() => {
+    fileContent = fs.readFileSync(
+      path.join(GENERATED_TS_DIR, 'animation.ts'),
+      'utf-8'
+    );
+  });
+
+  it('should export `animation` as const', () => {
+    expect(fileContent).toContain('export const animation =');
+    expect(fileContent).toContain('as const');
+  });
+
+  it('should contain fadeSlideIn with correct duration', () => {
+    const fadeSlideIn = animData['fadeSlideIn'] as Record<
+      string,
+      Record<string, unknown>
+    >;
+    const duration = fadeSlideIn['duration']['$value'];
+    const numericDuration = parseInt(String(duration), 10);
+    expect(fileContent).toContain(`duration: ${numericDuration}`);
+  });
+
+  it('should contain easing as an array', () => {
+    // The TS output should contain the cubic-bezier values as array elements
+    expect(fileContent).toMatch(/easing:\s*\[/);
+    expect(fileContent).toContain('0.2');
+  });
+
+  it('should contain blur and translateY as numeric values', () => {
+    expect(fileContent).toContain('blur: 8');
+    expect(fileContent).toContain('translateY: 20');
+  });
+
+  it('should contain slideRightIn with translateX', () => {
+    expect(fileContent).toContain('translateX: 100');
+  });
+
+  it('should contain testimonialIn with scale', () => {
+    expect(fileContent).toContain('scale: 0.95');
+  });
+
+  it('should contain all delay values as numeric milliseconds', () => {
+    const delays = animData['delay'] as Record<string, unknown>;
+    for (const [key] of Object.entries(delays)) {
+      if (key.startsWith('$')) continue;
+      const numericDelay = parseInt(key, 10);
+      expect(fileContent).toContain(`${key}: ${numericDelay}`);
+    }
+  });
+});
+
+// ════════════════════════════════════════════════════════════════════════════
+//  3c. WEB (CSS) — _animation.css
+// ════════════════════════════════════════════════════════════════════════════
+
+describe('Web (CSS) — _animation.css', () => {
+  let cssContent: string;
+
+  beforeAll(() => {
+    cssContent = fs.readFileSync(GENERATED_ANIMATION_CSS_PATH, 'utf-8');
+  });
+
+  it('should contain CSS custom properties for animation tokens', () => {
+    expect(cssContent).toContain('--animation-fadeSlideIn-duration');
+    expect(cssContent).toContain('--animation-fadeSlideIn-easing');
+    expect(cssContent).toContain('--animation-fadeSlideIn-blur');
+    expect(cssContent).toContain('--animation-fadeSlideIn-translateY');
+  });
+
+  it('should contain @keyframes fadeSlideIn', () => {
+    expect(cssContent).toContain('@keyframes fadeSlideIn');
+  });
+
+  it('should contain @keyframes slideRightIn', () => {
+    expect(cssContent).toContain('@keyframes slideRightIn');
+  });
+
+  it('should contain @keyframes testimonialIn', () => {
+    expect(cssContent).toContain('@keyframes testimonialIn');
+  });
+
+  it('should contain .animate-element utility class', () => {
+    expect(cssContent).toContain('.animate-element');
+    expect(cssContent).toMatch(/animation:\s*fadeSlideIn/);
+  });
+
+  it('should contain .animate-slide-right utility class', () => {
+    expect(cssContent).toContain('.animate-slide-right');
+  });
+
+  it('should contain .animate-testimonial utility class', () => {
+    expect(cssContent).toContain('.animate-testimonial');
+  });
+
+  it('should contain all delay utility classes', () => {
+    const delayValues = [
+      100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1400,
+    ];
+    for (const d of delayValues) {
+      expect(cssContent).toContain(`.animate-delay-${d}`);
+    }
+  });
+
+  it('should use cubic-bezier easing from tokens', () => {
+    expect(cssContent).toContain('cubic-bezier(0, 0, 0.2, 1)');
+  });
+
+  it('should use token values in .animate-element', () => {
+    expect(cssContent).toContain('blur(8px)');
+    expect(cssContent).toContain('translateY(20px)');
+    expect(cssContent).toContain('600ms');
   });
 });
 
@@ -746,9 +888,14 @@ describe('Idempotency', () => {
       'spacing.ts',
       'typography.ts',
       'shadows.ts',
+      'animation.ts',
       'index.ts',
     ].map((f) => fs.readFileSync(path.join(GENERATED_TS_DIR, f), 'utf-8'));
     const cssBefore = fs.readFileSync(GENERATED_CSS_PATH, 'utf-8');
+    const animCssBefore = fs.readFileSync(
+      GENERATED_ANIMATION_CSS_PATH,
+      'utf-8'
+    );
 
     // Run build again
     execSync('pnpm tokens:build', { cwd: UI_ROOT, stdio: 'pipe' });
@@ -758,13 +905,35 @@ describe('Idempotency', () => {
       'spacing.ts',
       'typography.ts',
       'shadows.ts',
+      'animation.ts',
       'index.ts',
     ].map((f) => fs.readFileSync(path.join(GENERATED_TS_DIR, f), 'utf-8'));
     const cssAfter = fs.readFileSync(GENERATED_CSS_PATH, 'utf-8');
+    const animCssAfter = fs.readFileSync(GENERATED_ANIMATION_CSS_PATH, 'utf-8');
 
     for (let i = 0; i < tsBefore.length; i++) {
       expect(tsAfter[i]).toBe(tsBefore[i]);
     }
     expect(cssAfter).toBe(cssBefore);
+    expect(animCssAfter).toBe(animCssBefore);
+  });
+});
+
+describe('Web (CSS) — animation tokens cross-check', () => {
+  it('all animation tokens from source should appear in _animation.css', () => {
+    const sourceAnimation = loadSourceJson('animation.json');
+    const cssContent = fs.readFileSync(GENERATED_ANIMATION_CSS_PATH, 'utf-8');
+    const animData = sourceAnimation['animation'] as Record<string, unknown>;
+
+    // Simple check: duration tokens should exist as CSS variables
+    for (const [key, val] of Object.entries(animData)) {
+      if (key.startsWith('$')) continue;
+      if (key === 'delay') continue;
+
+      const group = val as Record<string, any>;
+      if (group['duration']) {
+        expect(cssContent).toContain(`--animation-${key}-duration`);
+      }
+    }
   });
 });
