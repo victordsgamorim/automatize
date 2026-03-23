@@ -402,3 +402,146 @@ export function SidebarGroup({
     </div>
   );
 }
+
+/* ─── SidebarNavItem (type) ────────────────────────────────────────────────── */
+
+export interface SidebarNavItem {
+  icon: React.ReactNode;
+  label: string;
+  /** Called when this item is tapped/clicked. */
+  onTap: () => void;
+  /** Optional group label. Items with the same group are rendered together. */
+  group?: string;
+}
+
+/* ─── SidebarNav (config-driven) ───────────────────────────────────────────── */
+
+export interface SidebarNavProps {
+  /** The list of navigation items to render. */
+  items: SidebarNavItem[];
+  /** Currently selected item index. */
+  activeIndex: number;
+  className?: string;
+}
+
+/**
+ * Config-driven sidebar navigation.
+ *
+ * Renders a list of `SidebarNavItem` objects as `SidebarLink` buttons,
+ * grouped by optional `group` labels. Each item carries its own `onTap`
+ * callback so the consumer controls what happens per item (e.g. routing).
+ */
+export function SidebarNav({ items, activeIndex, className }: SidebarNavProps) {
+  // Group items while preserving original indices
+  const groups = useMemo(() => {
+    const result: {
+      group: string | undefined;
+      entries: { item: SidebarNavItem; index: number }[];
+    }[] = [];
+    let currentGroup: (typeof result)[number] | undefined;
+
+    items.forEach((item, index) => {
+      if (!currentGroup || currentGroup.group !== item.group) {
+        currentGroup = { group: item.group, entries: [] };
+        result.push(currentGroup);
+      }
+      currentGroup.entries.push({ item, index });
+    });
+
+    return result;
+  }, [items]);
+
+  return (
+    <div
+      data-slot="sidebar-nav"
+      className={cn('flex flex-col gap-2', className)}
+    >
+      {groups.map((group) => (
+        <SidebarGroup key={group.group ?? '__default'} label={group.group}>
+          {group.entries.map(({ item, index }) => (
+            <SidebarLink
+              key={index}
+              icon={item.icon}
+              label={item.label}
+              active={index === activeIndex}
+              onClick={item.onTap}
+            />
+          ))}
+        </SidebarGroup>
+      ))}
+    </div>
+  );
+}
+
+/* ─── SidebarProfileConfig (type) ──────────────────────────────────────────── */
+
+export interface SidebarProfileConfig {
+  icon: React.ReactNode;
+  label: string;
+  onTap?: () => void;
+}
+
+/* ─── SidebarLayout (fully config-driven) ──────────────────────────────────── */
+
+export interface SidebarLayoutProps {
+  /** Header slot — typically a logo or brand element. */
+  header: React.ReactNode;
+  /** Navigation items for the middle slot. Each carries its own onTap. */
+  items: SidebarNavItem[];
+  /** Currently selected item index. */
+  activeIndex: number;
+  /** Profile config for the bottom slot. */
+  profile?: SidebarProfileConfig;
+  /** Extra actions in the footer (e.g. logout). */
+  footerActions?: SidebarProfileConfig[];
+  className?: string;
+}
+
+/**
+ * Fully config-driven sidebar layout.
+ *
+ * Composes `Sidebar`, `SidebarHeader`, `SidebarContent` (with `SidebarNav`),
+ * and `SidebarFooter` from a single props object. Each navigation item owns
+ * its own `onTap` callback — the sidebar simply renders and delegates.
+ */
+export function SidebarLayout({
+  header,
+  items,
+  activeIndex,
+  profile,
+  footerActions,
+  className,
+}: SidebarLayoutProps) {
+  return (
+    <Sidebar className={className}>
+      <SidebarHeader className="flex items-center justify-between">
+        {header}
+        <SidebarTrigger />
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarNav items={items} activeIndex={activeIndex} />
+      </SidebarContent>
+
+      {(profile || footerActions) && (
+        <SidebarFooter>
+          {profile && (
+            <SidebarLink
+              icon={profile.icon}
+              label={profile.label}
+              onClick={profile.onTap}
+            />
+          )}
+          {footerActions?.map((action, i) => (
+            <SidebarLink
+              key={i}
+              icon={action.icon}
+              label={action.label}
+              onClick={action.onTap}
+            />
+          ))}
+        </SidebarFooter>
+      )}
+    </Sidebar>
+  );
+}

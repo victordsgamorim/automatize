@@ -8,4 +8,5 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  transition: width 300ms ease-in-out;
 }

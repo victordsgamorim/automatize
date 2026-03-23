@@ -51,6 +51,14 @@ export {
   SidebarTrigger,
   SidebarLink,
   SidebarGroup,
+  SidebarNav,
+  SidebarLayout,
   useSidebar,
 } from './components/Sidebar/Sidebar.web';
-export type { SidebarLinkProps } from './components/Sidebar/Sidebar.web';
+export type {
+  SidebarLinkProps,
+  SidebarNavItem,
+  SidebarNavProps,
+  SidebarProfileConfig,
+  SidebarLayoutProps,
+} from './components/Sidebar/Sidebar.web';
