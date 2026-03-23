@@ -74,7 +74,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
             </div>
           ) : (
             <div className="flex flex-col gap-6">
-              <div className="animate-element animate-delay-100 flex items-start justify-start gap-2">
+              <div className="animate-element animate-delay-100 flex items-center justify-start gap-2">
                 <button
                   type="button"
                   onClick={onBackToSignIn}
