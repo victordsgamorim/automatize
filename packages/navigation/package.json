@@ -63,6 +63,7 @@
     "react": "catalog:react18",
     "react-dom": "catalog:react18",
     "typescript": "catalog:",
+    "vite": "catalog:",
     "vitest": "catalog:"
   }
 }

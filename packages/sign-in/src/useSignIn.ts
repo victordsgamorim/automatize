@@ -31,7 +31,7 @@ export function useSignIn(): UseSignInResult {
 
     const result = loginSchema.safeParse({ email, password });
     if (!result.success) {
-      const firstError = result.error.errors[0]?.message ?? 'Invalid input';
+      const firstError = result.error.issues[0]?.message ?? 'Invalid input';
       setLocalError(firstError);
       return { success: false };
     }

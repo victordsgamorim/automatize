@@ -30,6 +30,7 @@
     "react-dom": "catalog:react18",
     "tsup": "catalog:",
     "typescript": "catalog:",
+    "vite": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {

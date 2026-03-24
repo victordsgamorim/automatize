@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Button, Text, FormField, Card, AnimatedFadeIn } from '@automatize/ui';
 import { semanticColors, animation } from '@automatize/ui/tokens';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@automatize/core-localization';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { useSignIn } from './useSignIn';
 
@@ -18,8 +18,8 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
   onResetPassword,
   locale,
 }) => {
-  const colorScheme = useColorScheme() ?? 'light';
-  const themeColors = semanticColors[colorScheme];
+  const colorScheme = useColorScheme();
+  const themeColors = semanticColors[colorScheme === 'dark' ? 'dark' : 'light'];
   const { t } = useTranslation();
   const {
     email,

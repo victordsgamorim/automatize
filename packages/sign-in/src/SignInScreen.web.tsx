@@ -11,7 +11,7 @@ import {
   FormField,
   AnimatedFadeIn,
 } from '@automatize/ui/web';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@automatize/core-localization';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { useSignIn } from './useSignIn';
 
