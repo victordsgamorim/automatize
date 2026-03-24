@@ -3,7 +3,11 @@
 import { useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { SidebarLayout, useSidebar } from '@automatize/ui/web';
-import type { SidebarNavItem, SidebarProfileConfig } from '@automatize/ui/web';
+import type {
+  SidebarNavItem,
+  SidebarProfileConfig,
+  SidebarProfileMenuItem,
+} from '@automatize/ui/web';
 import {
   LayoutDashboard,
   FileText,
@@ -11,6 +15,7 @@ import {
   Users,
   Settings,
   LogOut,
+  UserCog,
 } from 'lucide-react';
 
 /* ─── Logo ─────────────────────────────────────────────────────────────────── */
@@ -38,7 +43,6 @@ const ROUTE_INDEX_MAP: Record<string, number> = {
   '/invoices': 1,
   '/products': 2,
   '/clients': 3,
-  '/settings': 4,
 };
 
 /* ─── Navigation ───────────────────────────────────────────────────────────── */
@@ -75,12 +79,6 @@ export default function Navigation() {
         group: 'Menu',
         onTap: () => router.push('/clients'),
       },
-      {
-        icon: <Settings className="size-5" />,
-        label: 'Settings',
-        group: 'System',
-        onTap: () => router.push('/settings'),
-      },
     ],
     [router]
   );
@@ -88,25 +86,37 @@ export default function Navigation() {
   const profile: SidebarProfileConfig = useMemo(
     () => ({
       icon: (
-        <div className="size-5 rounded-full bg-sidebar-accent flex-shrink-0" />
+        <div className="size-7 rounded-full bg-sidebar-accent flex-shrink-0" />
       ),
       label: 'John Doe',
-      onTap: () => router.push('/profile'),
+      subtitle: 'john@automatize.com',
     }),
-    [router]
+    []
   );
 
-  const footerActions: SidebarProfileConfig[] = useMemo(
+  const profileMenuItems: SidebarProfileMenuItem[] = useMemo(
     () => [
       {
-        icon: <LogOut className="size-5" />,
-        label: 'Logout',
+        icon: <UserCog className="size-4" />,
+        label: 'Profile',
+        onTap: () => router.push('/profile'),
+      },
+      {
+        icon: <Settings className="size-4" />,
+        label: 'Settings',
+        onTap: () => router.push('/settings'),
+      },
+      {
+        icon: <LogOut className="size-4" />,
+        label: 'Log out',
+        variant: 'destructive' as const,
+        separator: true,
         onTap: () => {
           // TODO: integrate with auth signOut
         },
       },
     ],
-    []
+    [router]
   );
 
   return (
@@ -115,7 +125,7 @@ export default function Navigation() {
       items={items}
       activeIndex={activeIndex}
       profile={profile}
-      footerActions={footerActions}
+      profileMenuItems={profileMenuItems}
     />
   );
 }

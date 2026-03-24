@@ -60,5 +60,6 @@ export type {
   SidebarNavItem,
   SidebarNavProps,
   SidebarProfileConfig,
+  SidebarProfileMenuItem,
   SidebarLayoutProps,
 } from './components/Sidebar/Sidebar.web';

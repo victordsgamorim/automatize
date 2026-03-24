@@ -9,8 +9,15 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { PanelLeft } from 'lucide-react';
+import { ChevronsUpDown, PanelLeft } from 'lucide-react';
 import { cn } from '../../utils';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '../DropdownMenu/DropdownMenu.web';
 
 /* ─── Constants ─────────────────────────────────────────────────────────────── */
 
@@ -249,7 +256,10 @@ export function SidebarFooter({ children, className }: SidebarFooterProps) {
   return (
     <div
       data-slot="sidebar-footer"
-      className={cn('mt-auto px-3 py-4', className)}
+      className={cn(
+        'mt-auto py-3 bg-black/5 dark:bg-black/20 border-t border-sidebar-border',
+        className
+      )}
     >
       {children}
     </div>
@@ -476,9 +486,97 @@ export function SidebarNav({ items, activeIndex, className }: SidebarNavProps) {
 /* ─── SidebarProfileConfig (type) ──────────────────────────────────────────── */
 
 export interface SidebarProfileConfig {
+  /** Avatar or icon for the profile row. */
+  icon: React.ReactNode;
+  /** Display name. */
+  label: string;
+  /** Optional subtitle (e.g. email or role). */
+  subtitle?: string;
+}
+
+/* ─── SidebarProfileMenuItem (type) ────────────────────────────────────────── */
+
+export interface SidebarProfileMenuItem {
   icon: React.ReactNode;
   label: string;
-  onTap?: () => void;
+  onTap: () => void;
+  /** Render as destructive (red) — e.g. logout. */
+  variant?: 'default' | 'destructive';
+  /** Insert a separator before this item. */
+  separator?: boolean;
+}
+
+/* ─── SidebarProfileDropdown (internal) ────────────────────────────────────── */
+
+function SidebarProfileDropdown({
+  profile,
+  menuItems,
+}: {
+  profile: SidebarProfileConfig;
+  menuItems: SidebarProfileMenuItem[];
+}) {
+  const { open, isMobile } = useSidebar();
+  const isExpanded = open || isMobile;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          data-slot="sidebar-profile-trigger"
+          type="button"
+          className={cn(
+            'group flex items-center px-3 py-2.5 text-sm font-medium transition-colors w-full',
+            'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+            !isExpanded && 'justify-center px-0'
+          )}
+        >
+          <span className="flex-shrink-0 size-7">{profile.icon}</span>
+          <span
+            className={cn(
+              'overflow-hidden whitespace-nowrap transition-all duration-300 flex flex-col items-start',
+              isExpanded ? 'w-auto opacity-100 ml-3' : 'w-0 opacity-0 ml-0'
+            )}
+          >
+            <span className="text-sm font-medium leading-tight">
+              {profile.label}
+            </span>
+            {profile.subtitle && (
+              <span className="text-xs text-muted-foreground leading-tight truncate max-w-[140px]">
+                {profile.subtitle}
+              </span>
+            )}
+          </span>
+          {isExpanded && (
+            <ChevronsUpDown className="ml-auto size-4 text-muted-foreground flex-shrink-0" />
+          )}
+        </button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent
+        side={isExpanded ? 'top' : 'right'}
+        align={isExpanded ? 'center' : 'end'}
+        sideOffset={isExpanded ? 8 : 12}
+        className={cn(
+          'rounded-lg',
+          isExpanded
+            ? 'w-[calc(var(--radix-dropdown-menu-trigger-width)-1rem)]'
+            : 'min-w-56'
+        )}
+      >
+        {menuItems.map((item, i) => (
+          <React.Fragment key={i}>
+            {item.separator && (
+              <DropdownMenuSeparator className="mx-2 my-1.5" />
+            )}
+            <DropdownMenuItem onClick={item.onTap} variant={item.variant}>
+              <span className="flex-shrink-0 size-4">{item.icon}</span>
+              {item.label}
+            </DropdownMenuItem>
+          </React.Fragment>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }
 
 /* ─── SidebarLayout (fully config-driven) ──────────────────────────────────── */
@@ -490,10 +588,10 @@ export interface SidebarLayoutProps {
   items: SidebarNavItem[];
   /** Currently selected item index. */
   activeIndex: number;
-  /** Profile config for the bottom slot. */
+  /** Profile config for the bottom slot. Clicking opens a dropdown. */
   profile?: SidebarProfileConfig;
-  /** Extra actions in the footer (e.g. logout). */
-  footerActions?: SidebarProfileConfig[];
+  /** Dropdown menu items shown when the profile is clicked. */
+  profileMenuItems?: SidebarProfileMenuItem[];
   className?: string;
 }
 
@@ -501,15 +599,15 @@ export interface SidebarLayoutProps {
  * Fully config-driven sidebar layout.
  *
  * Composes `Sidebar`, `SidebarHeader`, `SidebarContent` (with `SidebarNav`),
- * and `SidebarFooter` from a single props object. Each navigation item owns
- * its own `onTap` callback — the sidebar simply renders and delegates.
+ * and `SidebarFooter` from a single props object. The profile at the bottom
+ * opens a dropdown menu with configurable actions (settings, logout, etc.).
  */
 export function SidebarLayout({
   header,
   items,
   activeIndex,
   profile,
-  footerActions,
+  profileMenuItems,
   className,
 }: SidebarLayoutProps) {
   return (
@@ -523,23 +621,12 @@ export function SidebarLayout({
         <SidebarNav items={items} activeIndex={activeIndex} />
       </SidebarContent>
 
-      {(profile || footerActions) && (
+      {profile && (
         <SidebarFooter>
-          {profile && (
-            <SidebarLink
-              icon={profile.icon}
-              label={profile.label}
-              onClick={profile.onTap}
-            />
-          )}
-          {footerActions?.map((action, i) => (
-            <SidebarLink
-              key={i}
-              icon={action.icon}
-              label={action.label}
-              onClick={action.onTap}
-            />
-          ))}
+          <SidebarProfileDropdown
+            profile={profile}
+            menuItems={profileMenuItems ?? []}
+          />
         </SidebarFooter>
       )}
     </Sidebar>
