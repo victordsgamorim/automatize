@@ -17,8 +17,8 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   onBackToSignIn,
   locale,
 }) => {
-  const colorScheme = useColorScheme() ?? 'light';
-  const themeColors = semanticColors[colorScheme];
+  const colorScheme = useColorScheme();
+  const themeColors = semanticColors[colorScheme === 'dark' ? 'dark' : 'light'];
   const { t } = useTranslation();
   const { email, setEmail, error, isLoading, isSuccess, handleSubmit } =
     useForgotPassword();

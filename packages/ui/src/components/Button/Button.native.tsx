@@ -92,7 +92,10 @@ const textVariants: Record<ButtonVariant, string> = {
   danger: colors.neutral[50],
 };
 
-export const Button = React.forwardRef<TouchableOpacity, ButtonProps>(
+export const Button = React.forwardRef<
+  React.ComponentRef<typeof TouchableOpacity>,
+  ButtonProps
+>(
   (
     {
       children,
