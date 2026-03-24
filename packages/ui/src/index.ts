@@ -62,3 +62,7 @@ export type { IconProps } from './components/Icon/Icon';
 // Animation (cross-platform helper)
 export { AnimatedFadeIn } from './components/AnimatedFadeIn/AnimatedFadeIn.native';
 export type { AnimatedFadeInProps } from './components/AnimatedFadeIn/AnimatedFadeIn.native';
+
+// Fade (visibility toggle animation)
+export { Fade } from './components/Fade/Fade.native';
+export type { FadeProps } from './components/Fade/Fade.native';

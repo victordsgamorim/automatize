@@ -42,6 +42,9 @@ export type {
 export { AnimatedFadeIn } from './components/AnimatedFadeIn/AnimatedFadeIn.web';
 export type { AnimatedFadeInProps } from './components/AnimatedFadeIn/AnimatedFadeIn.web';
 
+export { Fade } from './components/Fade/Fade.web';
+export type { FadeProps } from './components/Fade/Fade.web';
+
 export {
   SidebarProvider,
   Sidebar,

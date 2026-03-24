@@ -403,8 +403,13 @@ export function SidebarGroup({
       data-slot="sidebar-group"
       className={cn('flex flex-col gap-1', className)}
     >
-      {label && isExpanded && (
-        <span className="px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      {label && (
+        <span
+          className={cn(
+            'px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-opacity duration-300',
+            isExpanded ? 'opacity-100' : 'opacity-0'
+          )}
+        >
           {label}
         </span>
       )}
@@ -610,14 +615,24 @@ export function SidebarLayout({
   profileMenuItems,
   className,
 }: SidebarLayoutProps) {
+  const { open, isMobile } = useSidebar();
+  const isExpanded = open || isMobile;
+
   return (
     <Sidebar className={className}>
-      <SidebarHeader className="flex items-center justify-between">
-        {header}
+      <SidebarHeader
+        className={cn(
+          'flex items-center',
+          isExpanded ? 'justify-between' : 'justify-center'
+        )}
+      >
+        {isExpanded && header}
         <SidebarTrigger />
       </SidebarHeader>
 
-      <SidebarContent>
+      <div className="border-b border-sidebar-border" />
+
+      <SidebarContent className="pt-3">
         <SidebarNav items={items} activeIndex={activeIndex} />
       </SidebarContent>
 
