@@ -53,6 +53,7 @@
     "react-native": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:",
+    "vite": "catalog:",
     "vitest": "catalog:"
   },
   "peerDependencies": {

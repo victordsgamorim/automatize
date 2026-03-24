@@ -23,7 +23,7 @@ export function useForgotPassword(): UseForgotPasswordResult {
 
     const result = resetPasswordRequestSchema.safeParse({ email });
     if (!result.success) {
-      const firstError = result.error.errors[0]?.message ?? 'Invalid input';
+      const firstError = result.error.issues[0]?.message ?? 'Invalid input';
       setLocalError(firstError);
       return { success: false };
     }
