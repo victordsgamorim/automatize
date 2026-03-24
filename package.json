@@ -42,15 +42,15 @@
   },
   "devDependencies": {
     "@automatize/eslint-config": "workspace:*",
-    "@commitlint/cli": "^18.6.0",
-    "@commitlint/config-conventional": "^18.6.0",
-    "@types/node": "^20.11.5",
-    "eslint": "^8.56.0",
-    "husky": "^9.0.10",
-    "lint-staged": "^15.2.0",
-    "prettier": "^3.2.4",
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@types/node": "^25.5.0",
+    "eslint": "^8.57.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.6.2",
     "tsx": "^4.21.0",
-    "turbo": "^2.7.3",
-    "typescript": "^5.9.0"
+    "turbo": "^2.8.20",
+    "typescript": "^5.9.3"
   }
 }
