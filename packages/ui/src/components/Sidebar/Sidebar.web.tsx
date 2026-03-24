@@ -257,7 +257,7 @@ export function SidebarFooter({ children, className }: SidebarFooterProps) {
     <div
       data-slot="sidebar-footer"
       className={cn(
-        'mt-auto py-3 bg-black/5 dark:bg-black/20 border-t border-sidebar-border',
+        'mt-auto bg-black/5 dark:bg-black/20 border-t border-sidebar-border',
         className
       )}
     >
@@ -525,7 +525,7 @@ function SidebarProfileDropdown({
           data-slot="sidebar-profile-trigger"
           type="button"
           className={cn(
-            'group flex items-center px-3 py-2.5 text-sm font-medium transition-colors w-full',
+            'group flex items-center px-3 py-3 text-sm font-medium transition-colors w-full',
             'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
             !isExpanded && 'justify-center px-0'
           )}
