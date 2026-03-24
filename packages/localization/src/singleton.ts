@@ -48,7 +48,7 @@ export function initLocalization(
     inst.use(initReactI18next).init({
       ...sharedOpts,
       resources: loader.resources,
-      initImmediate: false,
+      initImmediate: true,
     } as Parameters<typeof inst.init>[0]);
 
     _instance = inst;
