@@ -21,6 +21,7 @@
     "clean": "rm -rf dist node_modules .turbo"
   },
   "dependencies": {
+    "@automatize/core-localization": "workspace:*",
     "i18next": "catalog:",
     "i18next-resources-to-backend": "catalog:",
     "react-i18next": "catalog:"

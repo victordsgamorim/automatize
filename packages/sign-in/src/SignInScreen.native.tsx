@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Button, Text, FormField, Card, AnimatedFadeIn } from '@automatize/ui';
 import { semanticColors, animation } from '@automatize/ui/tokens';
-import { useTranslation } from '@automatize/localization';
+import { useTranslation } from '@automatize/core-localization';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { useSignIn } from './useSignIn';
 

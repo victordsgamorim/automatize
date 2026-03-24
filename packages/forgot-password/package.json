@@ -28,7 +28,6 @@
   "dependencies": {
     "@automatize/auth": "workspace:*",
     "@automatize/core-localization": "workspace:*",
-    "@automatize/localization": "workspace:*",
     "@automatize/core-theme": "workspace:*",
     "@automatize/utils": "workspace:*",
     "@automatize/ui": "workspace:*",

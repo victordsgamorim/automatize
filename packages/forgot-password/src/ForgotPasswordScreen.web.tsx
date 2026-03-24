@@ -9,7 +9,7 @@ import {
   FormField,
   AnimatedFadeIn,
 } from '@automatize/ui/web';
-import { useTranslation } from '@automatize/localization';
+import { useTranslation } from '@automatize/core-localization';
 import type { ForgotPasswordScreenProps } from './ForgotPasswordScreen.types';
 import { useForgotPassword } from './useForgotPassword';
 

@@ -22,8 +22,13 @@
   "devDependencies": {
     "@automatize/tsconfig": "workspace:*",
     "@types/node": "catalog:",
+    "@types/react": "catalog:",
     "eslint": "catalog:",
+    "react": "catalog:react18",
     "tsup": "catalog:",
     "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0"
   }
 }
