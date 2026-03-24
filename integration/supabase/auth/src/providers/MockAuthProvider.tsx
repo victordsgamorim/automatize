@@ -239,13 +239,13 @@ export function MockAuthProvider({ children }: MockAuthProviderProps) {
   return (
     <AuthContext.Provider value={value}>
       {children}
-      <_MockBanner />
+      {!user && <_MockBanner />}
     </AuthContext.Provider>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Dev banner
+// Dev banner (only shown when not logged in)
 // ---------------------------------------------------------------------------
 
 function _MockBanner() {

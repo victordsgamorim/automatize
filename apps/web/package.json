@@ -19,6 +19,7 @@
     "@automatize/sign-in": "workspace:*",
     "@automatize/supabase-auth": "workspace:*",
     "@automatize/theme": "workspace:*",
+    "@automatize/content": "workspace:*",
     "@automatize/ui": "workspace:*",
     "@automatize/utils": "workspace:*",
     "@hookform/resolvers": "^5.2.2",

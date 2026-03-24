@@ -41,3 +41,34 @@ export type {
 
 export { AnimatedFadeIn } from './components/AnimatedFadeIn/AnimatedFadeIn.web';
 export type { AnimatedFadeInProps } from './components/AnimatedFadeIn/AnimatedFadeIn.web';
+
+export { Fade } from './components/Fade/Fade.web';
+export type { FadeProps } from './components/Fade/Fade.web';
+
+export {
+  SidebarProvider,
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarTrigger,
+  SidebarLink,
+  SidebarGroup,
+  SidebarNav,
+  SidebarLayout,
+  useSidebar,
+} from './components/Sidebar/Sidebar.web';
+export type {
+  SidebarLinkProps,
+  SidebarNavItem,
+  SidebarNavProps,
+  SidebarProfileConfig,
+  SidebarProfileMenuItem,
+  SidebarLayoutProps,
+} from './components/Sidebar/Sidebar.web';
+
+export { SidebarLogo } from './components/SidebarLogo/SidebarLogo.web';
+export type { SidebarLogoProps } from './components/SidebarLogo/SidebarLogo.web';
+
+export { ContentPlaceholder } from './components/ContentPlaceholder/ContentPlaceholder.web';
+export type { ContentPlaceholderProps } from './components/ContentPlaceholder/ContentPlaceholder.web';
