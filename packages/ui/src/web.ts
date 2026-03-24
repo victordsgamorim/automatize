@@ -66,3 +66,16 @@ export type {
   SidebarProfileMenuItem,
   SidebarLayoutProps,
 } from './components/Sidebar/Sidebar.web';
+
+export {
+  ContentNavigation,
+  SidebarLogo,
+} from './components/ContentNavigation/ContentNavigation.web';
+export type {
+  ContentNavigationItem,
+  ContentNavigationProps,
+  SidebarLogoProps,
+} from './components/ContentNavigation/ContentNavigation.web';
+
+export { ContentPlaceholder } from './components/ContentPlaceholder/ContentPlaceholder.web';
+export type { ContentPlaceholderProps } from './components/ContentPlaceholder/ContentPlaceholder.web';

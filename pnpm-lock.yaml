@@ -222,6 +222,9 @@ importers:
       '@automatize/auth':
         specifier: workspace:*
         version: link:../../core/auth
+      '@automatize/content':
+        specifier: workspace:*
+        version: link:../../packages/content
       '@automatize/forgot-password':
         specifier: workspace:*
         version: link:../../packages/forgot-password
@@ -537,6 +540,37 @@ importers:
       react-native:
         specifier: 'catalog:'
         version: 0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0)
+      tsup:
+        specifier: 'catalog:'
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+      vitest:
+        specifier: 'catalog:'
+        version: 1.6.1(@types/node@25.5.0)(jsdom@28.1.0)(lightningcss@1.31.1)(terser@5.46.1)
+
+  packages/content:
+    dependencies:
+      '@automatize/ui':
+        specifier: workspace:*
+        version: link:../ui
+    devDependencies:
+      '@automatize/tsconfig':
+        specifier: workspace:*
+        version: link:../../tools/tsconfig
+      '@types/react':
+        specifier: ^18.3.0
+        version: 18.3.28
+      eslint:
+        specifier: 'catalog:'
+        version: 8.57.1
+      react:
+        specifier: catalog:react18
+        version: 18.2.0
+      react-dom:
+        specifier: catalog:react18
+        version: 18.2.0(react@18.2.0)
       tsup:
         specifier: 'catalog:'
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.8)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)

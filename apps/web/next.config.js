@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@automatize/navigation'],
+  transpilePackages: ['@automatize/navigation', '@automatize/content'],
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },

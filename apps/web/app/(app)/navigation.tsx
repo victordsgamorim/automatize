@@ -2,12 +2,19 @@
 
 import { useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { SidebarLayout, useSidebar } from '@automatize/ui/web';
 import type {
-  SidebarNavItem,
   SidebarProfileConfig,
   SidebarProfileMenuItem,
 } from '@automatize/ui/web';
+import type { ContentNavigationItem } from '@automatize/content/web';
+import {
+  ContentNavigation,
+  SidebarLogo,
+  TILE_ORDER,
+  TILE_ROUTES,
+  TILE_LABELS,
+  TILE_GROUP,
+} from '@automatize/content/web';
 import {
   LayoutDashboard,
   FileText,
@@ -17,33 +24,22 @@ import {
   LogOut,
   UserCog,
 } from 'lucide-react';
+import type { TileId } from '@automatize/content/web';
 
-/* ─── Logo ─────────────────────────────────────────────────────────────────── */
+/* ─── Tile icons (platform-specific, provided by app) ─────────────────────── */
 
-function Logo() {
-  const { open, isMobile } = useSidebar();
-  const isExpanded = open || isMobile;
-
-  return (
-    <div className="flex items-center gap-2 overflow-hidden">
-      <div className="flex-shrink-0 size-8 rounded-lg bg-primary" />
-      {isExpanded && (
-        <span className="font-semibold text-sm whitespace-nowrap">
-          Automatize
-        </span>
-      )}
-    </div>
-  );
-}
-
-/* ─── Route → index mapping ────────────────────────────────────────────────── */
-
-const ROUTE_INDEX_MAP: Record<string, number> = {
-  '/': 0,
-  '/invoices': 1,
-  '/products': 2,
-  '/clients': 3,
+const TILE_ICONS: Record<TileId, React.ReactNode> = {
+  dashboard: <LayoutDashboard className="size-5" />,
+  invoices: <FileText className="size-5" />,
+  products: <Package className="size-5" />,
+  clients: <Users className="size-5" />,
 };
+
+/* ─── Route → TileId mapping ──────────────────────────────────────────────── */
+
+const ROUTE_TO_TILE: Record<string, TileId> = Object.fromEntries(
+  TILE_ORDER.map((id) => [TILE_ROUTES[id], id])
+) as Record<string, TileId>;
 
 /* ─── Navigation ───────────────────────────────────────────────────────────── */
 
@@ -51,36 +47,18 @@ export default function Navigation() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const activeIndex = ROUTE_INDEX_MAP[pathname] ?? 0;
+  const activeTile: TileId = ROUTE_TO_TILE[pathname] ?? 'dashboard';
 
-  const items: SidebarNavItem[] = useMemo(
-    () => [
-      {
-        icon: <LayoutDashboard className="size-5" />,
-        label: 'Dashboard',
-        group: 'Menu',
-        onTap: () => router.push('/'),
-      },
-      {
-        icon: <FileText className="size-5" />,
-        label: 'Invoices',
-        group: 'Menu',
-        onTap: () => router.push('/invoices'),
-      },
-      {
-        icon: <Package className="size-5" />,
-        label: 'Products',
-        group: 'Menu',
-        onTap: () => router.push('/products'),
-      },
-      {
-        icon: <Users className="size-5" />,
-        label: 'Clients',
-        group: 'Menu',
-        onTap: () => router.push('/clients'),
-      },
-    ],
-    [router]
+  const items: ContentNavigationItem[] = useMemo(
+    () =>
+      TILE_ORDER.map((tileId) => ({
+        id: tileId,
+        icon: TILE_ICONS[tileId],
+        label: TILE_LABELS[tileId],
+        route: TILE_ROUTES[tileId],
+        group: TILE_GROUP,
+      })),
+    []
   );
 
   const profile: SidebarProfileConfig = useMemo(
@@ -120,10 +98,11 @@ export default function Navigation() {
   );
 
   return (
-    <SidebarLayout
-      header={<Logo />}
+    <ContentNavigation
+      onNavigate={(_id, route) => router.push(route)}
+      activeTile={activeTile}
       items={items}
-      activeIndex={activeIndex}
+      header={<SidebarLogo />}
       profile={profile}
       profileMenuItems={profileMenuItems}
     />
