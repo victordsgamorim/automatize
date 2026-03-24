@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@automatize/tsconfig": "workspace:*",
+    "@testing-library/react": "catalog:",
     "@types/react": "catalog:",
     "eslint": "catalog:",
     "react": "catalog:react18",
