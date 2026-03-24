@@ -67,15 +67,8 @@ export type {
   SidebarLayoutProps,
 } from './components/Sidebar/Sidebar.web';
 
-export {
-  ContentNavigation,
-  SidebarLogo,
-} from './components/ContentNavigation/ContentNavigation.web';
-export type {
-  ContentNavigationItem,
-  ContentNavigationProps,
-  SidebarLogoProps,
-} from './components/ContentNavigation/ContentNavigation.web';
+export { SidebarLogo } from './components/SidebarLogo/SidebarLogo.web';
+export type { SidebarLogoProps } from './components/SidebarLogo/SidebarLogo.web';
 
 export { ContentPlaceholder } from './components/ContentPlaceholder/ContentPlaceholder.web';
 export type { ContentPlaceholderProps } from './components/ContentPlaceholder/ContentPlaceholder.web';

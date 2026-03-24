@@ -1,0 +1,51 @@
+'use client';
+
+import { useMemo } from 'react';
+import type { SidebarNavItem } from '@automatize/ui/web';
+import { SidebarProvider, SidebarLayout } from '@automatize/ui/web';
+import type { HomeScreenProps } from './HomeScreen.types';
+
+export function HomeScreen({
+  items,
+  activeTile,
+  onNavigate,
+  header,
+  profile,
+  profileMenuItems,
+  children,
+}: HomeScreenProps) {
+  const activeIndex = items.findIndex((item) => item.id === activeTile);
+
+  const navItems: SidebarNavItem[] = useMemo(
+    () =>
+      items.map((item) => ({
+        icon: item.icon,
+        label: item.label,
+        group: item.group,
+        onTap: () => onNavigate(item.id, item.route),
+      })),
+    [items, onNavigate]
+  );
+
+  return (
+    <SidebarProvider>
+      <SidebarLayout
+        header={header}
+        items={navItems}
+        activeIndex={activeIndex >= 0 ? activeIndex : 0}
+        profile={profile}
+        profileMenuItems={profileMenuItems}
+      />
+      <main
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          transition: 'width 300ms ease-in-out',
+        }}
+      >
+        {children}
+      </main>
+    </SidebarProvider>
+  );
+}
