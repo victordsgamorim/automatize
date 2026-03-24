@@ -28,6 +28,7 @@
   "dependencies": {
     "@automatize/auth": "workspace:*",
     "@automatize/core-localization": "workspace:*",
+    "@automatize/localization": "workspace:*",
     "@automatize/core-theme": "workspace:*",
     "@automatize/utils": "workspace:*",
     "@automatize/ui": "workspace:*",
@@ -49,8 +50,7 @@
   "peerDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.0.0",
-    "react-native": "^0.73.0",
-    "react-i18next": ">=14.0.0"
+    "react-native": "^0.73.0"
   },
   "peerDependenciesMeta": {
     "react-dom": {
@@ -58,9 +58,6 @@
     },
     "react-native": {
       "optional": true
-    },
-    "react-i18next": {
-      "optional": false
     }
   }
 }

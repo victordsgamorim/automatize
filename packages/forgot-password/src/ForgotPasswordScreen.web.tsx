@@ -9,7 +9,7 @@ import {
   FormField,
   AnimatedFadeIn,
 } from '@automatize/ui/web';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@automatize/localization';
 import type { ForgotPasswordScreenProps } from './ForgotPasswordScreen.types';
 import { useForgotPassword } from './useForgotPassword';
 

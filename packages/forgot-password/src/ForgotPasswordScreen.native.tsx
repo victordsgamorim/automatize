@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Button, Text, FormField, Card, AnimatedFadeIn } from '@automatize/ui';
 import { semanticColors, animation } from '@automatize/ui/tokens';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@automatize/localization';
 import type { ForgotPasswordScreenProps } from './ForgotPasswordScreen.types';
 import { useForgotPassword } from './useForgotPassword';
 
