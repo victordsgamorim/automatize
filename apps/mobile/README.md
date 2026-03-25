@@ -43,3 +43,7 @@ The app requires Supabase credentials in environment variables. These are config
 ## Testing
 
 Unit tests verify business logic. Integration tests verify auth flows. Manual testing covers all MFA and deep link scenarios.
+
+---
+
+**Last Updated:** 2026-03-25

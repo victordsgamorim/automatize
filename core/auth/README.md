@@ -79,3 +79,7 @@ function LoginButton() {
 - It MUST NOT import from `@automatize/supabase-auth` or any backend SDK
 - It MUST NOT import from any app (`apps/*`) or other feature package
 - Adding new fields to `AuthContextValue` requires explicit justification — keep it minimal
+
+---
+
+**Last Updated:** 2026-03-25

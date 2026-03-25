@@ -358,3 +358,7 @@ Fully implemented. Mock auth available for local development via `MockAuthProvid
 
 - `../docs/RLS_POLICIES.md` — Database security policies
 - `../../docs/guides/DEEP_LINKING.md` — Deep link configuration
+
+---
+
+**Last Updated:** 2026-03-25

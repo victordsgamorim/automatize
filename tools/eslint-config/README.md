@@ -60,3 +60,7 @@ This package uses CommonJS (module.exports) for broad compatibility with various
 
 **Why warn on any?**
 Explicit any is a code smell. It's sometimes necessary but should be rare. Warning encourages fixing it eventually.
+
+---
+
+**Last Updated:** 2026-03-25

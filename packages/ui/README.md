@@ -230,4 +230,8 @@ CSS custom properties are also available for custom animations:
   animation-duration: var(--animation-fadeSlideIn-duration);
   animation-timing-function: var(--animation-fadeSlideIn-easing);
 }
+
+---
+
+**Last Updated:** 2026-03-25
 ```

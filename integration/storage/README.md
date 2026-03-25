@@ -33,3 +33,7 @@ Placeholder. Full implementation coming in next phase.
 
 - See `core/` for interface definitions
 - See `integration/sync/` for sync engine
+
+---
+
+**Last Updated:** 2026-03-25

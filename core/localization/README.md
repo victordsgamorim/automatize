@@ -67,3 +67,7 @@ const locale: LocaleData = {
 - Types only — no runtime code, no dependencies, no tests required
 - MUST NOT import from `@automatize/localization` or any i18n library
 - MUST NOT import from any app (`apps/*`) or feature package
+
+---
+
+**Last Updated:** 2026-03-25
