@@ -26,13 +26,13 @@
     "clean": "rm -rf dist node_modules .turbo"
   },
   "dependencies": {
-    "@automatize/core-localization": "workspace:*",
-    "@automatize/core-theme": "workspace:*",
     "@automatize/ui": "workspace:*",
     "lucide-react": "catalog:",
     "lucide-react-native": "^0.309.0"
   },
   "devDependencies": {
+    "@automatize/core-localization": "workspace:*",
+    "@automatize/core-theme": "workspace:*",
     "@automatize/tsconfig": "workspace:*",
     "@testing-library/react": "catalog:",
     "@types/react": "catalog:",

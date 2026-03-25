@@ -2,17 +2,16 @@ import React from 'react';
 import { View, StyleSheet, ScrollView, useColorScheme } from 'react-native';
 import { Button, Text, Card } from '@automatize/ui';
 import { semanticColors } from '@automatize/ui/tokens';
-import { useTranslation } from '@automatize/core-localization';
 import type { SettingsScreenProps } from './SettingsScreen.types';
 
 export const SettingsScreen: React.FC<SettingsScreenProps> = ({
+  labels,
   locale,
   appVersion,
   onSignOut,
 }) => {
   const colorScheme = useColorScheme();
   const themeColors = semanticColors[colorScheme === 'dark' ? 'dark' : 'light'];
-  const { t } = useTranslation();
 
   const styles = StyleSheet.create({
     container: {
@@ -63,24 +62,24 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
       {/* Header */}
       <View style={styles.header}>
         <Text variant="h1" color="primary">
-          {t('settings.title')}
+          {labels.title}
         </Text>
         <Text variant="body" color="secondary" style={styles.subtitle}>
-          {t('settings.subtitle')}
+          {labels.subtitle}
         </Text>
       </View>
 
       {/* Language Section */}
       <Card style={styles.sectionCard}>
         <Text variant="h3" color="primary" style={styles.sectionTitle}>
-          {t('settings.language.title')}
+          {labels.languageTitle}
         </Text>
         <Text
           variant="bodySmall"
           color="secondary"
           style={styles.sectionDescription}
         >
-          {t('settings.language.description')}
+          {labels.languageDescription}
         </Text>
         <Button
           variant="ghost"
@@ -92,7 +91,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             if (next) locale.onLanguageChange(next.code);
           }}
           testID="settings-language-switcher"
-          accessibilityLabel={t('settings.language.language-label')}
+          accessibilityLabel={labels.languageLabel}
         >
           {currentLangLabel}
         </Button>
@@ -104,10 +103,10 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
       {/* About Section */}
       <Card style={styles.sectionCard}>
         <Text variant="h3" color="primary" style={styles.sectionTitle}>
-          {t('settings.about.title')}
+          {labels.aboutTitle}
         </Text>
         <Text variant="body" color="secondary">
-          {t('settings.about.version')}: {appVersion}
+          {labels.versionLabel}: {appVersion}
         </Text>
       </Card>
 
@@ -118,7 +117,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         testID="settings-sign-out"
         style={styles.signOutButton}
       >
-        {t('settings.account.sign-out')}
+        {labels.signOut}
       </Button>
     </ScrollView>
   );

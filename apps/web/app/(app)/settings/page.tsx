@@ -10,6 +10,19 @@ export default function SettingsPage() {
 
   return (
     <SettingsScreen
+      labels={{
+        title: t('settings.title'),
+        subtitle: t('settings.subtitle'),
+        appearanceTitle: t('settings.appearance.title'),
+        appearanceDescription: t('settings.appearance.description'),
+        themeLabel: t('settings.appearance.theme-label'),
+        languageTitle: t('settings.language.title'),
+        languageDescription: t('settings.language.description'),
+        languageLabel: t('settings.language.language-label'),
+        aboutTitle: t('settings.about.title'),
+        versionLabel: t('settings.about.version'),
+        signOut: t('settings.account.sign-out'),
+      }}
       locale={{
         languages: SUPPORTED_LANGUAGES.map((lang) => ({
           code: lang,

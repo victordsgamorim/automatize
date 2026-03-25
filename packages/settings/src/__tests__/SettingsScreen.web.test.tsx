@@ -1,51 +1,24 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import { SettingsScreen } from '../SettingsScreen.web';
 import type { SettingsScreenProps } from '../SettingsScreen.types';
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) =>
-      ({
-        'settings.title': 'Settings',
-        'settings.subtitle': 'Manage your preferences',
-        'settings.appearance.title': 'Appearance',
-        'settings.appearance.description': 'Customize how the app looks',
-        'settings.appearance.theme-label': 'Theme',
-        'settings.language.title': 'Language',
-        'settings.language.description': 'Choose your preferred language',
-        'settings.language.language-label': 'Language',
-        'settings.about.title': 'About',
-        'settings.about.version': 'Version',
-        'settings.account.sign-out': 'Sign out',
-      })[key] ?? key,
-    i18n: { language: 'en', changeLanguage: vi.fn() },
-  }),
-}));
-
-vi.mock('@automatize/core-localization', () => ({
-  useTranslation: () => ({
-    t: (key: string) =>
-      ({
-        'settings.title': 'Settings',
-        'settings.subtitle': 'Manage your preferences',
-        'settings.appearance.title': 'Appearance',
-        'settings.appearance.description': 'Customize how the app looks',
-        'settings.appearance.theme-label': 'Theme',
-        'settings.language.title': 'Language',
-        'settings.language.description': 'Choose your preferred language',
-        'settings.language.language-label': 'Language',
-        'settings.about.title': 'About',
-        'settings.about.version': 'Version',
-        'settings.account.sign-out': 'Sign out',
-      })[key] ?? key,
-    i18n: { language: 'en', changeLanguage: vi.fn() },
-  }),
-}));
-
 const defaultProps: SettingsScreenProps = {
+  labels: {
+    title: 'Settings',
+    subtitle: 'Manage your preferences',
+    appearanceTitle: 'Appearance',
+    appearanceDescription: 'Customize how the app looks',
+    themeLabel: 'Theme',
+    languageTitle: 'Language',
+    languageDescription: 'Choose your preferred language',
+    languageLabel: 'Language',
+    aboutTitle: 'About',
+    versionLabel: 'Version',
+    signOut: 'Sign out',
+  },
   locale: {
     languages: [
       { code: 'en', label: 'English', ext: 'US' },
@@ -68,9 +41,8 @@ const defaultProps: SettingsScreenProps = {
   onSignOut: vi.fn(),
 };
 
-async function renderScreen(props: Partial<SettingsScreenProps> = {}) {
+function renderScreen(props: Partial<SettingsScreenProps> = {}) {
   render(<SettingsScreen {...defaultProps} {...props} />);
-  await waitFor(() => screen.getByText('Settings'));
 }
 
 describe('SettingsScreen (web)', () => {
@@ -79,57 +51,57 @@ describe('SettingsScreen (web)', () => {
   });
 
   describe('rendering', () => {
-    it('renders the settings title', async () => {
-      await renderScreen();
+    it('renders the settings title', () => {
+      renderScreen();
       expect(screen.getByText('Settings')).toBeDefined();
     });
 
-    it('renders the subtitle', async () => {
-      await renderScreen();
+    it('renders the subtitle', () => {
+      renderScreen();
       expect(screen.getByText('Manage your preferences')).toBeDefined();
     });
 
-    it('renders the Appearance section heading', async () => {
-      await renderScreen();
+    it('renders the Appearance section heading', () => {
+      renderScreen();
       expect(screen.getByText('Appearance')).toBeDefined();
     });
 
-    it('renders the Language section heading', async () => {
-      await renderScreen();
+    it('renders the Language section heading', () => {
+      renderScreen();
       expect(screen.getByText('Choose your preferred language')).toBeDefined();
     });
 
-    it('renders the About section with version', async () => {
-      await renderScreen();
+    it('renders the About section with version', () => {
+      renderScreen();
       expect(screen.getByText('About')).toBeDefined();
       expect(screen.getByText('Version: 1.0.0')).toBeDefined();
     });
 
-    it('renders the Sign out button', async () => {
-      await renderScreen();
+    it('renders the Sign out button', () => {
+      renderScreen();
       expect(screen.getByRole('button', { name: /Sign out/i })).toBeDefined();
     });
 
-    it('renders ThemeSwitcher when theme prop is provided', async () => {
-      await renderScreen();
+    it('renders ThemeSwitcher when theme prop is provided', () => {
+      renderScreen();
       expect(screen.getByLabelText('Theme')).toBeDefined();
     });
 
-    it('does not render Appearance section when theme is undefined', async () => {
-      await renderScreen({ theme: undefined });
+    it('does not render Appearance section when theme is undefined', () => {
+      renderScreen({ theme: undefined });
       expect(screen.queryByText('Appearance')).toBeNull();
     });
 
-    it('renders the LanguageSwitcher trigger', async () => {
-      await renderScreen();
+    it('renders the LanguageSwitcher trigger', () => {
+      renderScreen();
       expect(screen.getByLabelText('Language')).toBeDefined();
     });
   });
 
   describe('interactions', () => {
-    it('calls onSignOut when Sign out button is clicked', async () => {
+    it('calls onSignOut when Sign out button is clicked', () => {
       const onSignOut = vi.fn();
-      await renderScreen({ onSignOut });
+      renderScreen({ onSignOut });
       fireEvent.click(screen.getByRole('button', { name: /Sign out/i }));
       expect(onSignOut).toHaveBeenCalledOnce();
     });

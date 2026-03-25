@@ -772,12 +772,6 @@ importers:
 
   packages/settings:
     dependencies:
-      '@automatize/core-localization':
-        specifier: workspace:*
-        version: link:../../core/localization
-      '@automatize/core-theme':
-        specifier: workspace:*
-        version: link:../../core/theme
       '@automatize/ui':
         specifier: workspace:*
         version: link:../ui
@@ -788,6 +782,12 @@ importers:
         specifier: ^0.309.0
         version: 0.309.0(react-native-svg@14.2.0(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0))(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0)
     devDependencies:
+      '@automatize/core-localization':
+        specifier: workspace:*
+        version: link:../../core/localization
+      '@automatize/core-theme':
+        specifier: workspace:*
+        version: link:../../core/theme
       '@automatize/tsconfig':
         specifier: workspace:*
         version: link:../../tools/tsconfig
