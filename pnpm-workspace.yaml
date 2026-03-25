@@ -13,6 +13,8 @@ packages:
   - 'packages/sign-in'
   # Forgot-password (cross-platform screen + hook)
   - 'packages/forgot-password'
+  # Settings (cross-platform screen)
+  - 'packages/settings'
   # Integration — local infrastructure
   - 'integration/storage'
   - 'integration/sync'
