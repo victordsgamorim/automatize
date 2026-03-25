@@ -47,5 +47,16 @@
   "forgot-password.submitting": "Sending...",
   "forgot-password.success.title": "Check your inbox",
   "forgot-password.success.message": "If an account exists for that email, we've sent a password reset link.",
-  "forgot-password.back-to-sign-in": "Back to sign in"
+  "forgot-password.back-to-sign-in": "Back to sign in",
+  "settings.title": "Settings",
+  "settings.subtitle": "Manage your preferences",
+  "settings.appearance.title": "Appearance",
+  "settings.appearance.description": "Customize how the app looks",
+  "settings.appearance.theme-label": "Theme",
+  "settings.language.title": "Language",
+  "settings.language.description": "Choose your preferred language",
+  "settings.language.language-label": "Language",
+  "settings.about.title": "About",
+  "settings.about.version": "Version",
+  "settings.account.sign-out": "Sign out"
 }

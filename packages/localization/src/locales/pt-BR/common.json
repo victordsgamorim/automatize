@@ -47,5 +47,16 @@
   "forgot-password.submitting": "Enviando...",
   "forgot-password.success.title": "Verifique sua caixa de entrada",
   "forgot-password.success.message": "Se existir uma conta com esse e-mail, enviamos um link para redefinição de senha.",
-  "forgot-password.back-to-sign-in": "Voltar para o login"
+  "forgot-password.back-to-sign-in": "Voltar para o login",
+  "settings.title": "Configurações",
+  "settings.subtitle": "Gerencie suas preferências",
+  "settings.appearance.title": "Aparência",
+  "settings.appearance.description": "Personalize a aparência do aplicativo",
+  "settings.appearance.theme-label": "Tema",
+  "settings.language.title": "Idioma",
+  "settings.language.description": "Escolha seu idioma preferido",
+  "settings.language.language-label": "Idioma",
+  "settings.about.title": "Sobre",
+  "settings.about.version": "Versão",
+  "settings.account.sign-out": "Sair"
 }

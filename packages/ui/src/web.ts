@@ -72,3 +72,9 @@ export type { SidebarLogoProps } from './components/SidebarLogo/SidebarLogo.web'
 
 export { ContentPlaceholder } from './components/ContentPlaceholder/ContentPlaceholder.web';
 export type { ContentPlaceholderProps } from './components/ContentPlaceholder/ContentPlaceholder.web';
+
+export { Card } from './components/Card/Card.web';
+export type { CardProps } from './components/Card/Card.web';
+
+export { Separator } from './components/Separator/Separator.web';
+export type { SeparatorProps } from './components/Separator/Separator.web';
