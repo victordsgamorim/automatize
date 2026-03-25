@@ -21,7 +21,6 @@ export default function SettingsPage() {
         languageLabel: t('settings.language.language-label'),
         aboutTitle: t('settings.about.title'),
         versionLabel: t('settings.about.version'),
-        signOut: t('settings.account.sign-out'),
       }}
       locale={{
         languages: SUPPORTED_LANGUAGES.map((lang) => ({
@@ -42,9 +41,6 @@ export default function SettingsPage() {
         onThemeChange: setTheme,
       }}
       appVersion="0.1.0"
-      onSignOut={() => {
-        // TODO: integrate with auth signOut
-      }}
     />
   );
 }

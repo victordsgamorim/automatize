@@ -15,7 +15,6 @@ export interface SettingsLabels {
   languageLabel: string;
   aboutTitle: string;
   versionLabel: string;
-  signOut: string;
 }
 
 export interface SettingsScreenProps {
@@ -27,6 +26,4 @@ export interface SettingsScreenProps {
   theme?: ThemeData;
   /** App version string displayed in the About section */
   appVersion: string;
-  /** Called when the user taps "Sign out" */
-  onSignOut: () => void;
 }

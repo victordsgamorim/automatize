@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, useColorScheme } from 'react-native';
-import { Button, Text, Card } from '@automatize/ui';
+import { Button, Text } from '@automatize/ui';
 import { semanticColors } from '@automatize/ui/tokens';
 import type { SettingsScreenProps } from './SettingsScreen.types';
 
@@ -8,7 +8,6 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   labels,
   locale,
   appVersion,
-  onSignOut,
 }) => {
   const colorScheme = useColorScheme();
   const themeColors = semanticColors[colorScheme === 'dark' ? 'dark' : 'light'];
@@ -28,24 +27,11 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
     subtitle: {
       marginTop: 4,
     },
-    sectionCard: {
-      marginBottom: 16,
-      paddingHorizontal: 16,
-      paddingVertical: 20,
-    },
-    sectionTitle: {
-      marginBottom: 4,
-    },
-    sectionDescription: {
-      marginBottom: 12,
-    },
-    separator: {
-      height: 1,
-      backgroundColor: themeColors.border.default,
-      marginVertical: 8,
-    },
-    signOutButton: {
-      marginTop: 8,
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 12,
     },
   });
 
@@ -69,17 +55,10 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         </Text>
       </View>
 
-      {/* Language Section */}
-      <Card style={styles.sectionCard}>
-        <Text variant="h3" color="primary" style={styles.sectionTitle}>
+      {/* Language */}
+      <View style={styles.row}>
+        <Text variant="body" color="primary">
           {labels.languageTitle}
-        </Text>
-        <Text
-          variant="bodySmall"
-          color="secondary"
-          style={styles.sectionDescription}
-        >
-          {labels.languageDescription}
         </Text>
         <Button
           variant="ghost"
@@ -95,30 +74,17 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         >
           {currentLangLabel}
         </Button>
-      </Card>
+      </View>
 
-      {/* Separator */}
-      <View style={styles.separator} />
-
-      {/* About Section */}
-      <Card style={styles.sectionCard}>
-        <Text variant="h3" color="primary" style={styles.sectionTitle}>
+      {/* About */}
+      <View style={styles.row}>
+        <Text variant="body" color="primary">
           {labels.aboutTitle}
         </Text>
         <Text variant="body" color="secondary">
           {labels.versionLabel}: {appVersion}
         </Text>
-      </Card>
-
-      {/* Sign Out */}
-      <Button
-        variant="primary"
-        onPress={onSignOut}
-        testID="settings-sign-out"
-        style={styles.signOutButton}
-      >
-        {labels.signOut}
-      </Button>
+      </View>
     </ScrollView>
   );
 };

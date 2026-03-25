@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { SettingsScreen } from '../SettingsScreen.web';
@@ -17,7 +17,6 @@ const defaultProps: SettingsScreenProps = {
     languageLabel: 'Language',
     aboutTitle: 'About',
     versionLabel: 'Version',
-    signOut: 'Sign out',
   },
   locale: {
     languages: [
@@ -38,7 +37,6 @@ const defaultProps: SettingsScreenProps = {
     onThemeChange: vi.fn(),
   },
   appVersion: '1.0.0',
-  onSignOut: vi.fn(),
 };
 
 function renderScreen(props: Partial<SettingsScreenProps> = {}) {
@@ -61,25 +59,20 @@ describe('SettingsScreen (web)', () => {
       expect(screen.getByText('Manage your preferences')).toBeDefined();
     });
 
-    it('renders the Appearance section heading', () => {
+    it('renders the Appearance row', () => {
       renderScreen();
       expect(screen.getByText('Appearance')).toBeDefined();
     });
 
-    it('renders the Language section heading', () => {
+    it('renders the Language row', () => {
       renderScreen();
-      expect(screen.getByText('Choose your preferred language')).toBeDefined();
+      expect(screen.getByText('Language')).toBeDefined();
     });
 
-    it('renders the About section with version', () => {
+    it('renders the About row with version', () => {
       renderScreen();
       expect(screen.getByText('About')).toBeDefined();
       expect(screen.getByText('Version: 1.0.0')).toBeDefined();
-    });
-
-    it('renders the Sign out button', () => {
-      renderScreen();
-      expect(screen.getByRole('button', { name: /Sign out/i })).toBeDefined();
     });
 
     it('renders ThemeSwitcher when theme prop is provided', () => {
@@ -87,7 +80,7 @@ describe('SettingsScreen (web)', () => {
       expect(screen.getByLabelText('Theme')).toBeDefined();
     });
 
-    it('does not render Appearance section when theme is undefined', () => {
+    it('does not render Appearance row when theme is undefined', () => {
       renderScreen({ theme: undefined });
       expect(screen.queryByText('Appearance')).toBeNull();
     });
@@ -95,15 +88,6 @@ describe('SettingsScreen (web)', () => {
     it('renders the LanguageSwitcher trigger', () => {
       renderScreen();
       expect(screen.getByLabelText('Language')).toBeDefined();
-    });
-  });
-
-  describe('interactions', () => {
-    it('calls onSignOut when Sign out button is clicked', () => {
-      const onSignOut = vi.fn();
-      renderScreen({ onSignOut });
-      fireEvent.click(screen.getByRole('button', { name: /Sign out/i }));
-      expect(onSignOut).toHaveBeenCalledOnce();
     });
   });
 });
