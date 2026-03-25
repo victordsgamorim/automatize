@@ -2,7 +2,7 @@
 
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
-import { SettingsScreen } from '@automatize/settings/web';
+import { SettingsScreen } from '@automatize/screens/settings/web';
 
 export default function SettingsPage() {
   const { i18n, t } = useTranslation();

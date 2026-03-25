@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
-import { SignInScreen } from '@automatize/sign-in/web';
+import { SignInScreen } from '@automatize/screens/sign-in/web';
 
 export default function LoginPage() {
   const router = useRouter();

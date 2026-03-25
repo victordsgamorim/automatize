@@ -6,7 +6,110 @@ import { SignInScreen } from '../SignInScreen.web';
 import type { SignInScreenProps } from '../SignInScreen.types';
 import type { UseSignInResult } from '../useSignIn';
 
-vi.mock('react-i18next', () => ({
+vi.mock('@automatize/ui/web', () => ({
+  Button: ({
+    children,
+    onClick,
+    disabled,
+    type,
+    className,
+    ...rest
+  }: {
+    children: React.ReactNode;
+    onClick?: () => void;
+    disabled?: boolean;
+    type?: string;
+    className?: string;
+    variant?: string;
+    size?: string;
+  }) => (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      type={type as 'button' | 'submit' | 'reset'}
+      className={className}
+      {...rest}
+    >
+      {children}
+    </button>
+  ),
+  Input: ({
+    onChange,
+    value,
+    disabled,
+    id,
+    name,
+    type,
+    placeholder,
+    className,
+    ...rest
+  }: {
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    value?: string;
+    disabled?: boolean;
+    id?: string;
+    name?: string;
+    type?: string;
+    placeholder?: string;
+    className?: string;
+  }) => (
+    <input
+      onChange={onChange}
+      value={value}
+      disabled={disabled}
+      id={id}
+      name={name}
+      type={type}
+      placeholder={placeholder}
+      className={className}
+      {...rest}
+    />
+  ),
+  Label: ({
+    children,
+    className,
+    htmlFor,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+    htmlFor?: string;
+  }) => (
+    <label className={className} htmlFor={htmlFor}>
+      {children}
+    </label>
+  ),
+  Checkbox: ({ name }: { name?: string }) => (
+    <input type="checkbox" role="checkbox" name={name} />
+  ),
+  FormField: ({
+    children,
+    label,
+    htmlFor,
+    className,
+  }: {
+    children: React.ReactNode;
+    label: string;
+    htmlFor?: string;
+    className?: string;
+  }) => (
+    <div className={className}>
+      <label htmlFor={htmlFor}>{label}</label>
+      {children}
+    </div>
+  ),
+  ThemeSwitcher: () => <div data-testid="theme-switcher" />,
+  LanguageSwitcher: () => <div data-testid="language-switcher" />,
+  AnimatedFadeIn: ({
+    children,
+    className,
+  }: {
+    children: React.ReactNode;
+    className?: string;
+  }) => <div className={className}>{children}</div>,
+  useToasts: () => ({ error: vi.fn(), success: vi.fn() }),
+}));
+
+vi.mock('@automatize/core-localization', () => ({
   useTranslation: () => ({
     t: (key: string) =>
       ({
@@ -26,7 +129,8 @@ vi.mock('react-i18next', () => ({
         'language.switch-label': 'Change language',
         'theme.switch-label': 'Change theme',
       })[key] ?? key,
-    i18n: { language: 'en', changeLanguage: vi.fn() },
+    language: 'en',
+    changeLanguage: vi.fn(),
   }),
 }));
 

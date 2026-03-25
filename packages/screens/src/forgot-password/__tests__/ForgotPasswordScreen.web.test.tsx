@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
-// Mock react-i18next
-vi.mock('react-i18next', () => ({
+// Mock @automatize/core-localization
+vi.mock('@automatize/core-localization', () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const translations: Record<string, string> = {
@@ -23,7 +23,8 @@ vi.mock('react-i18next', () => ({
       };
       return translations[key] ?? key;
     },
-    i18n: { language: 'en' },
+    language: 'en',
+    changeLanguage: vi.fn(),
   }),
 }));
 
@@ -118,6 +119,9 @@ vi.mock('@automatize/ui/web', () => ({
   ),
   ThemeSwitcher: () => <div data-testid="theme-switcher" />,
   LanguageSwitcher: () => <div data-testid="language-switcher" />,
+  AnimatedFadeIn: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
   useToasts: () => ({ error: vi.fn(), success: vi.fn() }),
 }));
 
