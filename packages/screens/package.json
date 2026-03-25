@@ -1,0 +1,90 @@
+{
+  "name": "@automatize/screens",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./sign-in": {
+      "types": "./dist/sign-in/index.d.ts",
+      "import": "./dist/sign-in/index.mjs",
+      "require": "./dist/sign-in/index.js"
+    },
+    "./sign-in/web": {
+      "types": "./dist/sign-in/web.d.ts",
+      "import": "./dist/sign-in/web.mjs",
+      "require": "./dist/sign-in/web.js"
+    },
+    "./forgot-password": {
+      "types": "./dist/forgot-password/index.d.ts",
+      "import": "./dist/forgot-password/index.mjs",
+      "require": "./dist/forgot-password/index.js"
+    },
+    "./forgot-password/web": {
+      "types": "./dist/forgot-password/web.d.ts",
+      "import": "./dist/forgot-password/web.mjs",
+      "require": "./dist/forgot-password/web.js"
+    },
+    "./content": {
+      "types": "./dist/content/index.d.ts",
+      "import": "./dist/content/index.mjs",
+      "require": "./dist/content/index.js"
+    },
+    "./content/web": {
+      "types": "./dist/content/web.d.ts",
+      "import": "./dist/content/web.mjs",
+      "require": "./dist/content/web.js"
+    },
+    "./settings": {
+      "types": "./dist/settings/index.d.ts",
+      "import": "./dist/settings/index.mjs",
+      "require": "./dist/settings/index.js"
+    },
+    "./settings/web": {
+      "types": "./dist/settings/web.d.ts",
+      "import": "./dist/settings/web.mjs",
+      "require": "./dist/settings/web.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist node_modules .turbo"
+  },
+  "dependencies": {
+    "@automatize/auth": "workspace:*",
+    "@automatize/core-localization": "workspace:*",
+    "@automatize/core-theme": "workspace:*",
+    "@automatize/utils": "workspace:*",
+    "@automatize/ui": "workspace:*",
+    "lucide-react": "catalog:",
+    "lucide-react-native": "catalog:"
+  },
+  "devDependencies": {
+    "@automatize/tsconfig": "workspace:*",
+    "@testing-library/react": "catalog:",
+    "@types/react": "catalog:",
+    "eslint": "catalog:",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
+    "react-native": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.0.0",
+    "react-native": "^0.73.0"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    }
+  }
+}

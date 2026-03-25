@@ -9,12 +9,8 @@ packages:
   - 'packages/ui'
   # Navigation logic
   - 'packages/navigation'
-  # Sign-in (cross-platform screen + hook)
-  - 'packages/sign-in'
-  # Forgot-password (cross-platform screen + hook)
-  - 'packages/forgot-password'
-  # Settings (cross-platform screen)
-  - 'packages/settings'
+  # Cross-platform screens (sign-in, forgot-password, content, settings)
+  - 'packages/screens'
   # Integration — local infrastructure
   - 'integration/storage'
   - 'integration/sync'
@@ -24,8 +20,6 @@ packages:
   - 'packages/localization'
   # Theme
   - 'packages/theme'
-  # Content (sidebar tiles + placeholders)
-  - 'packages/content'
   # Tools
   - 'tools/eslint-config'
   - 'tools/tsconfig'

@@ -19,7 +19,7 @@
   "dependencies": {
     "@automatize/localization": "workspace:*",
     "@automatize/theme": "workspace:*",
-    "@automatize/sign-in": "workspace:*",
+    "@automatize/screens": "workspace:*",
     "@automatize/supabase-auth": "workspace:*",
     "@automatize/auth": "workspace:*",
     "@automatize/utils": "workspace:*",

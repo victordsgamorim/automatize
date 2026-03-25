@@ -9,8 +9,8 @@ import type {
   SidebarProfileConfig,
   SidebarProfileMenuItem,
 } from '@automatize/ui/web';
-import { HomeScreen } from '@automatize/content/web';
-import type { HomeScreenItem } from '@automatize/content/web';
+import { HomeScreen } from '@automatize/screens/content/web';
+import type { HomeScreenItem } from '@automatize/screens/content/web';
 import {
   LayoutDashboard,
   FileText,

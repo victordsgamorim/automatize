@@ -25,6 +25,7 @@ core/                 # Workspace boundary for abstract "Wirer" modules
 
   packages/             # Feature modules
     ├── navigation/     # Cross-platform navigation logic
+    ├── screens/        # Cross-platform screens (sign-in, forgot-password, etc.)
     └── ui/             # Design system
 
 integration/          # Infrastructure implementations
@@ -131,7 +132,7 @@ automatize/
 ├── packages/
 │   ├── localization/   # @automatize/localization (i18n singleton, adapter pattern)
 │   ├── navigation/     # Cross-platform navigation logic
-│   ├── sign-in/        # Cross-platform sign-in screen + hook
+│   ├── screens/        # Cross-platform screens (sign-in, forgot-password, content, settings)
 │   └── ui/             # Design system + components
 │       ├── src/
 │       │   ├── components/  # Cross-platform components (Button/, Input/, etc.)

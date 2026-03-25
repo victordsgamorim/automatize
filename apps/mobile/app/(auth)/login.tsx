@@ -5,7 +5,7 @@
 
 import { router } from 'expo-router';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
-import { SignInScreen } from '@automatize/sign-in';
+import { SignInScreen } from '@automatize/screens/sign-in';
 
 export default function LoginScreen() {
   const { i18n, t } = useTranslation();
