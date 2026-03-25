@@ -58,5 +58,8 @@
   "settings.language.language-label": "Language",
   "settings.about.title": "About",
   "settings.about.version": "Version",
-  "settings.account.sign-out": "Sign out"
+  "settings.account.sign-out": "Sign out",
+  "search.placeholder": "Search...",
+  "search.type-to-search": "Type to search...",
+  "search.no-results": "No results found."
 }

@@ -78,3 +78,19 @@ export type { CardProps } from './components/Card/Card.web';
 
 export { Separator } from './components/Separator/Separator.web';
 export type { SeparatorProps } from './components/Separator/Separator.web';
+
+export {
+  Command,
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandSeparator,
+  CommandShortcut,
+  CommandLoading,
+} from './components/CommandPalette/CommandPalette.web';
+
+export { SearchBar } from './components/SearchBar/SearchBar.web';
+export type { SearchBarProps } from './components/SearchBar/SearchBar.web';
