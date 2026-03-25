@@ -84,7 +84,7 @@ export function SidebarProvider({
     <SidebarContext.Provider value={value}>
       <div
         data-slot="sidebar-provider"
-        className={cn('flex min-h-svh w-full', className)}
+        className={cn('flex h-svh w-full overflow-hidden', className)}
         style={
           {
             '--sidebar-width': SIDEBAR_WIDTH,
