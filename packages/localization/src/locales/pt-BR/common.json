@@ -58,5 +58,8 @@
   "settings.language.language-label": "Idioma",
   "settings.about.title": "Sobre",
   "settings.about.version": "Versão",
-  "settings.account.sign-out": "Sair"
+  "settings.account.sign-out": "Sair",
+  "search.placeholder": "Buscar...",
+  "search.type-to-search": "Digite para buscar...",
+  "search.no-results": "Nenhum resultado encontrado."
 }
