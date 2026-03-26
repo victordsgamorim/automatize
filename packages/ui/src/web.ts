@@ -94,3 +94,37 @@ export {
 
 export { SearchBar } from './components/SearchBar/SearchBar.web';
 export type { SearchBarProps } from './components/SearchBar/SearchBar.web';
+
+// Popover
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+  PopoverClose,
+} from './components/Popover/Popover.web';
+
+// Select
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from './components/Select/Select.web';
+
+// Calendar
+export { Calendar } from './components/Calendar/Calendar.web';
+export type { CalendarProps } from './components/Calendar/Calendar.web';
+
+// DateRangePicker
+export { DateRangePicker } from './components/DateRangePicker/DateRangePicker.web';
+export type { DateRangePickerProps } from './components/DateRangePicker/DateRangePicker.web';
+
+// Re-export DateRange type for consumers
+export type { DateRange } from 'react-day-picker';

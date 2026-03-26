@@ -61,5 +61,8 @@
   "settings.account.sign-out": "Sign out",
   "search.placeholder": "Search...",
   "search.type-to-search": "Type to search...",
-  "search.no-results": "No results found."
+  "search.no-results": "No results found.",
+  "calendar.placeholder": "Pick a date range",
+  "calendar.clear": "Clear",
+  "calendar.apply": "Apply"
 }
