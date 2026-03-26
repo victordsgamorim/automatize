@@ -28,7 +28,7 @@ import { SearchBar } from '../SearchBar.web';
 import {
   CommandGroup,
   CommandItem,
-} from '../../CommandPalette/CommandPalette.web';
+} from '../../../actions/CommandPalette/CommandPalette.web';
 
 describe('SearchBar (web)', () => {
   // ── Trigger rendering ─────────────────────────────────────────────────────

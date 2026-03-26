@@ -13,7 +13,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../DropdownMenu/DropdownMenu.web';
+} from '../../actions/DropdownMenu/DropdownMenu.web';
 
 export type ThemePreferenceOption = 'light' | 'dark' | 'system';
 

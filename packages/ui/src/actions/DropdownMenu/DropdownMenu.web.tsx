@@ -1,17 +1,53 @@
 'use client';
 
+/**
+ * DropdownMenu — Action menu with keyboard navigation and submenus.
+ *
+ * Thin wrapper around @radix-ui/react-dropdown-menu that applies the design
+ * system's semantic tokens, animations, and icons. Provides a menu of actions
+ * (not value selection) triggered by a button.
+ *
+ * Unlike other overlay components in the system:
+ *  - Popover        → arbitrary floating content, no built-in item navigation
+ *  - Select         → form control for picking a value (type-ahead, form binding)
+ *  - CommandPalette → free-text search with fuzzy matching
+ *  - DropdownMenu   → structured action list with keyboard nav (arrow keys),
+ *                     submenus, checkbox items, radio groups, and shortcuts
+ *
+ * Used by: Sidebar (user profile menu with sign-out action).
+ *
+ * Exports:
+ *  - DropdownMenu              — Root provider, manages open/close state.
+ *  - DropdownMenuTrigger       — Element that opens the menu.
+ *  - DropdownMenuContent       — Floating panel with action items.
+ *  - DropdownMenuGroup         — Groups related items for accessibility.
+ *  - DropdownMenuItem          — Individual action row (default or destructive).
+ *  - DropdownMenuCheckboxItem  — Toggle item with a check indicator.
+ *  - DropdownMenuRadioGroup    — Groups mutually exclusive radio items.
+ *  - DropdownMenuRadioItem     — Radio option with a circle indicator.
+ *  - DropdownMenuLabel         — Section heading inside the menu.
+ *  - DropdownMenuSeparator     — Visual divider between sections.
+ *  - DropdownMenuShortcut      — Right-aligned keyboard shortcut hint.
+ *  - DropdownMenuSub           — Submenu root (nested menu).
+ *  - DropdownMenuSubTrigger    — Item that opens a submenu (shows chevron).
+ *  - DropdownMenuSubContent    — Floating panel for the submenu.
+ *  - DropdownMenuPortal        — Portal wrapper for custom portal targets.
+ */
+
 import * as React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 
 import { cn } from '../../utils';
 
+/** Root provider — manages open/close state of the menu. */
 function DropdownMenu({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
   return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
 }
 
+/** Portal wrapper — use when you need a custom portal container. */
 function DropdownMenuPortal({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
@@ -20,6 +56,7 @@ function DropdownMenuPortal({
   );
 }
 
+/** Trigger element — opens the menu when clicked or via keyboard. */
 function DropdownMenuTrigger({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
@@ -31,6 +68,10 @@ function DropdownMenuTrigger({
   );
 }
 
+/**
+ * Floating content panel — rendered in a Portal to escape parent stacking contexts.
+ * Applies semantic tokens and slide/fade/zoom animations matching the open direction.
+ */
 function DropdownMenuContent({
   className,
   sideOffset = 4,
@@ -51,6 +92,7 @@ function DropdownMenuContent({
   );
 }
 
+/** Groups related items for accessibility — screen readers announce the group. */
 function DropdownMenuGroup({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
@@ -59,6 +101,11 @@ function DropdownMenuGroup({
   );
 }
 
+/**
+ * Action item — a single row in the menu. Supports `inset` (extra left padding
+ * to align with items that have indicators) and `variant` ("default" or
+ * "destructive" for danger-styled actions like delete).
+ */
 function DropdownMenuItem({
   className,
   inset,
@@ -82,6 +129,7 @@ function DropdownMenuItem({
   );
 }
 
+/** Checkbox item — toggleable action with a check icon when active. */
 function DropdownMenuCheckboxItem({
   className,
   children,
@@ -108,6 +156,7 @@ function DropdownMenuCheckboxItem({
   );
 }
 
+/** Radio group — wraps mutually exclusive radio items. */
 function DropdownMenuRadioGroup({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
@@ -119,6 +168,7 @@ function DropdownMenuRadioGroup({
   );
 }
 
+/** Radio item — one option in a mutually exclusive group, shows a circle when active. */
 function DropdownMenuRadioItem({
   className,
   children,
@@ -143,6 +193,7 @@ function DropdownMenuRadioItem({
   );
 }
 
+/** Section heading — small, muted label for a group of items. */
 function DropdownMenuLabel({
   className,
   inset,
@@ -163,6 +214,7 @@ function DropdownMenuLabel({
   );
 }
 
+/** Visual divider — 1px horizontal line between sections. */
 function DropdownMenuSeparator({
   className,
   ...props
@@ -176,6 +228,7 @@ function DropdownMenuSeparator({
   );
 }
 
+/** Keyboard shortcut hint — right-aligned small text inside a menu item. */
 function DropdownMenuShortcut({
   className,
   ...props
@@ -192,12 +245,14 @@ function DropdownMenuShortcut({
   );
 }
 
+/** Submenu root — provides open/close state for a nested menu. */
 function DropdownMenuSub({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
   return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />;
 }
 
+/** Submenu trigger — item with a right chevron that opens the nested menu. */
 function DropdownMenuSubTrigger({
   className,
   inset,
@@ -222,6 +277,7 @@ function DropdownMenuSubTrigger({
   );
 }
 
+/** Submenu content — floating panel for the nested menu with its own animations. */
 function DropdownMenuSubContent({
   className,
   ...props

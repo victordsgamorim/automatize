@@ -970,12 +970,16 @@ module.exports = {
 
 ### 24.3 Component Folder Structure (Non-Negotiable)
 
-Every UI component with a `.web.tsx` or `.native.tsx` implementation **MUST** live inside its own folder under `src/components/`. Flat files like `Button.web.tsx` directly in `src/components/` are **FORBIDDEN** — they must be placed inside a `src/components/Button/` folder. There are **no per-component barrel files** (`index.ts` / `index.native.ts`).
+Every UI component with a `.web.tsx` or `.native.tsx` implementation **MUST** live inside its own folder under `src/components/` (visual) or `src/actions/` (behavioral). Flat files like `Button.web.tsx` directly in `src/components/` are **FORBIDDEN** — they must be placed inside a `src/components/Button/` folder. There are **no per-component barrel files** (`index.ts` / `index.native.ts`).
+
+**Visual components** (`src/components/`) render visible UI elements (buttons, inputs, cards, calendars, etc.).
+
+**Behavioral components** (`src/actions/`) provide interaction patterns without intrinsic visible content (floating positioning, open/close state, keyboard navigation, error catching, animation). Examples: Popover, Select, DropdownMenu, CommandPalette, ErrorBoundary, AnimatedFadeIn, Fade.
 
 **Required folder structure:**
 
 ```text
-src/components/
+src/components/          # Visual UI components
   Button/
     Button.web.tsx        # Web implementation (HTML/Radix UI/Tailwind)
     Button.native.tsx     # React Native implementation (StyleSheet/TouchableOpacity)
@@ -988,27 +992,47 @@ src/components/
     Checkbox.web.tsx       # Web-only (no native counterpart yet)
   FormField/
     FormField.web.tsx      # Web-only (label + spacing wrapper)
+
+src/actions/           # Behavioral interaction patterns
+  Popover/
+    Popover.web.tsx        # Floating content positioning (Radix wrapper)
+  Select/
+    Select.web.tsx         # Value-selection dropdown (Radix wrapper)
+  DropdownMenu/
+    DropdownMenu.web.tsx   # Action menu with keyboard nav (Radix wrapper)
+  CommandPalette/
+    CommandPalette.web.tsx # Search/command modal (cmdk + Radix dialog)
+  ErrorBoundary/
+    ErrorBoundary.web.tsx  # Error catching with fallback
+    ErrorBoundary.tsx      # React Native implementation
+  AnimatedFadeIn/
+    AnimatedFadeIn.web.tsx
+    AnimatedFadeIn.native.tsx
+  Fade/
+    Fade.web.tsx
+    Fade.native.tsx
 ```
 
 **Rules:**
 
 - Every `.web.tsx` or `.native.tsx` component file **MUST** be inside its own named folder (e.g., `Button/Button.web.tsx`, never `Button.web.tsx` loose in `src/components/`)
 - Component folders do **NOT** have `index.ts` or `index.native.ts` barrel files
-- `src/index.ts` (main entry) exports native implementations via explicit `.native.tsx` paths (e.g., `'./components/Button/Button.native'`)
-- `src/web.ts` (web entry) exports web implementations via explicit `.web.tsx` paths (e.g., `'./components/Button/Button.web'`)
+- `src/index.ts` (main entry) exports native implementations via explicit `.native.tsx` paths (e.g., `'./components/Button/Button.native'` or `'./actions/Fade/Fade.native'`)
+- `src/web.ts` (web entry) exports web implementations via explicit `.web.tsx` paths (e.g., `'./components/Button/Button.web'` or `'./actions/Popover/Popover.web'`)
 - All internal imports within `packages/ui` **MUST** use explicit `.web.tsx` or `.native.tsx` paths (e.g., `'../Button/Button.web'`), never relative folder paths
 
 ### 24.4 Adding a New Component
 
 When a new component is needed:
 
-1. Create a folder in `packages/ui/src/components/<ComponentName>/`
-2. Add `<ComponentName>.web.tsx` and/or `<ComponentName>.native.tsx` inside the folder
-3. Export from `src/index.ts` using the explicit `.native.tsx` path (e.g., `'./components/Button/Button.native'`)
-4. Export from `src/web.ts` using the explicit `.web.tsx` path (e.g., `'./components/Button/Button.web'`)
-5. Never add `index.ts` or `index.native.ts` barrel files inside the component folder
-6. Never create components as flat files in `src/components/` — always use a folder
-7. Never create components inside an app directory
+1. Determine if it is **visual** (renders visible UI) → `src/components/` or **behavioral** (provides interaction patterns) → `src/actions/`
+2. Create a folder in the appropriate directory: `packages/ui/src/components/<Name>/` or `packages/ui/src/actions/<Name>/`
+3. Add `<Name>.web.tsx` and/or `<Name>.native.tsx` inside the folder
+4. Export from `src/index.ts` using the explicit `.native.tsx` path (e.g., `'./components/Button/Button.native'` or `'./actions/Fade/Fade.native'`)
+5. Export from `src/web.ts` using the explicit `.web.tsx` path (e.g., `'./components/Button/Button.web'` or `'./actions/Popover/Popover.web'`)
+6. Never add `index.ts` or `index.native.ts` barrel files inside the component folder
+7. Never create components as flat files — always use a folder
+8. Never create components inside an app directory
 
 ### 24.5 Domain-Specific Composites
 

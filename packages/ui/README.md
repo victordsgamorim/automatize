@@ -24,7 +24,8 @@ The package has two main exports:
 - **src/styles/\_tokens.css** — ⚠️ GENERATED CSS custom properties (do not edit). Run `pnpm tokens:build`.
 - **src/styles/\_animation.css** — ⚠️ GENERATED animation keyframes + utility classes (do not edit). Run `pnpm tokens:build`.
 - **src/styles/globals.css** — Hand-authored semantic mappings (CSS vars). Imports `_tokens.css`. **Does not contain Tailwind directives.**
-- **src/components/** — Reusable UI components organized in folders. Each folder contains platform-specific implementations (`.web.tsx` / `.native.tsx`). No per-component barrel files.
+- **src/components/** — Visual UI components organized in folders. Each folder contains platform-specific implementations (`.web.tsx` / `.native.tsx`). No per-component barrel files.
+- **src/actions/** — Behavioral components that provide interaction patterns (floating positioning, open/close state, keyboard navigation, error catching, animation). Same folder conventions as `src/components/`.
 - **src/index.ts** — Main package entry (`@automatize/ui`). Exports native implementations using explicit `.native.tsx` paths (e.g., `./components/Button/Button.native`).
 - **src/web.ts** — Web entry (`@automatize/ui/web`). Exports web implementations using explicit `.web.tsx` paths (e.g., `./components/Button/Button.web`).
 - **style-dictionary.config.ts** — Build config for token generation.

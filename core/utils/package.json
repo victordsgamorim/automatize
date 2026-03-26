@@ -23,7 +23,7 @@
     "clean": "rm -rf dist node_modules .turbo"
   },
   "dependencies": {
-    "date-fns": "^3.2.0",
+    "date-fns": "catalog:",
     "ulid": "catalog:"
   },
   "devDependencies": {

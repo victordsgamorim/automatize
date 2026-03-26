@@ -61,5 +61,8 @@
   "settings.account.sign-out": "Sair",
   "search.placeholder": "Buscar...",
   "search.type-to-search": "Digite para buscar...",
-  "search.no-results": "Nenhum resultado encontrado."
+  "search.no-results": "Nenhum resultado encontrado.",
+  "calendar.placeholder": "Selecione um período",
+  "calendar.clear": "Limpar",
+  "calendar.apply": "Aplicar"
 }
