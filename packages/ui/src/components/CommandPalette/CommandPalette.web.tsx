@@ -1,5 +1,39 @@
 'use client';
 
+/**
+ * CommandPalette — Keyboard-driven search and command interface.
+ *
+ * Built on top of `cmdk` (Command Menu) and `@radix-ui/react-dialog`.
+ * Provides a spotlight-style UI where users can search, navigate, and
+ * execute actions using keyboard shortcuts.
+ *
+ * Unlike other overlay components in the system:
+ *  - Popover  → anchored to a trigger, no keyboard item navigation
+ *  - Select   → form control for picking a single value
+ *  - DropdownMenu → action menu with submenus and checkbox/radio items
+ *  - CommandPalette → free-text search with fuzzy matching, grouped results,
+ *                     and keyboard-first navigation (arrow keys + Enter)
+ *
+ * Uses @radix-ui/react-dialog directly (not the Popover wrapper) because the
+ * command palette is a centered modal overlay with a backdrop — not a floating
+ * panel anchored to a trigger element.
+ *
+ * Used by: SearchBar (wraps CommandDialog + CommandInput/List/Items).
+ *
+ * Exports:
+ *  - Command          — Root command container with fuzzy search built in.
+ *  - CommandDialog    — Modal wrapper (Dialog + overlay + Command). Includes
+ *                       accessible Title and Description (screen-reader only).
+ *  - CommandInput     — Search input with a magnifying glass icon.
+ *  - CommandList      — Scrollable results container.
+ *  - CommandEmpty     — Shown when no results match the search query.
+ *  - CommandGroup     — Groups related items under a heading.
+ *  - CommandItem      — Individual actionable result row.
+ *  - CommandSeparator — Visual divider between groups.
+ *  - CommandShortcut  — Right-aligned keyboard shortcut hint inside an item.
+ *  - CommandLoading   — Loading indicator while results are being fetched.
+ */
+
 import * as React from 'react';
 import { Command as CommandPrimitive } from 'cmdk';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
@@ -7,6 +41,10 @@ import { Search } from 'lucide-react';
 
 import { cn } from '../../utils';
 
+/**
+ * Root command container — wraps cmdk's Command primitive with design tokens.
+ * Provides built-in fuzzy search and keyboard navigation across all items.
+ */
 function Command({
   className,
   ...props
@@ -23,6 +61,12 @@ function Command({
   );
 }
 
+/**
+ * Modal dialog wrapper — renders a centered overlay with backdrop blur.
+ * Uses @radix-ui/react-dialog (not Popover) because this is a full-screen
+ * modal, not a trigger-anchored panel. Includes sr-only Title and Description
+ * for WCAG compliance.
+ */
 function CommandDialog({
   children,
   title = 'Command Palette',
@@ -36,14 +80,17 @@ function CommandDialog({
   return (
     <DialogPrimitive.Root {...props}>
       <DialogPrimitive.Portal>
+        {/* Backdrop — semi-transparent overlay with blur */}
         <DialogPrimitive.Overlay
           data-slot="command-dialog-overlay"
           className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
         />
+        {/* Content — centered modal positioned at 20% from top */}
         <DialogPrimitive.Content
           data-slot="command-dialog-content"
           className="fixed left-1/2 top-[20%] z-50 w-full max-w-lg -translate-x-1/2 overflow-hidden rounded-lg border bg-popover shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=open]:slide-in-from-left-1/2"
         >
+          {/* Accessible title/description — hidden visually, read by screen readers */}
           <DialogPrimitive.Title className="sr-only">
             {title}
           </DialogPrimitive.Title>
@@ -59,6 +106,7 @@ function CommandDialog({
   );
 }
 
+/** Search input — includes a Search icon and transparent background. */
 function CommandInput({
   className,
   ...props
@@ -81,6 +129,7 @@ function CommandInput({
   );
 }
 
+/** Scrollable results container — limits height and enables vertical scroll. */
 function CommandList({
   className,
   ...props
@@ -94,6 +143,7 @@ function CommandList({
   );
 }
 
+/** Empty state — shown when no items match the current search query. */
 function CommandEmpty({
   className,
   ...props
@@ -110,6 +160,7 @@ function CommandEmpty({
   );
 }
 
+/** Group wrapper — organizes related items under a heading. */
 function CommandGroup({
   className,
   ...props

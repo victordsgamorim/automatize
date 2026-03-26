@@ -1,5 +1,35 @@
 'use client';
 
+/**
+ * DateRangePicker — Composite component for selecting a date range.
+ *
+ * Composes four UI primitives from packages/ui:
+ *  - Popover   → floating panel that contains the picker UI
+ *  - Select    → month and year dropdown selectors
+ *  - Calendar  → date grid (react-day-picker in "range" mode)
+ *  - Button    → Clear and Apply action buttons
+ *
+ * Behavior:
+ *  - The trigger button shows the formatted date range or a placeholder.
+ *  - Clicking the trigger opens a popover with month/year dropdowns,
+ *    a calendar grid, and Clear/Apply buttons.
+ *  - Selecting a single date shows just that date; selecting two dates
+ *    shows the full range (from – to).
+ *  - "Apply" commits the selection and closes the popover.
+ *  - "Clear" resets the selection, notifies the parent, and closes.
+ *  - Reopening the popover always syncs internal state from the `selected` prop,
+ *    so uncommitted changes are discarded.
+ *
+ * Localization:
+ *  - Pass a date-fns `locale` to translate month names and day labels.
+ *  - Pass `clearLabel` / `applyLabel` / `placeholder` for translated UI strings.
+ *  - Month names are capitalized via CSS (`capitalize` class) so locales that
+ *    return lowercase month names (e.g. Portuguese) display correctly.
+ *
+ * Trigger styling matches the SearchBar trigger (same padding, border, font)
+ * so they look consistent when placed side-by-side in the Dashboard header.
+ */
+
 import * as React from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
@@ -52,13 +82,19 @@ function DateRangePicker({
   dateFormat = 'MMM d, yyyy',
   className,
 }: DateRangePickerProps) {
+  // Popover open/close state
   const [open, setOpen] = useState(false);
+
+  // Internal range — a draft that only commits to parent on Apply/Clear
   const [internalRange, setInternalRange] = useState<DateRange | undefined>(
     selected
   );
+
+  // Which month the calendar is currently showing
   const [month, setMonth] = useState<Date>(selected?.from ?? new Date());
 
-  // Sync internal state when popover opens
+  // Reset internal state every time the popover opens, so uncommitted
+  // changes from a previous session are discarded
   useEffect(() => {
     if (open) {
       setInternalRange(selected);
@@ -66,17 +102,20 @@ function DateRangePicker({
     }
   }, [open, selected]);
 
+  // Commit the current draft range to the parent and close
   const handleApply = useCallback(() => {
     onApply?.(internalRange);
     setOpen(false);
   }, [internalRange, onApply]);
 
+  // Clear selection, notify parent with undefined, and close
   const handleClear = useCallback(() => {
     setInternalRange(undefined);
     onApply?.(undefined);
     setOpen(false);
   }, [onApply]);
 
+  // Update calendar view when the month dropdown changes
   const handleMonthChange = useCallback(
     (val: string) => {
       const newMonth = new Date(month.getFullYear(), Number(val), 1);
@@ -85,6 +124,7 @@ function DateRangePicker({
     [month]
   );
 
+  // Update calendar view when the year dropdown changes
   const handleYearChange = useCallback(
     (val: string) => {
       const newMonth = new Date(Number(val), month.getMonth(), 1);
@@ -93,22 +133,26 @@ function DateRangePicker({
     [month]
   );
 
+  // Format a date using the configured format string and locale
   const formatDate = useCallback(
     (date: Date) => format(date, dateFormat, { locale }),
     [dateFormat, locale]
   );
 
+  // Build the display text: "from – to", or just "from" if same day / no end
   const formattedValue = selected?.from
     ? selected.to && selected.from.getTime() !== selected.to.getTime()
       ? `${formatDate(selected.from)} – ${formatDate(selected.to)}`
       : formatDate(selected.from)
     : undefined;
 
+  // Year dropdown range: 10 years before and after current year
   const currentYear = new Date().getFullYear();
   const yearRange = Array.from({ length: 21 }, (_, i) => currentYear - 10 + i);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
+      {/* Trigger — styled to match SearchBar for visual consistency */}
       <PopoverTrigger asChild>
         <button
           type="button"
@@ -127,14 +171,16 @@ function DateRangePicker({
           <span className="truncate">{formattedValue ?? placeholder}</span>
         </button>
       </PopoverTrigger>
+      {/* Popover content — calendar panel */}
       <PopoverContent
         data-slot="date-range-picker-content"
         className="w-auto p-4"
         align="start"
       >
         <div className="space-y-4">
-          {/* Month / Year dropdowns */}
+          {/* Month / Year dropdowns — quick navigation without clicking arrows */}
           <div className="flex justify-between gap-2">
+            {/* Month selector — capitalize ensures locale-aware names look proper */}
             <Select
               value={month.getMonth().toString()}
               onValueChange={handleMonthChange}
@@ -155,6 +201,7 @@ function DateRangePicker({
               </SelectContent>
             </Select>
 
+            {/* Year selector */}
             <Select
               value={month.getFullYear().toString()}
               onValueChange={handleYearChange}
@@ -172,7 +219,7 @@ function DateRangePicker({
             </Select>
           </div>
 
-          {/* Calendar */}
+          {/* Calendar grid — range mode allows selecting from → to */}
           <Calendar
             mode="range"
             selected={internalRange}
@@ -183,7 +230,7 @@ function DateRangePicker({
             className="rounded-md border"
           />
 
-          {/* Footer */}
+          {/* Footer — Clear resets, Apply commits */}
           <div className="flex justify-between pt-2">
             <Button
               size="sm"
