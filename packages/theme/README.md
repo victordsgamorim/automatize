@@ -260,3 +260,7 @@ This package follows Automatize's core architectural principles:
 - **Cross-platform** — platform-specific code is isolated in storage adapters, effects, and OS detection hooks; the core logic is shared
 - **Adapter pattern** — the persistence layer is injected, not hardcoded, enabling custom storage backends
 - **SSR-safe** — deterministic first-render defaults prevent hydration mismatches on Next.js
+
+---
+
+**Last Updated:** 2026-03-25

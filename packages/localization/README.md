@@ -252,3 +252,7 @@ This package follows Automatize's core architectural principles:
 - **Cross-platform** — uses no DOM-specific APIs; works identically on web, React Native (iOS/Android), and Windows Desktop
 - **Adapter pattern** — the translation source is injected, not hardcoded, enabling Phase 2 with zero app-level changes
 - **Single source of truth** — all translated strings live in this package; no app or feature package defines its own translation files
+
+---
+
+**Last Updated:** 2026-03-25

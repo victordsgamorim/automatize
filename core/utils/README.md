@@ -51,3 +51,7 @@ pnpm --filter @automatize/utils test
 pnpm --filter @automatize/utils test:unit   # with coverage
 pnpm --filter @automatize/utils typecheck
 ```
+
+---
+
+**Last Updated:** 2026-03-25

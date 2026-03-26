@@ -29,3 +29,7 @@ Currently a placeholder package.
 - Windows 10 version 1809+ supported
 - Visual Studio required for building
 - Some mobile-specific packages may need platform guards
+
+---
+
+**Last Updated:** 2026-03-25

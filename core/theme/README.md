@@ -71,3 +71,7 @@ The `theme` prop is **web-only** — `SignInScreen.native.tsx` ignores it and re
 - Types only — no runtime code, no dependencies, no tests required
 - MUST NOT import from any CSS-in-JS library, theme provider, or app layer
 - MUST NOT import from any app (`apps/*`) or feature package
+
+---
+
+**Last Updated:** 2026-03-25

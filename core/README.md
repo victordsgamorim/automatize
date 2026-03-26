@@ -22,3 +22,7 @@ This strict logical separation guarantees that generic frontend packages do not 
 - **`@automatize/utils`** (`core/utils/`): Pure, platform-agnostic utility functions shared across the monorepo (`generateId`, `getCurrentTimestamp`).
 - **`@automatize/core-localization`** (`core/localization/`): Types-only. Defines `LocaleData` and `LanguageOption` — the data contract between app-level i18n providers and UI feature packages.
 - **`@automatize/core-theme`** (`core/theme/`): Types-only. Defines `ThemeData` and `ThemeOption` — the data contract between app-level theme providers and UI feature packages.
+
+---
+
+**Last Updated:** 2026-03-25

@@ -194,3 +194,7 @@ pnpm --filter @automatize/screens lint
 - Mock `@automatize/core-localization` with a translation map for your screen's keys
 - Use the shared `src/test/setup.ts` for jsdom polyfills (ResizeObserver)
 - Tests resolve `.web.tsx` files via the vitest `resolve.extensions` config
+
+---
+
+**Last Updated:** 2026-03-25

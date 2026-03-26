@@ -48,3 +48,7 @@ Next.js public environment variables (NEXT*PUBLIC*\*) are used for Supabase conf
 - Images optimized with next/image
 - Fonts self-hosted with next/font
 - Dynamic imports for heavy components
+
+---
+
+**Last Updated:** 2026-03-25

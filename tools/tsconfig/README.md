@@ -44,3 +44,7 @@ Works with modern bundlers (Vite, tsup, Metro). Resolves imports naturally witho
 
 **Why ES2022 target?**
 Modern enough for new features, old enough for broad compatibility. Can be lowered for specific platforms if needed.
+
+---
+
+**Last Updated:** 2026-03-25

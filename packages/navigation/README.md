@@ -125,3 +125,7 @@ This module follows Automatize's core architectural principles:
 - **UI separation**: Visual presentation is delegated to `@automatize/ui` components
 
 The module replaces duplicated navigation implementations in `apps/*` directories with a single, maintainable source of truth.
+
+---
+
+**Last Updated:** 2026-03-25
