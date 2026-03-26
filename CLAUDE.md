@@ -1017,8 +1017,8 @@ src/actions/           # Behavioral interaction patterns
 
 - Every `.web.tsx` or `.native.tsx` component file **MUST** be inside its own named folder (e.g., `Button/Button.web.tsx`, never `Button.web.tsx` loose in `src/components/`)
 - Component folders do **NOT** have `index.ts` or `index.native.ts` barrel files
-- `src/index.ts` (main entry) exports native implementations via explicit `.native.tsx` paths (e.g., `'./components/Button/Button.native'` or `'./behaviors/Fade/Fade.native'`)
-- `src/web.ts` (web entry) exports web implementations via explicit `.web.tsx` paths (e.g., `'./components/Button/Button.web'` or `'./behaviors/Popover/Popover.web'`)
+- `src/index.ts` (main entry) exports native implementations via explicit `.native.tsx` paths (e.g., `'./components/Button/Button.native'` or `'./actions/Fade/Fade.native'`)
+- `src/web.ts` (web entry) exports web implementations via explicit `.web.tsx` paths (e.g., `'./components/Button/Button.web'` or `'./actions/Popover/Popover.web'`)
 - All internal imports within `packages/ui` **MUST** use explicit `.web.tsx` or `.native.tsx` paths (e.g., `'../Button/Button.web'`), never relative folder paths
 
 ### 24.4 Adding a New Component
@@ -1028,8 +1028,8 @@ When a new component is needed:
 1. Determine if it is **visual** (renders visible UI) → `src/components/` or **behavioral** (provides interaction patterns) → `src/actions/`
 2. Create a folder in the appropriate directory: `packages/ui/src/components/<Name>/` or `packages/ui/src/actions/<Name>/`
 3. Add `<Name>.web.tsx` and/or `<Name>.native.tsx` inside the folder
-4. Export from `src/index.ts` using the explicit `.native.tsx` path (e.g., `'./components/Button/Button.native'` or `'./behaviors/Fade/Fade.native'`)
-5. Export from `src/web.ts` using the explicit `.web.tsx` path (e.g., `'./components/Button/Button.web'` or `'./behaviors/Popover/Popover.web'`)
+4. Export from `src/index.ts` using the explicit `.native.tsx` path (e.g., `'./components/Button/Button.native'` or `'./actions/Fade/Fade.native'`)
+5. Export from `src/web.ts` using the explicit `.web.tsx` path (e.g., `'./components/Button/Button.web'` or `'./actions/Popover/Popover.web'`)
 6. Never add `index.ts` or `index.native.ts` barrel files inside the component folder
 7. Never create components as flat files — always use a folder
 8. Never create components inside an app directory
