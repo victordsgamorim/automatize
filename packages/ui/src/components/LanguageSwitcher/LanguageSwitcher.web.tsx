@@ -7,7 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../DropdownMenu/DropdownMenu.web';
+} from '../../actions/DropdownMenu/DropdownMenu.web';
 
 export interface LanguageOption {
   /** BCP-47 language code, e.g. "en" or "pt-BR" */

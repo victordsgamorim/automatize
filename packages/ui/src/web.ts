@@ -2,7 +2,7 @@
 
 /**
  * @automatize/ui — Web entry point
- * Re-exports components from src/components/ for web consumers.
+ * Re-exports components from src/components/ (visual) and sr./actions/ (behavioral) for web consumers.
  * Only exports what is actively used. New exports are added as features are built.
  */
 
@@ -33,17 +33,17 @@ export type {
 export {
   ErrorBoundary,
   RootErrorBoundary,
-} from './components/ErrorBoundary/ErrorBoundary.web';
+} from './actions/ErrorBoundary/ErrorBoundary.web';
 export type {
   ErrorBoundaryProps,
   RootErrorBoundaryProps,
-} from './components/ErrorBoundary/ErrorBoundary.web';
+} from './actions/ErrorBoundary/ErrorBoundary.web';
 
-export { AnimatedFadeIn } from './components/AnimatedFadeIn/AnimatedFadeIn.web';
-export type { AnimatedFadeInProps } from './components/AnimatedFadeIn/AnimatedFadeIn.web';
+export { AnimatedFadeIn } from './actions/AnimatedFadeIn/AnimatedFadeIn.web';
+export type { AnimatedFadeInProps } from './actions/AnimatedFadeIn/AnimatedFadeIn.web';
 
-export { Fade } from './components/Fade/Fade.web';
-export type { FadeProps } from './components/Fade/Fade.web';
+export { Fade } from './actions/Fade/Fade.web';
+export type { FadeProps } from './actions/Fade/Fade.web';
 
 export {
   SidebarProvider,
@@ -90,7 +90,7 @@ export {
   CommandSeparator,
   CommandShortcut,
   CommandLoading,
-} from './components/CommandPalette/CommandPalette.web';
+} from './actions/CommandPalette/CommandPalette.web';
 
 export { SearchBar } from './components/SearchBar/SearchBar.web';
 export type { SearchBarProps } from './components/SearchBar/SearchBar.web';
@@ -102,7 +102,7 @@ export {
   PopoverContent,
   PopoverAnchor,
   PopoverClose,
-} from './components/Popover/Popover.web';
+} from './actions/Popover/Popover.web';
 
 // Select
 export {
@@ -116,7 +116,7 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from './components/Select/Select.web';
+} from './actions/Select/Select.web';
 
 // Calendar
 export { Calendar } from './components/Calendar/Calendar.web';

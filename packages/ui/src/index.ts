@@ -44,11 +44,11 @@ export type {
 export {
   ErrorBoundary,
   RootErrorBoundary,
-} from './components/ErrorBoundary/ErrorBoundary.web';
+} from './actions/ErrorBoundary/ErrorBoundary.web';
 export type {
   ErrorBoundaryProps,
   RootErrorBoundaryProps,
-} from './components/ErrorBoundary/ErrorBoundary.web';
+} from './actions/ErrorBoundary/ErrorBoundary.web';
 
 // Icon (RN implementation)
 export {
@@ -60,9 +60,9 @@ export {
 export type { IconProps } from './components/Icon/Icon';
 
 // Animation (cross-platform helper)
-export { AnimatedFadeIn } from './components/AnimatedFadeIn/AnimatedFadeIn.native';
-export type { AnimatedFadeInProps } from './components/AnimatedFadeIn/AnimatedFadeIn.native';
+export { AnimatedFadeIn } from './actions/AnimatedFadeIn/AnimatedFadeIn.native';
+export type { AnimatedFadeInProps } from './actions/AnimatedFadeIn/AnimatedFadeIn.native';
 
 // Fade (visibility toggle animation)
-export { Fade } from './components/Fade/Fade.native';
-export type { FadeProps } from './components/Fade/Fade.native';
+export { Fade } from './actions/Fade/Fade.native';
+export type { FadeProps } from './actions/Fade/Fade.native';

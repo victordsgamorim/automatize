@@ -43,14 +43,14 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from '../Popover/Popover.web';
+} from '../../actions/Popover/Popover.web';
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '../Select/Select.web';
+} from '../../actions/Select/Select.web';
 import { Calendar } from '../Calendar/Calendar.web';
 
 export interface DateRangePickerProps {

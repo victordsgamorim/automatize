@@ -10,7 +10,7 @@ import {
   CommandInput,
   CommandList,
   CommandEmpty,
-} from '../CommandPalette/CommandPalette.web';
+} from '../../actions/CommandPalette/CommandPalette.web';
 
 export interface SearchBarProps {
   /** Placeholder text for the trigger button and search input */

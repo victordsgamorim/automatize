@@ -177,6 +177,7 @@ function CommandGroup({
   );
 }
 
+/** Actionable result row — highlighted when selected via keyboard or hover. */
 function CommandItem({
   className,
   ...props
@@ -193,6 +194,7 @@ function CommandItem({
   );
 }
 
+/** Visual divider — 1px line between command groups. */
 function CommandSeparator({
   className,
   ...props
@@ -206,6 +208,7 @@ function CommandSeparator({
   );
 }
 
+/** Keyboard shortcut hint — right-aligned small text inside a command item. */
 function CommandShortcut({
   className,
   ...props
@@ -222,6 +225,7 @@ function CommandShortcut({
   );
 }
 
+/** Loading indicator — shown while results are being fetched asynchronously. */
 function CommandLoading({
   className,
   ...props

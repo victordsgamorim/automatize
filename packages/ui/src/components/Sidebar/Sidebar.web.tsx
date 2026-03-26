@@ -17,7 +17,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from '../DropdownMenu/DropdownMenu.web';
+} from '../../actions/DropdownMenu/DropdownMenu.web';
 
 /* ─── Constants ─────────────────────────────────────────────────────────────── */
 
