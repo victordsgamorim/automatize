@@ -58,6 +58,7 @@
     "@automatize/core-theme": "workspace:*",
     "@automatize/utils": "workspace:*",
     "@automatize/ui": "workspace:*",
+    "date-fns": "catalog:",
     "lucide-react": "catalog:",
     "lucide-react-native": "catalog:"
   },

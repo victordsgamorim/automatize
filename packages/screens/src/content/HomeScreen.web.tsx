@@ -2,8 +2,9 @@
 
 import { useMemo } from 'react';
 import type { SidebarNavItem } from '@automatize/ui/web';
-import { SidebarProvider, SidebarLayout } from '@automatize/ui/web';
+import { SidebarProvider, SidebarLayout, Header } from '@automatize/ui/web';
 import type { HomeScreenProps } from './HomeScreen.types';
+import { AppHeaderActions } from './AppHeaderActions/AppHeaderActions.web';
 
 export function HomeScreen({
   items,
@@ -12,6 +13,7 @@ export function HomeScreen({
   header,
   profile,
   profileMenuItems,
+  pageHeaderProps,
   children,
 }: HomeScreenProps) {
   const activeIndex = items.findIndex((item) => item.id === activeTile);
@@ -36,16 +38,39 @@ export function HomeScreen({
         profile={profile}
         profileMenuItems={profileMenuItems}
       />
-      <main
+      <div
         style={{
           flex: 1,
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          transition: 'width 300ms ease-in-out',
+          display: 'flex',
+          flexDirection: 'column',
+          minWidth: 0,
+          overflow: 'hidden',
         }}
       >
-        {children}
-      </main>
+        {pageHeaderProps && (
+          <Header
+            title={pageHeaderProps.title}
+            className={pageHeaderProps.className}
+            actions={
+              <AppHeaderActions
+                locale={pageHeaderProps.locale}
+                dateRangePickerProps={pageHeaderProps.dateRangePickerProps}
+                searchBarProps={pageHeaderProps.searchBarProps}
+              />
+            }
+          />
+        )}
+        <main
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            transition: 'width 300ms ease-in-out',
+          }}
+        >
+          {children}
+        </main>
+      </div>
     </SidebarProvider>
   );
 }

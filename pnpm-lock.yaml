@@ -692,6 +692,9 @@ importers:
       '@automatize/utils':
         specifier: workspace:*
         version: link:../../core/utils
+      date-fns:
+        specifier: 'catalog:'
+        version: 3.6.0
       lucide-react:
         specifier: 'catalog:'
         version: 0.547.0(react@18.2.0)

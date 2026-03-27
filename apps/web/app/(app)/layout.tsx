@@ -4,6 +4,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useUserAuthentication } from '@automatize/supabase-auth';
 import { useNavigation } from '@automatize/navigation';
+import { useTranslation } from '@automatize/localization';
 import { SidebarLogo } from '@automatize/ui/web';
 import type {
   SidebarProfileConfig,
@@ -72,7 +73,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated, navigate]);
 
+  const { t, i18n } = useTranslation();
   const activeTile = ROUTE_TO_ID[pathname] ?? 'dashboard';
+  const activeItem = ITEMS.find((item) => item.id === activeTile);
+  const pageTitle = activeItem?.label ?? 'Dashboard';
 
   const profile: SidebarProfileConfig = useMemo(
     () => ({
@@ -122,6 +126,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       header={<SidebarLogo />}
       profile={profile}
       profileMenuItems={profileMenuItems}
+      pageHeaderProps={{
+        title: pageTitle,
+        locale: { code: i18n.language, label: i18n.language },
+        dateRangePickerProps: {
+          placeholder: t('calendar.placeholder'),
+          clearLabel: t('calendar.clear'),
+          applyLabel: t('calendar.apply'),
+        },
+        searchBarProps: {
+          placeholder: t('search.placeholder'),
+          emptyMessage: t('search.no-results'),
+        },
+      }}
     >
       {children}
     </HomeScreen>
