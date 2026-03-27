@@ -11,8 +11,6 @@ import type {
 } from '@automatize/ui/web';
 import { HomeScreen } from '@automatize/screens/content/web';
 import type { HomeScreenItem } from '@automatize/screens/content/web';
-import { Header } from '@automatize/ui/web';
-import { DashboardHeaderActions } from '@/components/composites/DashboardHeaderActions';
 import {
   LayoutDashboard,
   FileText,
@@ -126,9 +124,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       header={<SidebarLogo />}
       profile={profile}
       profileMenuItems={profileMenuItems}
-      pageHeader={
-        <Header title={pageTitle} actions={<DashboardHeaderActions />} />
-      }
+      pageHeaderProps={{ title: pageTitle }}
     >
       {children}
     </HomeScreen>
