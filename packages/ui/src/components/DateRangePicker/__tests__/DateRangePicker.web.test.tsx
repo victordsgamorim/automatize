@@ -66,23 +66,64 @@ describe('DateRangePicker (web)', () => {
     expect(getTrigger().getAttribute('aria-label')).toBe('Mar 15, 2026');
   });
 
-  it('hides label text on mobile via hidden/sm:inline classes', () => {
-    render(<DateRangePicker />);
-    const span = getTrigger().querySelector('span');
-    expect(span?.className).toContain('hidden');
-    expect(span?.className).toContain('sm:inline');
-  });
-
-  it('applies fixed height to trigger for consistent sizing across breakpoints', () => {
+  it('applies fixed height h-[38px] for consistent sizing across breakpoints', () => {
     render(<DateRangePicker />);
     expect(getTrigger().className).toContain('h-[38px]');
   });
 
-  it('applies responsive min-width only above mobile breakpoint', () => {
+  it('collapses to icon-only square on mobile via w-[38px]', () => {
+    render(<DateRangePicker />);
+    expect(getTrigger().className).toContain('w-[38px]');
+  });
+
+  it('removes horizontal padding on mobile via px-0', () => {
+    render(<DateRangePicker />);
+    expect(getTrigger().className).toContain('px-0');
+  });
+
+  it('centers icon on mobile via justify-center', () => {
+    render(<DateRangePicker />);
+    expect(getTrigger().className).toContain('justify-center');
+  });
+
+  it('restores auto width above mobile breakpoint via sm:w-auto', () => {
+    render(<DateRangePicker />);
+    expect(getTrigger().className).toContain('sm:w-auto');
+  });
+
+  it('restores horizontal padding above mobile breakpoint via sm:px-3', () => {
+    render(<DateRangePicker />);
+    expect(getTrigger().className).toContain('sm:px-3');
+  });
+
+  it('aligns content left above mobile breakpoint via sm:justify-start', () => {
+    render(<DateRangePicker />);
+    expect(getTrigger().className).toContain('sm:justify-start');
+  });
+
+  it('applies minimum width only above mobile breakpoint via sm:min-w-[180px]', () => {
     render(<DateRangePicker />);
     const classes = getTrigger().className;
     expect(classes).toContain('sm:min-w-[180px]');
-    expect(classes).not.toContain(' min-w-[180px]');
+    expect(classes).not.toMatch(/(^| )min-w-\[180px\]/);
+  });
+
+  it('hides label text on mobile via hidden class on span', () => {
+    render(<DateRangePicker />);
+    const span = getTrigger().querySelector('span');
+    expect(span?.className).toContain('hidden');
+  });
+
+  it('shows label text above mobile breakpoint via sm:inline class on span', () => {
+    render(<DateRangePicker />);
+    const span = getTrigger().querySelector('span');
+    expect(span?.className).toContain('sm:inline');
+  });
+
+  it('prevents calendar icon from shrinking via shrink-0', () => {
+    render(<DateRangePicker />);
+    const icon = getTrigger().querySelector('svg');
+    expect(icon?.getAttribute('class')).toContain('shrink-0');
   });
 
   it('applies custom className to trigger', () => {

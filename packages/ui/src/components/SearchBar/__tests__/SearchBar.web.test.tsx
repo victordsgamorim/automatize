@@ -231,6 +231,118 @@ describe('SearchBar (web)', () => {
     expect(screen.getByText('Press Escape to close')).toBeTruthy();
   });
 
+  // ── Responsive collapse behavior ──────────────────────────────────────────
+
+  it('applies fixed height h-[38px] for consistent sizing across breakpoints', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    expect(trigger.className).toContain('h-[38px]');
+  });
+
+  it('collapses to icon-only square on mobile via w-[38px]', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    expect(trigger.className).toContain('w-[38px]');
+  });
+
+  it('removes horizontal padding on mobile via px-0', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    expect(trigger.className).toContain('px-0');
+  });
+
+  it('centers icon on mobile via justify-center', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    expect(trigger.className).toContain('justify-center');
+  });
+
+  it('restores auto width above mobile breakpoint via sm:w-auto', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    expect(trigger.className).toContain('sm:w-auto');
+  });
+
+  it('restores horizontal padding above mobile breakpoint via sm:px-3', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    expect(trigger.className).toContain('sm:px-3');
+  });
+
+  it('aligns content left above mobile breakpoint via sm:justify-start', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    expect(trigger.className).toContain('sm:justify-start');
+  });
+
+  it('applies minimum width only above mobile breakpoint via sm:min-w-[180px]', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    expect(trigger.className).toContain('sm:min-w-[180px]');
+    expect(trigger.className).not.toMatch(/(^| )min-w-\[180px\]/);
+  });
+
+  it('hides label text on mobile via hidden class on span', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    const span = trigger.querySelector('span');
+    expect(span?.className).toContain('hidden');
+  });
+
+  it('shows label text above mobile breakpoint via sm:inline class on span', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    const span = trigger.querySelector('span');
+    expect(span?.className).toContain('sm:inline');
+  });
+
+  it('hides keyboard shortcut badge on mobile via hidden class on kbd', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    const kbd = trigger.querySelector('kbd');
+    expect(kbd?.className).toContain('hidden');
+  });
+
+  it('shows keyboard shortcut badge above mobile breakpoint via sm:inline-flex class on kbd', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    const kbd = trigger.querySelector('kbd');
+    expect(kbd?.className).toContain('sm:inline-flex');
+  });
+
+  it('prevents Search icon from shrinking via shrink-0', () => {
+    render(<SearchBar />);
+    const trigger = document.querySelector(
+      '[data-slot="search-bar-trigger"]'
+    ) as HTMLElement;
+    const icon = trigger.querySelector('svg');
+    expect(icon?.getAttribute('class')).toContain('shrink-0');
+  });
+
   // ── Cleanup ───────────────────────────────────────────────────────────────
 
   it('cleans up keyboard listener on unmount', () => {
