@@ -1,18 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import type { SidebarNavItem } from '@automatize/ui/web';
-import {
-  SidebarProvider,
-  SidebarLayout,
-  Header,
-  DateRangePicker,
-  SearchBar,
-} from '@automatize/ui/web';
-import type { DateRange } from '@automatize/ui/web';
+import { SidebarProvider, SidebarLayout } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
-import { ptBR } from 'date-fns/locale/pt-BR';
 import type { HomeScreenProps } from './HomeScreen.types';
+import { AppHeaderActions } from './AppHeaderActions/AppHeaderActions.web';
 
 export function HomeScreen({
   items,
@@ -26,12 +19,6 @@ export function HomeScreen({
 }: HomeScreenProps) {
   const activeIndex = items.findIndex((item) => item.id === activeTile);
   const { t, language } = useTranslation();
-  const [dateRange, setDateRange] = useState<DateRange | undefined>();
-
-  const dateFnsLocale = useMemo(
-    () => (language === 'pt-BR' ? ptBR : undefined),
-    [language]
-  );
 
   const navItems: SidebarNavItem[] = useMemo(
     () =>
@@ -63,24 +50,10 @@ export function HomeScreen({
         }}
       >
         {pageHeaderProps && (
-          <Header
+          <AppHeaderActions
             {...pageHeaderProps}
-            actions={
-              <>
-                <DateRangePicker
-                  selected={dateRange}
-                  onApply={setDateRange}
-                  placeholder={t('calendar.placeholder')}
-                  clearLabel={t('calendar.clear')}
-                  applyLabel={t('calendar.apply')}
-                  locale={dateFnsLocale}
-                />
-                <SearchBar
-                  placeholder={t('search.placeholder')}
-                  emptyMessage={t('search.no-results')}
-                />
-              </>
-            }
+            t={t}
+            locale={{ code: language, label: language }}
           />
         )}
         <main
