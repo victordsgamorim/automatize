@@ -2,11 +2,17 @@
 
 import { useMemo } from 'react';
 import type { SidebarNavItem } from '@automatize/ui/web';
-import { SidebarProvider, SidebarLayout, Header } from '@automatize/ui/web';
+import {
+  SidebarProvider,
+  SidebarLayout,
+  Header,
+  BottomNavigation,
+  useSidebar,
+} from '@automatize/ui/web';
 import type { HomeScreenProps } from './HomeScreen.types';
 import { AppHeaderActions } from './AppHeaderActions/AppHeaderActions.web';
 
-export function HomeScreen({
+function HomeScreenContent({
   items,
   activeTile,
   onNavigate,
@@ -16,6 +22,7 @@ export function HomeScreen({
   pageHeaderProps,
   children,
 }: HomeScreenProps) {
+  const { isMobile } = useSidebar();
   const activeIndex = items.findIndex((item) => item.id === activeTile);
 
   const navItems: SidebarNavItem[] = useMemo(
@@ -29,15 +36,19 @@ export function HomeScreen({
     [items, onNavigate]
   );
 
+  const resolvedIndex = activeIndex >= 0 ? activeIndex : 0;
+
   return (
-    <SidebarProvider>
-      <SidebarLayout
-        header={header}
-        items={navItems}
-        activeIndex={activeIndex >= 0 ? activeIndex : 0}
-        profile={profile}
-        profileMenuItems={profileMenuItems}
-      />
+    <>
+      {!isMobile && (
+        <SidebarLayout
+          header={header}
+          items={navItems}
+          activeIndex={resolvedIndex}
+          profile={profile}
+          profileMenuItems={profileMenuItems}
+        />
+      )}
       <div
         style={{
           flex: 1,
@@ -70,7 +81,18 @@ export function HomeScreen({
         >
           {children}
         </main>
+        {isMobile && (
+          <BottomNavigation items={navItems} activeIndex={resolvedIndex} />
+        )}
       </div>
+    </>
+  );
+}
+
+export function HomeScreen(props: HomeScreenProps) {
+  return (
+    <SidebarProvider>
+      <HomeScreenContent {...props} />
     </SidebarProvider>
   );
 }
