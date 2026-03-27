@@ -11,6 +11,8 @@ import type {
 } from '@automatize/ui/web';
 import { HomeScreen } from '@automatize/screens/content/web';
 import type { HomeScreenItem } from '@automatize/screens/content/web';
+import { Header } from '@automatize/ui/web';
+import { DashboardMobileActions } from '@/components/composites/DashboardMobileActions';
 import {
   LayoutDashboard,
   FileText,
@@ -73,6 +75,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, [isAuthenticated, navigate]);
 
   const activeTile = ROUTE_TO_ID[pathname] ?? 'dashboard';
+  const activeItem = ITEMS.find((item) => item.id === activeTile);
+  const pageTitle = activeItem?.label ?? 'Dashboard';
 
   const profile: SidebarProfileConfig = useMemo(
     () => ({
@@ -122,6 +126,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       header={<SidebarLogo />}
       profile={profile}
       profileMenuItems={profileMenuItems}
+      pageHeader={
+        <Header title={pageTitle} actions={<DashboardMobileActions />} />
+      }
     >
       {children}
     </HomeScreen>

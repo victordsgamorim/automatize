@@ -12,6 +12,7 @@ export function HomeScreen({
   header,
   profile,
   profileMenuItems,
+  pageHeader,
   children,
 }: HomeScreenProps) {
   const activeIndex = items.findIndex((item) => item.id === activeTile);
@@ -36,16 +37,27 @@ export function HomeScreen({
         profile={profile}
         profileMenuItems={profileMenuItems}
       />
-      <main
+      <div
         style={{
           flex: 1,
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          transition: 'width 300ms ease-in-out',
+          display: 'flex',
+          flexDirection: 'column',
+          minWidth: 0,
+          overflow: 'hidden',
         }}
       >
-        {children}
-      </main>
+        {pageHeader}
+        <main
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            overflowX: 'hidden',
+            transition: 'width 300ms ease-in-out',
+          }}
+        >
+          {children}
+        </main>
+      </div>
     </SidebarProvider>
   );
 }

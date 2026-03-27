@@ -128,3 +128,7 @@ export type { DateRangePickerProps } from './components/DateRangePicker/DateRang
 
 // Re-export DateRange type for consumers
 export type { DateRange } from 'react-day-picker';
+
+// Header
+export { Header } from './components/Header/Header.web';
+export type { HeaderProps } from './components/Header/Header.web';

@@ -35,6 +35,8 @@ export interface HomeScreenProps {
   profile?: SidebarProfileConfig;
   /** Profile dropdown menu items (Settings, Log out, etc.). */
   profileMenuItems?: SidebarProfileMenuItem[];
+  /** Mobile-only top bar rendered above the scroll area. Typically a <Header /> from @automatize/ui. */
+  pageHeader?: React.ReactNode;
   /** Main content area. */
   children: React.ReactNode;
 }
