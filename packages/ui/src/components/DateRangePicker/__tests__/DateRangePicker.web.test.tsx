@@ -56,6 +56,23 @@ describe('DateRangePicker (web)', () => {
     expect(screen.getByText('Select dates')).toBeTruthy();
   });
 
+  it('has aria-label with placeholder when no date selected', () => {
+    render(<DateRangePicker placeholder="Select dates" />);
+    expect(getTrigger().getAttribute('aria-label')).toBe('Select dates');
+  });
+
+  it('has aria-label with formatted value when date is selected', () => {
+    render(<DateRangePicker selected={{ from: new Date(2026, 2, 15) }} />);
+    expect(getTrigger().getAttribute('aria-label')).toBe('Mar 15, 2026');
+  });
+
+  it('hides label text on mobile via hidden/sm:inline classes', () => {
+    render(<DateRangePicker />);
+    const span = getTrigger().querySelector('span');
+    expect(span?.className).toContain('hidden');
+    expect(span?.className).toContain('sm:inline');
+  });
+
   it('applies custom className to trigger', () => {
     render(<DateRangePicker className="w-[300px]" />);
     expect(getTrigger().className).toContain('w-[300px]');
