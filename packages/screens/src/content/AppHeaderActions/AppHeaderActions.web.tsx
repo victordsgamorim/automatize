@@ -2,20 +2,16 @@
 
 import { useMemo, useState } from 'react';
 import { Header, DateRangePicker, SearchBar } from '@automatize/ui/web';
-import type { DateRange, HeaderProps } from '@automatize/ui/web';
-import type { TFunction, LanguageOption } from '@automatize/core-localization';
+import type { DateRange } from '@automatize/ui/web';
 import { ptBR } from 'date-fns/locale/pt-BR';
+import type { AppHeaderActionsProps } from './AppHeaderActions.types';
 
-export interface AppHeaderActionsProps extends Omit<HeaderProps, 'actions'> {
-  /** Translation function from useTranslation(). */
-  t: TFunction;
-  /** Current locale option. */
-  locale: LanguageOption;
-}
+export type { AppHeaderActionsProps } from './AppHeaderActions.types';
 
 export function AppHeaderActions({
-  t,
   locale,
+  dateRangePickerProps,
+  searchBarProps,
   ...headerProps
 }: AppHeaderActionsProps) {
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
@@ -33,15 +29,10 @@ export function AppHeaderActions({
           <DateRangePicker
             selected={dateRange}
             onApply={setDateRange}
-            placeholder={t('calendar.placeholder')}
-            clearLabel={t('calendar.clear')}
-            applyLabel={t('calendar.apply')}
             locale={dateFnsLocale}
+            {...dateRangePickerProps}
           />
-          <SearchBar
-            placeholder={t('search.placeholder')}
-            emptyMessage={t('search.no-results')}
-          />
+          <SearchBar {...searchBarProps} />
         </>
       }
     />

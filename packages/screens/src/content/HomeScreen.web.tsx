@@ -52,8 +52,16 @@ export function HomeScreen({
         {pageHeaderProps && (
           <AppHeaderActions
             {...pageHeaderProps}
-            t={t}
             locale={{ code: language, label: language }}
+            dateRangePickerProps={{
+              placeholder: t('calendar.placeholder'),
+              clearLabel: t('calendar.clear'),
+              applyLabel: t('calendar.apply'),
+            }}
+            searchBarProps={{
+              placeholder: t('search.placeholder'),
+              emptyMessage: t('search.no-results'),
+            }}
           />
         )}
         <main
