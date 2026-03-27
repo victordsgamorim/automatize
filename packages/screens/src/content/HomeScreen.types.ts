@@ -1,6 +1,7 @@
 import type {
   SidebarProfileConfig,
   SidebarProfileMenuItem,
+  HeaderProps,
 } from '@automatize/ui/web';
 
 export type {
@@ -35,8 +36,8 @@ export interface HomeScreenProps {
   profile?: SidebarProfileConfig;
   /** Profile dropdown menu items (Settings, Log out, etc.). */
   profileMenuItems?: SidebarProfileMenuItem[];
-  /** Mobile-only top bar rendered above the scroll area. Typically a <Header /> from @automatize/ui. */
-  pageHeader?: React.ReactNode;
+  /** Props for the top page header bar. Actions are provided internally by AppHeaderActions. */
+  pageHeaderProps?: Omit<HeaderProps, 'actions'>;
   /** Main content area. */
   children: React.ReactNode;
 }
