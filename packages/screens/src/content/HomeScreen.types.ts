@@ -3,11 +3,14 @@ import type {
   SidebarProfileMenuItem,
   HeaderProps,
 } from '@automatize/ui/web';
+import type { AppHeaderActionsProps } from './AppHeaderActions/AppHeaderActions.types';
 
 export type {
   SidebarProfileConfig,
   SidebarProfileMenuItem,
 } from '@automatize/ui/web';
+
+export type { AppHeaderActionsProps } from './AppHeaderActions/AppHeaderActions.types';
 
 /** A single navigation item passed to HomeScreen. */
 export interface HomeScreenItem {
@@ -36,8 +39,8 @@ export interface HomeScreenProps {
   profile?: SidebarProfileConfig;
   /** Profile dropdown menu items (Settings, Log out, etc.). */
   profileMenuItems?: SidebarProfileMenuItem[];
-  /** Props for the top page header bar. Actions are provided internally by AppHeaderActions. */
-  pageHeaderProps?: Omit<HeaderProps, 'actions'>;
+  /** Props for the top page header bar + actions (locale, dateRangePickerProps, searchBarProps). */
+  pageHeaderProps?: HeaderProps & AppHeaderActionsProps;
   /** Main content area. */
   children: React.ReactNode;
 }

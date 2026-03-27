@@ -3,7 +3,6 @@
 import { useMemo } from 'react';
 import type { SidebarNavItem } from '@automatize/ui/web';
 import { SidebarProvider, SidebarLayout, Header } from '@automatize/ui/web';
-import { useTranslation } from '@automatize/core-localization';
 import type { HomeScreenProps } from './HomeScreen.types';
 import { AppHeaderActions } from './AppHeaderActions/AppHeaderActions.web';
 
@@ -18,7 +17,6 @@ export function HomeScreen({
   children,
 }: HomeScreenProps) {
   const activeIndex = items.findIndex((item) => item.id === activeTile);
-  const { t, language } = useTranslation();
 
   const navItems: SidebarNavItem[] = useMemo(
     () =>
@@ -51,19 +49,13 @@ export function HomeScreen({
       >
         {pageHeaderProps && (
           <Header
-            {...pageHeaderProps}
+            title={pageHeaderProps.title}
+            className={pageHeaderProps.className}
             actions={
               <AppHeaderActions
-                locale={{ code: language, label: language }}
-                dateRangePickerProps={{
-                  placeholder: t('calendar.placeholder'),
-                  clearLabel: t('calendar.clear'),
-                  applyLabel: t('calendar.apply'),
-                }}
-                searchBarProps={{
-                  placeholder: t('search.placeholder'),
-                  emptyMessage: t('search.no-results'),
-                }}
+                locale={pageHeaderProps.locale}
+                dateRangePickerProps={pageHeaderProps.dateRangePickerProps}
+                searchBarProps={pageHeaderProps.searchBarProps}
               />
             }
           />
