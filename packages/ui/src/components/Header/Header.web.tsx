@@ -17,7 +17,6 @@ export function Header({ title, actions, className }: HeaderProps) {
       className={cn(
         'sticky top-0 z-50 w-full border-b border-border',
         'bg-background/95 supports-[backdrop-filter]:bg-background/50 backdrop-blur-lg',
-        'md:hidden',
         className
       )}
     >

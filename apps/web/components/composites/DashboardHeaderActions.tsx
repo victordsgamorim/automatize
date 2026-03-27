@@ -6,7 +6,7 @@ import type { DateRange } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/localization';
 import { ptBR } from 'date-fns/locale/pt-BR';
 
-export function DashboardMobileActions() {
+export function DashboardHeaderActions() {
   const { t, i18n } = useTranslation();
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
 

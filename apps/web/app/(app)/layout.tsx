@@ -12,7 +12,7 @@ import type {
 import { HomeScreen } from '@automatize/screens/content/web';
 import type { HomeScreenItem } from '@automatize/screens/content/web';
 import { Header } from '@automatize/ui/web';
-import { DashboardMobileActions } from '@/components/composites/DashboardMobileActions';
+import { DashboardHeaderActions } from '@/components/composites/DashboardHeaderActions';
 import {
   LayoutDashboard,
   FileText,
@@ -127,7 +127,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       profile={profile}
       profileMenuItems={profileMenuItems}
       pageHeader={
-        <Header title={pageTitle} actions={<DashboardMobileActions />} />
+        <Header title={pageTitle} actions={<DashboardHeaderActions />} />
       }
     >
       {children}
