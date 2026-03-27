@@ -33,8 +33,6 @@ export interface HomeScreenProps {
   activeTile: string;
   /** Called when a tile is clicked. Receives the item id and its route path. */
   onNavigate: (id: string, route: string) => void;
-  /** Header slot — typically a logo or brand element. */
-  header: React.ReactNode;
   /** Profile configuration for the sidebar footer. */
   profile?: SidebarProfileConfig;
   /** Profile dropdown menu items (Settings, Log out, etc.). */

@@ -5,7 +5,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useUserAuthentication } from '@automatize/supabase-auth';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation } from '@automatize/localization';
-import { SidebarLogo } from '@automatize/ui/web';
 import type {
   SidebarProfileConfig,
   SidebarProfileMenuItem,
@@ -123,7 +122,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       items={ITEMS}
       activeTile={activeTile}
       onNavigate={(_id, route) => router.push(route)}
-      header={<SidebarLogo />}
       profile={profile}
       profileMenuItems={profileMenuItems}
       pageHeaderProps={{

@@ -5,6 +5,7 @@ import type { SidebarNavItem } from '@automatize/ui/web';
 import {
   SidebarProvider,
   SidebarLayout,
+  SidebarLogo,
   Header,
   BottomNavigation,
   useSidebar,
@@ -16,7 +17,6 @@ function HomeScreenContent({
   items,
   activeTile,
   onNavigate,
-  header,
   profile,
   profileMenuItems,
   pageHeaderProps,
@@ -42,7 +42,7 @@ function HomeScreenContent({
     <>
       {!isMobile && (
         <SidebarLayout
-          header={header}
+          header={<SidebarLogo />}
           items={navItems}
           activeIndex={resolvedIndex}
           profile={profile}
