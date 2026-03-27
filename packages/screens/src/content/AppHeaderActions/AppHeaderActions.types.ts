@@ -1,4 +1,9 @@
-import type { DateRangePickerProps, SearchBarProps } from '@automatize/ui/web';
+import type {
+  DateRangePickerProps,
+  SearchBarProps,
+  SidebarProfileConfig,
+  SidebarProfileMenuItem,
+} from '@automatize/ui/web';
 import type { LanguageOption } from '@automatize/core-localization';
 
 export interface AppHeaderActionsProps {
@@ -8,4 +13,8 @@ export interface AppHeaderActionsProps {
   dateRangePickerProps: DateRangePickerProps;
   /** Translated props for the SearchBar. */
   searchBarProps: SearchBarProps;
+  /** Profile config — shown in header on mobile (since sidebar is hidden). */
+  profile?: SidebarProfileConfig;
+  /** Menu items for the profile dropdown. */
+  profileMenuItems?: SidebarProfileMenuItem[];
 }

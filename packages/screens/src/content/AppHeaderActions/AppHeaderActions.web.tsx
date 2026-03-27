@@ -1,7 +1,11 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { DateRangePicker, SearchBar } from '@automatize/ui/web';
+import {
+  DateRangePicker,
+  ProfileDropdown,
+  SearchBar,
+} from '@automatize/ui/web';
 import type { DateRange } from '@automatize/ui/web';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import type { AppHeaderActionsProps } from './AppHeaderActions.types';
@@ -12,6 +16,8 @@ export function AppHeaderActions({
   locale,
   dateRangePickerProps,
   searchBarProps,
+  profile,
+  profileMenuItems,
 }: AppHeaderActionsProps) {
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
@@ -29,6 +35,9 @@ export function AppHeaderActions({
         {...dateRangePickerProps}
       />
       <SearchBar {...searchBarProps} />
+      {profile && profileMenuItems && (
+        <ProfileDropdown profile={profile} menuItems={profileMenuItems} />
+      )}
     </>
   );
 }
