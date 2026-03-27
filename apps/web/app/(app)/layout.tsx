@@ -6,6 +6,7 @@ import { useUserAuthentication } from '@automatize/supabase-auth';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation } from '@automatize/localization';
 import type {
+  SidebarProps,
   SidebarProfileConfig,
   SidebarProfileMenuItem,
 } from '@automatize/ui/web';
@@ -113,17 +114,30 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     [router]
   );
 
+  const activeIndex = ITEMS.findIndex((item) => item.id === activeTile);
+
+  const navProps: SidebarProps = useMemo(
+    () => ({
+      items: ITEMS.map((item) => ({
+        icon: item.icon,
+        label: item.label,
+        group: item.group,
+        onTap: () => router.push(item.route),
+      })),
+      activeIndex: activeIndex >= 0 ? activeIndex : 0,
+      profile,
+      profileMenuItems,
+    }),
+    [activeIndex, profile, profileMenuItems, router]
+  );
+
   if (!isAuthenticated) {
     return null;
   }
 
   return (
     <HomeScreen
-      items={ITEMS}
-      activeTile={activeTile}
-      onNavigate={(_id, route) => router.push(route)}
-      profile={profile}
-      profileMenuItems={profileMenuItems}
+      navProps={navProps}
       pageHeaderProps={{
         title: pageTitle,
         locale: { code: i18n.language, label: i18n.language },

@@ -3,20 +3,13 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import { HomeScreen } from '../HomeScreen.web';
-import type { HomeScreenProps, HomeScreenItem } from '../HomeScreen.types';
+import type { HomeScreenProps } from '../HomeScreen.types';
+import type { SidebarProps, SidebarNavItem } from '@automatize/ui/web';
 
 /* ─── Mocks ───────────────────────────────────────────────────────────────── */
 
-interface MockNavItem {
-  label: string;
-  icon: React.ReactNode;
-  group?: string;
-  onTap: () => void;
-}
-
 interface MockSidebarLayoutProps {
-  header?: React.ReactNode;
-  items: MockNavItem[];
+  items: SidebarNavItem[];
   activeIndex: number;
   profile?: { icon: React.ReactNode; label: string; subtitle?: string };
   profileMenuItems?: Array<{
@@ -32,11 +25,11 @@ vi.mock('@automatize/ui/web', () => ({
   SidebarProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="sidebar-provider">{children}</div>
   ),
+  SidebarLogo: () => <div data-testid="sidebar-logo" />,
   SidebarLayout: (props: MockSidebarLayoutProps) => {
     capturedSidebarLayoutProps = props;
     return (
       <nav data-testid="sidebar-layout" data-active-index={props.activeIndex}>
-        {props.header && <div data-testid="sidebar-header">{props.header}</div>}
         {props.items.map((item, i) => (
           <button key={i} data-testid={`nav-item-${i}`} onClick={item.onTap}>
             {item.label}
@@ -52,34 +45,35 @@ vi.mock('@automatize/ui/web', () => ({
 
 /* ─── Test data ────────────────────────────────────────────────────────────── */
 
-const mockItems: HomeScreenItem[] = [
-  {
-    id: 'dashboard',
-    icon: <span data-testid="icon-dashboard">D</span>,
-    label: 'Dashboard',
-    route: '/',
-    group: 'Menu',
-  },
-  {
-    id: 'invoices',
-    icon: <span data-testid="icon-invoices">I</span>,
-    label: 'Invoices',
-    route: '/invoices',
-    group: 'Menu',
-  },
-  {
-    id: 'products',
-    icon: <span data-testid="icon-products">P</span>,
-    label: 'Products',
-    route: '/products',
-  },
-];
+const onTapDashboard = vi.fn();
+const onTapInvoices = vi.fn();
+const onTapProducts = vi.fn();
+
+const defaultSidebar: SidebarProps = {
+  items: [
+    {
+      icon: <span data-testid="icon-dashboard">D</span>,
+      label: 'Dashboard',
+      group: 'Menu',
+      onTap: onTapDashboard,
+    },
+    {
+      icon: <span data-testid="icon-invoices">I</span>,
+      label: 'Invoices',
+      group: 'Menu',
+      onTap: onTapInvoices,
+    },
+    {
+      icon: <span data-testid="icon-products">P</span>,
+      label: 'Products',
+      onTap: onTapProducts,
+    },
+  ],
+  activeIndex: 0,
+};
 
 const defaultProps: HomeScreenProps = {
-  items: mockItems,
-  activeTile: 'dashboard',
-  onNavigate: vi.fn(),
-  header: <div data-testid="header-logo">Logo</div>,
+  navProps: defaultSidebar,
   children: <div data-testid="main-content">Page content</div>,
 };
 
@@ -104,10 +98,9 @@ describe('HomeScreen (web)', () => {
       expect(screen.getByText('Products')).toBeDefined();
     });
 
-    it('renders header slot in sidebar', () => {
+    it('renders SidebarLogo in sidebar', () => {
       render(<HomeScreen {...defaultProps} />);
-      expect(screen.getByTestId('header-logo')).toBeDefined();
-      expect(screen.getByText('Logo')).toBeDefined();
+      expect(screen.getByTestId('sidebar-logo')).toBeDefined();
     });
 
     it('renders children in main content area', () => {
@@ -122,10 +115,13 @@ describe('HomeScreen (web)', () => {
       render(
         <HomeScreen
           {...defaultProps}
-          profile={{
-            icon: <div>Avatar</div>,
-            label: 'John Doe',
-            subtitle: 'john@example.com',
+          navProps={{
+            ...defaultSidebar,
+            profile: {
+              icon: <div>Avatar</div>,
+              label: 'John Doe',
+              subtitle: 'john@example.com',
+            },
           }}
         />
       );
@@ -134,44 +130,39 @@ describe('HomeScreen (web)', () => {
     });
   });
 
-  describe('active tile', () => {
-    it('sets activeIndex based on activeTile id', () => {
-      render(<HomeScreen {...defaultProps} activeTile="invoices" />);
+  describe('active index', () => {
+    it('passes activeIndex to SidebarLayout', () => {
+      render(
+        <HomeScreen
+          {...defaultProps}
+          navProps={{ ...defaultSidebar, activeIndex: 1 }}
+        />
+      );
       const sidebar = screen.getByTestId('sidebar-layout');
       expect(sidebar.getAttribute('data-active-index')).toBe('1');
     });
 
-    it('defaults activeIndex to 0 when activeTile does not match any item', () => {
-      render(<HomeScreen {...defaultProps} activeTile="unknown" />);
-      const sidebar = screen.getByTestId('sidebar-layout');
-      expect(sidebar.getAttribute('data-active-index')).toBe('0');
-    });
-
-    it('sets activeIndex to 0 for the first item', () => {
-      render(<HomeScreen {...defaultProps} activeTile="dashboard" />);
+    it('passes activeIndex 0 for the first item', () => {
+      render(<HomeScreen {...defaultProps} />);
       const sidebar = screen.getByTestId('sidebar-layout');
       expect(sidebar.getAttribute('data-active-index')).toBe('0');
     });
   });
 
   describe('navigation', () => {
-    it('calls onNavigate with id and route when an item is clicked', () => {
-      const onNavigate = vi.fn();
-      render(<HomeScreen {...defaultProps} onNavigate={onNavigate} />);
+    it('calls item onTap when clicked', () => {
+      render(<HomeScreen {...defaultProps} />);
       fireEvent.click(screen.getByTestId('nav-item-1'));
-      expect(onNavigate).toHaveBeenCalledOnce();
-      expect(onNavigate).toHaveBeenCalledWith('invoices', '/invoices');
+      expect(onTapInvoices).toHaveBeenCalledOnce();
     });
 
-    it('calls onNavigate with correct args for each item', () => {
-      const onNavigate = vi.fn();
-      render(<HomeScreen {...defaultProps} onNavigate={onNavigate} />);
-
+    it('calls correct onTap for each item', () => {
+      render(<HomeScreen {...defaultProps} />);
       fireEvent.click(screen.getByTestId('nav-item-0'));
-      expect(onNavigate).toHaveBeenCalledWith('dashboard', '/');
+      expect(onTapDashboard).toHaveBeenCalledOnce();
 
       fireEvent.click(screen.getByTestId('nav-item-2'));
-      expect(onNavigate).toHaveBeenCalledWith('products', '/products');
+      expect(onTapProducts).toHaveBeenCalledOnce();
     });
   });
 
@@ -196,8 +187,7 @@ describe('HomeScreen (web)', () => {
       render(
         <HomeScreen
           {...defaultProps}
-          profile={profile}
-          profileMenuItems={profileMenuItems}
+          navProps={{ ...defaultSidebar, profile, profileMenuItems }}
         />
       );
       expect(capturedSidebarLayoutProps?.profile).toBe(profile);
@@ -209,13 +199,23 @@ describe('HomeScreen (web)', () => {
 
   describe('optional props', () => {
     it('renders without profile', () => {
-      render(<HomeScreen {...defaultProps} profile={undefined} />);
+      render(
+        <HomeScreen
+          {...defaultProps}
+          navProps={{ ...defaultSidebar, profile: undefined }}
+        />
+      );
       expect(screen.getByTestId('sidebar-layout')).toBeDefined();
       expect(screen.queryByTestId('sidebar-profile')).toBeNull();
     });
 
     it('renders without profileMenuItems', () => {
-      render(<HomeScreen {...defaultProps} profileMenuItems={undefined} />);
+      render(
+        <HomeScreen
+          {...defaultProps}
+          navProps={{ ...defaultSidebar, profileMenuItems: undefined }}
+        />
+      );
       expect(screen.getByTestId('sidebar-layout')).toBeDefined();
     });
   });
