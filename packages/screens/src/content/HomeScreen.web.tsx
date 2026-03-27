@@ -47,6 +47,10 @@ function HomeScreenContent({
                 locale={pageHeaderProps.locale}
                 dateRangePickerProps={pageHeaderProps.dateRangePickerProps}
                 searchBarProps={pageHeaderProps.searchBarProps}
+                profile={isMobile ? navProps.profile : undefined}
+                profileMenuItems={
+                  isMobile ? navProps.profileMenuItems : undefined
+                }
               />
             }
           />
