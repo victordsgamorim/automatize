@@ -1,11 +1,8 @@
-import type {
-  SidebarProfileConfig,
-  SidebarProfileMenuItem,
-  HeaderProps,
-} from '@automatize/ui/web';
+import type { SidebarProps, HeaderProps } from '@automatize/ui/web';
 import type { AppHeaderActionsProps } from './AppHeaderActions/AppHeaderActions.types';
 
 export type {
+  SidebarProps,
   SidebarProfileConfig,
   SidebarProfileMenuItem,
 } from '@automatize/ui/web';
@@ -27,18 +24,8 @@ export interface HomeScreenItem {
 }
 
 export interface HomeScreenProps {
-  /** Ordered list of navigation items (tiles). */
-  items: HomeScreenItem[];
-  /** The currently active tile id. */
-  activeTile: string;
-  /** Called when a tile is clicked. Receives the item id and its route path. */
-  onNavigate: (id: string, route: string) => void;
-  /** Header slot — typically a logo or brand element. */
-  header: React.ReactNode;
-  /** Profile configuration for the sidebar footer. */
-  profile?: SidebarProfileConfig;
-  /** Profile dropdown menu items (Settings, Log out, etc.). */
-  profileMenuItems?: SidebarProfileMenuItem[];
+  /** Navigation configuration. */
+  navProps: SidebarProps;
   /** Props for the top page header bar + actions (locale, dateRangePickerProps, searchBarProps). */
   pageHeaderProps?: HeaderProps & AppHeaderActionsProps;
   /** Main content area. */

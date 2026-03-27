@@ -100,12 +100,12 @@ export function SidebarProvider({
 
 /* ─── Sidebar ───────────────────────────────────────────────────────────────── */
 
-export interface SidebarProps {
+export interface SidebarRootProps {
   children: React.ReactNode;
   className?: string;
 }
 
-export function Sidebar({ children, className }: SidebarProps) {
+export function Sidebar({ children, className }: SidebarRootProps) {
   const { open, setOpen, isMobile } = useSidebar();
 
   if (isMobile) {
@@ -416,6 +416,19 @@ export function SidebarGroup({
       {children}
     </div>
   );
+}
+
+/* ─── SidebarProps ──────────────────────────────────────────────────────────── */
+
+export interface SidebarProps {
+  /** Navigation items. */
+  items: SidebarNavItem[];
+  /** Currently selected item index. */
+  activeIndex: number;
+  /** Profile config for the bottom slot. */
+  profile?: SidebarProfileConfig;
+  /** Dropdown menu items shown when the profile is clicked. */
+  profileMenuItems?: SidebarProfileMenuItem[];
 }
 
 /* ─── SidebarNavItem (type) ────────────────────────────────────────────────── */

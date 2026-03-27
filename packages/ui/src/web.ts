@@ -59,6 +59,7 @@ export {
   useSidebar,
 } from './components/Sidebar/Sidebar.web';
 export type {
+  SidebarProps,
   SidebarLinkProps,
   SidebarNavItem,
   SidebarNavProps,
