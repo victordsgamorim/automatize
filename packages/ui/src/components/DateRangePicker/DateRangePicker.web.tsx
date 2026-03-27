@@ -37,7 +37,7 @@ import type { DateRange } from 'react-day-picker';
 import type { Locale } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 
-import { cn } from '../../utils';
+import { cn, sharedBreakpoints } from '../../utils';
 import { Button } from '../Button/Button.web';
 import {
   Popover,
@@ -163,13 +163,15 @@ function DateRangePicker({
             'text-muted-foreground transition-colors duration-200',
             'hover:border-ring/40 hover:bg-muted/50',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-            'sm:min-w-[180px]',
+            sharedBreakpoints.triggerContainer,
             formattedValue && 'text-foreground',
             className
           )}
         >
-          <CalendarIcon className="size-3.5 shrink-0" />
-          <span className="hidden truncate sm:inline">
+          <CalendarIcon
+            className={cn('size-3.5', sharedBreakpoints.triggerIcon)}
+          />
+          <span className={sharedBreakpoints.triggerText}>
             {formattedValue ?? placeholder}
           </span>
         </button>
