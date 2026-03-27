@@ -73,6 +73,18 @@ describe('DateRangePicker (web)', () => {
     expect(span?.className).toContain('sm:inline');
   });
 
+  it('applies fixed height to trigger for consistent sizing across breakpoints', () => {
+    render(<DateRangePicker />);
+    expect(getTrigger().className).toContain('h-[38px]');
+  });
+
+  it('applies responsive min-width only above mobile breakpoint', () => {
+    render(<DateRangePicker />);
+    const classes = getTrigger().className;
+    expect(classes).toContain('sm:min-w-[180px]');
+    expect(classes).not.toContain(' min-w-[180px]');
+  });
+
   it('applies custom className to trigger', () => {
     render(<DateRangePicker className="w-[300px]" />);
     expect(getTrigger().className).toContain('w-[300px]');
