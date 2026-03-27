@@ -1,8 +1,4 @@
-import type {
-  HeaderProps,
-  DateRangePickerProps,
-  SearchBarProps,
-} from '@automatize/ui/web';
+import type { DateRangePickerProps, SearchBarProps } from '@automatize/ui/web';
 import type { LanguageOption } from '@automatize/core-localization';
 
 /** Props for the DateRangePicker forwarded through AppHeaderActions. */
@@ -17,7 +13,7 @@ export interface AppHeaderSearchBarProps extends Pick<
   'placeholder' | 'emptyMessage'
 > {}
 
-export interface AppHeaderActionsProps extends Omit<HeaderProps, 'actions'> {
+export interface AppHeaderActionsProps {
   /** Current locale option — used to resolve the date-fns locale. */
   locale: LanguageOption;
   /** Translated props for the DateRangePicker. */
