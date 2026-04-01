@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import { HomeScreen } from '../HomeScreen.web';
 import type { HomeScreenProps } from '../HomeScreen.types';
 import type { SidebarProps, SidebarNavItem } from '@automatize/ui/web';
 
@@ -21,15 +20,25 @@ interface MockSidebarLayoutProps {
 
 let capturedSidebarLayoutProps: MockSidebarLayoutProps | null = null;
 
+const mockUseSidebar = vi.fn().mockReturnValue({
+  isMobile: false,
+  open: true,
+  setOpen: vi.fn(),
+  toggle: vi.fn(),
+});
+
 vi.mock('@automatize/ui/web', () => ({
   SidebarProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="sidebar-provider">{children}</div>
   ),
   SidebarLogo: () => <div data-testid="sidebar-logo" />,
-  SidebarLayout: (props: MockSidebarLayoutProps) => {
+  SidebarLayout: (
+    props: MockSidebarLayoutProps & { header?: React.ReactNode }
+  ) => {
     capturedSidebarLayoutProps = props;
     return (
       <nav data-testid="sidebar-layout" data-active-index={props.activeIndex}>
+        {props.header}
         {props.items.map((item, i) => (
           <button key={i} data-testid={`nav-item-${i}`} onClick={item.onTap}>
             {item.label}
@@ -41,9 +50,50 @@ vi.mock('@automatize/ui/web', () => ({
       </nav>
     );
   },
+  Header: ({
+    title,
+    actions,
+  }: {
+    title: string;
+    actions?: React.ReactNode;
+    className?: string;
+  }) => (
+    <header data-testid="header">
+      <span>{title}</span>
+      {actions && <div data-testid="header-actions">{actions}</div>}
+    </header>
+  ),
+  BottomNavigation: ({
+    items,
+    activeIndex,
+  }: {
+    items: SidebarNavItem[];
+    activeIndex: number;
+  }) => (
+    <nav data-testid="bottom-navigation" data-active-index={activeIndex}>
+      {items.map((item, i) => (
+        <button
+          key={i}
+          data-testid={`bottom-nav-item-${i}`}
+          onClick={item.onTap}
+        >
+          {item.label}
+        </button>
+      ))}
+    </nav>
+  ),
+  useSidebar: () => mockUseSidebar(),
 }));
 
-/* ─── Test data ────────────────────────────────────────────────────────────── */
+vi.mock('../AppHeaderActions/AppHeaderActions.web', () => ({
+  AppHeaderActions: (props: Record<string, unknown>) => (
+    <div data-testid="app-header-actions" data-has-profile={!!props.profile} />
+  ),
+}));
+
+import { HomeScreen } from '../HomeScreen.web';
+
+/* ─── Test data ───────────────────────────────────────────────────────────── */
 
 const onTapDashboard = vi.fn();
 const onTapInvoices = vi.fn();
@@ -77,12 +127,18 @@ const defaultProps: HomeScreenProps = {
   children: <div data-testid="main-content">Page content</div>,
 };
 
-/* ─── Tests ────────────────────────────────────────────────────────────────── */
+/* ─── Tests ───────────────────────────────────────────────────────────────── */
 
 describe('HomeScreen (web)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     capturedSidebarLayoutProps = null;
+    mockUseSidebar.mockReturnValue({
+      isMobile: false,
+      open: true,
+      setOpen: vi.fn(),
+      toggle: vi.fn(),
+    });
   });
 
   describe('rendering', () => {
@@ -91,7 +147,7 @@ describe('HomeScreen (web)', () => {
       expect(screen.getByTestId('sidebar-provider')).toBeDefined();
     });
 
-    it('renders all navigation items', () => {
+    it('renders all navigation items in sidebar on desktop', () => {
       render(<HomeScreen {...defaultProps} />);
       expect(screen.getByText('Dashboard')).toBeDefined();
       expect(screen.getByText('Invoices')).toBeDefined();
@@ -217,6 +273,147 @@ describe('HomeScreen (web)', () => {
         />
       );
       expect(screen.getByTestId('sidebar-layout')).toBeDefined();
+    });
+  });
+
+  describe('mobile layout', () => {
+    it('hides sidebar and shows BottomNavigation on mobile', () => {
+      mockUseSidebar.mockReturnValue({
+        isMobile: true,
+        open: false,
+        setOpen: vi.fn(),
+        toggle: vi.fn(),
+      });
+      render(<HomeScreen {...defaultProps} />);
+      expect(screen.queryByTestId('sidebar-layout')).toBeNull();
+      expect(screen.getByTestId('bottom-navigation')).toBeDefined();
+    });
+
+    it('shows sidebar and hides BottomNavigation on desktop', () => {
+      render(<HomeScreen {...defaultProps} />);
+      expect(screen.getByTestId('sidebar-layout')).toBeDefined();
+      expect(screen.queryByTestId('bottom-navigation')).toBeNull();
+    });
+
+    it('passes activeIndex to BottomNavigation on mobile', () => {
+      mockUseSidebar.mockReturnValue({
+        isMobile: true,
+        open: false,
+        setOpen: vi.fn(),
+        toggle: vi.fn(),
+      });
+      render(
+        <HomeScreen
+          {...defaultProps}
+          navProps={{ ...defaultSidebar, activeIndex: 2 }}
+        />
+      );
+      const bottomNav = screen.getByTestId('bottom-navigation');
+      expect(bottomNav.getAttribute('data-active-index')).toBe('2');
+    });
+  });
+
+  describe('page header', () => {
+    it('renders Header when pageHeaderProps is provided', () => {
+      render(
+        <HomeScreen
+          {...defaultProps}
+          pageHeaderProps={{
+            title: 'Page Title',
+            locale: { code: 'en', label: 'English' },
+            dateRangePickerProps:
+              {} as HomeScreenProps['pageHeaderProps'] extends infer T
+                ? T extends { dateRangePickerProps: infer D }
+                  ? D
+                  : never
+                : never,
+            searchBarProps: {},
+          }}
+        />
+      );
+      expect(screen.getByTestId('header')).toBeDefined();
+      expect(screen.getByText('Page Title')).toBeDefined();
+    });
+
+    it('does not render Header when pageHeaderProps is undefined', () => {
+      render(<HomeScreen {...defaultProps} />);
+      expect(screen.queryByTestId('header')).toBeNull();
+    });
+
+    it('renders AppHeaderActions inside Header actions', () => {
+      render(
+        <HomeScreen
+          {...defaultProps}
+          pageHeaderProps={{
+            title: 'Page',
+            locale: { code: 'en', label: 'English' },
+            dateRangePickerProps:
+              {} as HomeScreenProps['pageHeaderProps'] extends infer T
+                ? T extends { dateRangePickerProps: infer D }
+                  ? D
+                  : never
+                : never,
+            searchBarProps: {},
+          }}
+        />
+      );
+      expect(screen.getByTestId('app-header-actions')).toBeDefined();
+    });
+
+    it('passes profile to AppHeaderActions on mobile', () => {
+      mockUseSidebar.mockReturnValue({
+        isMobile: true,
+        open: false,
+        setOpen: vi.fn(),
+        toggle: vi.fn(),
+      });
+      render(
+        <HomeScreen
+          {...defaultProps}
+          navProps={{
+            ...defaultSidebar,
+            profile: { icon: <div>A</div>, label: 'Jane' },
+          }}
+          pageHeaderProps={{
+            title: 'Page',
+            locale: { code: 'en', label: 'English' },
+            dateRangePickerProps:
+              {} as HomeScreenProps['pageHeaderProps'] extends infer T
+                ? T extends { dateRangePickerProps: infer D }
+                  ? D
+                  : never
+                : never,
+            searchBarProps: {},
+          }}
+        />
+      );
+      const actions = screen.getByTestId('app-header-actions');
+      expect(actions.getAttribute('data-has-profile')).toBe('true');
+    });
+
+    it('does not pass profile to AppHeaderActions on desktop', () => {
+      render(
+        <HomeScreen
+          {...defaultProps}
+          navProps={{
+            ...defaultSidebar,
+            profile: { icon: <div>A</div>, label: 'Jane' },
+          }}
+          pageHeaderProps={{
+            title: 'Page',
+            locale: { code: 'en', label: 'English' },
+            dateRangePickerProps:
+              {} as HomeScreenProps['pageHeaderProps'] extends infer T
+                ? T extends { dateRangePickerProps: infer D }
+                  ? D
+                  : never
+                : never,
+            searchBarProps: {},
+          }}
+        />
+      );
+      const actions = screen.getByTestId('app-header-actions');
+      expect(actions.getAttribute('data-has-profile')).toBe('false');
     });
   });
 });
