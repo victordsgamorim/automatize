@@ -220,7 +220,7 @@ export function SidebarHeader({ children, className }: SidebarHeaderProps) {
   return (
     <div
       data-slot="sidebar-header"
-      className={cn('flex items-center gap-2 px-4 py-4', className)}
+      className={cn('flex h-14 items-center gap-2 px-4', className)}
     >
       {children}
     </div>
