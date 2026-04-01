@@ -93,6 +93,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Fix gradlew permissions
+        run: chmod +x apps/mobile/android/gradlew
+
       - name: Build Android Debug APK
         run: |
           cd apps/mobile/android
@@ -137,6 +140,9 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('apps/mobile/android/**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
+      - name: Fix gradlew permissions
+        run: chmod +x apps/mobile/android/gradlew
 
       - name: Run Android Lint
         run: |
@@ -183,6 +189,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Download iOS project
         uses: actions/download-artifact@v4
