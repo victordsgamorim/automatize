@@ -468,6 +468,154 @@ describe('SidebarLayout (web)', () => {
   });
 });
 
+/* ─── Responsive breakpoint ────────────────────────────────────────────────── */
+
+describe('Responsive breakpoint (web)', () => {
+  it('uses 1024px as the mobile breakpoint (matchMedia query)', () => {
+    render(
+      <SidebarProvider>
+        <div>child</div>
+      </SidebarProvider>
+    );
+    expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 1023px)');
+  });
+
+  it('renders desktop aside when matchMedia does not match (>= 1024px)', () => {
+    renderSidebar();
+    const sidebar = document.querySelector(
+      '[data-slot="sidebar"]'
+    ) as HTMLElement;
+    expect(sidebar).toBeDefined();
+    expect(sidebar.tagName).toBe('ASIDE');
+    // Desktop sidebar must NOT use position: fixed
+    expect(sidebar.className).not.toContain('fixed');
+  });
+
+  it('renders mobile sidebar when matchMedia matches (< 1024px)', () => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: true,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    renderSidebar();
+    const sidebar = document.querySelector(
+      '[data-slot="sidebar"]'
+    ) as HTMLElement;
+    expect(sidebar).toBeDefined();
+    // Mobile sidebar uses fixed positioning
+    expect(sidebar.className).toContain('fixed');
+  });
+
+  it('auto-closes sidebar when entering mobile breakpoint', async () => {
+    let changeHandler:
+      | ((e: MediaQueryListEvent | MediaQueryList) => void)
+      | null = null;
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(
+          (
+            _event: string,
+            handler: (e: MediaQueryListEvent | MediaQueryList) => void
+          ) => {
+            changeHandler = handler;
+          }
+        ),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    const { act } = await import('@testing-library/react');
+
+    render(
+      <SidebarProvider defaultOpen>
+        <Sidebar>
+          <div>content</div>
+        </Sidebar>
+        <main>Main</main>
+      </SidebarProvider>
+    );
+
+    // Desktop: sidebar is expanded
+    const sidebar = document.querySelector(
+      '[data-slot="sidebar"]'
+    ) as HTMLElement;
+    expect(sidebar.getAttribute('data-state')).toBe('expanded');
+
+    // Simulate entering mobile breakpoint inside act() to flush state updates
+    act(() => {
+      if (changeHandler) {
+        changeHandler({
+          matches: true,
+          media: '(max-width: 1023px)',
+        } as MediaQueryListEvent);
+      }
+    });
+
+    // After entering mobile, the Sidebar component switches to MobileSidebar
+    // which renders with data-state="collapsed" since open was set to false
+    const mobileSidebar = document.querySelector(
+      '[data-slot="sidebar"]'
+    ) as HTMLElement;
+    expect(mobileSidebar.getAttribute('data-state')).toBe('collapsed');
+  });
+
+  it('desktop aside does not use hidden or md:flex CSS classes', () => {
+    renderSidebar();
+    const sidebar = document.querySelector(
+      '[data-slot="sidebar"]'
+    ) as HTMLElement;
+    // The fix: no redundant Tailwind responsive breakpoint classes
+    // JS matchMedia is the single source of truth for show/hide
+    const classes = sidebar.className.split(/\s+/);
+    expect(classes).not.toContain('hidden');
+    expect(classes).not.toContain('md:flex');
+  });
+
+  it('mobile sidebar does not use md:hidden CSS class', () => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockImplementation((query: string) => ({
+        matches: true,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    renderSidebar();
+    const sidebar = document.querySelector(
+      '[data-slot="sidebar"]'
+    ) as HTMLElement;
+    expect(sidebar.className).not.toContain('md:hidden');
+
+    // Also check the backdrop
+    const backdrop = document.querySelector(
+      '[role="presentation"]'
+    ) as HTMLElement;
+    expect(backdrop.className).not.toContain('md:hidden');
+  });
+});
+
 /* ─── useSidebar ───────────────────────────────────────────────────────────── */
 
 describe('useSidebar (web)', () => {
