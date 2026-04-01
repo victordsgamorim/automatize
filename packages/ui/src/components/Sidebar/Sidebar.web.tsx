@@ -350,7 +350,7 @@ export function SidebarLink({
     active
       ? 'bg-sidebar-accent text-sidebar-accent-foreground'
       : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-    !isExpanded && 'justify-center px-0',
+    !isExpanded && 'px-3',
     className
   );
 
