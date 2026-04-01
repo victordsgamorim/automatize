@@ -23,7 +23,7 @@ import {
 
 const SIDEBAR_WIDTH = '16rem'; // 256px (w-64)
 const SIDEBAR_WIDTH_COLLAPSED = '4rem'; // 64px (w-16)
-const MOBILE_BREAKPOINT = 768;
+const MOBILE_BREAKPOINT = 1024;
 
 /* ─── Context ───────────────────────────────────────────────────────────────── */
 
@@ -126,7 +126,7 @@ export function Sidebar({ children, className }: SidebarRootProps) {
       data-state={open ? 'expanded' : 'collapsed'}
       aria-label="Main navigation"
       className={cn(
-        'hidden md:flex flex-col flex-shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-300 ease-in-out overflow-hidden',
+        'flex flex-col flex-shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-300 ease-in-out overflow-hidden',
         open
           ? 'w-[var(--sidebar-width)]'
           : 'w-[var(--sidebar-width-collapsed)]',
@@ -179,7 +179,7 @@ function MobileSidebar({
       <div
         role="presentation"
         className={cn(
-          'fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 md:hidden',
+          'fixed inset-0 z-40 bg-black/50 transition-opacity duration-300',
           open ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
         onClick={onClose}
@@ -192,7 +192,7 @@ function MobileSidebar({
         data-state={open ? 'expanded' : 'collapsed'}
         aria-label="Main navigation"
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex flex-col w-[var(--sidebar-width)] bg-sidebar text-sidebar-foreground border-r border-sidebar-border transition-transform duration-300 ease-in-out md:hidden',
+          'fixed inset-y-0 left-0 z-50 flex flex-col w-[var(--sidebar-width)] bg-sidebar text-sidebar-foreground border-r border-sidebar-border transition-transform duration-300 ease-in-out',
           open ? 'translate-x-0' : '-translate-x-full',
           className
         )}
