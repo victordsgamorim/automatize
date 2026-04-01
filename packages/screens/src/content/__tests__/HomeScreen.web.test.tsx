@@ -311,6 +311,122 @@ describe('HomeScreen (web)', () => {
       const bottomNav = screen.getByTestId('bottom-navigation');
       expect(bottomNav.getAttribute('data-active-index')).toBe('2');
     });
+
+    it('never renders both sidebar and bottom navigation at the same time', () => {
+      // Desktop: sidebar visible, no bottom nav
+      const { unmount: unmountDesktop } = render(
+        <HomeScreen {...defaultProps} />
+      );
+      expect(screen.queryByTestId('sidebar-layout')).not.toBeNull();
+      expect(screen.queryByTestId('bottom-navigation')).toBeNull();
+      unmountDesktop();
+
+      // Mobile: bottom nav visible, no sidebar
+      mockUseSidebar.mockReturnValue({
+        isMobile: true,
+        open: false,
+        setOpen: vi.fn(),
+        toggle: vi.fn(),
+      });
+      render(<HomeScreen {...defaultProps} />);
+      expect(screen.queryByTestId('sidebar-layout')).toBeNull();
+      expect(screen.queryByTestId('bottom-navigation')).not.toBeNull();
+    });
+
+    it('always has at least one navigation visible (no gap between breakpoints)', () => {
+      // Simulate desktop state
+      mockUseSidebar.mockReturnValue({
+        isMobile: false,
+        open: true,
+        setOpen: vi.fn(),
+        toggle: vi.fn(),
+      });
+      const { unmount: unmountDesktop } = render(
+        <HomeScreen {...defaultProps} />
+      );
+      const hasSidebar = screen.queryByTestId('sidebar-layout') !== null;
+      const hasBottomNav = screen.queryByTestId('bottom-navigation') !== null;
+      expect(hasSidebar || hasBottomNav).toBe(true);
+      unmountDesktop();
+
+      // Simulate mobile state
+      mockUseSidebar.mockReturnValue({
+        isMobile: true,
+        open: false,
+        setOpen: vi.fn(),
+        toggle: vi.fn(),
+      });
+      const { unmount: unmountMobile } = render(
+        <HomeScreen {...defaultProps} />
+      );
+      const hasSidebarMobile = screen.queryByTestId('sidebar-layout') !== null;
+      const hasBottomNavMobile =
+        screen.queryByTestId('bottom-navigation') !== null;
+      expect(hasSidebarMobile || hasBottomNavMobile).toBe(true);
+      unmountMobile();
+    });
+
+    it('passes the same navigation items to both sidebar and bottom navigation', () => {
+      // Desktop: check sidebar receives items
+      const { unmount: unmountDesktop } = render(
+        <HomeScreen {...defaultProps} />
+      );
+      const sidebarItems = capturedSidebarLayoutProps?.items ?? [];
+      expect(sidebarItems).toHaveLength(3);
+      expect(sidebarItems[0]?.label).toBe('Dashboard');
+      expect(sidebarItems[1]?.label).toBe('Invoices');
+      expect(sidebarItems[2]?.label).toBe('Products');
+      unmountDesktop();
+
+      // Mobile: check bottom navigation receives the same items
+      mockUseSidebar.mockReturnValue({
+        isMobile: true,
+        open: false,
+        setOpen: vi.fn(),
+        toggle: vi.fn(),
+      });
+      render(<HomeScreen {...defaultProps} />);
+      expect(screen.getByTestId('bottom-nav-item-0').textContent).toBe(
+        'Dashboard'
+      );
+      expect(screen.getByTestId('bottom-nav-item-1').textContent).toBe(
+        'Invoices'
+      );
+      expect(screen.getByTestId('bottom-nav-item-2').textContent).toBe(
+        'Products'
+      );
+    });
+
+    it('preserves activeIndex when switching between sidebar and bottom navigation', () => {
+      const activeIndex = 1;
+      const propsWithActive = {
+        ...defaultProps,
+        navProps: { ...defaultSidebar, activeIndex },
+      };
+
+      // Desktop: sidebar has correct active index
+      const { unmount: unmountDesktop } = render(
+        <HomeScreen {...propsWithActive} />
+      );
+      expect(
+        screen.getByTestId('sidebar-layout').getAttribute('data-active-index')
+      ).toBe('1');
+      unmountDesktop();
+
+      // Mobile: bottom navigation has the same active index
+      mockUseSidebar.mockReturnValue({
+        isMobile: true,
+        open: false,
+        setOpen: vi.fn(),
+        toggle: vi.fn(),
+      });
+      render(<HomeScreen {...propsWithActive} />);
+      expect(
+        screen
+          .getByTestId('bottom-navigation')
+          .getAttribute('data-active-index')
+      ).toBe('1');
+    });
   });
 
   describe('page header', () => {
