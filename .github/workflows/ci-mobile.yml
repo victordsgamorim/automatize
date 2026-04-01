@@ -68,6 +68,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: Download Android project
         uses: actions/download-artifact@v4
         with:
@@ -115,6 +127,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Download Android project
         uses: actions/download-artifact@v4
@@ -174,6 +198,22 @@ jobs:
           npx expo prebuild --platform ios --clean
         env:
           EXPO_NO_TELEMETRY: 1
+
+      - name: Patch Podfile (remove FlipperConfiguration for RN 0.73+)
+        run: |
+          node -e "
+            const fs = require('fs');
+            const path = 'apps/mobile/ios/Podfile';
+            let content = fs.readFileSync(path, 'utf8');
+            // Remove the comment block about react-native-flipper
+            content = content.replace(/^# If you are using a .react-native-flipper.*\n(#.*\n)*/m, '');
+            // Remove the flipper_config variable block (from 'flipper_config =' to the closing 'end')
+            content = content.replace(/^flipper_config = .*\n(.*\n)*?^end\n/m, '');
+            // Remove the :flipper_configuration line from use_react_native!
+            content = content.replace(/\s*:flipper_configuration => flipper_config\n/, '\n');
+            fs.writeFileSync(path, content);
+            console.log('Podfile patched: FlipperConfiguration references removed');
+          "
 
       - name: Upload iOS project
         uses: actions/upload-artifact@v4
