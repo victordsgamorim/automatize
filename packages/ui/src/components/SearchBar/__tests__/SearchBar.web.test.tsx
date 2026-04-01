@@ -343,6 +343,20 @@ describe('SearchBar (web)', () => {
     expect(icon?.getAttribute('class')).toContain('shrink-0');
   });
 
+  // ── Dialog responsive margin ───────────────────────────────────────────────
+
+  it('applies horizontal margin to dialog so it never touches screen edges on small viewports', () => {
+    render(<SearchBar />);
+    fireEvent.click(
+      document.querySelector('[data-slot="search-bar-trigger"]') as HTMLElement
+    );
+    const dialogContent = document.querySelector(
+      '[data-slot="command-dialog-content"]'
+    ) as HTMLElement;
+    expect(dialogContent.className).toContain('w-[calc(100%-2rem)]');
+    expect(dialogContent.className).not.toMatch(/(^|\s)w-full(\s|$)/);
+  });
+
   // ── Cleanup ───────────────────────────────────────────────────────────────
 
   it('cleans up keyboard listener on unmount', () => {
