@@ -468,6 +468,63 @@ A feature is complete when:
 
 ---
 
+## CI Checks
+
+This repository uses GitHub Actions for continuous integration.
+
+### Workflows
+
+| Workflow                                         | Trigger                                   | Purpose                                           |
+| ------------------------------------------------ | ----------------------------------------- | ------------------------------------------------- |
+| [ci.yml](.github/workflows/ci.yml)               | PR, push to main/develop                  | Core checks: typecheck, lint, format, test, build |
+| [ci-mobile.yml](.github/workflows/ci-mobile.yml) | PRs touching mobile, push to main/develop | Android/iOS builds                                |
+| [ci-e2e.yml](.github/workflows/ci-e2e.yml)       | main/release pushes, manual               | End-to-end tests (future)                         |
+
+### Required Checks
+
+All PRs must pass these checks before merging:
+
+- **TypeScript** — No type errors
+- **Lint** — ESLint with no warnings
+- **Format** — Prettier validation
+- **Security** — No high/critical vulnerabilities
+- **Tests** — Unit tests passing with coverage
+- **Build** — All packages building successfully
+
+### Running CI Locally
+
+```bash
+# Install dependencies
+pnpm install
+
+# Type check
+pnpm typecheck
+
+# Lint
+pnpm lint
+
+# Check formatting
+pnpm format:check
+
+# Run tests
+pnpm test
+
+# Build all packages
+pnpm build
+```
+
+### Debugging CI Failures
+
+| Check       | Failure             | How to Fix                          |
+| ----------- | ------------------- | ----------------------------------- |
+| `typecheck` | Type errors         | Run `pnpm typecheck` locally        |
+| `lint`      | ESLint violations   | Run `pnpm lint` locally, fix issues |
+| `format`    | Prettier violations | Run `pnpm format` and commit        |
+| `test`      | Test failures       | Run `pnpm test:watch` locally       |
+| `build`     | Build errors        | Check package build scripts         |
+
+---
+
 ## License
 
 [To be defined]
