@@ -66,6 +66,6 @@ describe('Separator (web)', () => {
     const ref = React.createRef<HTMLDivElement>();
     render(<Separator ref={ref} />);
     expect(ref.current).toBeDefined();
-    expect(ref.current!.getAttribute('data-slot')).toBe('separator');
+    expect(ref.current?.getAttribute('data-slot')).toBe('separator');
   });
 });
