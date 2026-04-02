@@ -1,12 +1,6 @@
 import React, { useEffect } from 'react';
 import { MailCheck, ArrowLeft } from 'lucide-react';
-import {
-  Button,
-  Input,
-  useToasts,
-  FormField,
-  AnimatedFadeIn,
-} from '@automatize/ui/web';
+import { Button, Input, useToasts, AnimatedFadeIn } from '@automatize/ui/web';
 import { ThemeSwitcher } from '../components/ThemeSwitcher/ThemeSwitcher.web';
 import { LanguageSwitcher } from '../components/LanguageSwitcher/LanguageSwitcher.web';
 import { useTranslation } from '@automatize/core-localization';
@@ -108,20 +102,16 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
 
               <form className="space-y-5" onSubmit={onFormSubmit}>
                 <AnimatedFadeIn delay={300}>
-                  <FormField
+                  <Input
+                    id="forgot-password-email"
+                    name="email"
+                    type="email"
                     label={t('forgot-password.email.label')}
-                    htmlFor="forgot-password-email"
-                  >
-                    <Input
-                      id="forgot-password-email"
-                      name="email"
-                      type="email"
-                      placeholder={t('forgot-password.email.placeholder')}
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      disabled={isLoading}
-                    />
-                  </FormField>
+                    placeholder={t('forgot-password.email.placeholder')}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
+                  />
                 </AnimatedFadeIn>
 
                 <AnimatedFadeIn delay={400}>

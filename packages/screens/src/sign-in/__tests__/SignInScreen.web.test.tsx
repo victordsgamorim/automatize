@@ -42,6 +42,7 @@ vi.mock('@automatize/ui/web', () => ({
     type,
     placeholder,
     className,
+    label,
     ...rest
   }: {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -52,50 +53,47 @@ vi.mock('@automatize/ui/web', () => ({
     type?: string;
     placeholder?: string;
     className?: string;
+    label?: string;
   }) => (
-    <input
-      onChange={onChange}
-      value={value}
-      disabled={disabled}
-      id={id}
-      name={name}
-      type={type}
-      placeholder={placeholder}
-      className={className}
-      {...rest}
-    />
+    <div>
+      {label && <label htmlFor={id}>{label}</label>}
+      <input
+        onChange={onChange}
+        value={value}
+        disabled={disabled}
+        id={id}
+        name={name}
+        type={type}
+        placeholder={placeholder}
+        className={className}
+        {...rest}
+      />
+    </div>
   ),
-  Label: ({
+  Text: ({
     children,
     className,
     htmlFor,
+    variant,
+    color,
   }: {
     children: React.ReactNode;
     className?: string;
     htmlFor?: string;
-  }) => (
-    <label className={className} htmlFor={htmlFor}>
-      {children}
-    </label>
-  ),
+    variant?: string;
+    color?: string;
+  }) =>
+    htmlFor ? (
+      <label className={className} htmlFor={htmlFor}>
+        {children}
+      </label>
+    ) : (
+      <span className={className} data-variant={variant} data-color={color}>
+        {children}
+      </span>
+    ),
   Checkbox: ({ name }: { name?: string }) => (
     <input type="checkbox" role="checkbox" name={name} />
-  ),
-  FormField: ({
-    children,
-    label,
-    htmlFor,
-    className,
-  }: {
-    children: React.ReactNode;
-    label: string;
-    htmlFor?: string;
-    className?: string;
-  }) => (
-    <div className={className}>
-      <label htmlFor={htmlFor}>{label}</label>
-      {children}
-    </div>
   ),
   AnimatedFadeIn: ({
     children,
