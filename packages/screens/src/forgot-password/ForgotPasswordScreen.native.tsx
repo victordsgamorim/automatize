@@ -7,7 +7,7 @@ import {
   Platform,
   useColorScheme,
 } from 'react-native';
-import { Button, Text, FormField, Card, AnimatedFadeIn } from '@automatize/ui';
+import { Button, Text, Input, Card, Fade } from '@automatize/ui';
 import { semanticColors, animation } from '@automatize/ui/tokens';
 import { useTranslation } from '@automatize/core-localization';
 import type { ForgotPasswordScreenProps } from './ForgotPasswordScreen.types';
@@ -89,22 +89,22 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
       >
         {/* Header */}
         <View style={styles.header}>
-          <AnimatedFadeIn delay={animation.delay[100]}>
+          <Fade delay={animation.delay[100]}>
             <Text variant="h1" color="primary">
               {t('app.title')}
             </Text>
-          </AnimatedFadeIn>
-          <AnimatedFadeIn delay={animation.delay[200]}>
+          </Fade>
+          <Fade delay={animation.delay[200]}>
             <Text variant="body" color="secondary" style={styles.subtitle}>
               {t('app.subtitle')}
             </Text>
-          </AnimatedFadeIn>
+          </Fade>
         </View>
 
-        <AnimatedFadeIn delay={animation.delay[300]}>
+        <Fade delay={animation.delay[300]}>
           <Card style={styles.card}>
             {isSuccess ? (
-              <AnimatedFadeIn type="fadeSlideIn">
+              <Fade type="fadeSlideIn">
                 <View style={styles.successContainer}>
                   <Text variant="h2" color="primary">
                     {t('forgot-password.success.title')}
@@ -121,27 +121,27 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                     {t('forgot-password.back-to-sign-in')}
                   </Button>
                 </View>
-              </AnimatedFadeIn>
+              </Fade>
             ) : (
               <>
-                <AnimatedFadeIn delay={animation.delay[400]}>
+                <Fade delay={animation.delay[400]}>
                   <Text variant="h2" color="primary" style={styles.title}>
                     {t('forgot-password.title')}
                   </Text>
-                </AnimatedFadeIn>
+                </Fade>
 
                 {error && (
-                  <AnimatedFadeIn>
+                  <Fade>
                     <View style={styles.errorContainer}>
                       <Text variant="body" color="error">
                         {error}
                       </Text>
                     </View>
-                  </AnimatedFadeIn>
+                  </Fade>
                 )}
 
-                <AnimatedFadeIn delay={animation.delay[500]}>
-                  <FormField
+                <Fade delay={animation.delay[500]}>
+                  <Input
                     label={t('forgot-password.email.label')}
                     placeholder={t('forgot-password.email.placeholder')}
                     value={email}
@@ -151,9 +151,9 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                     editable={!isLoading}
                     testID="forgot-password-email-input"
                   />
-                </AnimatedFadeIn>
+                </Fade>
 
-                <AnimatedFadeIn delay={animation.delay[600]}>
+                <Fade delay={animation.delay[600]}>
                   <Button
                     variant="primary"
                     onPress={onSubmit}
@@ -164,9 +164,9 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                   >
                     {t('forgot-password.submit')}
                   </Button>
-                </AnimatedFadeIn>
+                </Fade>
 
-                <AnimatedFadeIn delay={animation.delay[700]}>
+                <Fade delay={animation.delay[700]}>
                   <Button
                     variant="ghost"
                     onPress={onBackToSignIn}
@@ -175,10 +175,10 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                   >
                     {t('forgot-password.back-to-sign-in')}
                   </Button>
-                </AnimatedFadeIn>
+                </Fade>
 
                 {/* Language Switcher */}
-                <AnimatedFadeIn delay={animation.delay[800]}>
+                <Fade delay={animation.delay[800]}>
                   <View style={styles.languageSwitcher}>
                     <Button
                       variant="ghost"
@@ -196,11 +196,11 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                       {currentLangLabel}
                     </Button>
                   </View>
-                </AnimatedFadeIn>
+                </Fade>
               </>
             )}
           </Card>
-        </AnimatedFadeIn>
+        </Fade>
       </ScrollView>
     </KeyboardAvoidingView>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useSidebar } from '../Sidebar/Sidebar.web';
+import { useSidebar } from '@automatize/ui/web';
 
 export interface SidebarLogoProps {
   /** Brand name text displayed when sidebar is expanded. */

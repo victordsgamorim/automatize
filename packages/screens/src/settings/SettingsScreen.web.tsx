@@ -1,5 +1,6 @@
 import React from 'react';
-import { ThemeSwitcher, LanguageSwitcher } from '@automatize/ui/web';
+import { ThemeSwitcher } from '../components/ThemeSwitcher/ThemeSwitcher.web';
+import { LanguageSwitcher } from '../components/LanguageSwitcher/LanguageSwitcher.web';
 import type { SettingsScreenProps } from './SettingsScreen.types';
 
 export const SettingsScreen: React.FC<SettingsScreenProps> = ({

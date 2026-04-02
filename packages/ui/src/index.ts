@@ -24,10 +24,6 @@ export type {
 export { Input } from './components/Input/Input.native';
 export type { InputProps } from './components/Input/Input.native';
 
-// FormField (RN implementation)
-export { FormField } from './components/FormField/FormField.native';
-export type { FormFieldProps } from './components/FormField/FormField.native';
-
 // Card (RN implementation)
 export { Card } from './components/Card/Card.native';
 export type { CardProps } from './components/Card/Card.native';
@@ -59,10 +55,6 @@ export {
 } from './components/Icon/Icon';
 export type { IconProps } from './components/Icon/Icon';
 
-// Animation (cross-platform helper)
-export { AnimatedFadeIn } from './actions/AnimatedFadeIn/AnimatedFadeIn.native';
-export type { AnimatedFadeInProps } from './actions/AnimatedFadeIn/AnimatedFadeIn.native';
-
-// Fade (visibility toggle animation)
+// Fade (entrance animation + visibility toggle)
 export { Fade } from './actions/Fade/Fade.native';
 export type { FadeProps } from './actions/Fade/Fade.native';

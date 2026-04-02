@@ -7,7 +7,7 @@ import {
   Platform,
   useColorScheme,
 } from 'react-native';
-import { Button, Text, FormField, Card, AnimatedFadeIn } from '@automatize/ui';
+import { Button, Text, Input, Card, Fade } from '@automatize/ui';
 import { semanticColors, animation } from '@automatize/ui/tokens';
 import { useTranslation } from '@automatize/core-localization';
 import type { SignInScreenProps } from './SignInScreen.types';
@@ -96,41 +96,41 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
       >
         {/* Header */}
         <View style={styles.header}>
-          <AnimatedFadeIn delay={animation.delay[100]}>
+          <Fade delay={animation.delay[100]}>
             <Text variant="h1" color="primary">
               {t('app.title')}
             </Text>
-          </AnimatedFadeIn>
-          <AnimatedFadeIn delay={animation.delay[200]}>
+          </Fade>
+          <Fade delay={animation.delay[200]}>
             <Text variant="body" color="secondary" style={styles.subtitle}>
               {t('app.subtitle')}
             </Text>
-          </AnimatedFadeIn>
+          </Fade>
         </View>
 
         {/* Login Form Card */}
-        <AnimatedFadeIn delay={animation.delay[300]}>
+        <Fade delay={animation.delay[300]}>
           <Card style={styles.card}>
-            <AnimatedFadeIn delay={animation.delay[400]}>
+            <Fade delay={animation.delay[400]}>
               <Text variant="h2" color="primary" style={styles.title}>
                 {t('sign-in.title')}
               </Text>
-            </AnimatedFadeIn>
+            </Fade>
 
             {/* Error Message */}
             {error && (
-              <AnimatedFadeIn>
+              <Fade>
                 <View style={styles.errorContainer}>
                   <Text variant="body" color="error">
                     {error}
                   </Text>
                 </View>
-              </AnimatedFadeIn>
+              </Fade>
             )}
 
             {/* Email Input */}
-            <AnimatedFadeIn delay={animation.delay[500]}>
-              <FormField
+            <Fade delay={animation.delay[500]}>
+              <Input
                 label={t('sign-in.email.label')}
                 placeholder={t('sign-in.email.placeholder')}
                 value={email}
@@ -140,11 +140,11 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 editable={!isLoading}
                 testID="sign-in-email-input"
               />
-            </AnimatedFadeIn>
+            </Fade>
 
             {/* Password Input */}
-            <AnimatedFadeIn delay={animation.delay[600]}>
-              <FormField
+            <Fade delay={animation.delay[600]}>
+              <Input
                 label={t('sign-in.password.label')}
                 placeholder={t('sign-in.password.placeholder')}
                 value={password}
@@ -153,10 +153,10 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 editable={!isLoading}
                 testID="sign-in-password-input"
               />
-            </AnimatedFadeIn>
+            </Fade>
 
             {/* Toggle Password Visibility */}
-            <AnimatedFadeIn delay={animation.delay[700]}>
+            <Fade delay={animation.delay[700]}>
               <Button
                 variant="ghost"
                 onPress={toggleShowPassword}
@@ -167,10 +167,10 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                   ? t('sign-in.password.hide')
                   : t('sign-in.password.show')}
               </Button>
-            </AnimatedFadeIn>
+            </Fade>
 
             {/* Sign In Button */}
-            <AnimatedFadeIn delay={animation.delay[800]}>
+            <Fade delay={animation.delay[800]}>
               <Button
                 variant="primary"
                 onPress={onSignIn}
@@ -181,10 +181,10 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
               >
                 {t('sign-in.submit')}
               </Button>
-            </AnimatedFadeIn>
+            </Fade>
 
             {/* Forgot Password Link */}
-            <AnimatedFadeIn delay={animation.delay[900]}>
+            <Fade delay={animation.delay[900]}>
               <Button
                 variant="ghost"
                 onPress={onResetPassword}
@@ -193,10 +193,10 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
               >
                 {t('sign-in.forgot-password')}
               </Button>
-            </AnimatedFadeIn>
+            </Fade>
 
             {/* Language Switcher */}
-            <AnimatedFadeIn delay={animation.delay[1000]}>
+            <Fade delay={animation.delay[1000]}>
               <View style={styles.languageSwitcher}>
                 <Button
                   variant="ghost"
@@ -214,9 +214,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                   {currentLangLabel}
                 </Button>
               </View>
-            </AnimatedFadeIn>
+            </Fade>
           </Card>
-        </AnimatedFadeIn>
+        </Fade>
       </ScrollView>
     </KeyboardAvoidingView>
   );

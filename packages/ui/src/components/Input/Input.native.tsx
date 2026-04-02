@@ -21,6 +21,8 @@ export interface InputProps extends RNTextInputProps {
   label?: string;
   /** Error message to display */
   error?: string;
+  /** Help text displayed below the input (hidden when error is present) */
+  helperText?: string;
   /** Whether to show clear button */
   clearable?: boolean;
   /** Left icon component */
@@ -36,6 +38,7 @@ export const Input = React.forwardRef<RNTextInput, InputProps>(
     {
       label,
       error,
+      helperText,
       clearable = false,
       leftIcon,
       rightIcon,
@@ -97,6 +100,9 @@ export const Input = React.forwardRef<RNTextInput, InputProps>(
         </View>
 
         {error && <Text style={styles.errorText}>{error}</Text>}
+        {helperText && !error && (
+          <Text style={styles.helperText}>{helperText}</Text>
+        )}
       </View>
     );
   }
@@ -144,6 +150,11 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: typography.fontSize.xs,
     color: colors.error[600],
+    marginTop: spacing[1],
+  },
+  helperText: {
+    fontSize: typography.fontSize.xs,
+    color: colors.neutral[500],
     marginTop: spacing[1],
   },
 });

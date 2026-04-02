@@ -27,11 +27,14 @@ const mockUseSidebar = vi.fn().mockReturnValue({
   toggle: vi.fn(),
 });
 
+vi.mock('../SidebarLogo/SidebarLogo.web', () => ({
+  SidebarLogo: () => <div data-testid="sidebar-logo" />,
+}));
+
 vi.mock('@automatize/ui/web', () => ({
   SidebarProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="sidebar-provider">{children}</div>
   ),
-  SidebarLogo: () => <div data-testid="sidebar-logo" />,
   SidebarLayout: (
     props: MockSidebarLayoutProps & { header?: React.ReactNode }
   ) => {

@@ -7,11 +7,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from '../../actions/DropdownMenu/DropdownMenu.web';
+} from '@automatize/ui/web';
 import type {
   SidebarProfileConfig,
   SidebarProfileMenuItem,
-} from '../Sidebar/Sidebar.web';
+} from '@automatize/ui/web';
 
 export interface ProfileDropdownProps {
   /** Profile configuration (icon, label, subtitle). */

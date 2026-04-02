@@ -20,7 +20,6 @@ describe('@automatize/ui — entry point exports contract', () => {
 
   it('exports Button', () => expect(ui.Button).toBeDefined());
   it('exports Input', () => expect(ui.Input).toBeDefined());
-  it('exports FormField', () => expect(ui.FormField).toBeDefined());
   it('exports Card', () => expect(ui.Card).toBeDefined());
   it('exports Text', () => expect(ui.Text).toBeDefined());
   it('exports ErrorBoundary', () => expect(ui.ErrorBoundary).toBeDefined());

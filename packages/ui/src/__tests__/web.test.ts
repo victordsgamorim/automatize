@@ -12,11 +12,8 @@ describe('@automatize/ui/web — entry point exports contract', () => {
   it('exports Button', () => expect(web.Button).toBeDefined());
   it('exports buttonVariants', () => expect(web.buttonVariants).toBeDefined());
   it('exports Input', () => expect(web.Input).toBeDefined());
-  it('exports Label', () => expect(web.Label).toBeDefined());
+  it('exports Text', () => expect(web.Text).toBeDefined());
   it('exports Checkbox', () => expect(web.Checkbox).toBeDefined());
-  it('exports ThemeSwitcher', () => expect(web.ThemeSwitcher).toBeDefined());
-  it('exports LanguageSwitcher', () =>
-    expect(web.LanguageSwitcher).toBeDefined());
 
   // ── Toast ──────────────────────────────────────────────────────────────────
 

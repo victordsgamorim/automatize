@@ -1,5 +1,5 @@
 import type { SidebarProps, HeaderProps } from '@automatize/ui/web';
-import type { AppHeaderActionsProps } from './AppHeaderActions/AppHeaderActions.types';
+import type { AppHeaderActionsProps } from './components/AppHeaderActions/AppHeaderActions.types';
 
 export type {
   SidebarProps,
@@ -7,7 +7,7 @@ export type {
   SidebarProfileMenuItem,
 } from '@automatize/ui/web';
 
-export type { AppHeaderActionsProps } from './AppHeaderActions/AppHeaderActions.types';
+export type { AppHeaderActionsProps } from './components/AppHeaderActions/AppHeaderActions.types';
 
 /** A single navigation item passed to HomeScreen. */
 export interface HomeScreenItem {

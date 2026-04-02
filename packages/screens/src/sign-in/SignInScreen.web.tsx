@@ -3,14 +3,13 @@ import { Eye, EyeOff } from 'lucide-react';
 import {
   Button,
   Input,
-  Label,
+  Text,
   Checkbox,
   useToasts,
-  ThemeSwitcher,
-  LanguageSwitcher,
-  FormField,
-  AnimatedFadeIn,
+  Fade,
 } from '@automatize/ui/web';
+import { ThemeSwitcher } from '../components/ThemeSwitcher/ThemeSwitcher.web';
+import { LanguageSwitcher } from '../components/LanguageSwitcher/LanguageSwitcher.web';
 import { useTranslation } from '@automatize/core-localization';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { useSignIn } from './useSignIn';
@@ -72,41 +71,41 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="flex flex-col gap-6">
-            <AnimatedFadeIn delay={100}>
+            <Fade delay={100}>
               <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
                 <span className="font-light text-foreground tracking-tighter">
                   {t('sign-in.welcome')}
                 </span>
               </h1>
-            </AnimatedFadeIn>
+            </Fade>
 
-            <AnimatedFadeIn delay={200}>
+            <Fade delay={200}>
               <p className="text-muted-foreground">{t('sign-in.subtitle')}</p>
-            </AnimatedFadeIn>
+            </Fade>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
-              <AnimatedFadeIn delay={300}>
-                <FormField
+              <Fade delay={300}>
+                <Input
+                  id="sign-in-email"
+                  name="email"
+                  type="email"
                   label={t('sign-in.email.label')}
-                  htmlFor="sign-in-email"
-                >
-                  <Input
-                    id="sign-in-email"
-                    name="email"
-                    type="email"
-                    placeholder={t('sign-in.email.placeholder')}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </FormField>
-              </AnimatedFadeIn>
+                  placeholder={t('sign-in.email.placeholder')}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
+                />
+              </Fade>
 
-              <AnimatedFadeIn delay={400}>
-                <FormField
-                  label={t('sign-in.password.label')}
-                  htmlFor="sign-in-password"
-                >
+              <Fade delay={400}>
+                <div className="space-y-1.5">
+                  <Text
+                    htmlFor="sign-in-password"
+                    color="muted"
+                    className="pl-4"
+                  >
+                    {t('sign-in.password.label')}
+                  </Text>
                   <div className="relative">
                     <Input
                       id="sign-in-password"
@@ -130,19 +129,22 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                       )}
                     </button>
                   </div>
-                </FormField>
-              </AnimatedFadeIn>
+                </div>
+              </Fade>
 
-              <AnimatedFadeIn
+              <Fade
                 delay={500}
                 className="flex items-center justify-between text-sm"
               >
-                <Label className="flex items-center gap-3 cursor-pointer">
+                <Text
+                  variant="label"
+                  className="flex items-center gap-3 cursor-pointer"
+                >
                   <Checkbox name="rememberMe" />
-                  <span className="text-foreground/90">
+                  <Text variant="bodySmall" color="primary">
                     {t('sign-in.remember')}
-                  </span>
-                </Label>
+                  </Text>
+                </Text>
                 <Button
                   type="button"
                   variant="link"
@@ -152,9 +154,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 >
                   {t('sign-in.reset-password')}
                 </Button>
-              </AnimatedFadeIn>
+              </Fade>
 
-              <AnimatedFadeIn delay={600}>
+              <Fade delay={600}>
                 <Button
                   type="submit"
                   disabled={isLoading || !email || !password}
@@ -162,7 +164,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 >
                   {isLoading ? t('sign-in.submitting') : t('sign-in.submit')}
                 </Button>
-              </AnimatedFadeIn>
+              </Fade>
             </form>
           </div>
         </div>

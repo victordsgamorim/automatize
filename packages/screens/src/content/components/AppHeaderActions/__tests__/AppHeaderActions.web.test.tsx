@@ -14,6 +14,9 @@ vi.mock('@automatize/ui/web', () => ({
   SearchBar: (props: Record<string, unknown>) => (
     <div data-testid="search-bar" data-placeholder={props.placeholder} />
   ),
+}));
+
+vi.mock('../../ProfileDropdown/ProfileDropdown.web', () => ({
   ProfileDropdown: (props: { profile: { label: string } }) => (
     <div data-testid="profile-dropdown" aria-label={props.profile.label} />
   ),

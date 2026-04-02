@@ -6,3 +6,6 @@ export type {
   SidebarProfileConfig,
   SidebarProfileMenuItem,
 } from './HomeScreen.types';
+
+export { ContentPlaceholder } from './ContentPlaceholder.web';
+export type { ContentPlaceholderProps } from './ContentPlaceholder.web';

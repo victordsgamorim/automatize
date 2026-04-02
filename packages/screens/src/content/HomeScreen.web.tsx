@@ -3,13 +3,13 @@
 import {
   SidebarProvider,
   SidebarLayout,
-  SidebarLogo,
   Header,
   BottomNavigation,
   useSidebar,
 } from '@automatize/ui/web';
+import { SidebarLogo } from './components/SidebarLogo/SidebarLogo.web';
 import type { HomeScreenProps } from './HomeScreen.types';
-import { AppHeaderActions } from './AppHeaderActions/AppHeaderActions.web';
+import { AppHeaderActions } from './components/AppHeaderActions/AppHeaderActions.web';
 
 function HomeScreenContent({
   navProps,

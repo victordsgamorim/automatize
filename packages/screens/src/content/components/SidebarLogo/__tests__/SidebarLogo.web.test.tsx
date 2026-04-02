@@ -2,13 +2,18 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-/* ─── Mock useSidebar ────────────────────────────────────────────────────── */
+/* ─── Mock useSidebar from @automatize/ui/web ──────────────────────────── */
 
 const mockUseSidebar = vi.fn();
 
-vi.mock('../../Sidebar/Sidebar.web', () => ({
-  useSidebar: () => mockUseSidebar(),
-}));
+vi.mock('@automatize/ui/web', async () => {
+  const actual =
+    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
+  return {
+    ...actual,
+    useSidebar: () => mockUseSidebar(),
+  };
+});
 
 import { SidebarLogo } from '../SidebarLogo.web';
 

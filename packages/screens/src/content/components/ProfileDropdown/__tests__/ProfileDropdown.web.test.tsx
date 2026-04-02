@@ -2,43 +2,48 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-/* ─── Mock DropdownMenu primitives ───────────────────────────────────────── */
+/* ─── Mock @automatize/ui/web DropdownMenu primitives ──────────────────── */
 
-vi.mock('../../../actions/DropdownMenu/DropdownMenu.web', () => ({
-  DropdownMenu: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="dropdown-menu">{children}</div>
-  ),
-  DropdownMenuTrigger: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    asChild?: boolean;
-  }) => <div data-testid="dropdown-trigger">{children}</div>,
-  DropdownMenuContent: ({
-    children,
-  }: {
-    children: React.ReactNode;
-    side?: string;
-    align?: string;
-    sideOffset?: number;
-    className?: string;
-  }) => <div data-testid="dropdown-content">{children}</div>,
-  DropdownMenuItem: ({
-    children,
-    onClick,
-  }: {
-    children: React.ReactNode;
-    onClick?: () => void;
-    variant?: string;
-  }) => (
-    <div data-testid="dropdown-item" onClick={onClick}>
-      {children}
-    </div>
-  ),
-  DropdownMenuSeparator: ({ className }: { className?: string }) => (
-    <hr data-testid="dropdown-separator" className={className} />
-  ),
-}));
+vi.mock('@automatize/ui/web', async () => {
+  const actual =
+    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
+  return {
+    ...actual,
+    DropdownMenu: ({ children }: { children: React.ReactNode }) => (
+      <div data-testid="dropdown-menu">{children}</div>
+    ),
+    DropdownMenuTrigger: ({
+      children,
+    }: {
+      children: React.ReactNode;
+      asChild?: boolean;
+    }) => <div data-testid="dropdown-trigger">{children}</div>,
+    DropdownMenuContent: ({
+      children,
+    }: {
+      children: React.ReactNode;
+      side?: string;
+      align?: string;
+      sideOffset?: number;
+      className?: string;
+    }) => <div data-testid="dropdown-content">{children}</div>,
+    DropdownMenuItem: ({
+      children,
+      onClick,
+    }: {
+      children: React.ReactNode;
+      onClick?: () => void;
+      variant?: string;
+    }) => (
+      <div data-testid="dropdown-item" onClick={onClick}>
+        {children}
+      </div>
+    ),
+    DropdownMenuSeparator: ({ className }: { className?: string }) => (
+      <hr data-testid="dropdown-separator" className={className} />
+    ),
+  };
+});
 
 import { ProfileDropdown } from '../ProfileDropdown.web';
 import type { ProfileDropdownProps } from '../ProfileDropdown.web';
