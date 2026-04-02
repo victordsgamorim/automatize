@@ -21,11 +21,25 @@ The package has two main exports:
 
 **Important:** Full-page screens (e.g., `SignInScreen`, `DashboardScreen`) do NOT belong in the design system. Cross-platform screens live in their own feature packages under `packages/` (e.g., `packages/sign-in/` → `@automatize/sign-in`). Platform-specific screens live in `apps/<platform>/components/screens/`. The design system contains only reusable primitives, tokens, and generic composites.
 
+**Recent consolidations:**
+
+- `Label` + `Text` → Single unified `Text` component with `htmlFor` prop for form labels
+- `FormField` + `Input` → Single unified `Input` component with `label`, `error`, and `helperText` props
+- `AnimatedFadeIn` + `Fade` → Single unified `Fade` component supporting both entrance animations and visibility toggles
+- `ContentPlaceholder` → Moved to `packages/screens/src/content/` (not a design system primitive)
+
 - **src/styles/\_tokens.css** — ⚠️ GENERATED CSS custom properties (do not edit). Run `pnpm tokens:build`.
 - **src/styles/\_animation.css** — ⚠️ GENERATED animation keyframes + utility classes (do not edit). Run `pnpm tokens:build`.
 - **src/styles/globals.css** — Hand-authored semantic mappings (CSS vars). Imports `_tokens.css`. **Does not contain Tailwind directives.**
 - **src/components/** — Visual UI components organized in folders. Each folder contains platform-specific implementations (`.web.tsx` / `.native.tsx`). No per-component barrel files.
+  - Examples: `Button/`, `Input/`, `Card/`, `Text/`, `Checkbox/`, etc.
+  - Each component folder has only `.web.tsx` and/or `.native.tsx` files — NO `index.ts` or barrel files
+  - `Input/` includes label, error, and helper text support (consolidated from former `FormField`)
+  - `Text/` handles both general text and form labels (consolidated from former `Label`)
 - **src/actions/** — Behavioral components that provide interaction patterns (floating positioning, open/close state, keyboard navigation, error catching, animation). Same folder conventions as `src/components/`.
+  - Examples: `Fade/` (entrance animation + visibility toggle), `ErrorBoundary/`, `Popover/`, `Select/`, etc.
+  - `Fade/` consolidates entrance animations (formerly `AnimatedFadeIn`) with visibility toggles
+  - `ErrorBoundary/` provides root and component-level error catching with fallback UI
 - **src/index.ts** — Main package entry (`@automatize/ui`). Exports native implementations using explicit `.native.tsx` paths (e.g., `./components/Button/Button.native`).
 - **src/web.ts** — Web entry (`@automatize/ui/web`). Exports web implementations using explicit `.web.tsx` paths (e.g., `./components/Button/Button.web`).
 - **style-dictionary.config.ts** — Build config for token generation.
@@ -141,24 +155,44 @@ Lucide provides consistent, clean icons that work across platforms. The library 
 
 **Component folder structure:**
 
-Cross-platform components live in `src/components/<Name>/` with platform-specific files only — no per-component barrel files:
+All components (visual and behavioral) live in their respective folders (`src/components/<Name>/` or `src/actions/<Name>/`) with platform-specific files only — **no per-component barrel files**:
 
 ```text
 src/components/Button/
   Button.web.tsx        # Web implementation (Radix UI / Tailwind)
   Button.native.tsx     # React Native implementation
+
+src/components/Input/
+  Input.web.tsx         # Web implementation (includes label, error support)
+  Input.native.tsx      # React Native implementation (includes label, error, icons)
+
+src/components/Text/
+  Text.web.tsx          # Web implementation (text + form labels)
+  Text.native.tsx       # React Native implementation
+
+src/actions/Fade/
+  Fade.web.tsx          # Web implementation (entrance animation + visibility toggle)
+  Fade.native.tsx       # React Native implementation (via Animated API)
+
+src/actions/ErrorBoundary/
+  ErrorBoundary.web.tsx # Web implementation
+  ErrorBoundary.tsx     # React Native implementation
 ```
+
+**Rules:**
 
 - `src/index.ts` — exports native implementations via explicit `.native.tsx` paths (e.g., `'./components/Button/Button.native'`)
 - `src/web.ts` — exports web implementations via explicit `.web.tsx` paths (e.g., `'./components/Button/Button.web'`)
 - Internal imports within `packages/ui` MUST use explicit `.web.tsx` or `.native.tsx` paths — never relative folder paths
+- No component may have its own `index.ts` or barrel file — all exports go through the root `index.ts` and `web.ts`
 
 **Component philosophy:**
 
-- Every component uses design tokens
-- Every component has size variants (sm, md, lg)
-- Every interactive component is accessible
-- No hardcoded colors or spacing anywhere
+- Every component uses design tokens (no hardcoded colors, spacing, or typography)
+- Components are consolidated when possible (e.g., `Input` combines form input + label + error, `Fade` combines entrance animation + visibility toggle)
+- Every component has consistent variant support across platforms
+- Every interactive component is accessible (WCAG 2.1 Level AA minimum)
+- Form-related components (`Input`, `Text` with `htmlFor`) handle both label association and error display
 
 ## Usage pattern
 
@@ -234,5 +268,5 @@ CSS custom properties are also available for custom animations:
 
 ---
 
-**Last Updated:** 2026-03-25
+**Last Updated:** 2026-04-02
 ```
