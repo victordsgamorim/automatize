@@ -6,7 +6,7 @@ import {
   Text,
   Checkbox,
   useToasts,
-  AnimatedFadeIn,
+  Fade,
 } from '@automatize/ui/web';
 import { ThemeSwitcher } from '../components/ThemeSwitcher/ThemeSwitcher.web';
 import { LanguageSwitcher } from '../components/LanguageSwitcher/LanguageSwitcher.web';
@@ -71,20 +71,20 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="flex flex-col gap-6">
-            <AnimatedFadeIn delay={100}>
+            <Fade delay={100}>
               <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
                 <span className="font-light text-foreground tracking-tighter">
                   {t('sign-in.welcome')}
                 </span>
               </h1>
-            </AnimatedFadeIn>
+            </Fade>
 
-            <AnimatedFadeIn delay={200}>
+            <Fade delay={200}>
               <p className="text-muted-foreground">{t('sign-in.subtitle')}</p>
-            </AnimatedFadeIn>
+            </Fade>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
-              <AnimatedFadeIn delay={300}>
+              <Fade delay={300}>
                 <Input
                   id="sign-in-email"
                   name="email"
@@ -95,9 +95,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}
                 />
-              </AnimatedFadeIn>
+              </Fade>
 
-              <AnimatedFadeIn delay={400}>
+              <Fade delay={400}>
                 <div className="space-y-1.5">
                   <Text
                     htmlFor="sign-in-password"
@@ -130,9 +130,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                     </button>
                   </div>
                 </div>
-              </AnimatedFadeIn>
+              </Fade>
 
-              <AnimatedFadeIn
+              <Fade
                 delay={500}
                 className="flex items-center justify-between text-sm"
               >
@@ -154,9 +154,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 >
                   {t('sign-in.reset-password')}
                 </Button>
-              </AnimatedFadeIn>
+              </Fade>
 
-              <AnimatedFadeIn delay={600}>
+              <Fade delay={600}>
                 <Button
                   type="submit"
                   disabled={isLoading || !email || !password}
@@ -164,7 +164,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 >
                   {isLoading ? t('sign-in.submitting') : t('sign-in.submit')}
                 </Button>
-              </AnimatedFadeIn>
+              </Fade>
             </form>
           </div>
         </div>

@@ -95,7 +95,7 @@ vi.mock('@automatize/ui/web', () => ({
   Checkbox: ({ name }: { name?: string }) => (
     <input type="checkbox" role="checkbox" name={name} />
   ),
-  AnimatedFadeIn: ({
+  Fade: ({
     children,
     className,
   }: {

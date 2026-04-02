@@ -117,9 +117,7 @@ vi.mock('@automatize/ui/web', () => ({
       {children}
     </div>
   ),
-  AnimatedFadeIn: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
+  Fade: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   useToasts: () => ({ error: vi.fn(), success: vi.fn() }),
 }));
 
