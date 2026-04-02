@@ -14,8 +14,12 @@ export { Button, buttonVariants } from './components/Button/Button.web';
 export { FormField } from './components/FormField/FormField.web';
 export type { FormFieldProps } from './components/FormField/FormField.web';
 export { Input } from './components/Input/Input.web';
-export { Label } from './components/Label/Label.web';
-export type { LabelProps } from './components/Label/Label.web';
+export { Text } from './components/Text/Text.web';
+export type {
+  TextProps,
+  TextVariant,
+  TextColor,
+} from './components/Text/Text.web';
 export { Checkbox } from './components/Checkbox/Checkbox.web';
 export { useToasts, ToastProvider } from './components/Toast/Toast.web';
 export type { ToastType } from './components/Toast/Toast.web';

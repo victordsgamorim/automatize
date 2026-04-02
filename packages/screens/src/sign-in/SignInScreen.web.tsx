@@ -3,7 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import {
   Button,
   Input,
-  Label,
+  Text,
   Checkbox,
   useToasts,
   FormField,
@@ -137,12 +137,15 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 delay={500}
                 className="flex items-center justify-between text-sm"
               >
-                <Label className="flex items-center gap-3 cursor-pointer">
+                <Text
+                  variant="label"
+                  className="flex items-center gap-3 cursor-pointer"
+                >
                   <Checkbox name="rememberMe" />
-                  <span className="text-foreground/90">
+                  <Text variant="bodySmall" color="primary">
                     {t('sign-in.remember')}
-                  </span>
-                </Label>
+                  </Text>
+                </Text>
                 <Button
                   type="button"
                   variant="link"

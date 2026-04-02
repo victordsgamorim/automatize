@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import { cn } from '../../utils';
-import { Label } from '../Label/Label.web';
+import { Text } from '../Text/Text.web';
 
 export interface FormFieldProps {
   label: string;
@@ -24,9 +24,9 @@ export function FormField({
 }: FormFieldProps) {
   return (
     <div className={cn('space-y-1.5', className)}>
-      <Label htmlFor={htmlFor} className="pl-4">
+      <Text htmlFor={htmlFor} color="muted" className="pl-4">
         {label}
-      </Label>
+      </Text>
       {children}
     </div>
   );
