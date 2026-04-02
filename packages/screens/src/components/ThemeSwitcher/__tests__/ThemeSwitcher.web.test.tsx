@@ -2,8 +2,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-// Mock DropdownMenu to avoid Radix UI portal/pointer-event issues in jsdom
-vi.mock('../../../actions/DropdownMenu/DropdownMenu.web', async () => {
+// Mock @automatize/ui/web DropdownMenu to avoid Radix UI portal/pointer-event issues in jsdom
+vi.mock('@automatize/ui/web', async () => {
+  const actual =
+    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   const { createElement } = await import('react');
 
   type WithChildren = { children?: React.ReactNode };
@@ -27,6 +29,7 @@ vi.mock('../../../actions/DropdownMenu/DropdownMenu.web', async () => {
       children
     );
   return {
+    ...actual,
     DropdownMenu,
     DropdownMenuTrigger,
     DropdownMenuContent,

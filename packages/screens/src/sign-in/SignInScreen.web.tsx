@@ -6,11 +6,11 @@ import {
   Label,
   Checkbox,
   useToasts,
-  ThemeSwitcher,
-  LanguageSwitcher,
   FormField,
   AnimatedFadeIn,
 } from '@automatize/ui/web';
+import { ThemeSwitcher } from '../components/ThemeSwitcher/ThemeSwitcher.web';
+import { LanguageSwitcher } from '../components/LanguageSwitcher/LanguageSwitcher.web';
 import { useTranslation } from '@automatize/core-localization';
 import type { SignInScreenProps } from './SignInScreen.types';
 import { useSignIn } from './useSignIn';

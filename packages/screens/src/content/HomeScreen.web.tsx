@@ -3,11 +3,11 @@
 import {
   SidebarProvider,
   SidebarLayout,
-  SidebarLogo,
   Header,
   BottomNavigation,
   useSidebar,
 } from '@automatize/ui/web';
+import { SidebarLogo } from './SidebarLogo/SidebarLogo.web';
 import type { HomeScreenProps } from './HomeScreen.types';
 import { AppHeaderActions } from './AppHeaderActions/AppHeaderActions.web';
 

@@ -97,8 +97,6 @@ vi.mock('@automatize/ui/web', () => ({
       {children}
     </div>
   ),
-  ThemeSwitcher: () => <div data-testid="theme-switcher" />,
-  LanguageSwitcher: () => <div data-testid="language-switcher" />,
   AnimatedFadeIn: ({
     children,
     className,
@@ -107,6 +105,14 @@ vi.mock('@automatize/ui/web', () => ({
     className?: string;
   }) => <div className={className}>{children}</div>,
   useToasts: () => ({ error: vi.fn(), success: vi.fn() }),
+}));
+
+vi.mock('../../components/ThemeSwitcher/ThemeSwitcher.web', () => ({
+  ThemeSwitcher: () => <div data-testid="theme-switcher" />,
+}));
+
+vi.mock('../../components/LanguageSwitcher/LanguageSwitcher.web', () => ({
+  LanguageSwitcher: () => <div data-testid="language-switcher" />,
 }));
 
 vi.mock('@automatize/core-localization', () => ({

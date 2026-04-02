@@ -13,7 +13,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../actions/DropdownMenu/DropdownMenu.web';
+} from '@automatize/ui/web';
 
 export type ThemePreferenceOption = 'light' | 'dark' | 'system';
 

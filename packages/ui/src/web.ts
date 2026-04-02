@@ -19,17 +19,6 @@ export type { LabelProps } from './components/Label/Label.web';
 export { Checkbox } from './components/Checkbox/Checkbox.web';
 export { useToasts, ToastProvider } from './components/Toast/Toast.web';
 export type { ToastType } from './components/Toast/Toast.web';
-export { LanguageSwitcher } from './components/LanguageSwitcher/LanguageSwitcher.web';
-export type {
-  LanguageSwitcherProps,
-  LanguageOption,
-} from './components/LanguageSwitcher/LanguageSwitcher.web';
-export { ThemeSwitcher } from './components/ThemeSwitcher/ThemeSwitcher.web';
-export type {
-  ThemeSwitcherProps,
-  ThemeSwitcherOption,
-  ThemePreferenceOption,
-} from './components/ThemeSwitcher/ThemeSwitcher.web';
 export {
   ErrorBoundary,
   RootErrorBoundary,
@@ -68,9 +57,6 @@ export type {
   SidebarLayoutProps,
 } from './components/Sidebar/Sidebar.web';
 
-export { SidebarLogo } from './components/SidebarLogo/SidebarLogo.web';
-export type { SidebarLogoProps } from './components/SidebarLogo/SidebarLogo.web';
-
 export { ContentPlaceholder } from './components/ContentPlaceholder/ContentPlaceholder.web';
 export type { ContentPlaceholderProps } from './components/ContentPlaceholder/ContentPlaceholder.web';
 
@@ -105,6 +91,25 @@ export {
   PopoverClose,
 } from './actions/Popover/Popover.web';
 
+// DropdownMenu
+export {
+  DropdownMenu,
+  DropdownMenuPortal,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+} from './actions/DropdownMenu/DropdownMenu.web';
+
 // Select
 export {
   Select,
@@ -137,7 +142,3 @@ export type { HeaderProps } from './components/Header/Header.web';
 // BottomNavigation
 export { BottomNavigation } from './components/BottomNavigation/BottomNavigation.web';
 export type { BottomNavigationProps } from './components/BottomNavigation/BottomNavigation.web';
-
-// ProfileDropdown
-export { ProfileDropdown } from './components/ProfileDropdown/ProfileDropdown.web';
-export type { ProfileDropdownProps } from './components/ProfileDropdown/ProfileDropdown.web';

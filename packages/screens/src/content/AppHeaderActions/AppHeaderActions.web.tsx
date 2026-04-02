@@ -1,11 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import {
-  DateRangePicker,
-  ProfileDropdown,
-  SearchBar,
-} from '@automatize/ui/web';
+import { DateRangePicker, SearchBar } from '@automatize/ui/web';
+import { ProfileDropdown } from '../ProfileDropdown/ProfileDropdown.web';
 import type { DateRange } from '@automatize/ui/web';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import type { AppHeaderActionsProps } from './AppHeaderActions.types';
