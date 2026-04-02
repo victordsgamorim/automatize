@@ -6,7 +6,6 @@ import {
   Text,
   Checkbox,
   useToasts,
-  FormField,
   AnimatedFadeIn,
 } from '@automatize/ui/web';
 import { ThemeSwitcher } from '../components/ThemeSwitcher/ThemeSwitcher.web';
@@ -86,27 +85,27 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
             <form className="space-y-5" onSubmit={handleSubmit}>
               <AnimatedFadeIn delay={300}>
-                <FormField
+                <Input
+                  id="sign-in-email"
+                  name="email"
+                  type="email"
                   label={t('sign-in.email.label')}
-                  htmlFor="sign-in-email"
-                >
-                  <Input
-                    id="sign-in-email"
-                    name="email"
-                    type="email"
-                    placeholder={t('sign-in.email.placeholder')}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </FormField>
+                  placeholder={t('sign-in.email.placeholder')}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
+                />
               </AnimatedFadeIn>
 
               <AnimatedFadeIn delay={400}>
-                <FormField
-                  label={t('sign-in.password.label')}
-                  htmlFor="sign-in-password"
-                >
+                <div className="space-y-1.5">
+                  <Text
+                    htmlFor="sign-in-password"
+                    color="muted"
+                    className="pl-4"
+                  >
+                    {t('sign-in.password.label')}
+                  </Text>
                   <div className="relative">
                     <Input
                       id="sign-in-password"
@@ -130,7 +129,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                       )}
                     </button>
                   </div>
-                </FormField>
+                </div>
               </AnimatedFadeIn>
 
               <AnimatedFadeIn

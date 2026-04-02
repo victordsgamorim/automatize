@@ -7,7 +7,7 @@ import {
   Platform,
   useColorScheme,
 } from 'react-native';
-import { Button, Text, FormField, Card, AnimatedFadeIn } from '@automatize/ui';
+import { Button, Text, Input, Card, AnimatedFadeIn } from '@automatize/ui';
 import { semanticColors, animation } from '@automatize/ui/tokens';
 import { useTranslation } from '@automatize/core-localization';
 import type { ForgotPasswordScreenProps } from './ForgotPasswordScreen.types';
@@ -141,7 +141,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                 )}
 
                 <AnimatedFadeIn delay={animation.delay[500]}>
-                  <FormField
+                  <Input
                     label={t('forgot-password.email.label')}
                     placeholder={t('forgot-password.email.placeholder')}
                     value={email}

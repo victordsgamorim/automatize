@@ -7,7 +7,7 @@ import {
   Platform,
   useColorScheme,
 } from 'react-native';
-import { Button, Text, FormField, Card, AnimatedFadeIn } from '@automatize/ui';
+import { Button, Text, Input, Card, AnimatedFadeIn } from '@automatize/ui';
 import { semanticColors, animation } from '@automatize/ui/tokens';
 import { useTranslation } from '@automatize/core-localization';
 import type { SignInScreenProps } from './SignInScreen.types';
@@ -130,7 +130,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
             {/* Email Input */}
             <AnimatedFadeIn delay={animation.delay[500]}>
-              <FormField
+              <Input
                 label={t('sign-in.email.label')}
                 placeholder={t('sign-in.email.placeholder')}
                 value={email}
@@ -144,7 +144,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
             {/* Password Input */}
             <AnimatedFadeIn delay={animation.delay[600]}>
-              <FormField
+              <Input
                 label={t('sign-in.password.label')}
                 placeholder={t('sign-in.password.placeholder')}
                 value={password}

@@ -24,10 +24,6 @@ export type {
 export { Input } from './components/Input/Input.native';
 export type { InputProps } from './components/Input/Input.native';
 
-// FormField (RN implementation)
-export { FormField } from './components/FormField/FormField.native';
-export type { FormFieldProps } from './components/FormField/FormField.native';
-
 // Card (RN implementation)
 export { Card } from './components/Card/Card.native';
 export type { CardProps } from './components/Card/Card.native';

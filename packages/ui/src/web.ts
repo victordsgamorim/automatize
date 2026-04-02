@@ -11,9 +11,8 @@ export { cn } from './utils';
 
 // Components (source of truth: src/components/)
 export { Button, buttonVariants } from './components/Button/Button.web';
-export { FormField } from './components/FormField/FormField.web';
-export type { FormFieldProps } from './components/FormField/FormField.web';
 export { Input } from './components/Input/Input.web';
+export type { InputProps } from './components/Input/Input.web';
 export { Text } from './components/Text/Text.web';
 export type {
   TextProps,
