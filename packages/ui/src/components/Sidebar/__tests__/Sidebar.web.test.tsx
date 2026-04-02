@@ -405,6 +405,20 @@ describe('SidebarNav (web)', () => {
     expect(links[0].getAttribute('aria-current')).toBeNull();
   });
 
+  it('marks no item as active when activeIndex is -1 (non-navigation page)', () => {
+    render(
+      <SidebarProvider>
+        <Sidebar>
+          <SidebarNav items={items} activeIndex={-1} />
+        </Sidebar>
+      </SidebarProvider>
+    );
+    const links = document.querySelectorAll('[data-slot="sidebar-link"]');
+    for (const link of links) {
+      expect(link.getAttribute('aria-current')).toBeNull();
+    }
+  });
+
   it('calls onTap when an item is clicked', () => {
     render(
       <SidebarProvider>
