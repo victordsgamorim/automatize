@@ -10,13 +10,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
 }) => {
   return (
     <div className="max-w-2xl mx-auto py-8 px-4 space-y-6 font-geist">
-      {/* Header */}
-      <div className="space-y-1">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          {labels.title}
-        </h1>
-        <p className="text-muted-foreground">{labels.subtitle}</p>
-      </div>
+      <p className="text-muted-foreground">{labels.subtitle}</p>
 
       <div className="space-y-4">
         {/* Appearance */}

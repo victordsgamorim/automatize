@@ -49,14 +49,17 @@ describe('SettingsScreen (web)', () => {
   });
 
   describe('rendering', () => {
-    it('renders the settings title', () => {
+    it('does not render an h1 heading (title comes from page header)', () => {
       renderScreen();
-      expect(screen.getByText('Settings')).toBeDefined();
+      const headings = document.querySelectorAll('h1');
+      expect(headings.length).toBe(0);
     });
 
-    it('renders the subtitle', () => {
+    it('renders the subtitle as a paragraph', () => {
       renderScreen();
-      expect(screen.getByText('Manage your preferences')).toBeDefined();
+      const subtitle = screen.getByText('Manage your preferences');
+      expect(subtitle).toBeDefined();
+      expect(subtitle.tagName).toBe('P');
     });
 
     it('renders the Appearance row', () => {

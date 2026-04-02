@@ -203,6 +203,34 @@ describe('HomeScreen (web)', () => {
       const sidebar = screen.getByTestId('sidebar-layout');
       expect(sidebar.getAttribute('data-active-index')).toBe('0');
     });
+
+    it('passes negative activeIndex when no sidebar item matches (e.g. settings page)', () => {
+      render(
+        <HomeScreen
+          {...defaultProps}
+          navProps={{ ...defaultSidebar, activeIndex: -1 }}
+        />
+      );
+      const sidebar = screen.getByTestId('sidebar-layout');
+      expect(sidebar.getAttribute('data-active-index')).toBe('-1');
+    });
+
+    it('passes negative activeIndex to BottomNavigation on mobile', () => {
+      mockUseSidebar.mockReturnValue({
+        isMobile: true,
+        open: false,
+        setOpen: vi.fn(),
+        toggle: vi.fn(),
+      });
+      render(
+        <HomeScreen
+          {...defaultProps}
+          navProps={{ ...defaultSidebar, activeIndex: -1 }}
+        />
+      );
+      const bottomNav = screen.getByTestId('bottom-navigation');
+      expect(bottomNav.getAttribute('data-active-index')).toBe('-1');
+    });
   });
 
   describe('navigation', () => {
@@ -449,6 +477,29 @@ describe('HomeScreen (web)', () => {
       );
       expect(screen.getByTestId('header')).toBeDefined();
       expect(screen.getByText('Page Title')).toBeDefined();
+    });
+
+    it('renders a non-navigation page title in the header (e.g. Settings)', () => {
+      render(
+        <HomeScreen
+          {...defaultProps}
+          navProps={{ ...defaultSidebar, activeIndex: -1 }}
+          pageHeaderProps={{
+            title: 'Settings',
+            locale: { code: 'en', label: 'English' },
+            dateRangePickerProps:
+              {} as HomeScreenProps['pageHeaderProps'] extends infer T
+                ? T extends { dateRangePickerProps: infer D }
+                  ? D
+                  : never
+                : never,
+            searchBarProps: {},
+          }}
+        />
+      );
+      expect(screen.getByText('Settings')).toBeDefined();
+      const sidebar = screen.getByTestId('sidebar-layout');
+      expect(sidebar.getAttribute('data-active-index')).toBe('-1');
     });
 
     it('does not render Header when pageHeaderProps is undefined', () => {
