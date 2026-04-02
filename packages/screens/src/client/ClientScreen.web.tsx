@@ -1,0 +1,337 @@
+import React from 'react';
+import { Plus, Trash2 } from 'lucide-react';
+import {
+  Button,
+  Input,
+  Text,
+  Card,
+  Separator,
+  Fade,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  RadioGroup,
+  RadioGroupItem,
+} from '@automatize/ui/web';
+import { useTranslation } from '@automatize/core-localization';
+import type { ClientScreenProps } from './ClientScreen.types';
+import { useClient } from './useClient';
+
+const BRAZILIAN_STATES = [
+  { value: 'AC', label: 'Acre' },
+  { value: 'AL', label: 'Alagoas' },
+  { value: 'AM', label: 'Amazonas' },
+  { value: 'AP', label: 'Amapa' },
+  { value: 'BA', label: 'Bahia' },
+  { value: 'CE', label: 'Ceara' },
+  { value: 'DF', label: 'Distrito Federal' },
+  { value: 'ES', label: 'Espirito Santo' },
+  { value: 'GO', label: 'Goias' },
+  { value: 'MA', label: 'Maranhao' },
+  { value: 'MG', label: 'Minas Gerais' },
+  { value: 'MS', label: 'Mato Grosso do Sul' },
+  { value: 'MT', label: 'Mato Grosso' },
+  { value: 'PA', label: 'Para' },
+  { value: 'PB', label: 'Paraiba' },
+  { value: 'PE', label: 'Pernambuco' },
+  { value: 'PI', label: 'Piaui' },
+  { value: 'PR', label: 'Parana' },
+  { value: 'RJ', label: 'Rio de Janeiro' },
+  { value: 'RN', label: 'Rio Grande do Norte' },
+  { value: 'RO', label: 'Rondonia' },
+  { value: 'RR', label: 'Roraima' },
+  { value: 'RS', label: 'Rio Grande do Sul' },
+  { value: 'SC', label: 'Santa Catarina' },
+  { value: 'SE', label: 'Sergipe' },
+  { value: 'SP', label: 'Sao Paulo' },
+  { value: 'TO', label: 'Tocantins' },
+] as const;
+
+export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
+  const { t } = useTranslation();
+  const {
+    clientType,
+    setClientType,
+    name,
+    setName,
+    document,
+    setDocument,
+    addresses,
+    addAddress,
+    removeAddress,
+    updateAddress,
+    phones,
+    addPhone,
+    removePhone,
+    updatePhone,
+    getFormData,
+  } = useClient();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSubmit(getFormData());
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto py-8 px-4">
+      <Card padding="lg">
+        <div className="space-y-6">
+          <Fade delay={0}>
+            <Text variant="h2">{t('client.title')}</Text>
+          </Fade>
+
+          <Separator />
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* Client Type */}
+            <Fade delay={100}>
+              <div className="space-y-2">
+                <Text variant="bodySmall" color="muted">
+                  {t('client.type')}
+                </Text>
+                <RadioGroup
+                  value={clientType}
+                  onValueChange={(val) =>
+                    setClientType(val as 'individual' | 'business')
+                  }
+                  orientation="horizontal"
+                >
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value="individual" />
+                    <Text variant="body">{t('client.type.individual')}</Text>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value="business" />
+                    <Text variant="body">{t('client.type.business')}</Text>
+                  </label>
+                </RadioGroup>
+              </div>
+            </Fade>
+
+            {/* Name */}
+            <Fade delay={200}>
+              <Input
+                id="client-name"
+                name="name"
+                label={t('client.name')}
+                placeholder={t('client.name.placeholder')}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Fade>
+
+            {/* CPF / CNPJ */}
+            <Fade delay={300}>
+              <Input
+                id="client-document"
+                name="document"
+                label={
+                  clientType === 'individual'
+                    ? t('client.cpf')
+                    : t('client.cnpj')
+                }
+                placeholder={
+                  clientType === 'individual'
+                    ? t('client.cpf.placeholder')
+                    : t('client.cnpj.placeholder')
+                }
+                value={document}
+                onChange={(e) => setDocument(e.target.value)}
+              />
+            </Fade>
+
+            <Separator />
+
+            {/* Addresses Section */}
+            <Fade delay={400}>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Text variant="h3">{t('client.addresses')}</Text>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addAddress}
+                  >
+                    <Plus className="size-4 mr-1" />
+                    {t('client.address.add')}
+                  </Button>
+                </div>
+
+                {addresses.map((address, index) => (
+                  <Card key={address.id} padding="md" className="relative">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <Text variant="bodySmall" color="muted">
+                          #{index + 1}
+                        </Text>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeAddress(address.id)}
+                          disabled={addresses.length <= 1}
+                          aria-label={t('client.address.remove')}
+                        >
+                          <Trash2 className="size-4 text-muted-foreground" />
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Input
+                          id={`address-street-${address.id}`}
+                          label={t('client.address.street')}
+                          placeholder={t('client.address.street.placeholder')}
+                          value={address.street}
+                          onChange={(e) =>
+                            updateAddress(address.id, 'street', e.target.value)
+                          }
+                        />
+                        <Input
+                          id={`address-number-${address.id}`}
+                          label={t('client.address.number')}
+                          placeholder={t('client.address.number.placeholder')}
+                          value={address.number}
+                          onChange={(e) =>
+                            updateAddress(address.id, 'number', e.target.value)
+                          }
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Input
+                          id={`address-neighborhood-${address.id}`}
+                          label={t('client.address.neighborhood')}
+                          placeholder={t(
+                            'client.address.neighborhood.placeholder'
+                          )}
+                          value={address.neighborhood}
+                          onChange={(e) =>
+                            updateAddress(
+                              address.id,
+                              'neighborhood',
+                              e.target.value
+                            )
+                          }
+                        />
+                        <Input
+                          id={`address-city-${address.id}`}
+                          label={t('client.address.city')}
+                          placeholder={t('client.address.city.placeholder')}
+                          value={address.city}
+                          onChange={(e) =>
+                            updateAddress(address.id, 'city', e.target.value)
+                          }
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <Text
+                            htmlFor={`address-state-${address.id}`}
+                            color="muted"
+                            className="pl-4"
+                          >
+                            {t('client.address.state')}
+                          </Text>
+                          <Select
+                            value={address.state}
+                            onValueChange={(val) =>
+                              updateAddress(address.id, 'state', val)
+                            }
+                          >
+                            <SelectTrigger id={`address-state-${address.id}`}>
+                              <SelectValue
+                                placeholder={t(
+                                  'client.address.state.placeholder'
+                                )}
+                              />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {BRAZILIAN_STATES.map((state) => (
+                                <SelectItem
+                                  key={state.value}
+                                  value={state.value}
+                                >
+                                  {state.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <Input
+                          id={`address-info-${address.id}`}
+                          label={t('client.address.info')}
+                          placeholder={t('client.address.info.placeholder')}
+                          value={address.info}
+                          onChange={(e) =>
+                            updateAddress(address.id, 'info', e.target.value)
+                          }
+                        />
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </Fade>
+
+            <Separator />
+
+            {/* Phones Section */}
+            <Fade delay={500}>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Text variant="h3">{t('client.phones')}</Text>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addPhone}
+                  >
+                    <Plus className="size-4 mr-1" />
+                    {t('client.phone.add')}
+                  </Button>
+                </div>
+
+                {phones.map((phone, index) => (
+                  <div key={phone.id} className="flex items-end gap-2">
+                    <div className="flex-1">
+                      <Input
+                        id={`phone-${phone.id}`}
+                        label={`${t('client.phone.label')} ${index + 1}`}
+                        placeholder={t('client.phone.placeholder')}
+                        value={phone.number}
+                        onChange={(e) => updatePhone(phone.id, e.target.value)}
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removePhone(phone.id)}
+                      disabled={phones.length <= 1}
+                      aria-label={t('client.phone.remove')}
+                    >
+                      <Trash2 className="size-4 text-muted-foreground" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </Fade>
+
+            <Separator />
+
+            {/* Submit */}
+            <Fade delay={600}>
+              <div className="flex justify-end">
+                <Button type="submit">{t('client.submit')}</Button>
+              </div>
+            </Fade>
+          </form>
+        </div>
+      </Card>
+    </div>
+  );
+};

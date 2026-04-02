@@ -20,6 +20,10 @@ export type {
   TextColor,
 } from './components/Text/Text.web';
 export { Checkbox } from './components/Checkbox/Checkbox.web';
+export {
+  RadioGroup,
+  RadioGroupItem,
+} from './components/RadioGroup/RadioGroup.web';
 export { useToasts, ToastProvider } from './components/Toast/Toast.web';
 export type { ToastType } from './components/Toast/Toast.web';
 export {
