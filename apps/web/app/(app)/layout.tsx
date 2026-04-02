@@ -74,9 +74,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, [isAuthenticated, navigate]);
 
   const { t, i18n } = useTranslation();
-  const activeTile = ROUTE_TO_ID[pathname] ?? 'dashboard';
-  const activeItem = ITEMS.find((item) => item.id === activeTile);
-  const pageTitle = activeItem?.label ?? 'Dashboard';
+  const activeTile = ROUTE_TO_ID[pathname];
+  const activeItem = activeTile
+    ? ITEMS.find((item) => item.id === activeTile)
+    : undefined;
+  const pageTitle =
+    activeItem?.label ??
+    (pathname === '/settings' ? t('settings.title') : 'Dashboard');
 
   const profile: SidebarProfileConfig = useMemo(
     () => ({
@@ -124,7 +128,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         group: item.group,
         onTap: () => router.push(item.route),
       })),
-      activeIndex: activeIndex >= 0 ? activeIndex : 0,
+      activeIndex,
       profile,
       profileMenuItems,
     }),
