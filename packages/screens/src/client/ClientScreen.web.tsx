@@ -166,11 +166,11 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                 <Button
                   type="button"
                   variant="outline"
-                  size="sm"
+                  size="icon"
                   onClick={addAddress}
+                  aria-label={t('client.address.add')}
                 >
-                  <Plus className="size-4 mr-1" />
-                  {t('client.address.add')}
+                  <Plus className="size-4" />
                 </Button>
               </div>
 
@@ -194,16 +194,18 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Input
-                        id={`address-street-${address.id}`}
-                        label={t('client.address.street')}
-                        placeholder={t('client.address.street.placeholder')}
-                        value={address.street}
-                        onChange={(e) =>
-                          updateAddress(address.id, 'street', e.target.value)
-                        }
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div className="md:col-span-3">
+                        <Input
+                          id={`address-street-${address.id}`}
+                          label={t('client.address.street')}
+                          placeholder={t('client.address.street.placeholder')}
+                          value={address.street}
+                          onChange={(e) =>
+                            updateAddress(address.id, 'street', e.target.value)
+                          }
+                        />
+                      </div>
                       <Input
                         id={`address-number-${address.id}`}
                         label={t('client.address.number')}
@@ -247,7 +249,7 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                         <Text
                           htmlFor={`address-state-${address.id}`}
                           color="muted"
-                          className="pl-4"
+                          className="pl-3"
                         >
                           {t('client.address.state')}
                         </Text>
@@ -259,7 +261,7 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                         >
                           <SelectTrigger
                             id={`address-state-${address.id}`}
-                            className="h-auto p-4 rounded-2xl border-border bg-foreground/5 backdrop-blur-sm"
+                            className="border-border bg-foreground/5 backdrop-blur-sm"
                           >
                             <SelectValue
                               placeholder={t(
@@ -300,11 +302,11 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                 <Button
                   type="button"
                   variant="outline"
-                  size="sm"
+                  size="icon"
                   onClick={addPhone}
+                  aria-label={t('client.phone.add')}
                 >
-                  <Plus className="size-4 mr-1" />
-                  {t('client.phone.add')}
+                  <Plus className="size-4" />
                 </Button>
               </div>
 
@@ -313,7 +315,7 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                   <Text
                     htmlFor={`phone-${phone.id}`}
                     color="muted"
-                    className="pl-4"
+                    className="pl-3"
                   >
                     {`${t('client.phone.label')} ${index + 1}`}
                   </Text>

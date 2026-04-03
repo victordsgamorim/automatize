@@ -32,7 +32,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         data-slot="input"
         aria-invalid={error ? true : undefined}
         className={cn(
-          'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground flex w-full min-w-0 rounded-2xl border border-border bg-foreground/5 backdrop-blur-sm p-4 text-sm transition-colors outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+          'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground flex h-9 w-full min-w-0 rounded-lg border border-border bg-foreground/5 backdrop-blur-sm px-3 py-2 text-sm shadow-sm shadow-black/5 transition-colors outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
           'focus-visible:border-violet-400/70 focus-visible:bg-violet-500/10',
           'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
           className
@@ -46,13 +46,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={cn('space-y-1.5', wrapperClassName)}>
         {label && (
-          <Text htmlFor={id} color="muted" className="pl-4">
+          <Text htmlFor={id} color="muted" className="pl-3">
             {label}
           </Text>
         )}
         {inputElement}
         {error && (
-          <Text variant="caption" color="error" className="pl-4">
+          <Text variant="caption" color="error" className="pl-3">
             {error}
           </Text>
         )}
