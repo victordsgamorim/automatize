@@ -36,6 +36,12 @@ export type {
   TextColor,
 } from './components/Text/Text.native';
 
+// RadioGroup (RN implementation)
+export {
+  RadioGroup,
+  RadioGroupItem,
+} from './components/RadioGroup/RadioGroup.native';
+
 // ErrorBoundary — web version (no React Native dep, safe to include in main)
 export {
   ErrorBoundary,

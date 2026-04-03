@@ -29,6 +29,8 @@ export default defineConfig({
     'src/content/web.ts',
     'src/settings/index.ts',
     'src/settings/web.ts',
+    'src/client/index.ts',
+    'src/client/web.ts',
   ],
   format: ['cjs', 'esm'],
   dts: true,
