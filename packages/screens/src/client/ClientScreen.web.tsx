@@ -166,11 +166,11 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                 <Button
                   type="button"
                   variant="outline"
-                  size="sm"
+                  size="icon"
                   onClick={addAddress}
+                  aria-label={t('client.address.add')}
                 >
-                  <Plus className="size-4 mr-1" />
-                  {t('client.address.add')}
+                  <Plus className="size-4" />
                 </Button>
               </div>
 
@@ -302,11 +302,11 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                 <Button
                   type="button"
                   variant="outline"
-                  size="sm"
+                  size="icon"
                   onClick={addPhone}
+                  aria-label={t('client.phone.add')}
                 >
-                  <Plus className="size-4 mr-1" />
-                  {t('client.phone.add')}
+                  <Plus className="size-4" />
                 </Button>
               </div>
 
