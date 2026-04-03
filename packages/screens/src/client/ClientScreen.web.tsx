@@ -193,16 +193,17 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                         <Text variant="bodySmall" color="muted">
                           #{index + 1}
                         </Text>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeAddress(address.id)}
-                          disabled={addresses.length <= 1}
-                          aria-label={t('client.address.remove')}
-                        >
-                          <Trash2 className="size-4 text-muted-foreground" />
-                        </Button>
+                        {addresses.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => removeAddress(address.id)}
+                            aria-label={t('client.address.remove')}
+                          >
+                            <Trash2 className="size-4 text-muted-foreground" />
+                          </Button>
+                        )}
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -344,16 +345,17 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                           }
                         />
                       </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removePhone(phone.id)}
-                        disabled={phones.length <= 1}
-                        aria-label={t('client.phone.remove')}
-                      >
-                        <Trash2 className="size-4 text-muted-foreground" />
-                      </Button>
+                      {phones.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removePhone(phone.id)}
+                          aria-label={t('client.phone.remove')}
+                        >
+                          <Trash2 className="size-4 text-muted-foreground" />
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}
