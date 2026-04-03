@@ -4,36 +4,34 @@ import type { ThemeData } from '@automatize/core-theme';
 export type { LanguageOption, LocaleData } from '@automatize/core-localization';
 export type { ThemeData, ThemeOption } from '@automatize/core-theme';
 
-export interface ClientAddress {
+export type ClientType = 'individual' | 'business';
+
+export interface Address {
   id: string;
   street: string;
   number: string;
   neighborhood: string;
   city: string;
   state: string;
+  info: string;
 }
 
-export interface ClientPhone {
+export interface Phone {
   id: string;
   number: string;
 }
 
-export interface ClientRow {
-  id: string;
+export interface ClientFormData {
+  clientType: ClientType;
   name: string;
-  addresses: ClientAddress[];
-  phones: ClientPhone[];
+  document: string;
+  addresses: Address[];
+  phones: Phone[];
 }
 
-export interface ClientScreenProps {
-  /** List of clients to display in the table */
-  clients: ClientRow[];
-  /** Called when the "Add new client" button is pressed */
-  onAddClient: () => void;
-  /** Called when a client row is clicked */
-  onClientClick?: (client: ClientRow) => void;
-  /** Called when a client row checkbox is toggled */
-  onClientSelect?: (clientId: string) => void;
+export interface ClientFormScreenProps {
+  /** Called when the form is submitted with valid data */
+  onSubmit: (data: ClientFormData) => void;
   /** Language switcher data */
   locale: LocaleData;
   /** Theme switcher data (web only — ignored on native) */

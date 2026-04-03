@@ -143,3 +143,7 @@ export type { HeaderProps } from './components/Header/Header.web';
 // BottomNavigation
 export { BottomNavigation } from './components/BottomNavigation/BottomNavigation.web';
 export type { BottomNavigationProps } from './components/BottomNavigation/BottomNavigation.web';
+
+// Table
+export { Table } from './components/Table/Table.web';
+export type { TableProps, TableColumn } from './components/Table/Table.web';

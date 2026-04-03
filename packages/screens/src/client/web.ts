@@ -1,8 +1,7 @@
 export { ClientScreen } from './ClientScreen.web';
 export type {
   ClientScreenProps,
-  ClientFormData,
-  ClientType,
-  Address,
-  Phone,
+  ClientRow,
+  ClientAddress,
+  ClientPhone,
 } from './ClientScreen.types';
