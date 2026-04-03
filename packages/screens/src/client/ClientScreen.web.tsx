@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Plus } from 'lucide-react';
-import { Button, Text, Table } from '@automatize/ui/web';
+import { Button, Table } from '@automatize/ui/web';
 import type { TableColumn } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import type { ClientScreenProps, ClientRow } from './ClientScreen.types';
@@ -31,7 +31,8 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
       {
         key: 'name',
         header: t('client.table.name'),
-        width: 220,
+        flex: 2,
+        minWidth: 140,
         sortable: true,
         sortFn: (a, b) => a.name.localeCompare(b.name),
         render: (client) => (
@@ -43,7 +44,8 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
       {
         key: 'addresses',
         header: t('client.table.addresses'),
-        width: 380,
+        flex: 4,
+        minWidth: 180,
         render: (client) => (
           <span className="text-sm text-foreground/80 truncate">
             {formatAddresses(client)}
@@ -53,7 +55,8 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
       {
         key: 'phones',
         header: t('client.table.phones'),
-        width: 200,
+        flex: 2,
+        minWidth: 120,
         render: (client) => (
           <span className="text-sm text-foreground/80 truncate">
             {formatPhones(client)}
@@ -66,8 +69,7 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="mb-6 flex items-center justify-between">
-        <Text variant="h2">{t('client.list.title')}</Text>
+      <div className="mb-6 flex items-center justify-end">
         <Button onClick={onAddClient} aria-label={t('client.list.add')}>
           <Plus className="size-4 mr-2" />
           {t('client.list.add')}

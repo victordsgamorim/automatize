@@ -13,8 +13,10 @@ export interface TableColumn<T> {
   key: string;
   /** Column header label */
   header: string;
-  /** Default width in px (used for min-width) */
-  width?: number;
+  /** Flex proportion for this column (default 1). Higher = wider. */
+  flex?: number;
+  /** Minimum width in px (default 100) */
+  minWidth?: number;
   /** Custom cell renderer — receives the row item */
   render?: (item: T) => React.ReactNode;
   /** Whether this column is sortable (default false) */
@@ -170,8 +172,10 @@ export function Table<T>({
 
   const pageLabelFn = pageLabel ?? defaultPageLabel;
 
-  const totalWidth = columns.reduce((sum, c) => sum + (c.width ?? 150), 0);
-  const minTableWidth = (selectable ? 50 : 0) + totalWidth;
+  const colStyle = (col: TableColumn<T>): React.CSSProperties => ({
+    flex: col.flex ?? 1,
+    minWidth: col.minWidth ?? 100,
+  });
 
   /* ---------- JSX ---------- */
 
@@ -280,107 +284,95 @@ export function Table<T>({
 
       {/* Table */}
       <div className="bg-background border border-border/50 overflow-hidden rounded-lg">
-        <div className="overflow-x-auto">
-          <div style={{ minWidth: minTableWidth }}>
-            {/* Header row */}
-            <div className="flex py-3 text-xs font-medium text-muted-foreground/60 bg-muted/5 border-b border-border">
-              {selectable && (
-                <div
-                  className="flex items-center justify-center border-r border-border pr-3"
-                  style={{ width: 50 }}
-                >
-                  <input
-                    type="checkbox"
-                    className="w-4 h-4 rounded border-border/40 cursor-pointer accent-muted-foreground"
-                    checked={
-                      paginatedData.length > 0 &&
-                      selectedIds.length === paginatedData.length
-                    }
-                    onChange={handleSelectAll}
-                    aria-label="Select all"
-                  />
-                </div>
-              )}
-              {columns.map((col, idx) => (
-                <div
-                  key={col.key}
-                  className={cn(
-                    'flex items-center gap-1.5 px-3',
-                    idx < columns.length - 1 && 'border-r border-border'
-                  )}
-                  style={{ width: col.width ?? 150 }}
-                >
-                  <span>{col.header}</span>
-                </div>
-              ))}
+        {/* Header row */}
+        <div className="flex py-3 text-xs font-medium text-muted-foreground/60 bg-muted/5 border-b border-border">
+          {selectable && (
+            <div className="flex items-center justify-center border-r border-border w-12 shrink-0">
+              <input
+                type="checkbox"
+                className="w-4 h-4 rounded border-border/40 cursor-pointer accent-muted-foreground"
+                checked={
+                  paginatedData.length > 0 &&
+                  selectedIds.length === paginatedData.length
+                }
+                onChange={handleSelectAll}
+                aria-label="Select all"
+              />
             </div>
-
-            {/* Body rows */}
-            {paginatedData.length === 0 ? (
-              <div className="py-12 text-center text-sm text-muted-foreground/60">
-                {emptyMessage}
-              </div>
-            ) : (
-              paginatedData.map((item) => {
-                const id = getItemId(item);
-                const isSelected = selectedIds.includes(id);
-
-                return (
-                  <div
-                    key={id}
-                    className={cn(
-                      'py-3.5 transition-all duration-150 border-b border-border flex',
-                      isSelected
-                        ? 'bg-muted/30'
-                        : 'bg-muted/5 hover:bg-muted/20',
-                      onRowClick && 'cursor-pointer'
-                    )}
-                    onClick={() => onRowClick?.(item)}
-                  >
-                    {selectable && (
-                      <div
-                        className="flex items-center justify-center border-r border-border pr-3"
-                        style={{ width: 50 }}
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-4 h-4 rounded border-border/40 cursor-pointer accent-muted-foreground"
-                          checked={isSelected}
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            handleToggle(id);
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                          aria-label={`Select row ${id}`}
-                        />
-                      </div>
-                    )}
-                    {columns.map((col, idx) => (
-                      <div
-                        key={col.key}
-                        className={cn(
-                          'flex items-center min-w-0 px-3',
-                          idx < columns.length - 1 && 'border-r border-border'
-                        )}
-                        style={{ width: col.width ?? 150 }}
-                      >
-                        {col.render ? (
-                          col.render(item)
-                        ) : (
-                          <span className="text-sm text-foreground/80 truncate">
-                            {String(
-                              (item as Record<string, unknown>)[col.key] ?? ''
-                            )}
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                );
-              })
-            )}
-          </div>
+          )}
+          {columns.map((col, idx) => (
+            <div
+              key={col.key}
+              className={cn(
+                'flex items-center gap-1.5 px-3 min-w-0',
+                idx < columns.length - 1 && 'border-r border-border'
+              )}
+              style={colStyle(col)}
+            >
+              <span className="truncate">{col.header}</span>
+            </div>
+          ))}
         </div>
+
+        {/* Body rows */}
+        {paginatedData.length === 0 ? (
+          <div className="py-12 text-center text-sm text-muted-foreground/60">
+            {emptyMessage}
+          </div>
+        ) : (
+          paginatedData.map((item) => {
+            const id = getItemId(item);
+            const isSelected = selectedIds.includes(id);
+
+            return (
+              <div
+                key={id}
+                className={cn(
+                  'py-3.5 transition-all duration-150 border-b border-border flex',
+                  isSelected ? 'bg-muted/30' : 'bg-muted/5 hover:bg-muted/20',
+                  onRowClick && 'cursor-pointer'
+                )}
+                onClick={() => onRowClick?.(item)}
+              >
+                {selectable && (
+                  <div className="flex items-center justify-center border-r border-border w-12 shrink-0">
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4 rounded border-border/40 cursor-pointer accent-muted-foreground"
+                      checked={isSelected}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        handleToggle(id);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                      aria-label={`Select row ${id}`}
+                    />
+                  </div>
+                )}
+                {columns.map((col, idx) => (
+                  <div
+                    key={col.key}
+                    className={cn(
+                      'flex items-center min-w-0 px-3',
+                      idx < columns.length - 1 && 'border-r border-border'
+                    )}
+                    style={colStyle(col)}
+                  >
+                    {col.render ? (
+                      col.render(item)
+                    ) : (
+                      <span className="text-sm text-foreground/80 truncate">
+                        {String(
+                          (item as Record<string, unknown>)[col.key] ?? ''
+                        )}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            );
+          })
+        )}
       </div>
 
       {/* Pagination */}
