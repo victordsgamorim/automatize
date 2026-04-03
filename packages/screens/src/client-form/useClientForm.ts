@@ -5,7 +5,7 @@ import type {
   Address,
   Phone,
   ClientFormData,
-} from './ClientScreen.types';
+} from './ClientFormScreen.types';
 
 function createEmptyAddress(): Address {
   return {
@@ -26,7 +26,7 @@ function createEmptyPhone(): Phone {
   };
 }
 
-export interface UseClientResult {
+export interface UseClientFormResult {
   clientType: ClientType;
   setClientType: (type: ClientType) => void;
   name: string;
@@ -48,7 +48,7 @@ export interface UseClientResult {
   getFormData: () => ClientFormData;
 }
 
-export function useClient(): UseClientResult {
+export function useClientForm(): UseClientFormResult {
   const [clientType, setClientTypeState] = useState<ClientType>('individual');
   const [name, setName] = useState('');
   const [document, setDocument] = useState('');

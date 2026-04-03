@@ -31,6 +31,8 @@ export default defineConfig({
     'src/settings/web.ts',
     'src/client/index.ts',
     'src/client/web.ts',
+    'src/client-form/index.ts',
+    'src/client-form/web.ts',
   ],
   format: ['cjs', 'esm'],
   dts: true,

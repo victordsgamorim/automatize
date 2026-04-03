@@ -6,7 +6,7 @@ import type { ClientScreenProps } from './ClientScreen.types';
 export const ClientScreen: React.FC<ClientScreenProps> = () => {
   return (
     <View>
-      <Text>Client screen not yet implemented for native.</Text>
+      <Text>Client list screen not yet implemented for native.</Text>
     </View>
   );
 };
