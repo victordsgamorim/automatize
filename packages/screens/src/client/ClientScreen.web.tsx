@@ -49,6 +49,25 @@ const BRAZILIAN_STATES = [
   { value: 'TO', label: 'Tocantins' },
 ] as const;
 
+/** Formats a raw digit string as CPF: 000.000.000-00 */
+function formatCpf(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 11);
+  return digits
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+}
+
+/** Formats a raw digit string as CNPJ: 00.000.000/0000-00 */
+function formatCnpj(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 14);
+  return digits
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+}
+
 export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
   const { t } = useTranslation();
   const {
@@ -134,11 +153,18 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                 }
                 placeholder={
                   clientType === 'individual'
-                    ? t('client.cpf.placeholder')
-                    : t('client.cnpj.placeholder')
+                    ? '000.000.000-00'
+                    : '00.000.000/0000-00'
                 }
                 value={document}
-                onChange={(e) => setDocument(e.target.value)}
+                onChange={(e) => {
+                  const formatted =
+                    clientType === 'individual'
+                      ? formatCpf(e.target.value)
+                      : formatCnpj(e.target.value);
+                  setDocument(formatted);
+                }}
+                maxLength={clientType === 'individual' ? 14 : 18}
               />
             </Fade>
 
@@ -242,7 +268,10 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                               updateAddress(address.id, 'state', val)
                             }
                           >
-                            <SelectTrigger id={`address-state-${address.id}`}>
+                            <SelectTrigger
+                              id={`address-state-${address.id}`}
+                              className="h-auto p-4 rounded-2xl border-border bg-foreground/5 backdrop-blur-sm"
+                            >
                               <SelectValue
                                 placeholder={t(
                                   'client.address.state.placeholder'
@@ -296,26 +325,36 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({ onSubmit }) => {
                 </div>
 
                 {phones.map((phone, index) => (
-                  <div key={phone.id} className="flex items-end gap-2">
-                    <div className="flex-1">
-                      <Input
-                        id={`phone-${phone.id}`}
-                        label={`${t('client.phone.label')} ${index + 1}`}
-                        placeholder={t('client.phone.placeholder')}
-                        value={phone.number}
-                        onChange={(e) => updatePhone(phone.id, e.target.value)}
-                      />
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removePhone(phone.id)}
-                      disabled={phones.length <= 1}
-                      aria-label={t('client.phone.remove')}
+                  <div key={phone.id} className="space-y-1.5">
+                    <Text
+                      htmlFor={`phone-${phone.id}`}
+                      color="muted"
+                      className="pl-4"
                     >
-                      <Trash2 className="size-4 text-muted-foreground" />
-                    </Button>
+                      {`${t('client.phone.label')} ${index + 1}`}
+                    </Text>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1">
+                        <Input
+                          id={`phone-${phone.id}`}
+                          placeholder={t('client.phone.placeholder')}
+                          value={phone.number}
+                          onChange={(e) =>
+                            updatePhone(phone.id, e.target.value)
+                          }
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removePhone(phone.id)}
+                        disabled={phones.length <= 1}
+                        aria-label={t('client.phone.remove')}
+                      >
+                        <Trash2 className="size-4 text-muted-foreground" />
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
