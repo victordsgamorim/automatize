@@ -67,6 +67,18 @@ export type { CardProps } from './components/Card/Card.web';
 export { Separator } from './components/Separator/Separator.web';
 export type { SeparatorProps } from './components/Separator/Separator.web';
 
+// Dialog
+export {
+  Dialog,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from './components/Dialog/Dialog.web';
+
 export {
   Command,
   CommandDialog,

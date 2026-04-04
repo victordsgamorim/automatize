@@ -1,5 +1,5 @@
-import React from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import {
   Button,
   Input,
@@ -13,6 +13,12 @@ import {
   SelectItem,
   RadioGroup,
   RadioGroupItem,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import type { ClientFormScreenProps } from './ClientFormScreen.types';
@@ -71,6 +77,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onSubmit,
   initialData,
   onDataChange,
+  onBack,
 }) => {
   const { t } = useTranslation();
   const {
@@ -89,15 +96,58 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     removePhone,
     updatePhone,
     getFormData,
+    resetForm,
   } = useClientForm({ initialData, onDataChange });
+
+  const [discardDialogOpen, setDiscardDialogOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSubmit(getFormData());
   };
 
+  const hasFormData =
+    name.trim() !== '' ||
+    document.trim() !== '' ||
+    addresses.some(
+      (a) =>
+        a.street.trim() !== '' ||
+        a.number.trim() !== '' ||
+        a.neighborhood.trim() !== '' ||
+        a.city.trim() !== '' ||
+        a.state.trim() !== '' ||
+        a.info.trim() !== ''
+    ) ||
+    phones.some((p) => p.number.trim() !== '');
+
+  const handleBackClick = () => {
+    if (hasFormData) {
+      setDiscardDialogOpen(true);
+      return;
+    }
+    onBack?.();
+  };
+
+  const handleConfirmDiscard = () => {
+    resetForm();
+    setDiscardDialogOpen(false);
+    onBack?.();
+  };
+
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
+      <div className="mb-4">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={handleBackClick}
+          aria-label={t('client.back')}
+        >
+          <ArrowLeft className="size-4" />
+          {t('client.back')}
+        </Button>
+      </div>
       <Card padding="lg">
         <div className="space-y-6">
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -347,12 +397,43 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
             <Separator />
 
             {/* Submit */}
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="destructive" onClick={resetForm}>
+                {t('client.reset')}
+              </Button>
               <Button type="submit">{t('client.submit')}</Button>
             </div>
           </form>
         </div>
       </Card>
+
+      {/* Discard confirmation dialog */}
+      <Dialog open={discardDialogOpen} onOpenChange={setDiscardDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('client.discard.title')}</DialogTitle>
+            <DialogDescription>
+              {t('client.discard.description')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDiscardDialogOpen(false)}
+            >
+              {t('client.discard.cancel')}
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleConfirmDiscard}
+            >
+              {t('client.discard.continue')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
