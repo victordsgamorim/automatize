@@ -129,7 +129,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   };
 
   const handleConfirmDiscard = () => {
-    resetForm();
     setDiscardDialogOpen(false);
     onBack?.();
   };
