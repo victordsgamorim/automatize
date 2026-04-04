@@ -70,9 +70,9 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
       {/* Left column: sign-in form */}
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             <Fade delay={100}>
-              <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
+              <h1 className="text-3xl md:text-4xl font-semibold leading-tight">
                 <span className="font-light text-foreground tracking-tighter">
                   {t('sign-in.welcome')}
                 </span>
@@ -83,7 +83,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
               <p className="text-muted-foreground">{t('sign-in.subtitle')}</p>
             </Fade>
 
-            <form className="space-y-5" onSubmit={handleSubmit}>
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <Fade delay={300}>
                 <Input
                   id="sign-in-email"

@@ -51,11 +51,11 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           {isSuccess ? (
-            <Fade delay={100} className="flex flex-col gap-6">
+            <Fade delay={100} className="flex flex-col gap-4">
               <div className="flex justify-center">
                 <MailCheck className="w-16 h-16 text-primary" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-semibold leading-tight text-center">
+              <h1 className="text-3xl md:text-4xl font-semibold leading-tight text-center">
                 <span className="font-light text-foreground tracking-tighter">
                   {t('forgot-password.success.title')}
                 </span>
@@ -68,7 +68,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
               </Button>
             </Fade>
           ) : (
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
               <Fade
                 delay={100}
                 className="flex items-center justify-start gap-2"
@@ -87,7 +87,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
               </Fade>
 
               <Fade delay={100}>
-                <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
+                <h1 className="text-3xl md:text-4xl font-semibold leading-tight">
                   <span className="font-light text-foreground tracking-tighter">
                     {t('forgot-password.title')}
                   </span>
@@ -100,7 +100,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                 </p>
               </Fade>
 
-              <form className="space-y-5" onSubmit={onFormSubmit}>
+              <form className="space-y-4" onSubmit={onFormSubmit}>
                 <Fade delay={300}>
                   <Input
                     id="forgot-password-email"
