@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { ChevronDown, Download, ArrowUpDown } from 'lucide-react';
+import { ChevronDown, ChevronUp, Download } from 'lucide-react';
 import { cn } from '../../utils';
 
 /* ------------------------------------------------------------------ */
@@ -62,6 +62,10 @@ export interface TableProps<T> {
   sortLabel?: string;
   /** Export button label */
   exportLabel?: string;
+  /** Content rendered on the left side of the toolbar (e.g. search input) */
+  toolbarLeft?: React.ReactNode;
+  /** Content rendered on the right side of the toolbar (e.g. action buttons) */
+  toolbarRight?: React.ReactNode;
 }
 
 /* ------------------------------------------------------------------ */
@@ -85,14 +89,15 @@ export function Table<T>({
   previousLabel = 'Previous',
   nextLabel = 'Next',
   pageLabel,
-  sortLabel = 'Sort',
+  sortLabel: _sortLabel = 'Sort',
   exportLabel = 'Export',
+  toolbarLeft,
+  toolbarRight,
 }: TableProps<T>) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
-  const [showSortMenu, setShowSortMenu] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
 
   // Reset page when data changes
@@ -102,20 +107,22 @@ export function Table<T>({
 
   /* ---------- sorting ---------- */
 
-  const sortableColumns = columns.filter((c) => c.sortable);
-
   const handleSort = useCallback(
     (key: string) => {
       if (sortKey === key) {
-        setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+        if (sortOrder === 'asc') {
+          setSortOrder('desc');
+        } else {
+          setSortKey(null);
+          setSortOrder('asc');
+        }
       } else {
         setSortKey(key);
         setSortOrder('asc');
       }
-      setShowSortMenu(false);
       setCurrentPage(1);
     },
-    [sortKey]
+    [sortKey, sortOrder]
   );
 
   const sortedData = useMemo(() => {
@@ -182,103 +189,61 @@ export function Table<T>({
   return (
     <div className={cn('w-full', className)}>
       {/* Toolbar */}
-      {(sortableColumns.length > 0 || exportable) && (
-        <div className="mb-4 flex items-center justify-end gap-2 flex-wrap">
-          {/* Sort dropdown */}
-          {sortableColumns.length > 0 && (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowSortMenu((p) => !p)}
-                className="px-3 py-1.5 bg-background border border-border/50 text-foreground text-sm hover:bg-muted/30 transition-colors flex items-center gap-2 rounded-md"
-              >
-                <ArrowUpDown size={14} />
-                {sortLabel}
-                {sortKey && (
-                  <span className="ml-1 text-xs bg-primary text-primary-foreground rounded-sm px-1.5 py-0.5">
-                    1
-                  </span>
+      {(exportable || toolbarLeft || toolbarRight) && (
+        <div className="mb-4 flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
+            {/* Export dropdown */}
+            {exportable && (onExportCSV || onExportJSON) && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowExportMenu((p) => !p)}
+                  className="px-3 py-1.5 bg-background border border-border/50 text-foreground text-sm hover:bg-muted/30 transition-colors flex items-center gap-2 rounded-md"
+                >
+                  <Download size={14} />
+                  {exportLabel}
+                  <ChevronDown size={14} className="opacity-50" />
+                </button>
+
+                {showExportMenu && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setShowExportMenu(false)}
+                    />
+                    <div className="absolute right-0 mt-1 w-32 bg-background border border-border/50 shadow-lg rounded-md z-20">
+                      {onExportCSV && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onExportCSV(sortedData);
+                            setShowExportMenu(false);
+                          }}
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors"
+                        >
+                          CSV
+                        </button>
+                      )}
+                      {onExportJSON && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onExportJSON(sortedData);
+                            setShowExportMenu(false);
+                          }}
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors border-t border-border/30"
+                        >
+                          JSON
+                        </button>
+                      )}
+                    </div>
+                  </>
                 )}
-                <ChevronDown size={14} className="opacity-50" />
-              </button>
-
-              {showSortMenu && (
-                <>
-                  <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setShowSortMenu(false)}
-                  />
-                  <div className="absolute right-0 mt-1 w-48 bg-background border border-border/50 shadow-lg rounded-md z-20 py-1">
-                    {sortableColumns.map((col) => (
-                      <button
-                        key={col.key}
-                        type="button"
-                        onClick={() => handleSort(col.key)}
-                        className={cn(
-                          'w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors',
-                          sortKey === col.key && 'bg-muted/30'
-                        )}
-                      >
-                        {col.header}{' '}
-                        {sortKey === col.key &&
-                          `(${sortOrder === 'asc' ? '↑' : '↓'})`}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Export dropdown */}
-          {exportable && (onExportCSV || onExportJSON) && (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowExportMenu((p) => !p)}
-                className="px-3 py-1.5 bg-background border border-border/50 text-foreground text-sm hover:bg-muted/30 transition-colors flex items-center gap-2 rounded-md"
-              >
-                <Download size={14} />
-                {exportLabel}
-                <ChevronDown size={14} className="opacity-50" />
-              </button>
-
-              {showExportMenu && (
-                <>
-                  <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setShowExportMenu(false)}
-                  />
-                  <div className="absolute right-0 mt-1 w-32 bg-background border border-border/50 shadow-lg rounded-md z-20">
-                    {onExportCSV && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onExportCSV(sortedData);
-                          setShowExportMenu(false);
-                        }}
-                        className="w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors"
-                      >
-                        CSV
-                      </button>
-                    )}
-                    {onExportJSON && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onExportJSON(sortedData);
-                          setShowExportMenu(false);
-                        }}
-                        className="w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors border-t border-border/30"
-                      >
-                        JSON
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
+              </div>
+            )}
+          </div>
+          {toolbarLeft && <div className="flex-1 min-w-0">{toolbarLeft}</div>}
+          {toolbarRight}
         </div>
       )}
 
@@ -305,11 +270,42 @@ export function Table<T>({
               key={col.key}
               className={cn(
                 'flex items-center gap-1.5 px-3 min-w-0',
-                idx < columns.length - 1 && 'border-r border-border'
+                idx < columns.length - 1 && 'border-r border-border',
+                col.sortable &&
+                  'cursor-pointer select-none hover:text-muted-foreground transition-colors'
               )}
               style={colStyle(col)}
+              onClick={col.sortable ? () => handleSort(col.key) : undefined}
+              role={col.sortable ? 'button' : undefined}
+              tabIndex={col.sortable ? 0 : undefined}
+              onKeyDown={
+                col.sortable
+                  ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleSort(col.key);
+                      }
+                    }
+                  : undefined
+              }
+              aria-sort={
+                col.sortable
+                  ? sortKey === col.key
+                    ? sortOrder === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                  : undefined
+              }
             >
               <span className="truncate">{col.header}</span>
+              {col.sortable &&
+                sortKey === col.key &&
+                (sortOrder === 'asc' ? (
+                  <ChevronUp size={12} className="shrink-0 opacity-80" />
+                ) : (
+                  <ChevronDown size={12} className="shrink-0 opacity-80" />
+                ))}
             </div>
           ))}
         </div>

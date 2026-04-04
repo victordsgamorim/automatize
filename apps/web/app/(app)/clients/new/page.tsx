@@ -1,20 +1,20 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { ClientFormScreen } from '@automatize/screens/client-form/web';
 import type { ClientFormData } from '@automatize/screens/client-form/web';
 
 export default function NewClientPage() {
-  const router = useRouter();
+  const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
   const handleSubmit = (data: ClientFormData) => {
     // eslint-disable-next-line no-console
     console.warn('New client data:', data);
-    router.push('/clients');
+    navigate('/clients');
   };
 
   return (
