@@ -287,9 +287,9 @@ describe('useClientForm', () => {
       });
 
       // Verify data was saved
-      const stored = JSON.parse(
-        sessionStorage.getItem(STORAGE_KEY)!
-      ) as ClientFormData;
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      expect(raw).toBeTruthy();
+      const stored = JSON.parse(raw ?? '{}') as ClientFormData;
       expect(stored.name).toBe('Carlos');
       expect(stored.document).toBe('987.654.321-00');
 
