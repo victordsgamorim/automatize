@@ -107,5 +107,11 @@
   "client.phone.remove": "Remove phone",
   "client.phone.label": "Phone",
   "client.phone.placeholder": "(11) 99999-9999",
-  "client.submit": "Save Client"
+  "client.submit": "Save Client",
+  "client.reset": "Reset form",
+  "client.back": "Back",
+  "client.discard.title": "Discard new client?",
+  "client.discard.description": "If you continue, all the data you entered will be reset and you will go back to the clients list. Do you still want to add this new client?",
+  "client.discard.cancel": "Cancel",
+  "client.discard.continue": "Continue"
 }

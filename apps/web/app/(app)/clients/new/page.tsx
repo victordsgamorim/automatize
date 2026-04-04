@@ -42,11 +42,17 @@ export default function NewClientPage() {
     navigate('/clients');
   };
 
+  const handleBack = () => {
+    clearDraft();
+    navigate('/clients');
+  };
+
   return (
     <ClientFormScreen
       onSubmit={handleSubmit}
       initialData={initialData}
       onDataChange={handleDataChange}
+      onBack={handleBack}
       locale={{
         languages: SUPPORTED_LANGUAGES.map((lang) => ({
           code: lang,

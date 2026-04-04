@@ -40,4 +40,6 @@ export interface ClientFormScreenProps {
   initialData?: ClientFormData;
   /** Called whenever form data changes — use for persistence */
   onDataChange?: (data: ClientFormData) => void;
+  /** Called when the user confirms leaving the form (back navigation) */
+  onBack?: () => void;
 }

@@ -107,5 +107,11 @@
   "client.phone.remove": "Remover telefone",
   "client.phone.label": "Telefone",
   "client.phone.placeholder": "(11) 99999-9999",
-  "client.submit": "Salvar Cliente"
+  "client.submit": "Salvar Cliente",
+  "client.reset": "Limpar formulário",
+  "client.back": "Voltar",
+  "client.discard.title": "Descartar novo cliente?",
+  "client.discard.description": "Se você continuar, todos os dados preenchidos serão apagados e você voltará para a lista de clientes. Ainda deseja adicionar este novo cliente?",
+  "client.discard.cancel": "Cancelar",
+  "client.discard.continue": "Continuar"
 }
