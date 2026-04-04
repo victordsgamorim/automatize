@@ -55,7 +55,7 @@ vi.mock('@automatize/ui/web', () => ({
     getItemId,
   }: {
     columns: {
-      key: string;
+      key: keyof ClientRow;
       header: string;
       sortable?: boolean;
       render?: (item: ClientRow) => React.ReactNode;
@@ -101,9 +101,7 @@ vi.mock('@automatize/ui/web', () => ({
                   <td key={col.key}>
                     {col.render
                       ? col.render(item)
-                      : String(
-                          (item as Record<string, unknown>)[col.key] ?? ''
-                        )}
+                      : String(item[col.key] ?? '')}
                   </td>
                 ))}
               </tr>
