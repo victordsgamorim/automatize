@@ -32,3 +32,13 @@ export { useNavigationSync } from './hooks/useNavigationSync.native';
 export { NavigationLink } from './components/NavigationLink.native';
 export { NavigationMenu } from './components/NavigationMenu.native';
 export { Breadcrumb } from './components/Breadcrumb.native';
+
+// Utils
+export {
+  buildRouteToIdMap,
+  resolveActiveTile,
+  resolvePageTitle,
+  resolveNavigationTarget,
+  recordLastVisited,
+} from './utils/routeResolver';
+export type { RouteItem } from './utils/routeResolver';
