@@ -69,6 +69,8 @@ function formatCnpj(value: string): string {
 
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onSubmit,
+  initialData,
+  onDataChange,
 }) => {
   const { t } = useTranslation();
   const {
@@ -87,7 +89,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     removePhone,
     updatePhone,
     getFormData,
-  } = useClientForm();
+  } = useClientForm({ initialData, onDataChange });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

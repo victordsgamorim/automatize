@@ -2,7 +2,14 @@
 
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { useUserAuthentication } from '@automatize/supabase-auth';
-import { useNavigation, useRoute } from '@automatize/navigation';
+import {
+  useNavigation,
+  useRoute,
+  buildRouteToIdMap,
+  resolveActiveTile,
+  resolvePageTitle,
+  resolveNavigationTarget,
+} from '@automatize/navigation';
 import { useTranslation } from '@automatize/localization';
 import type {
   SidebarProps,
@@ -54,9 +61,7 @@ const ITEMS: HomeScreenItem[] = [
   },
 ];
 
-const ROUTE_TO_ID: Record<string, string> = Object.fromEntries(
-  ITEMS.map((item) => [item.route, item.id])
-);
+const ROUTE_TO_ID = buildRouteToIdMap(ITEMS);
 
 /* ─── Inner layout — owns all route-aware logic (useRoute → useSearchParams) ── */
 
@@ -75,10 +80,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
 
   const lastVisitedRef = useRef<Record<string, string>>({});
 
-  const activeTile =
-    ROUTE_TO_ID[pathname] ??
-    ITEMS.find((item) => item.route !== '/' && pathname.startsWith(item.route))
-      ?.id;
+  const activeTile = resolveActiveTile(pathname, ITEMS, ROUTE_TO_ID);
 
   useEffect(() => {
     if (activeTile) {
@@ -86,17 +88,17 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     }
   }, [activeTile, pathname]);
 
-  const activeItem = activeTile
-    ? ITEMS.find((item) => item.id === activeTile)
-    : undefined;
-
   const SUB_ROUTE_TITLES: Record<string, string> = {
     '/clients/new': t('client.form.title'),
     '/settings': t('settings.title'),
   };
 
-  const pageTitle =
-    SUB_ROUTE_TITLES[pathname] ?? activeItem?.label ?? 'Dashboard';
+  const pageTitle = resolvePageTitle(
+    pathname,
+    ITEMS,
+    SUB_ROUTE_TITLES,
+    activeTile
+  );
 
   const profile: SidebarProfileConfig = useMemo(
     () => ({
@@ -142,7 +144,8 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
         icon: item.icon,
         label: item.label,
         group: item.group,
-        onTap: () => navigate(lastVisitedRef.current[item.id] ?? item.route),
+        onTap: () =>
+          navigate(resolveNavigationTarget(item, lastVisitedRef.current)),
       })),
       activeIndex,
       profile,

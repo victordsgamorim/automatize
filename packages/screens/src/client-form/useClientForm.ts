@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { generateId } from '@automatize/utils';
 import type {
   ClientType,
@@ -26,6 +26,13 @@ function createEmptyPhone(): Phone {
   };
 }
 
+export interface UseClientFormOptions {
+  /** Initial data to populate the form (e.g. restored from storage) */
+  initialData?: ClientFormData;
+  /** Called whenever form data changes — use for persistence */
+  onDataChange?: (data: ClientFormData) => void;
+}
+
 export interface UseClientFormResult {
   clientType: ClientType;
   setClientType: (type: ClientType) => void;
@@ -46,14 +53,39 @@ export interface UseClientFormResult {
   removePhone: (id: string) => void;
   updatePhone: (id: string, value: string) => void;
   getFormData: () => ClientFormData;
+  /** Resets all form fields to their empty defaults */
+  resetForm: () => void;
 }
 
-export function useClientForm(): UseClientFormResult {
-  const [clientType, setClientTypeState] = useState<ClientType>('individual');
-  const [name, setName] = useState('');
-  const [document, setDocument] = useState('');
-  const [addresses, setAddresses] = useState<Address[]>([createEmptyAddress()]);
-  const [phones, setPhones] = useState<Phone[]>([createEmptyPhone()]);
+export function useClientForm(
+  options?: UseClientFormOptions
+): UseClientFormResult {
+  const { initialData, onDataChange } = options ?? {};
+
+  const [clientType, setClientTypeState] = useState<ClientType>(
+    initialData?.clientType ?? 'individual'
+  );
+  const [name, setName] = useState(initialData?.name ?? '');
+  const [document, setDocument] = useState(initialData?.document ?? '');
+  const [addresses, setAddresses] = useState<Address[]>(
+    initialData?.addresses?.length
+      ? initialData.addresses
+      : [createEmptyAddress()]
+  );
+  const [phones, setPhones] = useState<Phone[]>(
+    initialData?.phones?.length ? initialData.phones : [createEmptyPhone()]
+  );
+
+  // Track whether we've mounted to avoid firing onDataChange with initial values
+  const mountedRef = useRef(false);
+
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
+    onDataChange?.({ clientType, name, document, addresses, phones });
+  }, [clientType, name, document, addresses, phones, onDataChange]);
 
   const setClientType = useCallback((type: ClientType) => {
     setClientTypeState(type);
@@ -106,6 +138,14 @@ export function useClientForm(): UseClientFormResult {
     [clientType, name, document, addresses, phones]
   );
 
+  const resetForm = useCallback(() => {
+    setClientTypeState('individual');
+    setName('');
+    setDocument('');
+    setAddresses([createEmptyAddress()]);
+    setPhones([createEmptyPhone()]);
+  }, []);
+
   return {
     clientType,
     setClientType,
@@ -122,5 +162,6 @@ export function useClientForm(): UseClientFormResult {
     removePhone,
     updatePhone,
     getFormData,
+    resetForm,
   };
 }

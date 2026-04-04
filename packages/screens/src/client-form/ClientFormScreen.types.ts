@@ -36,4 +36,8 @@ export interface ClientFormScreenProps {
   locale: LocaleData;
   /** Theme switcher data (web only — ignored on native) */
   theme?: ThemeData;
+  /** Initial data to populate the form (e.g. restored from storage) */
+  initialData?: ClientFormData;
+  /** Called whenever form data changes — use for persistence */
+  onDataChange?: (data: ClientFormData) => void;
 }
