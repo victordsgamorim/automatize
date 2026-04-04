@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
-import { Plus } from 'lucide-react';
-import { Button, Table } from '@automatize/ui/web';
+import React, { useMemo, useState } from 'react';
+import { Plus, Search } from 'lucide-react';
+import { Button, Input, Table } from '@automatize/ui/web';
 import type { TableColumn } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import type { ClientScreenProps, ClientRow } from './ClientScreen.types';
@@ -18,6 +18,22 @@ function formatPhones(client: ClientRow): string {
   return client.phones.map((p) => p.number).join(', ');
 }
 
+function matchesSearch(client: ClientRow, query: string): boolean {
+  const q = query.toLowerCase();
+  if (client.name.toLowerCase().includes(q)) return true;
+  if (client.phones.some((p) => p.number.toLowerCase().includes(q)))
+    return true;
+  if (
+    client.addresses.some((a) =>
+      [a.street, a.number, a.neighborhood, a.city, a.state]
+        .filter(Boolean)
+        .some((part) => part.toLowerCase().includes(q))
+    )
+  )
+    return true;
+  return false;
+}
+
 export const ClientScreen: React.FC<ClientScreenProps> = ({
   clients,
   onAddClient,
@@ -25,6 +41,13 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
   onClientSelect,
 }) => {
   const { t } = useTranslation();
+  const [search, setSearch] = useState('');
+
+  const filteredClients = useMemo(() => {
+    const query = search.trim();
+    if (!query) return clients;
+    return clients.filter((client) => matchesSearch(client, query));
+  }, [clients, search]);
 
   const columns: TableColumn<ClientRow>[] = useMemo(
     () => [
@@ -78,7 +101,19 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
 
       <Table<ClientRow>
         columns={columns}
-        data={clients}
+        data={filteredClients}
+        toolbarLeft={
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none z-10" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t('client.list.search')}
+              className="pl-9 backdrop-blur-none"
+              aria-label={t('client.list.search')}
+            />
+          </div>
+        }
         getItemId={(client) => client.id}
         onRowClick={onClientClick}
         onRowSelect={onClientSelect}

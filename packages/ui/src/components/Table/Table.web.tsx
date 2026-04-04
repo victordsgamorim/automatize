@@ -62,6 +62,8 @@ export interface TableProps<T> {
   sortLabel?: string;
   /** Export button label */
   exportLabel?: string;
+  /** Content rendered on the left side of the toolbar (e.g. search input) */
+  toolbarLeft?: React.ReactNode;
 }
 
 /* ------------------------------------------------------------------ */
@@ -87,6 +89,7 @@ export function Table<T>({
   pageLabel,
   sortLabel = 'Sort',
   exportLabel = 'Export',
+  toolbarLeft,
 }: TableProps<T>) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -182,103 +185,106 @@ export function Table<T>({
   return (
     <div className={cn('w-full', className)}>
       {/* Toolbar */}
-      {(sortableColumns.length > 0 || exportable) && (
-        <div className="mb-4 flex items-center justify-end gap-2 flex-wrap">
-          {/* Sort dropdown */}
-          {sortableColumns.length > 0 && (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowSortMenu((p) => !p)}
-                className="px-3 py-1.5 bg-background border border-border/50 text-foreground text-sm hover:bg-muted/30 transition-colors flex items-center gap-2 rounded-md"
-              >
-                <ArrowUpDown size={14} />
-                {sortLabel}
-                {sortKey && (
-                  <span className="ml-1 text-xs bg-primary text-primary-foreground rounded-sm px-1.5 py-0.5">
-                    1
-                  </span>
+      {(sortableColumns.length > 0 || exportable || toolbarLeft) && (
+        <div className="mb-4 flex items-center gap-2 flex-wrap">
+          {toolbarLeft && <div className="flex-1 min-w-0">{toolbarLeft}</div>}
+          <div className="flex items-center gap-2 ml-auto">
+            {/* Sort dropdown */}
+            {sortableColumns.length > 0 && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowSortMenu((p) => !p)}
+                  className="px-3 py-1.5 bg-background border border-border/50 text-foreground text-sm hover:bg-muted/30 transition-colors flex items-center gap-2 rounded-md"
+                >
+                  <ArrowUpDown size={14} />
+                  {sortLabel}
+                  {sortKey && (
+                    <span className="ml-1 text-xs bg-primary text-primary-foreground rounded-sm px-1.5 py-0.5">
+                      1
+                    </span>
+                  )}
+                  <ChevronDown size={14} className="opacity-50" />
+                </button>
+
+                {showSortMenu && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setShowSortMenu(false)}
+                    />
+                    <div className="absolute right-0 mt-1 w-48 bg-background border border-border/50 shadow-lg rounded-md z-20 py-1">
+                      {sortableColumns.map((col) => (
+                        <button
+                          key={col.key}
+                          type="button"
+                          onClick={() => handleSort(col.key)}
+                          className={cn(
+                            'w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors',
+                            sortKey === col.key && 'bg-muted/30'
+                          )}
+                        >
+                          {col.header}{' '}
+                          {sortKey === col.key &&
+                            `(${sortOrder === 'asc' ? '↑' : '↓'})`}
+                        </button>
+                      ))}
+                    </div>
+                  </>
                 )}
-                <ChevronDown size={14} className="opacity-50" />
-              </button>
+              </div>
+            )}
 
-              {showSortMenu && (
-                <>
-                  <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setShowSortMenu(false)}
-                  />
-                  <div className="absolute right-0 mt-1 w-48 bg-background border border-border/50 shadow-lg rounded-md z-20 py-1">
-                    {sortableColumns.map((col) => (
-                      <button
-                        key={col.key}
-                        type="button"
-                        onClick={() => handleSort(col.key)}
-                        className={cn(
-                          'w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors',
-                          sortKey === col.key && 'bg-muted/30'
-                        )}
-                      >
-                        {col.header}{' '}
-                        {sortKey === col.key &&
-                          `(${sortOrder === 'asc' ? '↑' : '↓'})`}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
+            {/* Export dropdown */}
+            {exportable && (onExportCSV || onExportJSON) && (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowExportMenu((p) => !p)}
+                  className="px-3 py-1.5 bg-background border border-border/50 text-foreground text-sm hover:bg-muted/30 transition-colors flex items-center gap-2 rounded-md"
+                >
+                  <Download size={14} />
+                  {exportLabel}
+                  <ChevronDown size={14} className="opacity-50" />
+                </button>
 
-          {/* Export dropdown */}
-          {exportable && (onExportCSV || onExportJSON) && (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowExportMenu((p) => !p)}
-                className="px-3 py-1.5 bg-background border border-border/50 text-foreground text-sm hover:bg-muted/30 transition-colors flex items-center gap-2 rounded-md"
-              >
-                <Download size={14} />
-                {exportLabel}
-                <ChevronDown size={14} className="opacity-50" />
-              </button>
-
-              {showExportMenu && (
-                <>
-                  <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setShowExportMenu(false)}
-                  />
-                  <div className="absolute right-0 mt-1 w-32 bg-background border border-border/50 shadow-lg rounded-md z-20">
-                    {onExportCSV && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onExportCSV(sortedData);
-                          setShowExportMenu(false);
-                        }}
-                        className="w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors"
-                      >
-                        CSV
-                      </button>
-                    )}
-                    {onExportJSON && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          onExportJSON(sortedData);
-                          setShowExportMenu(false);
-                        }}
-                        className="w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors border-t border-border/30"
-                      >
-                        JSON
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
+                {showExportMenu && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setShowExportMenu(false)}
+                    />
+                    <div className="absolute right-0 mt-1 w-32 bg-background border border-border/50 shadow-lg rounded-md z-20">
+                      {onExportCSV && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onExportCSV(sortedData);
+                            setShowExportMenu(false);
+                          }}
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors"
+                        >
+                          CSV
+                        </button>
+                      )}
+                      {onExportJSON && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onExportJSON(sortedData);
+                            setShowExportMenu(false);
+                          }}
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-muted/50 transition-colors border-t border-border/30"
+                        >
+                          JSON
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

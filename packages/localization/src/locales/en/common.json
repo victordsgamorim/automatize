@@ -68,6 +68,7 @@
   "client.form.title": "New Client",
   "client.list.title": "Clients",
   "client.list.add": "New Client",
+  "client.list.search": "Search clients...",
   "client.list.empty": "No clients registered yet",
   "client.list.itemLabel": "clients",
   "client.list.previous": "Previous",
