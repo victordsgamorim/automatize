@@ -69,6 +69,8 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
         header: t('client.table.addresses'),
         flex: 4,
         minWidth: 180,
+        sortable: true,
+        sortFn: (a, b) => formatAddresses(a).localeCompare(formatAddresses(b)),
         render: (client) => (
           <span className="text-sm text-foreground/80 truncate">
             {formatAddresses(client)}
@@ -80,6 +82,8 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
         header: t('client.table.phones'),
         flex: 2,
         minWidth: 120,
+        sortable: true,
+        sortFn: (a, b) => formatPhones(a).localeCompare(formatPhones(b)),
         render: (client) => (
           <span className="text-sm text-foreground/80 truncate">
             {formatPhones(client)}
@@ -125,7 +129,6 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
         itemLabel={t('client.list.itemLabel')}
         previousLabel={t('client.list.previous')}
         nextLabel={t('client.list.next')}
-        sortLabel={t('client.list.sort')}
         pageLabel={(current, total) =>
           t('client.list.page', {
             current: String(current),
