@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useUserAuthentication } from '@automatize/supabase-auth';
 import { useNavigation, useRoute } from '@automatize/navigation';
 import { useTranslation } from '@automatize/localization';
@@ -72,10 +72,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, [isAuthenticated, navigate]);
 
   const { t, i18n } = useTranslation();
+
+  const lastVisitedRef = useRef<Record<string, string>>({});
+
   const activeTile =
     ROUTE_TO_ID[pathname] ??
     ITEMS.find((item) => item.route !== '/' && pathname.startsWith(item.route))
       ?.id;
+
+  useEffect(() => {
+    if (activeTile) {
+      lastVisitedRef.current[activeTile] = pathname;
+    }
+  }, [activeTile, pathname]);
   const activeItem = activeTile
     ? ITEMS.find((item) => item.id === activeTile)
     : undefined;
@@ -132,7 +141,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         icon: item.icon,
         label: item.label,
         group: item.group,
-        onTap: () => navigate(item.route),
+        onTap: () => navigate(lastVisitedRef.current[item.id] ?? item.route),
       })),
       activeIndex,
       profile,
