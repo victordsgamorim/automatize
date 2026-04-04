@@ -92,13 +92,6 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="mb-6 flex items-center justify-end">
-        <Button onClick={onAddClient} aria-label={t('client.list.add')}>
-          <Plus className="size-4 mr-2" />
-          {t('client.list.add')}
-        </Button>
-      </div>
-
       <Table<ClientRow>
         columns={columns}
         data={filteredClients}
@@ -113,6 +106,17 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
               aria-label={t('client.list.search')}
             />
           </div>
+        }
+        toolbarRight={
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onAddClient}
+            aria-label={t('client.list.add')}
+            className="size-8"
+          >
+            <Plus className="size-4" />
+          </Button>
         }
         getItemId={(client) => client.id}
         onRowClick={onClientClick}

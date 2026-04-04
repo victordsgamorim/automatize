@@ -64,6 +64,8 @@ export interface TableProps<T> {
   exportLabel?: string;
   /** Content rendered on the left side of the toolbar (e.g. search input) */
   toolbarLeft?: React.ReactNode;
+  /** Content rendered on the right side of the toolbar (e.g. action buttons) */
+  toolbarRight?: React.ReactNode;
 }
 
 /* ------------------------------------------------------------------ */
@@ -90,6 +92,7 @@ export function Table<T>({
   sortLabel = 'Sort',
   exportLabel = 'Export',
   toolbarLeft,
+  toolbarRight,
 }: TableProps<T>) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -185,10 +188,12 @@ export function Table<T>({
   return (
     <div className={cn('w-full', className)}>
       {/* Toolbar */}
-      {(sortableColumns.length > 0 || exportable || toolbarLeft) && (
+      {(sortableColumns.length > 0 ||
+        exportable ||
+        toolbarLeft ||
+        toolbarRight) && (
         <div className="mb-4 flex items-center gap-2 flex-wrap">
-          {toolbarLeft && <div className="flex-1 min-w-0">{toolbarLeft}</div>}
-          <div className="flex items-center gap-2 ml-auto">
+          <div className="flex items-center gap-2">
             {/* Sort dropdown */}
             {sortableColumns.length > 0 && (
               <div className="relative">
@@ -285,6 +290,8 @@ export function Table<T>({
               </div>
             )}
           </div>
+          {toolbarLeft && <div className="flex-1 min-w-0">{toolbarLeft}</div>}
+          {toolbarRight}
         </div>
       )}
 
