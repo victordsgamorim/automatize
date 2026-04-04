@@ -1,19 +1,19 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { ClientScreen } from '@automatize/screens/client/web';
 
 export default function ClientsPage() {
-  const router = useRouter();
+  const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
   return (
     <ClientScreen
       clients={[]}
-      onAddClient={() => router.push('/clients/new')}
+      onAddClient={() => navigate('/clients/new')}
       locale={{
         languages: SUPPORTED_LANGUAGES.map((lang) => ({
           code: lang,

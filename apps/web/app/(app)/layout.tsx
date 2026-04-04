@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useEffect, useMemo } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
 import { useUserAuthentication } from '@automatize/supabase-auth';
-import { useNavigation } from '@automatize/navigation';
+import { useNavigation, useRoute } from '@automatize/navigation';
 import { useTranslation } from '@automatize/localization';
 import type {
   SidebarProps,
@@ -64,8 +63,7 @@ const ROUTE_TO_ID: Record<string, string> = Object.fromEntries(
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useUserAuthentication();
   const { navigate } = useNavigation();
-  const router = useRouter();
-  const pathname = usePathname();
+  const { path: pathname } = useRoute();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -74,13 +72,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, [isAuthenticated, navigate]);
 
   const { t, i18n } = useTranslation();
-  const activeTile = ROUTE_TO_ID[pathname];
+  const activeTile =
+    ROUTE_TO_ID[pathname] ??
+    ITEMS.find((item) => item.route !== '/' && pathname.startsWith(item.route))
+      ?.id;
   const activeItem = activeTile
     ? ITEMS.find((item) => item.id === activeTile)
     : undefined;
+
+  const SUB_ROUTE_TITLES: Record<string, string> = {
+    '/clients/new': t('client.form.title'),
+    '/settings': t('settings.title'),
+  };
+
   const pageTitle =
-    activeItem?.label ??
-    (pathname === '/settings' ? t('settings.title') : 'Dashboard');
+    SUB_ROUTE_TITLES[pathname] ?? activeItem?.label ?? 'Dashboard';
 
   const profile: SidebarProfileConfig = useMemo(
     () => ({
@@ -98,12 +104,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       {
         icon: <UserCog className="size-4" />,
         label: 'Profile',
-        onTap: () => router.push('/profile'),
+        onTap: () => navigate('/profile'),
       },
       {
         icon: <Settings className="size-4" />,
         label: 'Settings',
-        onTap: () => router.push('/settings'),
+        onTap: () => navigate('/settings'),
       },
       {
         icon: <LogOut className="size-4" />,
@@ -115,7 +121,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         },
       },
     ],
-    [router]
+    [navigate]
   );
 
   const activeIndex = ITEMS.findIndex((item) => item.id === activeTile);
@@ -126,13 +132,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         icon: item.icon,
         label: item.label,
         group: item.group,
-        onTap: () => router.push(item.route),
+        onTap: () => navigate(item.route),
       })),
       activeIndex,
       profile,
       profileMenuItems,
     }),
-    [activeIndex, profile, profileMenuItems, router]
+    [activeIndex, profile, profileMenuItems, navigate]
   );
 
   if (!isAuthenticated) {

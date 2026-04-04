@@ -98,10 +98,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     <div className="max-w-3xl mx-auto py-8 px-4">
       <Card padding="lg">
         <div className="space-y-6">
-          <Text variant="h2">{t('client.form.title')}</Text>
-
-          <Separator />
-
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Client Type */}
             <div className="space-y-2">
