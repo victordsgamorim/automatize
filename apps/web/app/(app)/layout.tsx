@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { useUserAuthentication } from '@automatize/supabase-auth';
 import { useNavigation, useRoute } from '@automatize/navigation';
 import { useTranslation } from '@automatize/localization';
@@ -58,9 +58,9 @@ const ROUTE_TO_ID: Record<string, string> = Object.fromEntries(
   ITEMS.map((item) => [item.route, item.id])
 );
 
-/* ─── Layout ───────────────────────────────────────────────────────────────── */
+/* ─── Inner layout — owns all route-aware logic (useRoute → useSearchParams) ── */
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useUserAuthentication();
   const { navigate } = useNavigation();
   const { path: pathname } = useRoute();
@@ -85,6 +85,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       lastVisitedRef.current[activeTile] = pathname;
     }
   }, [activeTile, pathname]);
+
   const activeItem = activeTile
     ? ITEMS.find((item) => item.id === activeTile)
     : undefined;
@@ -173,5 +174,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     >
       {children}
     </HomeScreen>
+  );
+}
+
+/* ─── Layout shell — wraps inner content in Suspense (required by useSearchParams) ── */
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense>
+      <AppLayoutContent>{children}</AppLayoutContent>
+    </Suspense>
   );
 }
