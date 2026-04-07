@@ -42,4 +42,8 @@ export interface ClientFormScreenProps {
   onDataChange?: (data: ClientFormData) => void;
   /** Called when the user confirms leaving the form (back navigation) */
   onBack?: () => void;
+  /** When true, shows the discard confirmation dialog */
+  showDiscardDialog?: boolean;
+  /** Called when the user cancels the discard dialog */
+  onDiscardCancel?: () => void;
 }

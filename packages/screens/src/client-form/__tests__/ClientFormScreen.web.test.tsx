@@ -170,132 +170,55 @@ describe('ClientFormScreen (web)', () => {
     vi.clearAllMocks();
   });
 
-  // ── Back button ──────────────────────────────────────────────────────────
+  // ── Discard dialog (controlled by props) ─────────────────────────────────
 
-  describe('back button', () => {
-    it('renders the back button', () => {
-      render(<ClientFormScreen {...defaultProps} />);
-      expect(screen.getByRole('button', { name: 'Back' })).toBeTruthy();
+  describe('discard dialog (controlled)', () => {
+    it('shows dialog when showDiscardDialog is true', () => {
+      render(
+        <ClientFormScreen
+          {...defaultProps}
+          showDiscardDialog={true}
+          onBack={vi.fn()}
+        />
+      );
+      expect(screen.getByRole('dialog')).toBeTruthy();
     });
 
-    it('calls onBack directly when form is empty', () => {
+    it('does not show dialog when showDiscardDialog is false', () => {
+      render(<ClientFormScreen {...defaultProps} showDiscardDialog={false} />);
+      expect(screen.queryByRole('dialog')).toBeNull();
+    });
+
+    it('calls onBack when Continue is clicked', () => {
       const onBack = vi.fn();
-      render(<ClientFormScreen {...defaultProps} onBack={onBack} />);
-      fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+      render(
+        <ClientFormScreen
+          {...defaultProps}
+          showDiscardDialog={true}
+          onBack={onBack}
+        />
+      );
+      fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
       expect(onBack).toHaveBeenCalledTimes(1);
-      expect(screen.queryByRole('dialog')).toBeNull();
     });
 
-    it('opens the discard dialog when form has data', () => {
-      const onBack = vi.fn();
+    it('calls onDiscardCancel when Cancel is clicked', () => {
+      const onDiscardCancel = vi.fn();
       render(
         <ClientFormScreen
           {...defaultProps}
-          initialData={sampleData}
-          onBack={onBack}
+          showDiscardDialog={true}
+          onDiscardCancel={onDiscardCancel}
         />
       );
-      fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-      expect(screen.getByRole('dialog')).toBeTruthy();
-      expect(screen.getByText('Discard new client?')).toBeTruthy();
-      expect(onBack).not.toHaveBeenCalled();
-    });
-
-    it('detects data in phones (not just name)', () => {
-      const onBack = vi.fn();
-      const dataInPhone: ClientFormData = {
-        ...sampleData,
-        name: '',
-        phones: [{ id: 'p1', number: '11999' }],
-      };
-      render(
-        <ClientFormScreen
-          {...defaultProps}
-          initialData={dataInPhone}
-          onBack={onBack}
-        />
-      );
-      fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-      expect(screen.getByRole('dialog')).toBeTruthy();
-      expect(onBack).not.toHaveBeenCalled();
-    });
-
-    it('detects data in addresses (street)', () => {
-      const onBack = vi.fn();
-      const dataInAddr: ClientFormData = {
-        ...sampleData,
-        name: '',
-        addresses: [
-          {
-            id: 'a1',
-            street: 'Main St',
-            number: '',
-            neighborhood: '',
-            city: '',
-            state: '',
-            info: '',
-          },
-        ],
-      };
-      render(
-        <ClientFormScreen
-          {...defaultProps}
-          initialData={dataInAddr}
-          onBack={onBack}
-        />
-      );
-      fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-      expect(screen.getByRole('dialog')).toBeTruthy();
-      expect(onBack).not.toHaveBeenCalled();
-    });
-  });
-
-  // ── Discard dialog ───────────────────────────────────────────────────────
-
-  describe('discard dialog', () => {
-    it('is not rendered by default', () => {
-      render(<ClientFormScreen {...defaultProps} initialData={sampleData} />);
-      expect(screen.queryByRole('dialog')).toBeNull();
-    });
-
-    it('closes without calling onBack when Cancel is clicked', () => {
-      const onBack = vi.fn();
-      render(
-        <ClientFormScreen
-          {...defaultProps}
-          initialData={sampleData}
-          onBack={onBack}
-        />
-      );
-      fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-      expect(screen.getByRole('dialog')).toBeTruthy();
-
       fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
-      expect(screen.queryByRole('dialog')).toBeNull();
-      expect(onBack).not.toHaveBeenCalled();
+      expect(onDiscardCancel).toHaveBeenCalledTimes(1);
     });
 
-    it('calls onBack and closes the dialog when Continue is clicked', () => {
-      const onBack = vi.fn();
-      render(
-        <ClientFormScreen
-          {...defaultProps}
-          initialData={sampleData}
-          onBack={onBack}
-        />
-      );
-      fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    it('does not crash when Continue is clicked without onBack', () => {
+      render(<ClientFormScreen {...defaultProps} showDiscardDialog={true} />);
       fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
-
-      expect(onBack).toHaveBeenCalledTimes(1);
-      expect(screen.queryByRole('dialog')).toBeNull();
-    });
-
-    it('does not crash when Continue is clicked without onBack prop', () => {
-      render(<ClientFormScreen {...defaultProps} initialData={sampleData} />);
-      fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-      fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
-      expect(screen.queryByRole('dialog')).toBeNull();
+      expect(screen.queryByRole('dialog')).toBeTruthy();
     });
   });
 

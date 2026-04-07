@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
 import {
   Button,
   Input,
@@ -78,6 +78,8 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   initialData,
   onDataChange,
   onBack,
+  showDiscardDialog,
+  onDiscardCancel,
 }) => {
   const { t } = useTranslation();
   const {
@@ -99,7 +101,10 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     resetForm,
   } = useClientForm({ initialData, onDataChange });
 
-  const [discardDialogOpen, setDiscardDialogOpen] = useState(false);
+  const [internalDialogOpen, setInternalDialogOpen] = useState(false);
+
+  const isControlled = showDiscardDialog !== undefined;
+  const dialogOpen = isControlled ? showDiscardDialog : internalDialogOpen;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -120,33 +125,41 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     ) ||
     phones.some((p) => p.number.trim() !== '');
 
-  const handleBackClick = () => {
-    if (hasFormData) {
-      setDiscardDialogOpen(true);
-      return;
-    }
-    onBack?.();
-  };
+  useEffect(() => {
+    if (!hasFormData) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [hasFormData]);
 
   const handleConfirmDiscard = () => {
-    setDiscardDialogOpen(false);
-    onBack?.();
+    if (isControlled) {
+      onBack?.();
+    } else {
+      setInternalDialogOpen(false);
+      onBack?.();
+    }
+  };
+
+  const handleCancelDiscard = () => {
+    if (isControlled) {
+      onDiscardCancel?.();
+    } else {
+      setInternalDialogOpen(false);
+      onDiscardCancel?.();
+    }
   };
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
-      <div className="mb-4">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={handleBackClick}
-          aria-label={t('client.back')}
-        >
-          <ArrowLeft className="size-4" />
-          {t('client.back')}
-        </Button>
-      </div>
       <Card padding="lg">
         <div className="space-y-6">
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -407,7 +420,14 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
       </Card>
 
       {/* Discard confirmation dialog */}
-      <Dialog open={discardDialogOpen} onOpenChange={setDiscardDialogOpen}>
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          if (!open && !isControlled) {
+            handleCancelDiscard();
+          }
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('client.discard.title')}</DialogTitle>
@@ -419,7 +439,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
             <Button
               type="button"
               variant="outline"
-              onClick={() => setDiscardDialogOpen(false)}
+              onClick={handleCancelDiscard}
             >
               {t('client.discard.cancel')}
             </Button>
