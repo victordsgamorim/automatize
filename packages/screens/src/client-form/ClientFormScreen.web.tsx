@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
 import {
   Button,
   Input,
@@ -100,6 +100,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   } = useClientForm({ initialData, onDataChange });
 
   const [discardDialogOpen, setDiscardDialogOpen] = useState(false);
+  const pendingNavigation = useRef(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -120,33 +121,46 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     ) ||
     phones.some((p) => p.number.trim() !== '');
 
-  const handleBackClick = () => {
-    if (hasFormData) {
+  useEffect(() => {
+    if (!hasFormData) return;
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+
+    const handlePopState = () => {
       setDiscardDialogOpen(true);
-      return;
+      window.history.pushState(null, '', window.location.href);
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [hasFormData]);
+
+  useEffect(() => {
+    if (hasFormData) {
+      window.history.pushState(null, '', window.location.href);
     }
-    onBack?.();
-  };
+    return () => {
+      if (pendingNavigation.current) return;
+      window.history.back();
+    };
+  }, []);
 
   const handleConfirmDiscard = () => {
     setDiscardDialogOpen(false);
+    pendingNavigation.current = true;
     onBack?.();
   };
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
-      <div className="mb-4">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={handleBackClick}
-          aria-label={t('client.back')}
-        >
-          <ArrowLeft className="size-4" />
-          {t('client.back')}
-        </Button>
-      </div>
       <Card padding="lg">
         <div className="space-y-6">
           <form className="space-y-6" onSubmit={handleSubmit}>
