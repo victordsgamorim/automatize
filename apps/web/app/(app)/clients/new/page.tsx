@@ -77,7 +77,6 @@ export default function NewClientPage() {
   };
 
   const handleBack = () => {
-    clearDraft();
     navigate('/clients');
   };
 

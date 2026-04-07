@@ -130,7 +130,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
-      e.returnValue = '';
+      return '';
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
