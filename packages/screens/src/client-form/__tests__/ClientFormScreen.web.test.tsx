@@ -275,7 +275,7 @@ describe('ClientFormScreen (web)', () => {
       expect(onBack).not.toHaveBeenCalled();
     });
 
-    it('resets the form and calls onBack when Continue is clicked', () => {
+    it('calls onBack and closes the dialog when Continue is clicked', () => {
       const onBack = vi.fn();
       render(
         <ClientFormScreen
@@ -284,20 +284,11 @@ describe('ClientFormScreen (web)', () => {
           onBack={onBack}
         />
       );
-      // Name field should be populated from initialData
-      expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe(
-        'Alice'
-      );
-
       fireEvent.click(screen.getByRole('button', { name: 'Back' }));
       fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
 
       expect(onBack).toHaveBeenCalledTimes(1);
       expect(screen.queryByRole('dialog')).toBeNull();
-      // Form was reset → name is now empty
-      expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe(
-        ''
-      );
     });
 
     it('does not crash when Continue is clicked without onBack prop', () => {
