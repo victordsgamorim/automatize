@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import {
   Button,
@@ -78,6 +78,8 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   initialData,
   onDataChange,
   onBack,
+  showDiscardDialog,
+  onDiscardCancel,
 }) => {
   const { t } = useTranslation();
   const {
@@ -99,8 +101,10 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     resetForm,
   } = useClientForm({ initialData, onDataChange });
 
-  const [discardDialogOpen, setDiscardDialogOpen] = useState(false);
-  const pendingNavigation = useRef(false);
+  const [internalDialogOpen, setInternalDialogOpen] = useState(false);
+
+  const isControlled = showDiscardDialog !== undefined;
+  const dialogOpen = isControlled ? showDiscardDialog : internalDialogOpen;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -129,34 +133,29 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
       e.returnValue = '';
     };
 
-    const handlePopState = () => {
-      setDiscardDialogOpen(true);
-      window.history.pushState(null, '', window.location.href);
-    };
-
     window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('popstate', handlePopState);
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('popstate', handlePopState);
     };
   }, [hasFormData]);
 
-  useEffect(() => {
-    if (hasFormData) {
-      window.history.pushState(null, '', window.location.href);
-    }
-    return () => {
-      if (pendingNavigation.current) return;
-      window.history.back();
-    };
-  }, []);
-
   const handleConfirmDiscard = () => {
-    setDiscardDialogOpen(false);
-    pendingNavigation.current = true;
-    onBack?.();
+    if (isControlled) {
+      onBack?.();
+    } else {
+      setInternalDialogOpen(false);
+      onBack?.();
+    }
+  };
+
+  const handleCancelDiscard = () => {
+    if (isControlled) {
+      onDiscardCancel?.();
+    } else {
+      setInternalDialogOpen(false);
+      onDiscardCancel?.();
+    }
   };
 
   return (
@@ -421,7 +420,14 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
       </Card>
 
       {/* Discard confirmation dialog */}
-      <Dialog open={discardDialogOpen} onOpenChange={setDiscardDialogOpen}>
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          if (!open && !isControlled) {
+            handleCancelDiscard();
+          }
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('client.discard.title')}</DialogTitle>
@@ -433,7 +439,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
             <Button
               type="button"
               variant="outline"
-              onClick={() => setDiscardDialogOpen(false)}
+              onClick={handleCancelDiscard}
             >
               {t('client.discard.cancel')}
             </Button>

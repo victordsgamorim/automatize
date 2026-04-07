@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import { ClientFormScreen } from '../ClientFormScreen.web';
@@ -170,93 +170,55 @@ describe('ClientFormScreen (web)', () => {
     vi.clearAllMocks();
   });
 
-  // ── Navigation interception (popstate) ──────────────────────────────────
+  // ── Discard dialog (controlled by props) ─────────────────────────────────
 
-  describe('navigation interception', () => {
-    beforeEach(() => {
-      vi.spyOn(window.history, 'pushState').mockImplementation(() => {});
-    });
-
-    afterEach(() => {
-      vi.restoreAllMocks();
-    });
-
-    it('pushes a history state when form has data', () => {
-      render(<ClientFormScreen {...defaultProps} initialData={sampleData} />);
-      expect(window.history.pushState).toHaveBeenCalled();
-    });
-
-    it('does not push a history state when form is empty', () => {
-      render(<ClientFormScreen {...defaultProps} />);
-      expect(window.history.pushState).not.toHaveBeenCalled();
-    });
-
-    it('opens the discard dialog when popstate is fired and form has data', async () => {
+  describe('discard dialog (controlled)', () => {
+    it('shows dialog when showDiscardDialog is true', () => {
       render(
         <ClientFormScreen
           {...defaultProps}
-          initialData={sampleData}
+          showDiscardDialog={true}
           onBack={vi.fn()}
         />
       );
-      await act(async () => {
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      });
       expect(screen.getByRole('dialog')).toBeTruthy();
-      expect(screen.getByText('Discard new client?')).toBeTruthy();
     });
 
-    it('does not open the discard dialog when popstate fires but form is empty', async () => {
-      render(<ClientFormScreen {...defaultProps} onBack={vi.fn()} />);
-      await act(async () => {
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      });
+    it('does not show dialog when showDiscardDialog is false', () => {
+      render(<ClientFormScreen {...defaultProps} showDiscardDialog={false} />);
       expect(screen.queryByRole('dialog')).toBeNull();
     });
 
-    it('calls onBack when Continue is clicked after popstate', async () => {
+    it('calls onBack when Continue is clicked', () => {
       const onBack = vi.fn();
       render(
         <ClientFormScreen
           {...defaultProps}
-          initialData={sampleData}
+          showDiscardDialog={true}
           onBack={onBack}
         />
       );
-      await act(async () => {
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      });
       fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
       expect(onBack).toHaveBeenCalledTimes(1);
-      expect(screen.queryByRole('dialog')).toBeNull();
     });
 
-    it('closes dialog without calling onBack when Cancel is clicked', async () => {
-      const onBack = vi.fn();
+    it('calls onDiscardCancel when Cancel is clicked', () => {
+      const onDiscardCancel = vi.fn();
       render(
         <ClientFormScreen
           {...defaultProps}
-          initialData={sampleData}
-          onBack={onBack}
+          showDiscardDialog={true}
+          onDiscardCancel={onDiscardCancel}
         />
       );
-      await act(async () => {
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      });
-      expect(screen.getByRole('dialog')).toBeTruthy();
-
       fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
-      expect(screen.queryByRole('dialog')).toBeNull();
-      expect(onBack).not.toHaveBeenCalled();
+      expect(onDiscardCancel).toHaveBeenCalledTimes(1);
     });
 
-    it('does not crash when Continue is clicked without onBack prop', async () => {
-      render(<ClientFormScreen {...defaultProps} initialData={sampleData} />);
-      await act(async () => {
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      });
+    it('does not crash when Continue is clicked without onBack', () => {
+      render(<ClientFormScreen {...defaultProps} showDiscardDialog={true} />);
       fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
-      expect(screen.queryByRole('dialog')).toBeNull();
+      expect(screen.queryByRole('dialog')).toBeTruthy();
     });
   });
 

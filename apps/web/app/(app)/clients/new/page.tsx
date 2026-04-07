@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
@@ -23,13 +23,47 @@ function clearDraft() {
   sessionStorage.removeItem(STORAGE_KEY);
 }
 
+/** Returns true if the page was loaded via a browser refresh (F5) */
+function isPageReload(): boolean {
+  if (typeof performance === 'undefined') return false;
+  const navEntries = performance.getEntriesByType(
+    'navigation'
+  ) as PerformanceNavigationTiming[];
+  return navEntries.length > 0 && navEntries[0].type === 'reload';
+}
+
 export default function NewClientPage() {
   const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
-  // Load draft once on mount
-  const [initialData] = useState(loadDraft);
+  // Restore draft only on SPA navigation; clear on page refresh
+  const [initialData] = useState(() => {
+    if (isPageReload()) {
+      clearDraft();
+      return undefined;
+    }
+    return loadDraft();
+  });
+
+  const [showDiscardDialog, setShowDiscardDialog] = useState(false);
+
+  useEffect(() => {
+    if (!initialData && !sessionStorage.getItem(STORAGE_KEY)) return;
+
+    const handlePopState = (event: PopStateEvent) => {
+      event.preventDefault();
+      setShowDiscardDialog(true);
+    };
+
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDataChange = useCallback((data: ClientFormData) => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -47,12 +81,19 @@ export default function NewClientPage() {
     navigate('/clients');
   };
 
+  const handleDiscardCancel = () => {
+    setShowDiscardDialog(false);
+    window.history.pushState(null, '', window.location.href);
+  };
+
   return (
     <ClientFormScreen
       onSubmit={handleSubmit}
       initialData={initialData}
       onDataChange={handleDataChange}
       onBack={handleBack}
+      showDiscardDialog={showDiscardDialog}
+      onDiscardCancel={handleDiscardCancel}
       locale={{
         languages: SUPPORTED_LANGUAGES.map((lang) => ({
           code: lang,
