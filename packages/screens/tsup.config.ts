@@ -33,6 +33,7 @@ export default defineConfig({
     'src/client/web.ts',
     'src/client-form/index.ts',
     'src/client-form/web.ts',
+    'src/draft-persistence/index.ts',
   ],
   format: ['cjs', 'esm'],
   dts: true,

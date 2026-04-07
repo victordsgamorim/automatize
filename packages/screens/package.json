@@ -62,6 +62,11 @@
       "types": "./dist/client-form/web.d.ts",
       "import": "./dist/client-form/web.mjs",
       "require": "./dist/client-form/web.js"
+    },
+    "./draft-persistence": {
+      "types": "./dist/draft-persistence/index.d.ts",
+      "import": "./dist/draft-persistence/index.mjs",
+      "require": "./dist/draft-persistence/index.js"
     }
   },
   "scripts": {
