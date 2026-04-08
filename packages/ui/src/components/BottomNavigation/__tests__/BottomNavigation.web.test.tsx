@@ -112,7 +112,7 @@ describe('BottomNavigation — accessibility', () => {
       '[data-slot="bottom-navigation"] button'
     );
     buttons.forEach((btn) => {
-      expect(btn.type).toBe('button');
+      expect((btn as HTMLButtonElement).type).toBe('button');
     });
   });
 });

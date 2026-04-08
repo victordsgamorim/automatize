@@ -417,8 +417,7 @@ describe('SupabaseAuthRemoteDataSource.onAuthStateChange', () => {
     const user = buildRawUser();
     const session = buildRawSession(user);
 
-    let capturedHandler: ((event: string, session: unknown) => void) | null =
-      null;
+    let capturedHandler: (event: string, session: unknown) => void = vi.fn();
     const unsubscribeFn = vi.fn();
 
     const client = buildClient({
@@ -437,8 +436,6 @@ describe('SupabaseAuthRemoteDataSource.onAuthStateChange', () => {
     repo.onAuthStateChange(callback);
 
     // Simulate the SDK firing a SIGNED_IN event
-    if (!capturedHandler)
-      throw new Error('capturedHandler was not set by the mock');
     capturedHandler('SIGNED_IN', session);
 
     expect(callback).toHaveBeenCalledOnce();
@@ -451,8 +448,7 @@ describe('SupabaseAuthRemoteDataSource.onAuthStateChange', () => {
   });
 
   it('passes null user when session is null (SIGNED_OUT)', () => {
-    let capturedHandler: ((event: string, session: unknown) => void) | null =
-      null;
+    let capturedHandler: (event: string, session: unknown) => void = vi.fn();
 
     const client = buildClient({
       onAuthStateChange: vi
@@ -469,8 +465,6 @@ describe('SupabaseAuthRemoteDataSource.onAuthStateChange', () => {
     const repo = new SupabaseAuthRemoteDataSource(client);
     repo.onAuthStateChange(callback);
 
-    if (!capturedHandler)
-      throw new Error('capturedHandler was not set by the mock');
     capturedHandler('SIGNED_OUT', null);
 
     const payload = callback.mock.calls[0][0] as AuthStateChangePayload;

@@ -9,7 +9,12 @@ import type { ClientFormData } from '@automatize/screens/client-form/web';
 
 const STORAGE_KEY = 'automatize:client-form-draft';
 
+function isClient(): boolean {
+  return typeof window !== 'undefined';
+}
+
 function loadDraft(): ClientFormData | undefined {
+  if (!isClient()) return undefined;
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw) as ClientFormData;
@@ -20,11 +25,13 @@ function loadDraft(): ClientFormData | undefined {
 }
 
 function clearDraft() {
+  if (!isClient()) return;
   sessionStorage.removeItem(STORAGE_KEY);
 }
 
 /** Returns true if the page was loaded via a browser refresh (F5) */
 function isPageReload(): boolean {
+  if (!isClient()) return false;
   if (typeof performance === 'undefined') return false;
   const navEntries = performance.getEntriesByType(
     'navigation'
@@ -49,6 +56,7 @@ export default function NewClientPage(): React.JSX.Element {
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
 
   useEffect(() => {
+    if (!isClient()) return;
     if (!initialData && !sessionStorage.getItem(STORAGE_KEY)) return;
 
     const handlePopState = (event: PopStateEvent) => {
@@ -66,6 +74,7 @@ export default function NewClientPage(): React.JSX.Element {
   }, []);
 
   const handleDataChange = useCallback((data: ClientFormData) => {
+    if (!isClient()) return;
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, []);
 
