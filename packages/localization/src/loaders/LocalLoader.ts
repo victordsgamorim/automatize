@@ -22,11 +22,11 @@ const LOCALES: Record<
 export function createLocalLoader(): TranslationLoader {
   return {
     resources: LOCALES,
-    load: async (
+    load: (
       language: SupportedLanguage,
       namespace: SupportedNamespace
     ): Promise<Record<string, string>> => {
-      return LOCALES[language]?.[namespace] ?? {};
+      return Promise.resolve(LOCALES[language]?.[namespace] ?? {});
     },
   };
 }

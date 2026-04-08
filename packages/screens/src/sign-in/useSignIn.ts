@@ -14,7 +14,12 @@ export interface UseSignInResult {
 }
 
 export function useSignIn(): UseSignInResult {
-  const { login, isLoading: authLoading } = useAuth();
+  const auth = useAuth();
+  const login = useCallback(
+    (email: string, password: string) => auth.login(email, password),
+    [auth]
+  );
+  const authLoading = auth.isLoading;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

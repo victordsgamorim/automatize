@@ -239,28 +239,28 @@ describe('SignInScreen (web)', () => {
     it('reflects email value from hook', async () => {
       setMockState({ email: 'user@example.com' });
       await renderScreen();
-      const input = screen.getByLabelText('Email') as HTMLInputElement;
+      const input = screen.getByLabelText('Email');
       expect(input.value).toBe('user@example.com');
     });
 
     it('reflects password value from hook', async () => {
       setMockState({ password: 'mypassword' });
       await renderScreen();
-      const input = screen.getByLabelText('Password') as HTMLInputElement;
+      const input = screen.getByLabelText('Password');
       expect(input.value).toBe('mypassword');
     });
 
     it('renders password as type="password" when showPassword is false', async () => {
       setMockState({ showPassword: false });
       await renderScreen();
-      const input = screen.getByLabelText('Password') as HTMLInputElement;
+      const input = screen.getByLabelText('Password');
       expect(input.type).toBe('password');
     });
 
     it('renders password as type="text" when showPassword is true', async () => {
       setMockState({ showPassword: true });
       await renderScreen();
-      const input = screen.getByLabelText('Password') as HTMLInputElement;
+      const input = screen.getByLabelText('Password');
       expect(input.type).toBe('text');
     });
   });
@@ -271,7 +271,7 @@ describe('SignInScreen (web)', () => {
       await renderScreen();
       const btn = screen.getByRole('button', {
         name: 'Sign In',
-      }) as HTMLButtonElement;
+      });
       expect(btn.disabled).toBe(true);
     });
 
@@ -280,7 +280,7 @@ describe('SignInScreen (web)', () => {
       await renderScreen();
       const btn = screen.getByRole('button', {
         name: 'Sign In',
-      }) as HTMLButtonElement;
+      });
       expect(btn.disabled).toBe(true);
     });
 
@@ -289,7 +289,7 @@ describe('SignInScreen (web)', () => {
       await renderScreen();
       const btn = screen.getByRole('button', {
         name: 'Sign In',
-      }) as HTMLButtonElement;
+      });
       expect(btn.disabled).toBe(false);
     });
 
@@ -302,7 +302,7 @@ describe('SignInScreen (web)', () => {
       await renderScreen();
       const btn = screen.getByRole('button', {
         name: 'Signing in...',
-      }) as HTMLButtonElement;
+      });
       expect(btn.disabled).toBe(true);
     });
   });

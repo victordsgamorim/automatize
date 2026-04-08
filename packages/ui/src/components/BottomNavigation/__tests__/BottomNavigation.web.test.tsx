@@ -100,7 +100,7 @@ describe('BottomNavigation — accessibility', () => {
     renderNav({ items });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLElement>;
+    );
     buttons.forEach((btn, i) => {
       expect(btn.getAttribute('aria-label')).toBe(`Item ${i}`);
     });
@@ -110,7 +110,7 @@ describe('BottomNavigation — accessibility', () => {
     renderNav({ items: makeItems(2) });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLButtonElement>;
+    );
     buttons.forEach((btn) => {
       expect(btn.type).toBe('button');
     });
@@ -125,7 +125,7 @@ describe('BottomNavigation — active state', () => {
     renderNav({ items, activeIndex: 1 });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLElement>;
+    );
     expect(buttons[1].getAttribute('aria-current')).toBe('page');
   });
 
@@ -134,7 +134,7 @@ describe('BottomNavigation — active state', () => {
     renderNav({ items, activeIndex: 0 });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLElement>;
+    );
     expect(buttons[1].getAttribute('aria-current')).toBeNull();
     expect(buttons[2].getAttribute('aria-current')).toBeNull();
   });
@@ -162,7 +162,7 @@ describe('BottomNavigation — active state', () => {
     renderNav({ items, activeIndex: 0 });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLElement>;
+    );
     const inactiveLabel1 = buttons[1].querySelector('strong') as HTMLElement;
     const inactiveLabel2 = buttons[2].querySelector('strong') as HTMLElement;
     expect(inactiveLabel1.className).toContain('opacity-0');
@@ -174,7 +174,7 @@ describe('BottomNavigation — active state', () => {
     renderNav({ items, activeIndex: 2 });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLElement>;
+    );
     const activeIconDiv = buttons[2].querySelector('div') as HTMLElement;
     expect(activeIconDiv.className).toContain('animate-icon-bounce');
   });
@@ -184,7 +184,7 @@ describe('BottomNavigation — active state', () => {
     renderNav({ items, activeIndex: 0 });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLElement>;
+    );
     const inactiveIconDiv1 = buttons[1].querySelector('div') as HTMLElement;
     const inactiveIconDiv2 = buttons[2].querySelector('div') as HTMLElement;
     expect(inactiveIconDiv1.className).not.toContain('animate-icon-bounce');
@@ -235,7 +235,7 @@ describe('BottomNavigation — navigation callbacks', () => {
     renderNav({ items, activeIndex: 0 });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLElement>;
+    );
     fireEvent.click(buttons[2]);
     expect(items[2].onTap).toHaveBeenCalledOnce();
   });
@@ -245,7 +245,7 @@ describe('BottomNavigation — navigation callbacks', () => {
     renderNav({ items, activeIndex: 0 });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLElement>;
+    );
     fireEvent.click(buttons[1]);
     expect(items[0].onTap).not.toHaveBeenCalled();
     expect(items[2].onTap).not.toHaveBeenCalled();
@@ -256,7 +256,7 @@ describe('BottomNavigation — navigation callbacks', () => {
     renderNav({ items, activeIndex: 0 });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLElement>;
+    );
     fireEvent.click(buttons[0]);
     fireEvent.click(buttons[0]);
     expect(items[0].onTap).toHaveBeenCalledTimes(2);
@@ -271,9 +271,11 @@ describe('BottomNavigation — CSS custom properties', () => {
     renderNav({ items, activeIndex: 0 });
     const buttons = document.querySelectorAll(
       '[data-slot="bottom-navigation"] button'
-    ) as NodeListOf<HTMLElement>;
+    );
     buttons.forEach((btn) => {
-      expect(btn.style.getPropertyValue('--lineWidth')).toBe('0px');
+      expect((btn as HTMLElement).style.getPropertyValue('--lineWidth')).toBe(
+        '0px'
+      );
     });
   });
 });

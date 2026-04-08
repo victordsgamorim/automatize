@@ -240,9 +240,7 @@ describe('ForgotPasswordScreen (web)', () => {
         handleSubmit: mockHandleSubmit,
       });
       render(<ForgotPasswordScreen {...defaultProps} />);
-      const input = screen.getByPlaceholderText(
-        'Enter your email'
-      ) as HTMLInputElement;
+      const input = screen.getByPlaceholderText('Enter your email');
       expect(input.value).toBe('test@test.com');
     });
   });
@@ -250,7 +248,7 @@ describe('ForgotPasswordScreen (web)', () => {
   describe('submit button state', () => {
     it('is disabled when email is empty', () => {
       render(<ForgotPasswordScreen {...defaultProps} />);
-      const button = screen.getByText('Send reset link') as HTMLButtonElement;
+      const button = screen.getByText('Send reset link');
       expect(button.disabled).toBe(true);
     });
 
@@ -264,7 +262,7 @@ describe('ForgotPasswordScreen (web)', () => {
         handleSubmit: mockHandleSubmit,
       });
       render(<ForgotPasswordScreen {...defaultProps} />);
-      const button = screen.getByText('Send reset link') as HTMLButtonElement;
+      const button = screen.getByText('Send reset link');
       expect(button.disabled).toBe(false);
     });
 
@@ -278,7 +276,7 @@ describe('ForgotPasswordScreen (web)', () => {
         handleSubmit: mockHandleSubmit,
       });
       render(<ForgotPasswordScreen {...defaultProps} />);
-      const button = screen.getByText('Sending...') as HTMLButtonElement;
+      const button = screen.getByText('Sending...');
       expect(button.disabled).toBe(true);
     });
 

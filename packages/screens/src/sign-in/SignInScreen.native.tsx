@@ -33,9 +33,10 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
     handleSignIn,
   } = useSignIn();
 
-  const onSignIn = async () => {
-    const result = await handleSignIn();
-    if (result.success) onSuccess();
+  const onSignIn = () => {
+    void handleSignIn().then((result) => {
+      if (result.success) onSuccess();
+    });
   };
 
   const styles = StyleSheet.create({

@@ -3,7 +3,7 @@
  * Provides authentication context and route guards for the entire app
  */
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useAuth, useIsAuthenticated } from '@automatize/supabase-auth';
 import { RootErrorBoundary } from '@automatize/ui';
@@ -62,7 +62,7 @@ function RootLayoutContent() {
  * Root Layout component
  * Wraps entire app with error boundary and auth provider
  */
-export default function RootLayout() {
+export default function RootLayout(): React.JSX.Element {
   return (
     <ThemeProvider>
       <LocalizationProvider>

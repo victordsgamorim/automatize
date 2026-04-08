@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useSidebar } from '@automatize/ui/web';
 
 export interface SidebarLogoProps {
@@ -8,7 +9,9 @@ export interface SidebarLogoProps {
   className?: string;
 }
 
-export function SidebarLogo({ brandName = 'Automatize' }: SidebarLogoProps) {
+export function SidebarLogo({
+  brandName = 'Automatize',
+}: SidebarLogoProps): React.JSX.Element {
   const { open, isMobile } = useSidebar();
   const isExpanded = open || isMobile;
 

@@ -131,12 +131,12 @@ describe('useAuthRepository — initial state', () => {
     expect(result.current.failure).toBeNull();
   });
 
-  it('sets user and isLoading=false when INITIAL_SESSION fires with a user', async () => {
+  it('sets user and isLoading=false when INITIAL_SESSION fires with a user', () => {
     const user = buildUser();
     const { repo, fireAuthEvent } = buildRepository();
     const { result } = renderHook(() => useAuthRepository(repo));
 
-    await act(async () => {
+    act(() => {
       fireAuthEvent(initialSession(user));
     });
 
@@ -146,11 +146,11 @@ describe('useAuthRepository — initial state', () => {
     expect(result.current.failure).toBeNull();
   });
 
-  it('sets user=null and isLoading=false when INITIAL_SESSION fires with null', async () => {
+  it('sets user=null and isLoading=false when INITIAL_SESSION fires with null', () => {
     const { repo, fireAuthEvent } = buildRepository();
     const { result } = renderHook(() => useAuthRepository(repo));
 
-    await act(async () => {
+    act(() => {
       fireAuthEvent(initialSession(null));
     });
 
@@ -159,7 +159,7 @@ describe('useAuthRepository — initial state', () => {
     expect(result.current.isAuthenticated).toBe(false);
   });
 
-  it('unsubscribes from auth state changes on unmount', async () => {
+  it('unsubscribes from auth state changes on unmount', () => {
     const unsubscribeFn = vi.fn();
     const { repo } = buildRepository({
       onAuthStateChange: vi
@@ -384,7 +384,7 @@ describe('useAuthRepository — signOut', () => {
     const { result } = renderHook(() => useAuthRepository(repo));
 
     // Seed a user first
-    await act(async () => {
+    act(() => {
       fireAuthEvent(initialSession(user));
     });
     expect(result.current.user).not.toBeNull();
@@ -410,7 +410,7 @@ describe('useAuthRepository — signOut', () => {
 
     const { result } = renderHook(() => useAuthRepository(repo));
 
-    await act(async () => {
+    act(() => {
       fireAuthEvent(initialSession(user));
     });
     await act(async () => {
@@ -466,7 +466,7 @@ describe('useAuthRepository — refreshUser', () => {
 
     const { result } = renderHook(() => useAuthRepository(repo));
 
-    await act(async () => {
+    act(() => {
       fireAuthEvent(initialSession(user));
     });
     await act(async () => {
@@ -532,12 +532,12 @@ describe('useAuthRepository — clearFailure', () => {
 describe('useAuthRepository — auth state changes', () => {
   beforeEach(() => {});
 
-  it('updates user on SIGNED_IN event', async () => {
+  it('updates user on SIGNED_IN event', () => {
     const user = buildUser();
     const { repo, fireAuthEvent } = buildRepository();
     const { result } = renderHook(() => useAuthRepository(repo));
 
-    await act(async () => {
+    act(() => {
       fireAuthEvent({
         event: 'SIGNED_IN',
         user,
@@ -550,15 +550,15 @@ describe('useAuthRepository — auth state changes', () => {
     expect(result.current.user?.id).toBe('user-001');
   });
 
-  it('clears user on SIGNED_OUT event', async () => {
+  it('clears user on SIGNED_OUT event', () => {
     const user = buildUser();
     const { repo, fireAuthEvent } = buildRepository();
     const { result } = renderHook(() => useAuthRepository(repo));
 
-    await act(async () => {
+    act(() => {
       fireAuthEvent(initialSession(user));
     });
-    await act(async () => {
+    act(() => {
       fireAuthEvent({
         event: 'SIGNED_OUT',
         user: null,
@@ -571,16 +571,16 @@ describe('useAuthRepository — auth state changes', () => {
     expect(result.current.user).toBeNull();
   });
 
-  it('updates user on TOKEN_REFRESHED event', async () => {
+  it('updates user on TOKEN_REFRESHED event', () => {
     const user = buildUser();
     const updatedUser = buildUser({ email: 'updated@example.com' });
     const { repo, fireAuthEvent } = buildRepository();
     const { result } = renderHook(() => useAuthRepository(repo));
 
-    await act(async () => {
+    act(() => {
       fireAuthEvent(initialSession(user));
     });
-    await act(async () => {
+    act(() => {
       fireAuthEvent({
         event: 'TOKEN_REFRESHED',
         user: updatedUser,
@@ -593,16 +593,16 @@ describe('useAuthRepository — auth state changes', () => {
     expect(result.current.user?.email).toBe('updated@example.com');
   });
 
-  it('updates user on USER_UPDATED event', async () => {
+  it('updates user on USER_UPDATED event', () => {
     const user = buildUser();
     const updatedUser = buildUser({ email: 'new@example.com' });
     const { repo, fireAuthEvent } = buildRepository();
     const { result } = renderHook(() => useAuthRepository(repo));
 
-    await act(async () => {
+    act(() => {
       fireAuthEvent(initialSession(user));
     });
-    await act(async () => {
+    act(() => {
       fireAuthEvent({
         event: 'USER_UPDATED',
         user: updatedUser,

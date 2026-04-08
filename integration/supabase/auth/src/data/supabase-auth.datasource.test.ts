@@ -14,6 +14,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { SupabaseAuthRemoteDataSource } from './supabase-auth.datasource';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../types/database.types';
+import type { AuthStateChangePayload } from './auth.repository';
 
 // ---------------------------------------------------------------------------
 // Stub helpers
@@ -441,7 +442,7 @@ describe('SupabaseAuthRemoteDataSource.onAuthStateChange', () => {
     capturedHandler('SIGNED_IN', session);
 
     expect(callback).toHaveBeenCalledOnce();
-    const payload = callback.mock.calls[0][0];
+    const payload = callback.mock.calls[0][0] as AuthStateChangePayload;
     expect(payload.event).toBe('SIGNED_IN');
     expect(payload.user?.id).toBe('user-123');
     expect(payload.accessToken).toBe('access-tok-xyz');
@@ -472,7 +473,7 @@ describe('SupabaseAuthRemoteDataSource.onAuthStateChange', () => {
       throw new Error('capturedHandler was not set by the mock');
     capturedHandler('SIGNED_OUT', null);
 
-    const payload = callback.mock.calls[0][0];
+    const payload = callback.mock.calls[0][0] as AuthStateChangePayload;
     expect(payload.event).toBe('SIGNED_OUT');
     expect(payload.user).toBeNull();
     expect(payload.accessToken).toBeNull();

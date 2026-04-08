@@ -85,7 +85,7 @@ vi.mock('@automatize/ui/web', () => ({
       ))}
     </nav>
   ),
-  useSidebar: () => mockUseSidebar(),
+  useSidebar: () => mockUseSidebar() as Record<string, unknown>,
 }));
 
 vi.mock('../AppHeaderActions/AppHeaderActions.web', () => ({

@@ -6,12 +6,5 @@
     "noEmit": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/__tests__",
-    "src/**/*.native.ts",
-    "src/**/*.native.tsx",
-    "src/index.native.ts"
-  ]
+  "exclude": ["node_modules", "dist"]
 }

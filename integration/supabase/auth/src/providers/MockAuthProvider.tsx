@@ -13,7 +13,7 @@
  *   password: Dev@123456
  */
 
-import {
+import React, {
   useCallback,
   useEffect,
   useMemo,
@@ -89,7 +89,9 @@ export interface MockAuthProviderProps {
  * }
  * ```
  */
-export function MockAuthProvider({ children }: MockAuthProviderProps) {
+export function MockAuthProvider({
+  children,
+}: MockAuthProviderProps): React.JSX.Element {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -198,8 +200,8 @@ export function MockAuthProvider({ children }: MockAuthProviderProps) {
     // Mock: single tenant only — no-op.
   }, []);
 
-  const createTenant = useCallback(async (_name: string): Promise<Tenant> => {
-    return _TENANT;
+  const createTenant = useCallback((_name: string): Promise<Tenant> => {
+    return Promise.resolve(_TENANT);
   }, []);
 
   // ---- Context value ------------------------------------------------------

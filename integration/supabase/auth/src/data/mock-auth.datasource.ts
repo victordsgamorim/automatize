@@ -149,13 +149,13 @@ export class MockAuthDataSource implements AuthRepository {
   // signUp
   // -------------------------------------------------------------------------
 
-  async signUp(email: string, password: string): Promise<SignUpResult> {
+  signUp(email: string, password: string): Promise<SignUpResult> {
     if (this.users.has(email)) {
-      return {
+      return Promise.resolve({
         kind: 'failure',
         code: 'user_already_exists',
         message: `Mock: user already exists for email "${email}".`,
-      };
+      });
     }
 
     const user = createSupabaseUser({
@@ -181,61 +181,61 @@ export class MockAuthDataSource implements AuthRepository {
     this.currentUser = user;
     this._notify('SIGNED_IN', user);
 
-    return {
+    return Promise.resolve({
       kind: 'success',
       user,
       accessToken: makeFakeToken(user.id),
       refreshToken: null,
       expiresIn: 900,
-    };
+    });
   }
 
   // -------------------------------------------------------------------------
   // signIn
   // -------------------------------------------------------------------------
 
-  async signIn(email: string, password: string): Promise<SignInResult> {
+  signIn(email: string, password: string): Promise<SignInResult> {
     const stored = this.users.get(email);
 
     if (!stored || stored.password !== password) {
-      return {
+      return Promise.resolve({
         kind: 'failure',
         code: 'invalid_credentials',
         message: 'Mock: invalid email or password.',
-      };
+      });
     }
 
     this.currentUser = stored.user;
     this._notify('SIGNED_IN', stored.user);
 
-    return {
+    return Promise.resolve({
       kind: 'success',
       user: stored.user,
       accessToken: makeFakeToken(stored.user.id),
       refreshToken: null,
       expiresIn: 900,
-    };
+    });
   }
 
   // -------------------------------------------------------------------------
   // signOut
   // -------------------------------------------------------------------------
 
-  async signOut(_scope: 'local' | 'global' = 'local'): Promise<SignOutResult> {
+  signOut(_scope: 'local' | 'global' = 'local'): Promise<SignOutResult> {
     this.currentUser = null;
     this._notify('SIGNED_OUT', null);
-    return { kind: 'success' };
+    return Promise.resolve({ kind: 'success' });
   }
 
   // -------------------------------------------------------------------------
   // getCurrentUser
   // -------------------------------------------------------------------------
 
-  async getCurrentUser(): Promise<GetCurrentUserResult> {
+  getCurrentUser(): Promise<GetCurrentUserResult> {
     if (!this.currentUser) {
-      return { kind: 'unauthenticated' };
+      return Promise.resolve({ kind: 'unauthenticated' });
     }
-    return { kind: 'authenticated', user: this.currentUser };
+    return Promise.resolve({ kind: 'authenticated', user: this.currentUser });
   }
 
   // -------------------------------------------------------------------------

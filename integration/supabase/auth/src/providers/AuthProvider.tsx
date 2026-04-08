@@ -4,7 +4,7 @@
  * Manages session state, login/register, and user data
  */
 
-import { useEffect, useState, useCallback, ReactNode } from 'react';
+import React, { useEffect, useState, useCallback, ReactNode } from 'react';
 import { AuthContext } from '@automatize/auth';
 import { supabase } from '../client';
 import { tokenStorage } from '../storage/tokenStorage';
@@ -36,7 +36,9 @@ export interface AuthProviderProps {
  * }
  * ```
  */
-export function AuthProvider({ children }: AuthProviderProps) {
+export function AuthProvider({
+  children,
+}: AuthProviderProps): React.JSX.Element {
   // Auth state
   const [user, setUser] = useState<AuthUser | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -63,7 +65,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       if (data.session && data.session.user) {
-        setUser(data.session.user as AuthUser);
+        setUser(data.session.user);
         setIsAuthenticated(true);
 
         // Load user profile
@@ -190,7 +192,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         });
 
         // Update state
-        setUser(data.user as AuthUser);
+        setUser(data.user);
         setIsAuthenticated(true);
 
         // Load profile
@@ -287,7 +289,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             userId: data.user.id,
           });
 
-          setUser(data.user as AuthUser);
+          setUser(data.user);
           setIsAuthenticated(true);
           await loadUserProfile(data.user.id);
         }
@@ -498,14 +500,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
    */
   useEffect(() => {
     // Restore session on mount
-    restoreSession();
+    void restoreSession();
 
     // Subscribe to auth state changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        setUser(session.user as AuthUser);
+        setUser(session.user);
         setIsAuthenticated(true);
         await loadUserProfile(session.user.id);
       } else if (event === 'SIGNED_OUT') {
@@ -516,7 +518,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const storage = tokenStorage();
         await storage.clearTokens();
       } else if (event === 'USER_UPDATED' && session) {
-        setUser(session.user as AuthUser);
+        setUser(session.user);
       }
     });
 

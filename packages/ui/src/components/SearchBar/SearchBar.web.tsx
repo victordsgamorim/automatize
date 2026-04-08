@@ -31,7 +31,7 @@ function SearchBar({
   onSearchChange,
   className,
   children,
-}: SearchBarProps) {
+}: SearchBarProps): React.JSX.Element {
   const [open, setOpen] = useState(false);
   const [isMac, setIsMac] = useState(false);
 

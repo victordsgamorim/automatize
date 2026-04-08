@@ -24,7 +24,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export function AuthProviderWrapper({ children }: Props) {
+export function AuthProviderWrapper({ children }: Props): React.JSX.Element {
   // -------------------------------------------------------------------------
   // Mock mode — no initialization needed, render immediately
   // -------------------------------------------------------------------------

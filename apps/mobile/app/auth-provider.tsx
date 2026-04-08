@@ -3,7 +3,7 @@
  * Initializes auth and wraps the app with AuthProvider
  */
 
-import { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { AuthProvider } from '@automatize/supabase-auth';
 import { initializeAuthForMobile } from '@/lib/auth-init';
 
@@ -11,7 +11,9 @@ interface Props {
   children: ReactNode;
 }
 
-export function AuthProviderWrapper({ children }: Props) {
+export function AuthProviderWrapper({
+  children,
+}: Props): React.JSX.Element | null {
   const [isAuthInitialized, setIsAuthInitialized] = useState(false);
   const [initError, setInitError] = useState<Error | null>(null);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { DateRangePicker, SearchBar } from '@automatize/ui/web';
 import { ProfileDropdown } from '../ProfileDropdown/ProfileDropdown.web';
 import type { DateRange } from '@automatize/ui/web';
@@ -15,7 +15,7 @@ export function AppHeaderActions({
   searchBarProps,
   profile,
   profileMenuItems,
-}: AppHeaderActionsProps) {
+}: AppHeaderActionsProps): React.JSX.Element {
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
   const dateFnsLocale = useMemo(

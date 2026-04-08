@@ -20,7 +20,10 @@ export interface ProfileDropdownProps {
   menuItems: SidebarProfileMenuItem[];
 }
 
-export function ProfileDropdown({ profile, menuItems }: ProfileDropdownProps) {
+export function ProfileDropdown({
+  profile,
+  menuItems,
+}: ProfileDropdownProps): React.JSX.Element {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

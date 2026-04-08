@@ -3,11 +3,12 @@
  * Email and password authentication using cross-platform SignInScreen
  */
 
+import React from 'react';
 import { router } from 'expo-router';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { SignInScreen } from '@automatize/screens/sign-in';
 
-export default function LoginScreen() {
+export default function LoginScreen(): React.JSX.Element {
   const { i18n, t } = useTranslation();
 
   return (

@@ -34,9 +34,7 @@ describe('Checkbox (web)', () => {
 
   it('applies disabled attribute when disabled', () => {
     render(<Checkbox disabled />);
-    const checkbox = document.querySelector(
-      '[data-slot="checkbox"]'
-    ) as HTMLButtonElement | null;
+    const checkbox = document.querySelector('[data-slot="checkbox"]');
     expect(checkbox?.disabled).toBe(true);
   });
 

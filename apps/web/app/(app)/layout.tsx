@@ -182,7 +182,11 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
 
 /* ─── Layout shell — wraps inner content in Suspense (required by useSearchParams) ── */
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default function AppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.JSX.Element | null {
   return (
     <Suspense>
       <AppLayoutContent>{children}</AppLayoutContent>

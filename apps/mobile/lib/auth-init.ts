@@ -22,8 +22,8 @@ function getSupabaseConfig(): AuthConfig {
   }
 
   return {
-    supabaseUrl: expoConfig.supabaseUrl,
-    supabaseAnonKey: expoConfig.supabaseAnonKey,
+    supabaseUrl: String(expoConfig.supabaseUrl),
+    supabaseAnonKey: String(expoConfig.supabaseAnonKey),
   };
 }
 

@@ -40,9 +40,7 @@ describe('Input (web)', () => {
 
   it('applies disabled attribute when disabled', () => {
     render(<Input disabled />);
-    expect((screen.getByRole('textbox') as HTMLInputElement).disabled).toBe(
-      true
-    );
+    expect(screen.getByRole('textbox').disabled).toBe(true);
   });
 
   it('applies custom className', () => {
@@ -52,9 +50,7 @@ describe('Input (web)', () => {
 
   it('forwards value prop', () => {
     render(<Input value="prefilled" onChange={vi.fn()} />);
-    expect((screen.getByRole('textbox') as HTMLInputElement).value).toBe(
-      'prefilled'
-    );
+    expect(screen.getByRole('textbox').value).toBe('prefilled');
   });
 
   it('forwards ref', () => {

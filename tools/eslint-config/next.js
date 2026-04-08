@@ -6,9 +6,6 @@ module.exports = {
     },
   },
   rules: {
-    // TypeScript (override base)
-    '@typescript-eslint/no-explicit-any': 'warn',
-
     // React
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',

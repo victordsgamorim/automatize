@@ -14,7 +14,7 @@ export function BottomNavigation({
   items,
   activeIndex,
   className,
-}: BottomNavigationProps) {
+}: BottomNavigationProps): React.JSX.Element {
   const textRefs = useRef<(HTMLElement | null)[]>([]);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 

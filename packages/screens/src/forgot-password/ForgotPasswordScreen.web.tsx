@@ -21,9 +21,9 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
     if (error) toast.error(error);
   }, [error]);
 
-  const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await handleSubmit();
+    void handleSubmit();
   };
 
   return (

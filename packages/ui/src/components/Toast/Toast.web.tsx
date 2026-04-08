@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   X,
@@ -44,7 +44,7 @@ const toastStore = {
     action?: string,
     onAction?: () => void,
     onUndoAction?: () => void
-  ) {
+  ): void {
     const id = toastId++;
     const toast: Toast = {
       id,
@@ -86,21 +86,21 @@ const toastStore = {
     this.notify();
   },
 
-  remove(id: number) {
+  remove(id: number): void {
     const toast = toastStore.toasts.find((t) => t.id === id);
     if (toast?.timeout) clearTimeout(toast.timeout);
     toastStore.toasts = toastStore.toasts.filter((t) => t.id !== id);
     toastStore.notify();
   },
 
-  subscribe(listener: () => void) {
+  subscribe(listener: () => void): () => void {
     toastStore.listeners.add(listener);
     return () => {
       toastStore.listeners.delete(listener);
     };
   },
 
-  notify() {
+  notify(): void {
     toastStore.listeners.forEach((fn) => fn());
   },
 };
@@ -109,7 +109,7 @@ const toastStore = {
 export { toastStore as _toastStore };
 
 /** Exported only for testing — do not use in production code. */
-export const _resetToastStore = () => {
+export const _resetToastStore = (): void => {
   toastStore.toasts.forEach((t) => {
     if (t.timeout) clearTimeout(t.timeout);
   });
@@ -301,7 +301,11 @@ const ToastContainer = () => {
  * It renders the ToastContainer as a portal directly into document.body,
  * so toasts always overlay everything regardless of page layout.
  */
-export function ToastProvider({ children }: { children: ReactNode }) {
+export function ToastProvider({
+  children,
+}: {
+  children: ReactNode;
+}): React.JSX.Element {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -324,7 +328,12 @@ interface ToastMessage {
   onUndoAction?: () => void;
 }
 
-export const useToasts = () => {
+export const useToasts = (): {
+  message: (msg: ToastMessage) => void;
+  success: (text: string) => void;
+  warning: (text: string) => void;
+  error: (text: string) => void;
+} => {
   return {
     message: useCallback(
       ({ text, preserve, action, onAction, onUndoAction }: ToastMessage) => {

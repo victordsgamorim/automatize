@@ -3,10 +3,11 @@
  * Stack layout for authentication screens (login, register, MFA, etc.)
  */
 
+import React from 'react';
 import { Stack } from 'expo-router';
 import { useTheme } from '@automatize/theme';
 
-export default function AuthLayout() {
+export default function AuthLayout(): React.JSX.Element {
   const { colors: theme } = useTheme();
 
   return (

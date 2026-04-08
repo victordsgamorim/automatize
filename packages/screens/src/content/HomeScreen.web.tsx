@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import {
   SidebarProvider,
   SidebarLayout,
@@ -76,7 +77,7 @@ function HomeScreenContent({
   );
 }
 
-export function HomeScreen(props: HomeScreenProps) {
+export function HomeScreen(props: HomeScreenProps): React.JSX.Element {
   return (
     <SidebarProvider>
       <HomeScreenContent {...props} />

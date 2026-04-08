@@ -12,7 +12,9 @@ export interface ThemeProviderProps {
   children: React.ReactNode;
 }
 
-export function ThemeProvider({ children }: ThemeProviderProps) {
+export function ThemeProvider({
+  children,
+}: ThemeProviderProps): React.JSX.Element {
   const systemTheme = useSystemColorScheme();
 
   // Always initialise with deterministic defaults so server and client produce

@@ -11,7 +11,7 @@ vi.mock('@automatize/ui/web', async () => {
     await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   return {
     ...actual,
-    useSidebar: () => mockUseSidebar(),
+    useSidebar: () => mockUseSidebar() as Record<string, unknown>,
   };
 });
 

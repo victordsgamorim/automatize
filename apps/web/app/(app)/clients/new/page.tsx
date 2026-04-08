@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
@@ -32,7 +32,7 @@ function isPageReload(): boolean {
   return navEntries.length > 0 && navEntries[0].type === 'reload';
 }
 
-export default function NewClientPage() {
+export default function NewClientPage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();

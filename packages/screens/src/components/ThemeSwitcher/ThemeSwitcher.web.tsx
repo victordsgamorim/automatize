@@ -53,7 +53,7 @@ export function ThemeSwitcher({
   options = DEFAULT_OPTIONS,
   onPreferenceChange,
   triggerAriaLabel = 'Change theme',
-}: ThemeSwitcherProps) {
+}: ThemeSwitcherProps): React.JSX.Element {
   const TriggerIcon = isDark ? Moon : Sun;
 
   return (

@@ -151,16 +151,17 @@ export function parseValidationErrors(
     Array.isArray(error.errors)
   ) {
     const fieldErrors: Record<string, string> = {};
-    for (const err of error.errors) {
+    for (const err of error.errors as unknown[]) {
       if (
         err &&
         typeof err === 'object' &&
         'path' in err &&
         'message' in err &&
-        Array.isArray(err.path)
+        Array.isArray((err as { path: unknown }).path)
       ) {
-        const field = String(err.path[0]);
-        fieldErrors[field] = String(err.message);
+        const typedErr = err as { path: unknown[]; message: unknown };
+        const field = String(typedErr.path[0]);
+        fieldErrors[field] = String(typedErr.message);
       }
     }
     return Object.keys(fieldErrors).length > 0 ? fieldErrors : null;

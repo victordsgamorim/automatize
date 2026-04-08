@@ -31,21 +31,21 @@ import { cn } from '../../utils';
 /** Root provider — controls open/close state via `open` / `onOpenChange`. */
 function Popover({
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+}: React.ComponentProps<typeof PopoverPrimitive.Root>): React.JSX.Element {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />;
 }
 
 /** Trigger element — toggles the popover. Pass `asChild` to use a custom element. */
 function PopoverTrigger({
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
+}: React.ComponentProps<typeof PopoverPrimitive.Trigger>): React.JSX.Element {
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
 }
 
 /** Alternative positioning anchor — the panel aligns to this instead of the trigger. */
 function PopoverAnchor({
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
+}: React.ComponentProps<typeof PopoverPrimitive.Anchor>): React.JSX.Element {
   return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;
 }
 
@@ -59,7 +59,7 @@ function PopoverContent({
   align = 'start',
   sideOffset = 4,
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+}: React.ComponentProps<typeof PopoverPrimitive.Content>): React.JSX.Element {
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
@@ -79,7 +79,7 @@ function PopoverContent({
 /** Close button — closes the popover when clicked. Optional convenience wrapper. */
 function PopoverClose({
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Close>) {
+}: React.ComponentProps<typeof PopoverPrimitive.Close>): React.JSX.Element {
   return <PopoverPrimitive.Close data-slot="popover-close" {...props} />;
 }
 

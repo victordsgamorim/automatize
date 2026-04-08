@@ -60,7 +60,10 @@ export function useIsAuthenticated(): boolean {
 /**
  * Hook to get current user
  */
-export function useCurrentUser() {
+export function useCurrentUser(): {
+  user: AuthContextType['user'];
+  userProfile: AuthContextType['userProfile'];
+} {
   const { user, userProfile } = useAuth();
   return { user, userProfile };
 }
@@ -68,7 +71,7 @@ export function useCurrentUser() {
 /**
  * Hook to get current tenant
  */
-export function useCurrentTenant() {
+export function useCurrentTenant(): AuthContextType['currentTenant'] {
   const { currentTenant } = useAuth();
   return currentTenant;
 }
@@ -76,9 +79,12 @@ export function useCurrentTenant() {
 /**
  * Hook to logout
  */
-export function useLogout() {
-  const { logout, isLoading } = useAuth();
-  return { logout, isLoading };
+export function useLogout(): {
+  logout: () => Promise<void>;
+  isLoading: boolean;
+} {
+  const auth = useAuth();
+  return { logout: () => auth.logout(), isLoading: auth.isLoading };
 }
 
 /**

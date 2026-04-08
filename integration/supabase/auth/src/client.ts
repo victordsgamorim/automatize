@@ -84,7 +84,7 @@ export type SupabaseClient = SupabaseClientType<Database>;
 export const supabase = new Proxy({} as SupabaseClientType<Database>, {
   get(target, prop) {
     const client = getSupabaseClient();
-    return Reflect.get(client, prop);
+    return Reflect.get(client, prop) as unknown;
   },
 });
 

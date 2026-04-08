@@ -31,7 +31,7 @@ export function LanguageSwitcher({
   currentLanguage,
   onLanguageChange,
   triggerAriaLabel,
-}: LanguageSwitcherProps) {
+}: LanguageSwitcherProps): React.JSX.Element {
   const currentOption = languages.find((l) => l.code === currentLanguage);
   const triggerCode =
     currentOption?.ext ??
