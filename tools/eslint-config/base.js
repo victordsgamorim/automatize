@@ -63,6 +63,8 @@ module.exports = {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
         // Test callbacks frequently use async without await for act() flushing
         '@typescript-eslint/require-await': 'off',
+        // Testing Library query return types can differ between tsc and eslint resolution
+        '@typescript-eslint/no-unnecessary-type-assertion': 'off',
       },
     },
   ],

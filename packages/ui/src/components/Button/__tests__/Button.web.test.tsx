@@ -37,7 +37,9 @@ describe('Button (web)', () => {
 
   it('applies disabled attribute when disabled', () => {
     render(<Button disabled>Click</Button>);
-    expect(screen.getByRole('button').disabled).toBe(true);
+    expect((screen.getByRole('button') as HTMLButtonElement).disabled).toBe(
+      true
+    );
   });
 
   it('applies greyed-out styling classes when disabled', () => {

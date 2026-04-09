@@ -241,7 +241,7 @@ describe('ForgotPasswordScreen (web)', () => {
       });
       render(<ForgotPasswordScreen {...defaultProps} />);
       const input = screen.getByPlaceholderText('Enter your email');
-      expect(input.value).toBe('test@test.com');
+      expect((input as HTMLInputElement).value).toBe('test@test.com');
     });
   });
 
@@ -249,7 +249,7 @@ describe('ForgotPasswordScreen (web)', () => {
     it('is disabled when email is empty', () => {
       render(<ForgotPasswordScreen {...defaultProps} />);
       const button = screen.getByText('Send reset link');
-      expect(button.disabled).toBe(true);
+      expect((button as HTMLButtonElement).disabled).toBe(true);
     });
 
     it('is enabled when email is provided', () => {
@@ -263,7 +263,7 @@ describe('ForgotPasswordScreen (web)', () => {
       });
       render(<ForgotPasswordScreen {...defaultProps} />);
       const button = screen.getByText('Send reset link');
-      expect(button.disabled).toBe(false);
+      expect((button as HTMLButtonElement).disabled).toBe(false);
     });
 
     it('is disabled when loading', () => {
@@ -277,7 +277,7 @@ describe('ForgotPasswordScreen (web)', () => {
       });
       render(<ForgotPasswordScreen {...defaultProps} />);
       const button = screen.getByText('Sending...');
-      expect(button.disabled).toBe(true);
+      expect((button as HTMLButtonElement).disabled).toBe(true);
     });
 
     it('shows loading text when submitting', () => {

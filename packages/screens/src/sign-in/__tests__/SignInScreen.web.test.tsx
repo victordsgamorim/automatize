@@ -240,28 +240,28 @@ describe('SignInScreen (web)', () => {
       setMockState({ email: 'user@example.com' });
       await renderScreen();
       const input = screen.getByLabelText('Email');
-      expect(input.value).toBe('user@example.com');
+      expect((input as HTMLInputElement).value).toBe('user@example.com');
     });
 
     it('reflects password value from hook', async () => {
       setMockState({ password: 'mypassword' });
       await renderScreen();
       const input = screen.getByLabelText('Password');
-      expect(input.value).toBe('mypassword');
+      expect((input as HTMLInputElement).value).toBe('mypassword');
     });
 
     it('renders password as type="password" when showPassword is false', async () => {
       setMockState({ showPassword: false });
       await renderScreen();
       const input = screen.getByLabelText('Password');
-      expect(input.type).toBe('password');
+      expect((input as HTMLInputElement).type).toBe('password');
     });
 
     it('renders password as type="text" when showPassword is true', async () => {
       setMockState({ showPassword: true });
       await renderScreen();
       const input = screen.getByLabelText('Password');
-      expect(input.type).toBe('text');
+      expect((input as HTMLInputElement).type).toBe('text');
     });
   });
 
@@ -272,7 +272,7 @@ describe('SignInScreen (web)', () => {
       const btn = screen.getByRole('button', {
         name: 'Sign In',
       });
-      expect(btn.disabled).toBe(true);
+      expect((btn as HTMLButtonElement).disabled).toBe(true);
     });
 
     it('is disabled when password is empty', async () => {
@@ -281,7 +281,7 @@ describe('SignInScreen (web)', () => {
       const btn = screen.getByRole('button', {
         name: 'Sign In',
       });
-      expect(btn.disabled).toBe(true);
+      expect((btn as HTMLButtonElement).disabled).toBe(true);
     });
 
     it('is enabled when both email and password are provided', async () => {
@@ -290,7 +290,7 @@ describe('SignInScreen (web)', () => {
       const btn = screen.getByRole('button', {
         name: 'Sign In',
       });
-      expect(btn.disabled).toBe(false);
+      expect((btn as HTMLButtonElement).disabled).toBe(false);
     });
 
     it('is disabled and shows "Signing in..." when isLoading is true', async () => {
@@ -303,7 +303,7 @@ describe('SignInScreen (web)', () => {
       const btn = screen.getByRole('button', {
         name: 'Signing in...',
       });
-      expect(btn.disabled).toBe(true);
+      expect((btn as HTMLButtonElement).disabled).toBe(true);
     });
   });
 

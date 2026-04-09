@@ -234,11 +234,15 @@ describe('ClientFormScreen (web)', () => {
 
     it('clears form fields when clicked, without opening the dialog', () => {
       render(<ClientFormScreen {...defaultProps} initialData={sampleData} />);
-      expect(screen.getByLabelText('Name').value).toBe('Alice');
+      expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe(
+        'Alice'
+      );
 
       fireEvent.click(screen.getByRole('button', { name: 'Reset form' }));
 
-      expect(screen.getByLabelText('Name').value).toBe('');
+      expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe(
+        ''
+      );
       expect(screen.queryByRole('dialog')).toBeNull();
     });
 
