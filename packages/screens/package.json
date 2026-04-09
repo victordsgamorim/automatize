@@ -79,6 +79,7 @@
   },
   "dependencies": {
     "@automatize/auth": "workspace:*",
+    "@automatize/form-validator": "workspace:*",
     "@automatize/core-localization": "workspace:*",
     "@automatize/core-theme": "workspace:*",
     "@automatize/utils": "workspace:*",

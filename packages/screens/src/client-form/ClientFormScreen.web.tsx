@@ -21,6 +21,7 @@ import {
   DialogFooter,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
+import { formatCpf, formatCnpj } from '@automatize/form-validator';
 import type { ClientFormScreenProps } from './ClientFormScreen.types';
 import { useClientForm } from './useClientForm';
 
@@ -53,25 +54,6 @@ const BRAZILIAN_STATES = [
   { value: 'SP', label: 'Sao Paulo' },
   { value: 'TO', label: 'Tocantins' },
 ] as const;
-
-/** Formats a raw digit string as CPF: 000.000.000-00 */
-function formatCpf(value: string): string {
-  const digits = value.replace(/\D/g, '').slice(0, 11);
-  return digits
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-}
-
-/** Formats a raw digit string as CNPJ: 00.000.000/0000-00 */
-function formatCnpj(value: string): string {
-  const digits = value.replace(/\D/g, '').slice(0, 14);
-  return digits
-    .replace(/(\d{2})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1/$2')
-    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
-}
 
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onSubmit,
