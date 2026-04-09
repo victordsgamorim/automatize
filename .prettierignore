@@ -1,7 +1,15 @@
 node_modules
 dist
+build
 .turbo
 .expo
+.next
+.vercel
+.cache
 coverage
 pnpm-lock.yaml
 *.log
+
+# Generated files — never reformat
+**/next-env.d.ts
+**/*.tsbuildinfo
