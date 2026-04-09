@@ -31,7 +31,7 @@ const GENERATED_CSS_PATH = path.join(UI_ROOT, 'src', 'styles', '_tokens.css');
 
 function loadSourceJson(filename: string): Record<string, unknown> {
   const raw = fs.readFileSync(path.join(TOKENS_DIR, filename), 'utf-8');
-  return JSON.parse(raw);
+  return JSON.parse(raw) as Record<string, unknown>;
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -181,7 +181,7 @@ describe('Mobile (TypeScript) — colors.ts', () => {
         const shades = colorData[palette];
         for (const [shade, shadeObj] of Object.entries(shades)) {
           if (shade.startsWith('$')) continue;
-          const expectedValue = (shadeObj as Record<string, string>)['$value'];
+          const expectedValue = shadeObj['$value'];
           // The generated TS contains the value as a string literal
           expect(fileContent).toContain(expectedValue);
         }
@@ -191,23 +191,17 @@ describe('Mobile (TypeScript) — colors.ts', () => {
 
   describe('semantic colors resolve references correctly', () => {
     it('should resolve semantic.primary to color.brand.600', () => {
-      const expected = (colorData['brand']['600'] as Record<string, string>)[
-        '$value'
-      ];
+      const expected = colorData['brand']['600']['$value'];
       expect(fileContent).toContain(`primary: '${expected}'`);
     });
 
     it('should resolve semantic.destructive to color.error.600', () => {
-      const expected = (colorData['error']['600'] as Record<string, string>)[
-        '$value'
-      ];
+      const expected = colorData['error']['600']['$value'];
       expect(fileContent).toContain(`destructive: '${expected}'`);
     });
 
     it('should resolve semantic.success to color.success.600', () => {
-      const expected = (colorData['success']['600'] as Record<string, string>)[
-        '$value'
-      ];
+      const expected = colorData['success']['600']['$value'];
       expect(fileContent).toContain(`success: '${expected}'`);
     });
   });
@@ -373,7 +367,9 @@ describe('Mobile (TypeScript) — shadows.ts', () => {
       ] as Record<string, unknown>;
       const expectedElevation = extensions?.elevation;
       if (expectedElevation !== undefined) {
-        expect(fileContent).toContain(`elevation: ${expectedElevation}`);
+        expect(fileContent).toContain(
+          `elevation: ${String(expectedElevation)}`
+        );
       }
     }
   });
@@ -582,9 +578,7 @@ describe('Web (CSS) — _tokens.css', () => {
         for (const [shade, shadeObj] of Object.entries(shades)) {
           if (shade.startsWith('$')) continue;
           const varName = `--color-${palette}-${shade}`;
-          const expectedValue = (shadeObj as Record<string, string>)[
-            '$value'
-          ].toLowerCase();
+          const expectedValue = shadeObj['$value'].toLowerCase();
           expect(cssVars.has(varName), `Missing CSS var: ${varName}`).toBe(
             true
           );
@@ -763,7 +757,7 @@ describe('Cross-platform consistency (TS ↔ CSS)', () => {
       if (palette.startsWith('$')) continue;
       for (const [shade, shadeObj] of Object.entries(shades)) {
         if (shade.startsWith('$')) continue;
-        const expected = (shadeObj as Record<string, string>)['$value'];
+        const expected = shadeObj['$value'];
         const cssVar = `--color-${palette}-${shade}`;
 
         // TS file has the value
@@ -837,7 +831,7 @@ describe('Token completeness', () => {
       for (const [shade, shadeObj] of Object.entries(shades)) {
         if (shade.startsWith('$')) continue;
         tokenCount++;
-        const value = (shadeObj as Record<string, string>)['$value'];
+        const value = shadeObj['$value'];
         expect(tsContent).toContain(value);
       }
     }

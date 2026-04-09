@@ -1,11 +1,7 @@
 import React, { useCallback } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { usePathname, useRouter } from 'expo-router';
-import type {
-  NavigationMenuProps,
-  NavigationMenuItem,
-  NavigationMenuGroup,
-} from '../types';
+import type { NavigationMenuProps, NavigationMenuItem } from '../types';
 import { isGroupedMenu } from '../types';
 
 /**
@@ -41,7 +37,7 @@ export function NavigationMenu({
 
   // Flatten groups into a single item list for bottom-tab rendering.
   const flatItems: NavigationMenuItem[] = isGroupedMenu(items)
-    ? (items as NavigationMenuGroup[]).flatMap((g) => g.items)
+    ? items.flatMap((g) => g.items)
     : items;
 
   return (

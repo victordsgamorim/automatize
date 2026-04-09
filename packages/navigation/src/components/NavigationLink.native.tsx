@@ -21,7 +21,7 @@ export function NavigationLink({
 }: NavigationLinkProps): React.ReactElement {
   const handleExternalPress = useCallback(() => {
     onPress?.();
-    Linking.openURL(href);
+    void Linking.openURL(href);
   }, [href, onPress]);
 
   if (external) {

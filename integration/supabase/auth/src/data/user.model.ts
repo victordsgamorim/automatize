@@ -252,7 +252,7 @@ export function isPhoneConfirmed(user: SupabaseUser): boolean {
  * Falls back to "email" when the field is absent.
  */
 export function getPrimaryProvider(user: SupabaseUser): string {
-  return (user.app_metadata.provider as string | undefined) ?? 'email';
+  return user.app_metadata.provider ?? 'email';
 }
 
 /**

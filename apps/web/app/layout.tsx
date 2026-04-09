@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import { AuthProviderWrapper } from './auth-provider';
@@ -24,7 +25,11 @@ export const metadata: Metadata = {
   description: 'Professional invoice and client management',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}): React.JSX.Element {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>

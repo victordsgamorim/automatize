@@ -35,8 +35,9 @@ export function decodeJWT<T = Record<string, unknown>>(
     }
 
     // Decode payload (second part)
-    const payload = parts[1] as string;
-    const decoded = JSON.parse(decodeBase64(payload));
+    const payload = parts[1];
+    if (!payload) return null;
+    const decoded: unknown = JSON.parse(decodeBase64(payload));
     return decoded as T;
   } catch (error) {
     console.error('Failed to decode JWT:', error);
@@ -52,7 +53,7 @@ export function getJWTClaims(token: string): JWTClaims | null {
   if (!payload) return null;
 
   try {
-    return jwtClaimsSchema.parse(payload as JWTClaims);
+    return jwtClaimsSchema.parse(payload);
   } catch (error) {
     console.error('Invalid JWT claims:', error);
     return null;

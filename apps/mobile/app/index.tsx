@@ -1,8 +1,9 @@
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 import { useTheme } from '@automatize/theme';
 
-export default function Index() {
+export default function Index(): React.JSX.Element {
   const { colors: theme } = useTheme();
 
   const styles = StyleSheet.create({

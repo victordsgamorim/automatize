@@ -21,17 +21,19 @@ export interface LocalizationProviderProps {
 function TranslationBridge({ children }: { children: React.ReactNode }) {
   const { t, i18n } = useI18nextTranslation();
 
-  const value = useMemo<TranslationContextValue>(
-    () => ({
-      t: (key: string, options?: Record<string, unknown>) =>
-        String(t(key, options as never)),
-      language: i18n.language,
-      changeLanguage: (code: string) => {
-        i18n.changeLanguage(code);
+  const value = useMemo<TranslationContextValue>(() => {
+    const translateFn = t;
+    const i18nInstance = i18n;
+    return {
+      t: (key: string, options?: Record<string, unknown>): string => {
+        return String(translateFn(key, options as never));
       },
-    }),
-    [t, i18n]
-  );
+      language: i18nInstance.language,
+      changeLanguage: (code: string): void => {
+        void i18nInstance.changeLanguage(code);
+      },
+    };
+  }, [t, i18n]);
 
   return (
     <TranslationContext.Provider value={value}>
@@ -40,7 +42,9 @@ function TranslationBridge({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function LocalizationProvider({ children }: LocalizationProviderProps) {
+export function LocalizationProvider({
+  children,
+}: LocalizationProviderProps): React.JSX.Element {
   // After initLocalization() is called (at module level in the app entry),
   // the instance is available synchronously — even before async init resolves.
   // This guarantees children are always rendered, avoiding SSR hydration mismatch.

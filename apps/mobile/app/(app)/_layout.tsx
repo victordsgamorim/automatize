@@ -4,6 +4,7 @@
  * Only accessible when authenticated
  */
 
+import React from 'react';
 import { useColorScheme } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useAuth } from '@automatize/supabase-auth';
@@ -14,7 +15,7 @@ import { useTheme } from '@automatize/theme';
  * App Tabs Layout Component
  * Provides tab navigation for authenticated users
  */
-export default function AppLayout() {
+export default function AppLayout(): React.JSX.Element {
   const { colors: theme } = useTheme();
   const { currentTenant } = useAuth();
   const _colorScheme = useColorScheme();

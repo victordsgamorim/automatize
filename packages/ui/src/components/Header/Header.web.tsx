@@ -11,7 +11,11 @@ export interface HeaderProps {
   className?: string;
 }
 
-export function Header({ title, actions, className }: HeaderProps) {
+export function Header({
+  title,
+  actions,
+  className,
+}: HeaderProps): React.JSX.Element {
   return (
     <header
       className={cn(

@@ -22,7 +22,7 @@ import { useAuth } from './useAuth';
  * }
  * ```
  */
-export function useSession() {
+export function useSession(): void {
   const { isAuthenticated } = useAuth();
   const refreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isRefreshingRef = useRef(false);
@@ -96,7 +96,7 @@ export function useSession() {
         // Schedule refresh 5 minutes before expiry (or in 10 minutes, whichever is sooner)
         const refreshInSeconds = Math.max(300, timeRemaining - 300);
         refreshTimerRef.current = setTimeout(() => {
-          refreshAccessToken();
+          void refreshAccessToken();
           scheduleRefresh(); // Schedule next refresh
         }, refreshInSeconds * 1000);
       } catch (error) {
@@ -104,7 +104,7 @@ export function useSession() {
       }
     };
 
-    getTokenExpiry();
+    void getTokenExpiry();
   }, [isAuthenticated, refreshAccessToken]);
 
   /**

@@ -45,7 +45,7 @@ export function initLocalization(
   if (loader.resources) {
     // Synchronous path — resources are already in memory.
     // Pass them directly to init() so translations are available immediately.
-    inst.use(initReactI18next).init({
+    void inst.use(initReactI18next).init({
       ...sharedOpts,
       resources: loader.resources,
       initImmediate: true,

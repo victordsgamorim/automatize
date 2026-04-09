@@ -25,7 +25,26 @@ import type { Tenant, TenantMember } from '../types/auth.types';
  * }
  * ```
  */
-export function useTenant() {
+export function useTenant(): {
+  tenants: Tenant[];
+  currentTenant: Tenant | null;
+  members: TenantMember[];
+  isLoading: boolean;
+  error: string | null;
+  fetchTenants: () => Promise<void>;
+  fetchTenantMembers: (tenantId?: string) => Promise<void>;
+  createTenant: (name: string, slug?: string) => Promise<Tenant>;
+  switchTenant: (tenantId: string) => Promise<void>;
+  addMember: (
+    userId: string,
+    role: 'admin' | 'editor' | 'viewer'
+  ) => Promise<void>;
+  updateMemberRole: (
+    userId: string,
+    role: 'admin' | 'editor' | 'viewer'
+  ) => Promise<void>;
+  removeMember: (userId: string) => Promise<void>;
+} {
   const { currentTenant, user } = useAuth();
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [members, setMembers] = useState<TenantMember[]>([]);
@@ -300,7 +319,7 @@ export function useTenant() {
    * Load tenants on mount
    */
   useEffect(() => {
-    fetchTenants();
+    void fetchTenants();
   }, [fetchTenants]);
 
   /**
@@ -308,7 +327,7 @@ export function useTenant() {
    */
   useEffect(() => {
     if (currentTenant) {
-      fetchTenantMembers(currentTenant.id);
+      void fetchTenantMembers(currentTenant.id);
     }
   }, [currentTenant?.id, fetchTenantMembers]);
 

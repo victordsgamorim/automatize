@@ -13,7 +13,7 @@ export interface CheckboxProps extends React.ComponentProps<
   typeof CheckboxPrimitive.Root
 > {}
 
-function Checkbox({ className, ...props }: CheckboxProps) {
+function Checkbox({ className, ...props }: CheckboxProps): React.JSX.Element {
   return (
     <CheckboxPrimitive.Root
       data-slot="checkbox"

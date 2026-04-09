@@ -4,8 +4,13 @@ import type {
   UseDraftPersistenceResult,
 } from './useDraftPersistence.types';
 
+function isClient(): boolean {
+  return typeof window !== 'undefined';
+}
+
 /** Returns true if the page was loaded via a browser refresh (F5) */
 function isPageReload(): boolean {
+  if (!isClient()) return false;
   if (typeof performance === 'undefined') return false;
   const navEntries = performance.getEntriesByType(
     'navigation'
@@ -19,6 +24,7 @@ export function useDraftPersistence<T>(
   const { storageKey } = options;
 
   const loadDraft = useCallback((): T | undefined => {
+    if (!isClient()) return undefined;
     try {
       const raw = sessionStorage.getItem(storageKey);
       if (raw) return JSON.parse(raw) as T;
@@ -29,6 +35,7 @@ export function useDraftPersistence<T>(
   }, [storageKey]);
 
   const clearDraft = useCallback(() => {
+    if (!isClient()) return;
     sessionStorage.removeItem(storageKey);
   }, [storageKey]);
 
@@ -42,6 +49,7 @@ export function useDraftPersistence<T>(
 
   const save = useCallback(
     (data: T) => {
+      if (!isClient()) return;
       sessionStorage.setItem(storageKey, JSON.stringify(data));
     },
     [storageKey]

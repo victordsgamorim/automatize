@@ -23,8 +23,8 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   const { email, setEmail, error, isLoading, isSuccess, handleSubmit } =
     useForgotPassword();
 
-  const onSubmit = async () => {
-    await handleSubmit();
+  const onSubmit = () => {
+    void handleSubmit();
   };
 
   const styles = StyleSheet.create({

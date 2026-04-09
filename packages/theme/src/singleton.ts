@@ -1,4 +1,10 @@
-import type { Theme, ThemePreference, ThemeConfig, ThemeState } from './types';
+import type {
+  Theme,
+  ThemePreference,
+  ThemeConfig,
+  ThemeState,
+  ThemeStorageAdapter,
+} from './types';
 
 // Module-level singleton — lives for the entire JS runtime session.
 let _config: ThemeConfig | null = null;
@@ -79,7 +85,7 @@ export function getThemeAsync(): Promise<ThemeState> {
 /**
  * Returns the storage adapter (if any) passed to initTheme().
  */
-export function getStorageAdapter() {
+export function getStorageAdapter(): ThemeStorageAdapter | null {
   return _config?.storageAdapter ?? null;
 }
 

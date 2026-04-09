@@ -14,6 +14,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { SupabaseAuthRemoteDataSource } from './supabase-auth.datasource';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../types/database.types';
+import type { AuthStateChangePayload } from './auth.repository';
 
 // ---------------------------------------------------------------------------
 // Stub helpers
@@ -416,8 +417,7 @@ describe('SupabaseAuthRemoteDataSource.onAuthStateChange', () => {
     const user = buildRawUser();
     const session = buildRawSession(user);
 
-    let capturedHandler: ((event: string, session: unknown) => void) | null =
-      null;
+    let capturedHandler: (event: string, session: unknown) => void = vi.fn();
     const unsubscribeFn = vi.fn();
 
     const client = buildClient({
@@ -436,12 +436,10 @@ describe('SupabaseAuthRemoteDataSource.onAuthStateChange', () => {
     repo.onAuthStateChange(callback);
 
     // Simulate the SDK firing a SIGNED_IN event
-    if (!capturedHandler)
-      throw new Error('capturedHandler was not set by the mock');
     capturedHandler('SIGNED_IN', session);
 
     expect(callback).toHaveBeenCalledOnce();
-    const payload = callback.mock.calls[0][0];
+    const payload = callback.mock.calls[0][0] as AuthStateChangePayload;
     expect(payload.event).toBe('SIGNED_IN');
     expect(payload.user?.id).toBe('user-123');
     expect(payload.accessToken).toBe('access-tok-xyz');
@@ -450,8 +448,7 @@ describe('SupabaseAuthRemoteDataSource.onAuthStateChange', () => {
   });
 
   it('passes null user when session is null (SIGNED_OUT)', () => {
-    let capturedHandler: ((event: string, session: unknown) => void) | null =
-      null;
+    let capturedHandler: (event: string, session: unknown) => void = vi.fn();
 
     const client = buildClient({
       onAuthStateChange: vi
@@ -468,11 +465,9 @@ describe('SupabaseAuthRemoteDataSource.onAuthStateChange', () => {
     const repo = new SupabaseAuthRemoteDataSource(client);
     repo.onAuthStateChange(callback);
 
-    if (!capturedHandler)
-      throw new Error('capturedHandler was not set by the mock');
     capturedHandler('SIGNED_OUT', null);
 
-    const payload = callback.mock.calls[0][0];
+    const payload = callback.mock.calls[0][0] as AuthStateChangePayload;
     expect(payload.event).toBe('SIGNED_OUT');
     expect(payload.user).toBeNull();
     expect(payload.accessToken).toBeNull();

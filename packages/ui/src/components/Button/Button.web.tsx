@@ -60,7 +60,7 @@ function Button({
   size,
   asChild = false,
   ...props
-}: ButtonProps) {
+}: ButtonProps): React.JSX.Element {
   const Comp = asChild ? Slot : 'button';
 
   return (

@@ -3,6 +3,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2022,
     sourceType: 'module',
+    project: true,
   },
   env: {
     node: true,
@@ -11,23 +12,60 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-type-checked',
     'prettier',
   ],
   plugins: ['@typescript-eslint'],
-  ignorePatterns: ['dist', 'node_modules', '*.config.js', '*.config.ts'],
+  ignorePatterns: [
+    'dist',
+    'node_modules',
+    'coverage',
+    '*.config.js',
+    '*.config.ts',
+    '*.config.mjs',
+    '.eslintrc.js',
+  ],
   rules: {
-    // TypeScript
+    // TypeScript — type safety
     '@typescript-eslint/no-unused-vars': [
       'error',
       { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
     ],
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/explicit-module-boundary-types': 'warn',
     '@typescript-eslint/no-non-null-assertion': 'warn',
+    '@typescript-eslint/no-floating-promises': 'error',
+    '@typescript-eslint/no-misused-promises': 'error',
+    '@typescript-eslint/ban-ts-comment': [
+      'error',
+      {
+        'ts-ignore': true,
+        'ts-expect-error': 'allow-with-description',
+        'ts-nocheck': true,
+        minimumDescriptionLength: 10,
+      },
+    ],
 
-    // General
+    // General — safety and style
     'no-console': ['warn', { allow: ['warn', 'error'] }],
     'prefer-const': 'error',
     'no-var': 'error',
+    'no-unused-expressions': 'error',
+    'max-depth': ['warn', 3],
   },
+  overrides: [
+    {
+      files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
+      rules: {
+        // Vitest/Jest mock methods trigger false positives
+        '@typescript-eslint/unbound-method': 'off',
+        // Test files often don't need explicit return types
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+        // Test callbacks frequently use async without await for act() flushing
+        '@typescript-eslint/require-await': 'off',
+        // Testing Library query return types can differ between tsc and eslint resolution
+        '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      },
+    },
+  ],
 };

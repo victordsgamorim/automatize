@@ -1,10 +1,11 @@
 'use client';
 
+import React from 'react';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { SettingsScreen } from '@automatize/screens/settings/web';
 
-export default function SettingsPage() {
+export default function SettingsPage(): React.JSX.Element {
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 

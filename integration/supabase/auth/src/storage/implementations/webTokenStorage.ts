@@ -43,7 +43,7 @@ export class WebTokenStorage implements ITokenStorage {
     }
   }
 
-  async saveTokens(tokens: StoredTokens): Promise<void> {
+  saveTokens(tokens: StoredTokens): Promise<void> {
     try {
       if (!this.isLocalStorageAvailable()) {
         throw new Error('localStorage is not available');
@@ -67,70 +67,73 @@ export class WebTokenStorage implements ITokenStorage {
       if (tokens.userId) {
         localStorage.setItem(STORAGE_KEYS.USER_ID, tokens.userId);
       }
+
+      return Promise.resolve();
     } catch (error) {
       console.error('Failed to save tokens:', error);
       throw new Error('Failed to save authentication tokens');
     }
   }
 
-  async getAccessToken(): Promise<string | null> {
+  getAccessToken(): Promise<string | null> {
     try {
       if (!this.isLocalStorageAvailable()) {
-        return null;
+        return Promise.resolve(null);
       }
-      return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+      return Promise.resolve(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN));
     } catch (error) {
       console.error('Failed to retrieve access token:', error);
-      return null;
+      return Promise.resolve(null);
     }
   }
 
-  async getRefreshToken(): Promise<string | null> {
+  getRefreshToken(): Promise<string | null> {
     try {
       if (!this.isLocalStorageAvailable()) {
-        return null;
+        return Promise.resolve(null);
       }
-      return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+      return Promise.resolve(localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN));
     } catch (error) {
       console.error('Failed to retrieve refresh token:', error);
-      return null;
+      return Promise.resolve(null);
     }
   }
 
-  async getUserId(): Promise<string | null> {
+  getUserId(): Promise<string | null> {
     try {
       if (!this.isLocalStorageAvailable()) {
-        return null;
+        return Promise.resolve(null);
       }
-      return localStorage.getItem(STORAGE_KEYS.USER_ID);
+      return Promise.resolve(localStorage.getItem(STORAGE_KEYS.USER_ID));
     } catch (error) {
       console.error('Failed to retrieve user ID:', error);
-      return null;
+      return Promise.resolve(null);
     }
   }
 
-  async getTokenExpiry(): Promise<number | null> {
+  getTokenExpiry(): Promise<number | null> {
     try {
       if (!this.isLocalStorageAvailable()) {
-        return null;
+        return Promise.resolve(null);
       }
       const expiry = localStorage.getItem(STORAGE_KEYS.EXPIRY);
-      return expiry ? parseInt(expiry, 10) : null;
+      return Promise.resolve(expiry ? parseInt(expiry, 10) : null);
     } catch (error) {
       console.error('Failed to retrieve token expiry:', error);
-      return null;
+      return Promise.resolve(null);
     }
   }
 
-  async clearTokens(): Promise<void> {
+  clearTokens(): Promise<void> {
     try {
       if (!this.isLocalStorageAvailable()) {
-        return;
+        return Promise.resolve();
       }
       localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.EXPIRY);
       localStorage.removeItem(STORAGE_KEYS.USER_ID);
+      return Promise.resolve();
     } catch (error) {
       console.error('Failed to clear tokens:', error);
       throw new Error('Failed to clear authentication tokens');

@@ -1,11 +1,12 @@
 'use client';
 
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { SignInScreen } from '@automatize/screens/sign-in/web';
 
-export default function LoginPage() {
+export default function LoginPage(): React.JSX.Element {
   const router = useRouter();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();

@@ -93,7 +93,7 @@ export function Table<T>({
   exportLabel = 'Export',
   toolbarLeft,
   toolbarRight,
-}: TableProps<T>) {
+}: TableProps<T>): React.JSX.Element {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortKey, setSortKey] = useState<string | null>(null);

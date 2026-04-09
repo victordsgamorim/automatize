@@ -3,6 +3,7 @@
  * Simple icon wrappers for common icons
  */
 
+import React from 'react';
 import { View, ViewStyle } from 'react-native';
 
 const DEFAULT_ICON_COLOR = '#171717';
@@ -20,7 +21,7 @@ export function HomeIcon({
   color = DEFAULT_ICON_COLOR,
   size = 24,
   style,
-}: IconProps) {
+}: IconProps): React.JSX.Element {
   return (
     <View
       style={[
@@ -67,7 +68,7 @@ export function UserIcon({
   color = DEFAULT_ICON_COLOR,
   size = 24,
   style,
-}: IconProps) {
+}: IconProps): React.JSX.Element {
   return (
     <View
       style={[
@@ -116,7 +117,7 @@ export function BuildingIcon({
   color = DEFAULT_ICON_COLOR,
   size = 24,
   style,
-}: IconProps) {
+}: IconProps): React.JSX.Element {
   return (
     <View
       style={[
@@ -181,7 +182,7 @@ export function LogOutIcon({
   color = DEFAULT_ICON_COLOR,
   size = 24,
   style,
-}: IconProps) {
+}: IconProps): React.JSX.Element {
   return (
     <View
       style={[

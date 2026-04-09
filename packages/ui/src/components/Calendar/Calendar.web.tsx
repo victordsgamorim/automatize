@@ -33,7 +33,7 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   ...props
-}: CalendarProps) {
+}: CalendarProps): React.JSX.Element {
   return (
     <DayPicker
       data-slot="calendar"

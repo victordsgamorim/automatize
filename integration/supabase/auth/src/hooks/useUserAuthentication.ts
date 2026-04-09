@@ -126,31 +126,21 @@ export interface UserAuthentication {
  * @throws {Error} When called outside of an AuthProvider tree.
  */
 export function useUserAuthentication(): UserAuthentication {
-  const {
-    user,
-    userProfile,
-    currentTenant,
-    isAuthenticated,
-    isLoading,
-    error,
-    login,
-    logout,
-    register,
-    resetPassword,
-    updatePassword,
-  } = useAuth();
+  const auth = useAuth();
 
   return {
-    user,
-    userProfile,
-    currentTenant,
-    isAuthenticated,
-    isLoading,
-    error,
-    login,
-    logout,
-    register,
-    resetPassword,
-    updatePassword,
+    user: auth.user,
+    userProfile: auth.userProfile,
+    currentTenant: auth.currentTenant,
+    isAuthenticated: auth.isAuthenticated,
+    isLoading: auth.isLoading,
+    error: auth.error,
+    login: (email: string, password: string, mfaCode?: string) =>
+      auth.login(email, password, mfaCode),
+    logout: () => auth.logout(),
+    register: (email: string, password: string, displayName: string) =>
+      auth.register(email, password, displayName),
+    resetPassword: (email: string) => auth.resetPassword(email),
+    updatePassword: (newPassword: string) => auth.updatePassword(newPassword),
   };
 }

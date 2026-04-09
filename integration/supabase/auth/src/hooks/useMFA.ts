@@ -41,7 +41,22 @@ export interface MFASetupState {
  * }
  * ```
  */
-export function useMFA() {
+export function useMFA(): {
+  isLoading: boolean;
+  error: string | null;
+  enrollMFA: () => Promise<MFASetupState>;
+  verifyMFA: (totpCode: string, backupCodes: string[]) => Promise<void>;
+  verifyChallengeWithTOTP: (
+    factorId: string,
+    totpCode: string
+  ) => Promise<void>;
+  verifyChallengeWithBackupCode: (
+    factorId: string,
+    backupCode: string
+  ) => Promise<void>;
+  disableMFA: () => Promise<void>;
+  regenerateBackupCodes: () => Promise<string[]>;
+} {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -91,7 +106,7 @@ export function useMFA() {
    * Verify MFA setup (confirm TOTP code)
    */
   const verifyMFA = useCallback(
-    async (totpCode: string, backupCodes: string[]): Promise<void> => {
+    (totpCode: string, backupCodes: string[]): Promise<void> => {
       setIsLoading(true);
       setError(null);
 
@@ -123,6 +138,8 @@ export function useMFA() {
         if (!totpCode) {
           throw new Error('TOTP code is required');
         }
+
+        return Promise.resolve();
       } catch (err) {
         const message =
           err instanceof Error ? err.message : 'Failed to verify MFA';
@@ -239,7 +256,7 @@ export function useMFA() {
   /**
    * Regenerate backup codes
    */
-  const regenerateBackupCodes = useCallback(async (): Promise<string[]> => {
+  const regenerateBackupCodes = useCallback((): Promise<string[]> => {
     setIsLoading(true);
     setError(null);
 
@@ -249,7 +266,7 @@ export function useMFA() {
       // In production, would save to database
       // const { error } = await api.post('/mfa/backup-codes', { codes });
 
-      return codes;
+      return Promise.resolve(codes);
     } catch (err) {
       const message =
         err instanceof Error

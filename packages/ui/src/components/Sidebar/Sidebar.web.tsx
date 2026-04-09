@@ -38,7 +38,7 @@ const SidebarContext = createContext<SidebarContextValue | undefined>(
   undefined
 );
 
-export function useSidebar() {
+export function useSidebar(): SidebarContextValue {
   const ctx = useContext(SidebarContext);
   if (!ctx) {
     throw new Error('useSidebar must be used within a <SidebarProvider>');
@@ -58,7 +58,7 @@ export function SidebarProvider({
   defaultOpen = true,
   children,
   className,
-}: SidebarProviderProps) {
+}: SidebarProviderProps): React.JSX.Element {
   const [open, setOpen] = useState(defaultOpen);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -105,7 +105,10 @@ export interface SidebarRootProps {
   className?: string;
 }
 
-export function Sidebar({ children, className }: SidebarRootProps) {
+export function Sidebar({
+  children,
+  className,
+}: SidebarRootProps): React.JSX.Element {
   const { open, setOpen, isMobile } = useSidebar();
 
   if (isMobile) {
@@ -150,7 +153,7 @@ function MobileSidebar({
   open: boolean;
   onClose: () => void;
   className?: string;
-}) {
+}): React.JSX.Element {
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -216,7 +219,10 @@ export interface SidebarHeaderProps {
   className?: string;
 }
 
-export function SidebarHeader({ children, className }: SidebarHeaderProps) {
+export function SidebarHeader({
+  children,
+  className,
+}: SidebarHeaderProps): React.JSX.Element {
   return (
     <div
       data-slot="sidebar-header"
@@ -234,7 +240,10 @@ export interface SidebarContentProps {
   className?: string;
 }
 
-export function SidebarContent({ children, className }: SidebarContentProps) {
+export function SidebarContent({
+  children,
+  className,
+}: SidebarContentProps): React.JSX.Element {
   return (
     <div
       data-slot="sidebar-content"
@@ -252,7 +261,10 @@ export interface SidebarFooterProps {
   className?: string;
 }
 
-export function SidebarFooter({ children, className }: SidebarFooterProps) {
+export function SidebarFooter({
+  children,
+  className,
+}: SidebarFooterProps): React.JSX.Element {
   return (
     <div
       data-slot="sidebar-footer"
@@ -272,7 +284,9 @@ export interface SidebarTriggerProps {
   className?: string;
 }
 
-export function SidebarTrigger({ className }: SidebarTriggerProps) {
+export function SidebarTrigger({
+  className,
+}: SidebarTriggerProps): React.JSX.Element {
   const { open, toggle, isMobile } = useSidebar();
 
   if (isMobile) {
@@ -327,7 +341,7 @@ export function SidebarLink({
   active = false,
   onClick,
   className,
-}: SidebarLinkProps) {
+}: SidebarLinkProps): React.JSX.Element {
   const { open, isMobile } = useSidebar();
   const isExpanded = open || isMobile;
 
@@ -394,7 +408,7 @@ export function SidebarGroup({
   children,
   label,
   className,
-}: SidebarGroupProps) {
+}: SidebarGroupProps): React.JSX.Element {
   const { open, isMobile } = useSidebar();
   const isExpanded = open || isMobile;
 
@@ -459,7 +473,11 @@ export interface SidebarNavProps {
  * grouped by optional `group` labels. Each item carries its own `onTap`
  * callback so the consumer controls what happens per item (e.g. routing).
  */
-export function SidebarNav({ items, activeIndex, className }: SidebarNavProps) {
+export function SidebarNav({
+  items,
+  activeIndex,
+  className,
+}: SidebarNavProps): React.JSX.Element {
   // Group items while preserving original indices
   const groups = useMemo(() => {
     const result: {
@@ -532,7 +550,7 @@ function SidebarProfileDropdown({
 }: {
   profile: SidebarProfileConfig;
   menuItems: SidebarProfileMenuItem[];
-}) {
+}): React.JSX.Element {
   const { open, isMobile } = useSidebar();
   const isExpanded = open || isMobile;
 
@@ -627,7 +645,7 @@ export function SidebarLayout({
   profile,
   profileMenuItems,
   className,
-}: SidebarLayoutProps) {
+}: SidebarLayoutProps): React.JSX.Element {
   const { open, isMobile } = useSidebar();
   const isExpanded = open || isMobile;
 

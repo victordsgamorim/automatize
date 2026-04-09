@@ -81,7 +81,7 @@ function DateRangePicker({
   locale,
   dateFormat = 'MMM d, yyyy',
   className,
-}: DateRangePickerProps) {
+}: DateRangePickerProps): React.JSX.Element {
   // Popover open/close state
   const [open, setOpen] = useState(false);
 

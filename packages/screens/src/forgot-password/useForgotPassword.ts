@@ -11,7 +11,12 @@ export interface UseForgotPasswordResult {
 }
 
 export function useForgotPassword(): UseForgotPasswordResult {
-  const { resetPassword, isLoading: authLoading } = useAuth();
+  const auth = useAuth();
+  const resetPassword = useCallback(
+    (email: string) => auth.resetPassword(email),
+    [auth]
+  );
+  const authLoading = auth.isLoading;
 
   const [email, setEmail] = useState('');
   const [localError, setLocalError] = useState<string | null>(null);

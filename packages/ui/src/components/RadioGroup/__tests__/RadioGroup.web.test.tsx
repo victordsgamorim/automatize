@@ -91,9 +91,7 @@ describe('RadioGroup (web)', () => {
         <RadioGroupItem value="b" />
       </RadioGroup>
     );
-    const items = document.querySelectorAll(
-      '[data-slot="radio-group-item"]'
-    ) as NodeListOf<HTMLElement>;
+    const items = document.querySelectorAll('[data-slot="radio-group-item"]');
     expect(items[0].getAttribute('data-state')).toBe('unchecked');
     expect(items[1].getAttribute('data-state')).toBe('checked');
   });
@@ -120,9 +118,7 @@ describe('RadioGroup (web)', () => {
         <RadioGroupItem value="b" />
       </RadioGroup>
     );
-    const items = document.querySelectorAll(
-      '[data-slot="radio-group-item"]'
-    ) as NodeListOf<HTMLElement>;
+    const items = document.querySelectorAll('[data-slot="radio-group-item"]');
     fireEvent.click(items[1]);
     expect(onValueChange).toHaveBeenCalledWith('b');
   });
@@ -134,9 +130,7 @@ describe('RadioGroup (web)', () => {
         <RadioGroupItem value="b" />
       </RadioGroup>
     );
-    let items = document.querySelectorAll(
-      '[data-slot="radio-group-item"]'
-    ) as NodeListOf<HTMLElement>;
+    let items = document.querySelectorAll('[data-slot="radio-group-item"]');
     expect(items[0].getAttribute('data-state')).toBe('checked');
 
     rerender(
@@ -145,9 +139,7 @@ describe('RadioGroup (web)', () => {
         <RadioGroupItem value="b" />
       </RadioGroup>
     );
-    items = document.querySelectorAll(
-      '[data-slot="radio-group-item"]'
-    ) as NodeListOf<HTMLElement>;
+    items = document.querySelectorAll('[data-slot="radio-group-item"]');
     expect(items[1].getAttribute('data-state')).toBe('checked');
   });
 
@@ -161,9 +153,7 @@ describe('RadioGroup (web)', () => {
         <RadioGroupItem value="b" disabled />
       </RadioGroup>
     );
-    const items = document.querySelectorAll(
-      '[data-slot="radio-group-item"]'
-    ) as NodeListOf<HTMLElement>;
+    const items = document.querySelectorAll('[data-slot="radio-group-item"]');
     fireEvent.click(items[1]);
     expect(onValueChange).not.toHaveBeenCalled();
   });

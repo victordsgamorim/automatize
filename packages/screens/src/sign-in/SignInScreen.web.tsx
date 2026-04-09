@@ -40,10 +40,11 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
     if (error) toast.error(error);
   }, [error]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const result = await handleSignIn();
-    if (result.success) onSuccess();
+    void handleSignIn().then((result) => {
+      if (result.success) onSuccess();
+    });
   };
 
   return (

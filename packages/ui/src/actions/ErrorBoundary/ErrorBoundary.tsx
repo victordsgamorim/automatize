@@ -5,7 +5,7 @@
  * Catches errors in the component tree and displays fallback UI
  */
 
-import { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { colors, spacing } from '../../tokens';
 import { Text } from '../../components/Text/Text.native';
@@ -42,7 +42,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.setState({
       error,
       errorInfo,
@@ -61,7 +61,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
     }
   }
 
-  reset = () => {
+  reset = (): void => {
     this.setState({
       hasError: false,
       error: null,
@@ -69,7 +69,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
     });
   };
 
-  render() {
+  render(): React.ReactNode {
     if (this.state.hasError) {
       // Use custom fallback if provided
       if (this.props.fallback && this.state.error) {
@@ -167,7 +167,9 @@ export interface RootErrorBoundaryProps {
   children: ReactNode;
 }
 
-export const RootErrorBoundary = ({ children }: RootErrorBoundaryProps) => {
+export const RootErrorBoundary = ({
+  children,
+}: RootErrorBoundaryProps): React.JSX.Element => {
   return (
     <ErrorBoundary
       name="RootErrorBoundary"
