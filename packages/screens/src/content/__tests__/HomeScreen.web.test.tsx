@@ -27,7 +27,7 @@ const mockUseSidebar = vi.fn().mockReturnValue({
   toggle: vi.fn(),
 });
 
-vi.mock('../SidebarLogo/SidebarLogo.web', () => ({
+vi.mock('../components/SidebarLogo/SidebarLogo.web', () => ({
   SidebarLogo: () => <div data-testid="sidebar-logo" />,
 }));
 
@@ -85,10 +85,16 @@ vi.mock('@automatize/ui/web', () => ({
       ))}
     </nav>
   ),
+  DateRangePicker: (props: Record<string, unknown>) => (
+    <div data-testid="date-range-picker" {...props} />
+  ),
+  SearchBar: (props: Record<string, unknown>) => (
+    <div data-testid="search-bar" {...props} />
+  ),
   useSidebar: () => mockUseSidebar() as Record<string, unknown>,
 }));
 
-vi.mock('../AppHeaderActions/AppHeaderActions.web', () => ({
+vi.mock('../components/AppHeaderActions/AppHeaderActions.web', () => ({
   AppHeaderActions: (props: Record<string, unknown>) => (
     <div data-testid="app-header-actions" data-has-profile={!!props.profile} />
   ),
