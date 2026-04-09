@@ -11,6 +11,8 @@ packages:
   - 'packages/navigation'
   # Cross-platform screens (sign-in, forgot-password, content, settings)
   - 'packages/screens'
+  # Form validation (Zod schemas + formatters)
+  - 'packages/form-validator'
   # Integration — local infrastructure
   - 'integration/storage'
   - 'integration/sync'

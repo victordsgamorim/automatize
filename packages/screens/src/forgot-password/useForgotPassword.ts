@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
-import { useAuth, resetPasswordRequestSchema } from '@automatize/auth';
+import { useAuth } from '@automatize/auth';
+import { resetPasswordFormSchema } from '@automatize/form-validator';
 
 export interface UseForgotPasswordResult {
   email: string;
@@ -26,7 +27,7 @@ export function useForgotPassword(): UseForgotPasswordResult {
   const handleSubmit = useCallback(async (): Promise<{ success: boolean }> => {
     setLocalError(null);
 
-    const result = resetPasswordRequestSchema.safeParse({ email });
+    const result = resetPasswordFormSchema.safeParse({ email });
     if (!result.success) {
       const firstError = result.error.issues[0]?.message ?? 'Invalid input';
       setLocalError(firstError);

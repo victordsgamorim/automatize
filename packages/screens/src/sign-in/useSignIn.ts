@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
-import { useAuth, loginSchema } from '@automatize/auth';
+import { useAuth } from '@automatize/auth';
+import { loginFormSchema } from '@automatize/form-validator';
 
 export interface UseSignInResult {
   email: string;
@@ -34,7 +35,7 @@ export function useSignIn(): UseSignInResult {
   const handleSignIn = useCallback(async (): Promise<{ success: boolean }> => {
     setLocalError(null);
 
-    const result = loginSchema.safeParse({ email, password });
+    const result = loginFormSchema.safeParse({ email, password });
     if (!result.success) {
       const firstError = result.error.issues[0]?.message ?? 'Invalid input';
       setLocalError(firstError);
