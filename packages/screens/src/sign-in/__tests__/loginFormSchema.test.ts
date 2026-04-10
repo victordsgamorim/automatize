@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { loginFormSchema } from '../../src/schemas/login-form';
+import { loginFormSchema } from '../loginFormSchema';
 
 describe('loginFormSchema', () => {
   it('accepts valid email and password', () => {

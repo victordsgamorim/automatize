@@ -732,6 +732,9 @@ importers:
       lucide-react-native:
         specifier: 'catalog:'
         version: 0.309.0(react-native-svg@14.2.0(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0))(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0)
+      zod:
+        specifier: 'catalog:'
+        version: 4.3.6
     devDependencies:
       '@automatize/tsconfig':
         specifier: workspace:*

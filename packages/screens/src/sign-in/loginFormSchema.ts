@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import { emailSchema } from '../validators/email';
-import { passwordSchema } from '../validators/password';
+import { emailSchema, passwordSchema } from '@automatize/form-validator';
 
 export const loginFormSchema = z.object({
   email: emailSchema,
