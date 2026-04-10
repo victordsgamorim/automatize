@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from '@automatize/auth';
-import { loginFormSchema } from '@automatize/form-validator';
+import { loginFormSchema } from './loginFormSchema';
 
 export interface UseSignInResult {
   email: string;

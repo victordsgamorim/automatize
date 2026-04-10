@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { emailSchema } from '../validators/email';
+import { emailSchema } from '@automatize/form-validator';
 
 export const resetPasswordFormSchema = z.object({
   email: emailSchema,

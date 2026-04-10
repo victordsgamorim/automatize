@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from '@automatize/auth';
-import { resetPasswordFormSchema } from '@automatize/form-validator';
+import { resetPasswordFormSchema } from './resetPasswordFormSchema';
 
 export interface UseForgotPasswordResult {
   email: string;

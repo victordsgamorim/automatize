@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { clientFormSchema } from '../../src/schemas/client-form';
+import { clientFormSchema } from '../clientFormSchema';
 
 const validIndividualForm = {
   clientType: 'individual' as const,

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resetPasswordFormSchema } from '../../src/schemas/reset-password-form';
+import { resetPasswordFormSchema } from '../resetPasswordFormSchema';
 
 describe('resetPasswordFormSchema', () => {
   it('accepts valid email', () => {

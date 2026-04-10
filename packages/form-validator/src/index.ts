@@ -13,13 +13,3 @@ export {
 
 // Formatters
 export { formatCpf, formatCnpj, formatPhone } from './formatters';
-
-// Form schemas
-export {
-  loginFormSchema,
-  resetPasswordFormSchema,
-  clientFormSchema,
-  type LoginFormInput,
-  type ResetPasswordFormInput,
-  type ClientFormInput,
-} from './schemas';

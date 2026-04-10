@@ -1,9 +1,11 @@
 import { z } from 'zod';
-import { nameSchema } from '../validators/name';
-import { cpfSchema } from '../validators/cpf';
-import { cnpjSchema } from '../validators/cnpj';
-import { phoneSchema } from '../validators/phone';
-import { addressSchema } from '../validators/address';
+import {
+  nameSchema,
+  cpfSchema,
+  cnpjSchema,
+  phoneSchema,
+  addressSchema,
+} from '@automatize/form-validator';
 
 export const clientFormSchema = z.object({
   clientType: z.enum(['individual', 'business']),
