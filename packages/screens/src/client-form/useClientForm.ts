@@ -41,7 +41,7 @@ export interface UseClientFormResult {
   document: string;
   setDocument: (document: string) => void;
   addresses: Address[];
-  addAddress: () => void;
+  addAddress: (data?: Partial<Omit<Address, 'id'>>) => void;
   removeAddress: (id: string) => void;
   updateAddress: (
     id: string,
@@ -68,9 +68,7 @@ export function useClientForm(
   const [name, setName] = useState(initialData?.name ?? '');
   const [document, setDocument] = useState(initialData?.document ?? '');
   const [addresses, setAddresses] = useState<Address[]>(
-    initialData?.addresses?.length
-      ? initialData.addresses
-      : [createEmptyAddress()]
+    initialData?.addresses ?? []
   );
   const [phones, setPhones] = useState<Phone[]>(
     initialData?.phones?.length ? initialData.phones : [createEmptyPhone()]
@@ -92,14 +90,12 @@ export function useClientForm(
     setDocument('');
   }, []);
 
-  const addAddress = useCallback(() => {
-    setAddresses((prev) => [...prev, createEmptyAddress()]);
+  const addAddress = useCallback((data?: Partial<Omit<Address, 'id'>>) => {
+    setAddresses((prev) => [...prev, { ...createEmptyAddress(), ...data }]);
   }, []);
 
   const removeAddress = useCallback((id: string) => {
-    setAddresses((prev) =>
-      prev.length > 1 ? prev.filter((a) => a.id !== id) : prev
-    );
+    setAddresses((prev) => prev.filter((a) => a.id !== id));
   }, []);
 
   const updateAddress = useCallback(
@@ -142,7 +138,7 @@ export function useClientForm(
     setClientTypeState('individual');
     setName('');
     setDocument('');
-    setAddresses([createEmptyAddress()]);
+    setAddresses([]);
     setPhones([createEmptyPhone()]);
   }, []);
 

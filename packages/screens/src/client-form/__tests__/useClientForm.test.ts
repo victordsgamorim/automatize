@@ -12,8 +12,7 @@ describe('useClientForm', () => {
       expect(result.current.clientType).toBe('individual');
       expect(result.current.name).toBe('');
       expect(result.current.document).toBe('');
-      expect(result.current.addresses).toHaveLength(1);
-      expect(result.current.addresses[0].street).toBe('');
+      expect(result.current.addresses).toHaveLength(0);
       expect(result.current.phones).toHaveLength(1);
       expect(result.current.phones[0].number).toBe('');
     });
@@ -50,7 +49,7 @@ describe('useClientForm', () => {
       expect(result.current.phones).toEqual(savedData.phones);
     });
 
-    it('falls back to empty defaults when initialData has empty arrays', () => {
+    it('falls back to empty arrays when initialData has empty arrays', () => {
       const { result } = renderHook(() =>
         useClientForm({
           initialData: {
@@ -63,7 +62,7 @@ describe('useClientForm', () => {
         })
       );
 
-      expect(result.current.addresses).toHaveLength(1);
+      expect(result.current.addresses).toHaveLength(0);
       expect(result.current.phones).toHaveLength(1);
     });
   });

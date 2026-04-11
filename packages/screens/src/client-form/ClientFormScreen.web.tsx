@@ -22,7 +22,7 @@ import {
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { formatCpf, formatCnpj } from '@automatize/form-validator';
-import type { ClientFormScreenProps } from './ClientFormScreen.types';
+import type { ClientFormScreenProps, Address } from './ClientFormScreen.types';
 import { useClientForm } from './useClientForm';
 
 const BRAZILIAN_STATES = [
@@ -55,6 +55,32 @@ const BRAZILIAN_STATES = [
   { value: 'TO', label: 'Tocantins' },
 ] as const;
 
+const MAX_VISIBLE_ADDRESSES = 5;
+
+type NewAddressFields = Omit<Address, 'id'>;
+
+function getAddressDisplayLines(address: Address): string[] {
+  const lines: string[] = [];
+  const streetNumber = [address.street, address.number]
+    .filter(Boolean)
+    .join(', ');
+  if (streetNumber) lines.push(streetNumber);
+  if (address.neighborhood) lines.push(address.neighborhood);
+  const cityState = [address.city, address.state].filter(Boolean).join(' - ');
+  if (cityState) lines.push(cityState);
+  if (address.info) lines.push(address.info);
+  return lines;
+}
+
+const EMPTY_ADDRESS: NewAddressFields = {
+  street: '',
+  number: '',
+  neighborhood: '',
+  city: '',
+  state: '',
+  info: '',
+};
+
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onSubmit,
   initialData,
@@ -74,7 +100,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     addresses,
     addAddress,
     removeAddress,
-    updateAddress,
     phones,
     addPhone,
     removePhone,
@@ -84,6 +109,8 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   } = useClientForm({ initialData, onDataChange });
 
   const [internalDialogOpen, setInternalDialogOpen] = useState(false);
+  const [addressDialogOpen, setAddressDialogOpen] = useState(false);
+  const [newAddress, setNewAddress] = useState<NewAddressFields>(EMPTY_ADDRESS);
 
   const isControlled = showDiscardDialog !== undefined;
   const dialogOpen = isControlled ? showDiscardDialog : internalDialogOpen;
@@ -139,6 +166,18 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
       onDiscardCancel?.();
     }
   };
+
+  const handleOpenAddressDialog = () => {
+    setNewAddress(EMPTY_ADDRESS);
+    setAddressDialogOpen(true);
+  };
+
+  const handleSaveAddress = () => {
+    addAddress(newAddress);
+    setAddressDialogOpen(false);
+  };
+
+  const visibleAddresses = addresses.slice(0, MAX_VISIBLE_ADDRESSES);
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
@@ -211,130 +250,56 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                   type="button"
                   variant="outline"
                   size="icon"
-                  onClick={addAddress}
+                  onClick={handleOpenAddressDialog}
                   aria-label={t('client.address.add')}
                 >
                   <Plus className="size-4" />
                 </Button>
               </div>
 
-              {addresses.map((address, index) => (
-                <Card key={address.id} padding="md" className="relative">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Text variant="bodySmall" color="muted">
-                        #{index + 1}
-                      </Text>
-                      {addresses.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => removeAddress(address.id)}
-                          aria-label={t('client.address.remove')}
-                        >
-                          <Trash2 className="size-4 text-muted-foreground" />
-                        </Button>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {visibleAddresses.map((address) => (
+                  <Card
+                    key={address.id}
+                    padding="sm"
+                    className="relative group min-h-[80px]"
+                  >
+                    <div className="space-y-0.5 pr-6">
+                      {getAddressDisplayLines(address).length > 0 ? (
+                        getAddressDisplayLines(address).map((line, i) => (
+                          <Text
+                            key={i}
+                            variant={i === 0 ? 'bodySmall' : 'caption'}
+                            color={i === 0 ? 'primary' : 'muted'}
+                            className="line-clamp-1"
+                          >
+                            {line}
+                          </Text>
+                        ))
+                      ) : (
+                        <Text variant="bodySmall" color="muted">
+                          —
+                        </Text>
                       )}
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <div className="md:col-span-3">
-                        <Input
-                          id={`address-street-${address.id}`}
-                          label={t('client.address.street')}
-                          placeholder={t('client.address.street.placeholder')}
-                          value={address.street}
-                          onChange={(e) =>
-                            updateAddress(address.id, 'street', e.target.value)
-                          }
-                        />
-                      </div>
-                      <Input
-                        id={`address-number-${address.id}`}
-                        label={t('client.address.number')}
-                        placeholder={t('client.address.number.placeholder')}
-                        value={address.number}
-                        onChange={(e) =>
-                          updateAddress(address.id, 'number', e.target.value)
-                        }
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Input
-                        id={`address-neighborhood-${address.id}`}
-                        label={t('client.address.neighborhood')}
-                        placeholder={t(
-                          'client.address.neighborhood.placeholder'
-                        )}
-                        value={address.neighborhood}
-                        onChange={(e) =>
-                          updateAddress(
-                            address.id,
-                            'neighborhood',
-                            e.target.value
-                          )
-                        }
-                      />
-                      <Input
-                        id={`address-city-${address.id}`}
-                        label={t('client.address.city')}
-                        placeholder={t('client.address.city.placeholder')}
-                        value={address.city}
-                        onChange={(e) =>
-                          updateAddress(address.id, 'city', e.target.value)
-                        }
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <Text
-                          htmlFor={`address-state-${address.id}`}
-                          color="muted"
-                          className="pl-3"
-                        >
-                          {t('client.address.state')}
-                        </Text>
-                        <Select
-                          value={address.state}
-                          onValueChange={(val) =>
-                            updateAddress(address.id, 'state', val)
-                          }
-                        >
-                          <SelectTrigger
-                            id={`address-state-${address.id}`}
-                            className="border-border bg-foreground/5 backdrop-blur-sm"
-                          >
-                            <SelectValue
-                              placeholder={t(
-                                'client.address.state.placeholder'
-                              )}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {BRAZILIAN_STATES.map((state) => (
-                              <SelectItem key={state.value} value={state.value}>
-                                {state.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <Input
-                        id={`address-info-${address.id}`}
-                        label={t('client.address.info')}
-                        placeholder={t('client.address.info.placeholder')}
-                        value={address.info}
-                        onChange={(e) =>
-                          updateAddress(address.id, 'info', e.target.value)
-                        }
-                      />
-                    </div>
-                  </div>
-                </Card>
-              ))}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => removeAddress(address.id)}
+                      aria-label={t('client.address.remove')}
+                    >
+                      <Trash2 className="size-3 text-muted-foreground" />
+                    </Button>
+                  </Card>
+                ))}
+                <div className="flex items-center justify-center min-h-[80px]">
+                  <Button type="button" variant="link">
+                    {t('client.address.viewAll')}
+                  </Button>
+                </div>
+              </div>
             </div>
 
             <Separator />
@@ -431,6 +396,131 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               onClick={handleConfirmDiscard}
             >
               {t('client.discard.continue')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Address creation dialog */}
+      <Dialog open={addressDialogOpen} onOpenChange={setAddressDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{t('client.address.dialog.title')}</DialogTitle>
+            <DialogDescription>{t('client.address.add')}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+              <div className="sm:col-span-3">
+                <Input
+                  id="new-address-street"
+                  label={t('client.address.street')}
+                  placeholder={t('client.address.street.placeholder')}
+                  value={newAddress.street}
+                  onChange={(e) =>
+                    setNewAddress((prev) => ({
+                      ...prev,
+                      street: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <Input
+                id="new-address-number"
+                label={t('client.address.number')}
+                placeholder={t('client.address.number.placeholder')}
+                value={newAddress.number}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    number: e.target.value,
+                  }))
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                id="new-address-neighborhood"
+                label={t('client.address.neighborhood')}
+                placeholder={t('client.address.neighborhood.placeholder')}
+                value={newAddress.neighborhood}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    neighborhood: e.target.value,
+                  }))
+                }
+              />
+              <Input
+                id="new-address-city"
+                label={t('client.address.city')}
+                placeholder={t('client.address.city.placeholder')}
+                value={newAddress.city}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    city: e.target.value,
+                  }))
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Text
+                  htmlFor="new-address-state"
+                  color="muted"
+                  className="pl-3"
+                >
+                  {t('client.address.state')}
+                </Text>
+                <Select
+                  value={newAddress.state}
+                  onValueChange={(val) =>
+                    setNewAddress((prev) => ({ ...prev, state: val }))
+                  }
+                >
+                  <SelectTrigger
+                    id="new-address-state"
+                    className="border-border bg-foreground/5 backdrop-blur-sm"
+                  >
+                    <SelectValue
+                      placeholder={t('client.address.state.placeholder')}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BRAZILIAN_STATES.map((state) => (
+                      <SelectItem key={state.value} value={state.value}>
+                        {state.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Input
+                id="new-address-info"
+                label={t('client.address.info')}
+                placeholder={t('client.address.info.placeholder')}
+                value={newAddress.info}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    info: e.target.value,
+                  }))
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setAddressDialogOpen(false)}
+            >
+              {t('app.cancel')}
+            </Button>
+            <Button type="button" onClick={handleSaveAddress}>
+              {t('client.address.save')}
             </Button>
           </DialogFooter>
         </DialogContent>
