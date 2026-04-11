@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Plus, Trash2, X } from 'lucide-react';
 import {
   Button,
   Input,
@@ -22,7 +22,7 @@ import {
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { formatCpf, formatCnpj } from '@automatize/form-validator';
-import type { ClientFormScreenProps } from './ClientFormScreen.types';
+import type { ClientFormScreenProps, Address } from './ClientFormScreen.types';
 import { useClientForm } from './useClientForm';
 
 const BRAZILIAN_STATES = [
@@ -55,6 +55,49 @@ const BRAZILIAN_STATES = [
   { value: 'TO', label: 'Tocantins' },
 ] as const;
 
+const MAX_VISIBLE_ADDRESSES = 5;
+
+type NewAddressFields = Omit<Address, 'id'>;
+
+function getAddressDisplayLines(address: Address): string[] {
+  const lines: string[] = [];
+  const streetNumber = [address.street, address.number]
+    .filter(Boolean)
+    .join(', ');
+  if (streetNumber) lines.push(streetNumber);
+  if (address.neighborhood) lines.push(address.neighborhood);
+  const cityState = [address.city, address.state].filter(Boolean).join(' - ');
+  if (cityState) lines.push(cityState);
+  if (address.info) lines.push(address.info);
+  return lines;
+}
+
+const EMPTY_ADDRESS: NewAddressFields = {
+  street: '',
+  number: '',
+  neighborhood: '',
+  city: '',
+  state: '',
+  info: '',
+};
+
+const MOBILE_BREAKPOINT = 1024;
+
+function useIsMobile(): boolean {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    setIsMobile(mql.matches);
+
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
+
+  return isMobile;
+}
+
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onSubmit,
   initialData,
@@ -84,6 +127,10 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   } = useClientForm({ initialData, onDataChange });
 
   const [internalDialogOpen, setInternalDialogOpen] = useState(false);
+  const [addressDialogOpen, setAddressDialogOpen] = useState(false);
+  const [newAddress, setNewAddress] = useState<NewAddressFields>(EMPTY_ADDRESS);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
+  const [showAllAddresses, setShowAllAddresses] = useState(false);
 
   const isControlled = showDiscardDialog !== undefined;
   const dialogOpen = isControlled ? showDiscardDialog : internalDialogOpen;
@@ -140,266 +187,374 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     }
   };
 
-  return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
-      <Card padding="lg">
-        <div className="space-y-6">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Client Type */}
-            <div className="space-y-2">
-              <Text variant="bodySmall" color="muted">
-                {t('client.type')}
-              </Text>
-              <RadioGroup
-                value={clientType}
-                onValueChange={(val) =>
-                  setClientType(val as 'individual' | 'business')
-                }
-                orientation="horizontal"
-              >
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <RadioGroupItem value="individual" />
-                  <Text variant="body">{t('client.type.individual')}</Text>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <RadioGroupItem value="business" />
-                  <Text variant="body">{t('client.type.business')}</Text>
-                </label>
-              </RadioGroup>
-            </div>
+  const handleOpenAddressDialog = () => {
+    setEditingAddressId(null);
+    setNewAddress(EMPTY_ADDRESS);
+    setAddressDialogOpen(true);
+  };
 
-            {/* Name */}
-            <Input
-              id="client-name"
-              name="name"
-              label={t('client.name')}
-              placeholder={t('client.name.placeholder')}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+  const handleEditAddress = (address: Address) => {
+    setEditingAddressId(address.id);
+    setNewAddress({
+      street: address.street,
+      number: address.number,
+      neighborhood: address.neighborhood,
+      city: address.city,
+      state: address.state,
+      info: address.info,
+    });
+    setAddressDialogOpen(true);
+  };
 
-            {/* CPF / CNPJ */}
-            <Input
-              id="client-document"
-              name="document"
-              label={
-                clientType === 'individual' ? t('client.cpf') : t('client.cnpj')
-              }
-              placeholder={
-                clientType === 'individual'
-                  ? '000.000.000-00'
-                  : '00.000.000/0000-00'
-              }
-              value={document}
-              onChange={(e) => {
-                const formatted =
-                  clientType === 'individual'
-                    ? formatCpf(e.target.value)
-                    : formatCnpj(e.target.value);
-                setDocument(formatted);
-              }}
-              maxLength={clientType === 'individual' ? 14 : 18}
-            />
+  const handleSaveAddress = () => {
+    if (editingAddressId) {
+      (Object.keys(newAddress) as (keyof NewAddressFields)[]).forEach(
+        (field) => {
+          updateAddress(editingAddressId, field, newAddress[field]);
+        }
+      );
+    } else {
+      addAddress(newAddress);
+    }
+    setAddressDialogOpen(false);
+  };
 
-            <Separator />
+  const visibleAddresses = addresses.slice(0, MAX_VISIBLE_ADDRESSES);
+  const isMobile = useIsMobile();
 
-            {/* Addresses Section */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Text variant="h3">{t('client.addresses')}</Text>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={addAddress}
-                  aria-label={t('client.address.add')}
+  const handleCloseAddressPanel = useCallback(
+    () => setShowAllAddresses(false),
+    []
+  );
+
+  const addressListItems = (
+    <div className="space-y-2">
+      {addresses.map((address) => (
+        <Card
+          key={address.id}
+          padding="sm"
+          className={`relative group min-h-[60px] cursor-pointer transition-colors ${
+            isMobile ? '' : 'hover:bg-accent'
+          }`}
+          onClick={() => handleEditAddress(address)}
+        >
+          <div className="space-y-0.5 pr-8">
+            {getAddressDisplayLines(address).length > 0 ? (
+              getAddressDisplayLines(address).map((line, i) => (
+                <Text
+                  key={i}
+                  variant={i === 0 ? 'bodySmall' : 'caption'}
+                  color={i === 0 ? 'primary' : 'muted'}
+                  className="line-clamp-1"
                 >
-                  <Plus className="size-4" />
-                </Button>
+                  {line}
+                </Text>
+              ))
+            ) : (
+              <Text variant="bodySmall" color="muted">
+                —
+              </Text>
+            )}
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className={`absolute top-1 right-1 size-6 transition-opacity ${
+              isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              removeAddress(address.id);
+            }}
+            aria-label={t('client.address.remove')}
+          >
+            <Trash2 className="size-3 text-muted-foreground" />
+          </Button>
+        </Card>
+      ))}
+    </div>
+  );
+
+  const addressPanelHeader = (
+    <div className="flex items-center justify-between p-4 border-b">
+      <Text variant="h3">{t('client.address.allTitle')}</Text>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={handleCloseAddressPanel}
+        aria-label={t('app.cancel')}
+      >
+        <X className="size-4" />
+      </Button>
+    </div>
+  );
+
+  return (
+    <>
+      <div className="max-w-3xl mx-auto py-8 px-4">
+        <Card padding="lg">
+          <div className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {/* Client Type */}
+              <div className="space-y-2">
+                <Text variant="bodySmall" color="muted">
+                  {t('client.type')}
+                </Text>
+                <RadioGroup
+                  value={clientType}
+                  onValueChange={(val) =>
+                    setClientType(val as 'individual' | 'business')
+                  }
+                  orientation="horizontal"
+                >
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value="individual" />
+                    <Text variant="body">{t('client.type.individual')}</Text>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value="business" />
+                    <Text variant="body">{t('client.type.business')}</Text>
+                  </label>
+                </RadioGroup>
               </div>
 
-              {addresses.map((address, index) => (
-                <Card key={address.id} padding="md" className="relative">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Text variant="bodySmall" color="muted">
-                        #{index + 1}
-                      </Text>
-                      {addresses.length > 1 && (
+              {/* Name */}
+              <Input
+                id="client-name"
+                name="name"
+                label={t('client.name')}
+                placeholder={t('client.name.placeholder')}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+
+              {/* CPF / CNPJ */}
+              <Input
+                id="client-document"
+                name="document"
+                label={
+                  clientType === 'individual'
+                    ? t('client.cpf')
+                    : t('client.cnpj')
+                }
+                placeholder={
+                  clientType === 'individual'
+                    ? '000.000.000-00'
+                    : '00.000.000/0000-00'
+                }
+                value={document}
+                onChange={(e) => {
+                  const formatted =
+                    clientType === 'individual'
+                      ? formatCpf(e.target.value)
+                      : formatCnpj(e.target.value);
+                  setDocument(formatted);
+                }}
+                maxLength={clientType === 'individual' ? 14 : 18}
+              />
+
+              <Separator />
+
+              {/* Addresses Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Text variant="h3">{t('client.addresses')}</Text>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={handleOpenAddressDialog}
+                    aria-label={t('client.address.add')}
+                  >
+                    <Plus className="size-4" />
+                  </Button>
+                </div>
+
+                {visibleAddresses.length === 0 ? (
+                  <Text
+                    variant="bodySmall"
+                    color="muted"
+                    className="text-center py-4"
+                  >
+                    {t('client.address.empty')}
+                  </Text>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {visibleAddresses.map((address) => (
+                      <Card
+                        key={address.id}
+                        padding="sm"
+                        className="relative group min-h-[80px] cursor-pointer hover:bg-accent transition-colors"
+                        onClick={() => handleEditAddress(address)}
+                      >
+                        <div className="space-y-0.5 pr-6">
+                          {getAddressDisplayLines(address).length > 0 ? (
+                            getAddressDisplayLines(address).map((line, i) => (
+                              <Text
+                                key={i}
+                                variant={i === 0 ? 'bodySmall' : 'caption'}
+                                color={i === 0 ? 'primary' : 'muted'}
+                                className="line-clamp-1"
+                              >
+                                {line}
+                              </Text>
+                            ))
+                          ) : (
+                            <Text variant="bodySmall" color="muted">
+                              —
+                            </Text>
+                          )}
+                        </div>
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
-                          onClick={() => removeAddress(address.id)}
+                          className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeAddress(address.id);
+                          }}
                           aria-label={t('client.address.remove')}
+                        >
+                          <Trash2 className="size-3 text-muted-foreground" />
+                        </Button>
+                      </Card>
+                    ))}
+                    {addresses.length >= MAX_VISIBLE_ADDRESSES + 1 && (
+                      <Card
+                        padding="sm"
+                        className="flex items-center justify-center min-h-[80px]"
+                      >
+                        <Button
+                          type="button"
+                          variant="link"
+                          onClick={() => setShowAllAddresses(true)}
+                        >
+                          {t('client.address.viewMore', {
+                            count: addresses.length - MAX_VISIBLE_ADDRESSES,
+                          })}
+                        </Button>
+                      </Card>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              {/* Phones Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Text variant="h3">{t('client.phones')}</Text>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={addPhone}
+                    aria-label={t('client.phone.add')}
+                  >
+                    <Plus className="size-4" />
+                  </Button>
+                </div>
+
+                {phones.map((phone, index) => (
+                  <div key={phone.id} className="space-y-1.5">
+                    <Text
+                      htmlFor={`phone-${phone.id}`}
+                      color="muted"
+                      className="pl-3"
+                    >
+                      {`${t('client.phone.label')} ${index + 1}`}
+                    </Text>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1">
+                        <Input
+                          id={`phone-${phone.id}`}
+                          placeholder={t('client.phone.placeholder')}
+                          value={phone.number}
+                          onChange={(e) =>
+                            updatePhone(phone.id, e.target.value)
+                          }
+                        />
+                      </div>
+                      {phones.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removePhone(phone.id)}
+                          aria-label={t('client.phone.remove')}
                         >
                           <Trash2 className="size-4 text-muted-foreground" />
                         </Button>
                       )}
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <div className="md:col-span-3">
-                        <Input
-                          id={`address-street-${address.id}`}
-                          label={t('client.address.street')}
-                          placeholder={t('client.address.street.placeholder')}
-                          value={address.street}
-                          onChange={(e) =>
-                            updateAddress(address.id, 'street', e.target.value)
-                          }
-                        />
-                      </div>
-                      <Input
-                        id={`address-number-${address.id}`}
-                        label={t('client.address.number')}
-                        placeholder={t('client.address.number.placeholder')}
-                        value={address.number}
-                        onChange={(e) =>
-                          updateAddress(address.id, 'number', e.target.value)
-                        }
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Input
-                        id={`address-neighborhood-${address.id}`}
-                        label={t('client.address.neighborhood')}
-                        placeholder={t(
-                          'client.address.neighborhood.placeholder'
-                        )}
-                        value={address.neighborhood}
-                        onChange={(e) =>
-                          updateAddress(
-                            address.id,
-                            'neighborhood',
-                            e.target.value
-                          )
-                        }
-                      />
-                      <Input
-                        id={`address-city-${address.id}`}
-                        label={t('client.address.city')}
-                        placeholder={t('client.address.city.placeholder')}
-                        value={address.city}
-                        onChange={(e) =>
-                          updateAddress(address.id, 'city', e.target.value)
-                        }
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <Text
-                          htmlFor={`address-state-${address.id}`}
-                          color="muted"
-                          className="pl-3"
-                        >
-                          {t('client.address.state')}
-                        </Text>
-                        <Select
-                          value={address.state}
-                          onValueChange={(val) =>
-                            updateAddress(address.id, 'state', val)
-                          }
-                        >
-                          <SelectTrigger
-                            id={`address-state-${address.id}`}
-                            className="border-border bg-foreground/5 backdrop-blur-sm"
-                          >
-                            <SelectValue
-                              placeholder={t(
-                                'client.address.state.placeholder'
-                              )}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {BRAZILIAN_STATES.map((state) => (
-                              <SelectItem key={state.value} value={state.value}>
-                                {state.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <Input
-                        id={`address-info-${address.id}`}
-                        label={t('client.address.info')}
-                        placeholder={t('client.address.info.placeholder')}
-                        value={address.info}
-                        onChange={(e) =>
-                          updateAddress(address.id, 'info', e.target.value)
-                        }
-                      />
-                    </div>
                   </div>
-                </Card>
-              ))}
-            </div>
-
-            <Separator />
-
-            {/* Phones Section */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Text variant="h3">{t('client.phones')}</Text>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={addPhone}
-                  aria-label={t('client.phone.add')}
-                >
-                  <Plus className="size-4" />
-                </Button>
+                ))}
               </div>
 
-              {phones.map((phone, index) => (
-                <div key={phone.id} className="space-y-1.5">
-                  <Text
-                    htmlFor={`phone-${phone.id}`}
-                    color="muted"
-                    className="pl-3"
-                  >
-                    {`${t('client.phone.label')} ${index + 1}`}
-                  </Text>
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1">
-                      <Input
-                        id={`phone-${phone.id}`}
-                        placeholder={t('client.phone.placeholder')}
-                        value={phone.number}
-                        onChange={(e) => updatePhone(phone.id, e.target.value)}
-                      />
-                    </div>
-                    {phones.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removePhone(phone.id)}
-                        aria-label={t('client.phone.remove')}
-                      >
-                        <Trash2 className="size-4 text-muted-foreground" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+              <Separator />
 
-            <Separator />
+              {/* Submit */}
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="destructive" onClick={resetForm}>
+                  {t('client.reset')}
+                </Button>
+                <Button type="submit">{t('client.submit')}</Button>
+              </div>
+            </form>
+          </div>
+        </Card>
+      </div>
 
-            {/* Submit */}
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="destructive" onClick={resetForm}>
-                {t('client.reset')}
-              </Button>
-              <Button type="submit">{t('client.submit')}</Button>
+      {/* Address panel: drawer (desktop) or bottom sheet (mobile) */}
+      {isMobile ? (
+        <>
+          {showAllAddresses && (
+            <div
+              className="fixed inset-0 z-40 bg-black/20"
+              onClick={handleCloseAddressPanel}
+            />
+          )}
+          <div
+            className={`fixed inset-x-0 bottom-0 z-50 bg-background border-t rounded-t-2xl shadow-lg transition-transform duration-300 ease-in-out ${
+              showAllAddresses ? 'translate-y-0' : 'translate-y-full'
+            }`}
+            style={{ maxHeight: '75vh' }}
+          >
+            {addressPanelHeader}
+            <div
+              className="overflow-y-auto p-4"
+              style={{ maxHeight: 'calc(75vh - 57px)' }}
+            >
+              {addressListItems}
             </div>
-          </form>
-        </div>
-      </Card>
+          </div>
+        </>
+      ) : (
+        <>
+          <div
+            className={`fixed inset-y-0 right-0 z-50 w-80 bg-background border-l shadow-lg transition-transform duration-300 ease-in-out ${
+              showAllAddresses ? 'translate-x-0' : 'translate-x-full'
+            }`}
+          >
+            <div className="flex flex-col h-full">
+              {addressPanelHeader}
+              <div className="flex-1 overflow-y-auto p-4">
+                {addressListItems}
+              </div>
+            </div>
+          </div>
+          {showAllAddresses && (
+            <div
+              className="fixed inset-0 z-40 bg-black/20 transition-opacity"
+              onClick={handleCloseAddressPanel}
+            />
+          )}
+        </>
+      )}
 
       {/* Discard confirmation dialog */}
       <Dialog
@@ -435,6 +590,139 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+
+      {/* Address creation dialog */}
+      <Dialog open={addressDialogOpen} onOpenChange={setAddressDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingAddressId
+                ? t('client.address.dialog.editTitle')
+                : t('client.address.dialog.title')}
+            </DialogTitle>
+            <DialogDescription>{t('client.address.add')}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+              <div className="sm:col-span-3">
+                <Input
+                  id="new-address-street"
+                  label={t('client.address.street')}
+                  placeholder={t('client.address.street.placeholder')}
+                  value={newAddress.street}
+                  onChange={(e) =>
+                    setNewAddress((prev) => ({
+                      ...prev,
+                      street: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              <Input
+                id="new-address-number"
+                label={t('client.address.number')}
+                placeholder={t('client.address.number.placeholder')}
+                value={newAddress.number}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    number: e.target.value,
+                  }))
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input
+                id="new-address-neighborhood"
+                label={t('client.address.neighborhood')}
+                placeholder={t('client.address.neighborhood.placeholder')}
+                value={newAddress.neighborhood}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    neighborhood: e.target.value,
+                  }))
+                }
+              />
+              <Input
+                id="new-address-city"
+                label={t('client.address.city')}
+                placeholder={t('client.address.city.placeholder')}
+                value={newAddress.city}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    city: e.target.value,
+                  }))
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Text
+                  htmlFor="new-address-state"
+                  color="muted"
+                  className="pl-3"
+                >
+                  {t('client.address.state')}
+                </Text>
+                <Select
+                  value={newAddress.state}
+                  onValueChange={(val) =>
+                    setNewAddress((prev) => ({ ...prev, state: val }))
+                  }
+                >
+                  <SelectTrigger
+                    id="new-address-state"
+                    className="border-border bg-foreground/5 backdrop-blur-sm"
+                  >
+                    <SelectValue
+                      placeholder={t('client.address.state.placeholder')}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BRAZILIAN_STATES.map((state) => (
+                      <SelectItem key={state.value} value={state.value}>
+                        {state.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <Input
+                id="new-address-info"
+                label={t('client.address.info')}
+                placeholder={t('client.address.info.placeholder')}
+                value={newAddress.info}
+                onChange={(e) =>
+                  setNewAddress((prev) => ({
+                    ...prev,
+                    info: e.target.value,
+                  }))
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setAddressDialogOpen(false)}
+            >
+              {t('app.cancel')}
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSaveAddress}
+              disabled={!newAddress.street.trim()}
+            >
+              {t('client.address.save')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };

@@ -5,7 +5,7 @@
   "description": "Cross-platform invoice management system with offline-first architecture",
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run build && turbo run dev --filter=@automatize/web",
     "dev:mobile": "turbo run dev --filter=@automatize/mobile",
     "dev:mobile:android": "turbo run android --filter=@automatize/mobile",
     "dev:mobile:ios": "turbo run ios --filter=@automatize/mobile",
