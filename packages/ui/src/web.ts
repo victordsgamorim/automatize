@@ -159,3 +159,11 @@ export type { BottomNavigationProps } from './components/BottomNavigation/Bottom
 // Table
 export { Table } from './components/Table/Table.web';
 export type { TableProps, TableColumn } from './components/Table/Table.web';
+
+// Drawer
+export { Drawer } from './components/Drawer/Drawer.web';
+export type { DrawerProps } from './components/Drawer/Drawer.web';
+
+// BottomSheet
+export { BottomSheet } from './components/BottomSheet/BottomSheet.web';
+export type { BottomSheetProps } from './components/BottomSheet/BottomSheet.web';
