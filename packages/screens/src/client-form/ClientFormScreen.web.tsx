@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Trash2, X } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import {
   Button,
   Input,
@@ -19,6 +19,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
+  Drawer,
+  BottomSheet,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { formatCpf, formatCnpj } from '@automatize/form-validator';
@@ -276,21 +278,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     </div>
   );
 
-  const addressPanelHeader = (
-    <div className="flex items-center justify-between p-4 border-b">
-      <Text variant="h3">{t('client.address.allTitle')}</Text>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        onClick={handleCloseAddressPanel}
-        aria-label={t('app.cancel')}
-      >
-        <X className="size-4" />
-      </Button>
-    </div>
-  );
-
   return (
     <>
       <div className="max-w-3xl mx-auto py-8 px-4">
@@ -511,49 +498,21 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
 
       {/* Address panel: drawer (desktop) or bottom sheet (mobile) */}
       {isMobile ? (
-        <>
-          {showAllAddresses && (
-            <div
-              className="fixed inset-0 z-40 bg-black/20"
-              onClick={handleCloseAddressPanel}
-            />
-          )}
-          <div
-            className={`fixed inset-x-0 bottom-0 z-50 bg-background border-t rounded-t-2xl shadow-lg transition-transform duration-300 ease-in-out ${
-              showAllAddresses ? 'translate-y-0' : 'translate-y-full'
-            }`}
-            style={{ maxHeight: '75vh' }}
-          >
-            {addressPanelHeader}
-            <div
-              className="overflow-y-auto p-4"
-              style={{ maxHeight: 'calc(75vh - 57px)' }}
-            >
-              {addressListItems}
-            </div>
-          </div>
-        </>
+        <BottomSheet
+          open={showAllAddresses}
+          onClose={handleCloseAddressPanel}
+          title={t('client.address.allTitle')}
+        >
+          {addressListItems}
+        </BottomSheet>
       ) : (
-        <>
-          <div
-            className={`fixed inset-y-0 right-0 z-50 w-80 bg-background border-l shadow-lg transition-transform duration-300 ease-in-out ${
-              showAllAddresses ? 'translate-x-0' : 'translate-x-full'
-            }`}
-          >
-            <div className="flex flex-col h-full">
-              {addressPanelHeader}
-              <div className="flex-1 overflow-y-auto p-4">
-                {addressListItems}
-              </div>
-            </div>
-          </div>
-          {showAllAddresses && (
-            <div
-              className="fixed inset-0 z-40 bg-black/20 transition-opacity"
-              onClick={handleCloseAddressPanel}
-            />
-          )}
-        </>
+        <Drawer
+          open={showAllAddresses}
+          onClose={handleCloseAddressPanel}
+          title={t('client.address.allTitle')}
+        >
+          {addressListItems}
+        </Drawer>
       )}
 
       {/* Discard confirmation dialog */}

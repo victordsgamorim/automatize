@@ -98,6 +98,40 @@ vi.mock('@automatize/ui/web', () => ({
   DialogFooter: ({ children }: { children?: React.ReactNode }) => (
     <div>{children}</div>
   ),
+  Drawer: ({
+    open,
+    onClose,
+    title,
+    children,
+  }: {
+    open?: boolean;
+    onClose?: () => void;
+    title?: React.ReactNode;
+    children?: React.ReactNode;
+  }) => (
+    <div data-testid="drawer" data-open={open}>
+      <div>{title}</div>
+      <div>{children}</div>
+      <button aria-label="Close" onClick={onClose} />
+    </div>
+  ),
+  BottomSheet: ({
+    open,
+    onClose,
+    title,
+    children,
+  }: {
+    open?: boolean;
+    onClose?: () => void;
+    title?: React.ReactNode;
+    children?: React.ReactNode;
+  }) => (
+    <div data-testid="bottom-sheet" data-open={open}>
+      <div>{title}</div>
+      <div>{children}</div>
+      <button aria-label="Close" onClick={onClose} />
+    </div>
+  ),
 }));
 
 vi.mock('@automatize/core-localization', () => ({
