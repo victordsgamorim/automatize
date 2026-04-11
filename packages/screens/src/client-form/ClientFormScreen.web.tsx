@@ -257,49 +257,61 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                 </Button>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {visibleAddresses.map((address) => (
-                  <Card
-                    key={address.id}
-                    padding="sm"
-                    className="relative group min-h-[80px]"
-                  >
-                    <div className="space-y-0.5 pr-6">
-                      {getAddressDisplayLines(address).length > 0 ? (
-                        getAddressDisplayLines(address).map((line, i) => (
-                          <Text
-                            key={i}
-                            variant={i === 0 ? 'bodySmall' : 'caption'}
-                            color={i === 0 ? 'primary' : 'muted'}
-                            className="line-clamp-1"
-                          >
-                            {line}
-                          </Text>
-                        ))
-                      ) : (
-                        <Text variant="bodySmall" color="muted">
-                          —
-                        </Text>
-                      )}
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => removeAddress(address.id)}
-                      aria-label={t('client.address.remove')}
+              {visibleAddresses.length === 0 ? (
+                <Text
+                  variant="bodySmall"
+                  color="muted"
+                  className="text-center py-4"
+                >
+                  {t('client.address.empty')}
+                </Text>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {visibleAddresses.map((address) => (
+                    <Card
+                      key={address.id}
+                      padding="sm"
+                      className="relative group min-h-[80px]"
                     >
-                      <Trash2 className="size-3 text-muted-foreground" />
-                    </Button>
-                  </Card>
-                ))}
-                <div className="flex items-center justify-center min-h-[80px]">
-                  <Button type="button" variant="link">
-                    {t('client.address.viewAll')}
-                  </Button>
+                      <div className="space-y-0.5 pr-6">
+                        {getAddressDisplayLines(address).length > 0 ? (
+                          getAddressDisplayLines(address).map((line, i) => (
+                            <Text
+                              key={i}
+                              variant={i === 0 ? 'bodySmall' : 'caption'}
+                              color={i === 0 ? 'primary' : 'muted'}
+                              className="line-clamp-1"
+                            >
+                              {line}
+                            </Text>
+                          ))
+                        ) : (
+                          <Text variant="bodySmall" color="muted">
+                            —
+                          </Text>
+                        )}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => removeAddress(address.id)}
+                        aria-label={t('client.address.remove')}
+                      >
+                        <Trash2 className="size-3 text-muted-foreground" />
+                      </Button>
+                    </Card>
+                  ))}
+                  {addresses.length >= MAX_VISIBLE_ADDRESSES + 1 && (
+                    <div className="flex items-center justify-center min-h-[80px]">
+                      <Button type="button" variant="link">
+                        {t('client.address.viewAll')}
+                      </Button>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
             </div>
 
             <Separator />

@@ -105,6 +105,7 @@
   "client.address.viewAll": "Ver todos",
   "client.address.dialog.title": "Novo Endereço",
   "client.address.save": "Salvar Endereço",
+  "client.address.empty": "Nenhum endereço adicionado ainda. Clique no botão + para adicionar.",
   "client.phones": "Telefones",
   "client.phone.add": "Adicionar Telefone",
   "client.phone.remove": "Remover telefone",
