@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, X } from 'lucide-react';
 import {
   Button,
   Input,
@@ -100,6 +100,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     addresses,
     addAddress,
     removeAddress,
+    updateAddress,
     phones,
     addPhone,
     removePhone,
@@ -111,6 +112,8 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   const [internalDialogOpen, setInternalDialogOpen] = useState(false);
   const [addressDialogOpen, setAddressDialogOpen] = useState(false);
   const [newAddress, setNewAddress] = useState<NewAddressFields>(EMPTY_ADDRESS);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
+  const [showAllAddresses, setShowAllAddresses] = useState(false);
 
   const isControlled = showDiscardDialog !== undefined;
   const dialogOpen = isControlled ? showDiscardDialog : internalDialogOpen;
@@ -168,215 +171,311 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   };
 
   const handleOpenAddressDialog = () => {
+    setEditingAddressId(null);
     setNewAddress(EMPTY_ADDRESS);
     setAddressDialogOpen(true);
   };
 
+  const handleEditAddress = (address: Address) => {
+    setEditingAddressId(address.id);
+    setNewAddress({
+      street: address.street,
+      number: address.number,
+      neighborhood: address.neighborhood,
+      city: address.city,
+      state: address.state,
+      info: address.info,
+    });
+    setAddressDialogOpen(true);
+  };
+
   const handleSaveAddress = () => {
-    addAddress(newAddress);
+    if (editingAddressId) {
+      (Object.keys(newAddress) as (keyof NewAddressFields)[]).forEach(
+        (field) => {
+          updateAddress(editingAddressId, field, newAddress[field]);
+        }
+      );
+    } else {
+      addAddress(newAddress);
+    }
     setAddressDialogOpen(false);
   };
 
   const visibleAddresses = addresses.slice(0, MAX_VISIBLE_ADDRESSES);
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
-      <Card padding="lg">
-        <div className="space-y-6">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Client Type */}
-            <div className="space-y-2">
-              <Text variant="bodySmall" color="muted">
-                {t('client.type')}
-              </Text>
-              <RadioGroup
-                value={clientType}
-                onValueChange={(val) =>
-                  setClientType(val as 'individual' | 'business')
-                }
-                orientation="horizontal"
-              >
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <RadioGroupItem value="individual" />
-                  <Text variant="body">{t('client.type.individual')}</Text>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <RadioGroupItem value="business" />
-                  <Text variant="body">{t('client.type.business')}</Text>
-                </label>
-              </RadioGroup>
-            </div>
-
-            {/* Name */}
-            <Input
-              id="client-name"
-              name="name"
-              label={t('client.name')}
-              placeholder={t('client.name.placeholder')}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-
-            {/* CPF / CNPJ */}
-            <Input
-              id="client-document"
-              name="document"
-              label={
-                clientType === 'individual' ? t('client.cpf') : t('client.cnpj')
-              }
-              placeholder={
-                clientType === 'individual'
-                  ? '000.000.000-00'
-                  : '00.000.000/0000-00'
-              }
-              value={document}
-              onChange={(e) => {
-                const formatted =
-                  clientType === 'individual'
-                    ? formatCpf(e.target.value)
-                    : formatCnpj(e.target.value);
-                setDocument(formatted);
-              }}
-              maxLength={clientType === 'individual' ? 14 : 18}
-            />
-
-            <Separator />
-
-            {/* Addresses Section */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Text variant="h3">{t('client.addresses')}</Text>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={handleOpenAddressDialog}
-                  aria-label={t('client.address.add')}
-                >
-                  <Plus className="size-4" />
-                </Button>
-              </div>
-
-              {visibleAddresses.length === 0 ? (
-                <Text
-                  variant="bodySmall"
-                  color="muted"
-                  className="text-center py-4"
-                >
-                  {t('client.address.empty')}
+    <div className="flex max-w-6xl mx-auto py-8 px-4 gap-4 overflow-hidden">
+      <div
+        className={`transition-all duration-300 ease-in-out ${
+          showAllAddresses ? 'w-1/2 min-w-0' : 'w-full max-w-3xl mx-auto'
+        }`}
+      >
+        <Card padding="lg">
+          <div className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {/* Client Type */}
+              <div className="space-y-2">
+                <Text variant="bodySmall" color="muted">
+                  {t('client.type')}
                 </Text>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {visibleAddresses.map((address) => (
-                    <Card
-                      key={address.id}
-                      padding="sm"
-                      className="relative group min-h-[80px]"
-                    >
-                      <div className="space-y-0.5 pr-6">
-                        {getAddressDisplayLines(address).length > 0 ? (
-                          getAddressDisplayLines(address).map((line, i) => (
-                            <Text
-                              key={i}
-                              variant={i === 0 ? 'bodySmall' : 'caption'}
-                              color={i === 0 ? 'primary' : 'muted'}
-                              className="line-clamp-1"
-                            >
-                              {line}
-                            </Text>
-                          ))
-                        ) : (
-                          <Text variant="bodySmall" color="muted">
-                            —
-                          </Text>
-                        )}
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => removeAddress(address.id)}
-                        aria-label={t('client.address.remove')}
-                      >
-                        <Trash2 className="size-3 text-muted-foreground" />
-                      </Button>
-                    </Card>
-                  ))}
-                  {addresses.length >= MAX_VISIBLE_ADDRESSES + 1 && (
-                    <div className="flex items-center justify-center min-h-[80px]">
-                      <Button type="button" variant="link">
-                        {t('client.address.viewAll')}
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <Separator />
-
-            {/* Phones Section */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Text variant="h3">{t('client.phones')}</Text>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={addPhone}
-                  aria-label={t('client.phone.add')}
+                <RadioGroup
+                  value={clientType}
+                  onValueChange={(val) =>
+                    setClientType(val as 'individual' | 'business')
+                  }
+                  orientation="horizontal"
                 >
-                  <Plus className="size-4" />
-                </Button>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value="individual" />
+                    <Text variant="body">{t('client.type.individual')}</Text>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value="business" />
+                    <Text variant="body">{t('client.type.business')}</Text>
+                  </label>
+                </RadioGroup>
               </div>
 
-              {phones.map((phone, index) => (
-                <div key={phone.id} className="space-y-1.5">
-                  <Text
-                    htmlFor={`phone-${phone.id}`}
-                    color="muted"
-                    className="pl-3"
+              {/* Name */}
+              <Input
+                id="client-name"
+                name="name"
+                label={t('client.name')}
+                placeholder={t('client.name.placeholder')}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+
+              {/* CPF / CNPJ */}
+              <Input
+                id="client-document"
+                name="document"
+                label={
+                  clientType === 'individual'
+                    ? t('client.cpf')
+                    : t('client.cnpj')
+                }
+                placeholder={
+                  clientType === 'individual'
+                    ? '000.000.000-00'
+                    : '00.000.000/0000-00'
+                }
+                value={document}
+                onChange={(e) => {
+                  const formatted =
+                    clientType === 'individual'
+                      ? formatCpf(e.target.value)
+                      : formatCnpj(e.target.value);
+                  setDocument(formatted);
+                }}
+                maxLength={clientType === 'individual' ? 14 : 18}
+              />
+
+              <Separator />
+
+              {/* Addresses Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Text variant="h3">{t('client.addresses')}</Text>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={handleOpenAddressDialog}
+                    aria-label={t('client.address.add')}
                   >
-                    {`${t('client.phone.label')} ${index + 1}`}
+                    <Plus className="size-4" />
+                  </Button>
+                </div>
+
+                {visibleAddresses.length === 0 ? (
+                  <Text
+                    variant="bodySmall"
+                    color="muted"
+                    className="text-center py-4"
+                  >
+                    {t('client.address.empty')}
                   </Text>
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1">
-                      <Input
-                        id={`phone-${phone.id}`}
-                        placeholder={t('client.phone.placeholder')}
-                        value={phone.number}
-                        onChange={(e) => updatePhone(phone.id, e.target.value)}
-                      />
-                    </div>
-                    {phones.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removePhone(phone.id)}
-                        aria-label={t('client.phone.remove')}
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {visibleAddresses.map((address) => (
+                      <Card
+                        key={address.id}
+                        padding="sm"
+                        className="relative group min-h-[80px] cursor-pointer hover:bg-accent transition-colors"
+                        onClick={() => handleEditAddress(address)}
                       >
-                        <Trash2 className="size-4 text-muted-foreground" />
-                      </Button>
+                        <div className="space-y-0.5 pr-6">
+                          {getAddressDisplayLines(address).length > 0 ? (
+                            getAddressDisplayLines(address).map((line, i) => (
+                              <Text
+                                key={i}
+                                variant={i === 0 ? 'bodySmall' : 'caption'}
+                                color={i === 0 ? 'primary' : 'muted'}
+                                className="line-clamp-1"
+                              >
+                                {line}
+                              </Text>
+                            ))
+                          ) : (
+                            <Text variant="bodySmall" color="muted">
+                              —
+                            </Text>
+                          )}
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeAddress(address.id);
+                          }}
+                          aria-label={t('client.address.remove')}
+                        >
+                          <Trash2 className="size-3 text-muted-foreground" />
+                        </Button>
+                      </Card>
+                    ))}
+                    {addresses.length >= MAX_VISIBLE_ADDRESSES + 1 && (
+                      <div className="flex items-center justify-center min-h-[80px]">
+                        <Button
+                          type="button"
+                          variant="link"
+                          onClick={() => setShowAllAddresses(true)}
+                        >
+                          {t('client.address.viewAll')}
+                        </Button>
+                      </div>
                     )}
                   </div>
+                )}
+              </div>
+
+              <Separator />
+
+              {/* Phones Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Text variant="h3">{t('client.phones')}</Text>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={addPhone}
+                    aria-label={t('client.phone.add')}
+                  >
+                    <Plus className="size-4" />
+                  </Button>
                 </div>
-              ))}
-            </div>
 
-            <Separator />
+                {phones.map((phone, index) => (
+                  <div key={phone.id} className="space-y-1.5">
+                    <Text
+                      htmlFor={`phone-${phone.id}`}
+                      color="muted"
+                      className="pl-3"
+                    >
+                      {`${t('client.phone.label')} ${index + 1}`}
+                    </Text>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1">
+                        <Input
+                          id={`phone-${phone.id}`}
+                          placeholder={t('client.phone.placeholder')}
+                          value={phone.number}
+                          onChange={(e) =>
+                            updatePhone(phone.id, e.target.value)
+                          }
+                        />
+                      </div>
+                      {phones.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removePhone(phone.id)}
+                          aria-label={t('client.phone.remove')}
+                        >
+                          <Trash2 className="size-4 text-muted-foreground" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
 
-            {/* Submit */}
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="destructive" onClick={resetForm}>
-                {t('client.reset')}
-              </Button>
-              <Button type="submit">{t('client.submit')}</Button>
+              <Separator />
+
+              {/* Submit */}
+              <div className="flex justify-end gap-2">
+                <Button type="button" variant="destructive" onClick={resetForm}>
+                  {t('client.reset')}
+                </Button>
+                <Button type="submit">{t('client.submit')}</Button>
+              </div>
+            </form>
+          </div>
+        </Card>
+      </div>
+
+      <div
+        className={`transition-all duration-300 ease-in-out overflow-hidden ${
+          showAllAddresses
+            ? 'w-1/2 min-w-0 opacity-100 translate-x-0'
+            : 'w-0 opacity-0 translate-x-full'
+        }`}
+      >
+        {showAllAddresses && (
+          <Card padding="lg" className="h-full">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Text variant="h3">{t('client.address.allTitle')}</Text>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowAllAddresses(false)}
+                  aria-label={t('app.cancel')}
+                >
+                  <X className="size-4" />
+                </Button>
+              </div>
+              <div className="space-y-2">
+                {addresses.map((address) => (
+                  <Card
+                    key={address.id}
+                    padding="sm"
+                    className="cursor-pointer hover:bg-accent transition-colors"
+                    onClick={() => handleEditAddress(address)}
+                  >
+                    <div className="space-y-0.5 pr-6">
+                      {getAddressDisplayLines(address).length > 0 ? (
+                        getAddressDisplayLines(address).map((line, i) => (
+                          <Text
+                            key={i}
+                            variant={i === 0 ? 'bodySmall' : 'caption'}
+                            color={i === 0 ? 'primary' : 'muted'}
+                            className="line-clamp-1"
+                          >
+                            {line}
+                          </Text>
+                        ))
+                      ) : (
+                        <Text variant="bodySmall" color="muted">
+                          —
+                        </Text>
+                      )}
+                    </div>
+                  </Card>
+                ))}
+              </div>
             </div>
-          </form>
-        </div>
-      </Card>
+          </Card>
+        )}
+      </div>
 
       {/* Discard confirmation dialog */}
       <Dialog
@@ -417,7 +516,11 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
       <Dialog open={addressDialogOpen} onOpenChange={setAddressDialogOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{t('client.address.dialog.title')}</DialogTitle>
+            <DialogTitle>
+              {editingAddressId
+                ? t('client.address.dialog.editTitle')
+                : t('client.address.dialog.title')}
+            </DialogTitle>
             <DialogDescription>{t('client.address.add')}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
