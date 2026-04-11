@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Trash2, X } from 'lucide-react';
 import {
   Button,
@@ -80,6 +80,23 @@ const EMPTY_ADDRESS: NewAddressFields = {
   state: '',
   info: '',
 };
+
+const MOBILE_BREAKPOINT = 1024;
+
+function useIsMobile(): boolean {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    setIsMobile(mql.matches);
+
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
+
+  return isMobile;
+}
 
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onSubmit,
@@ -203,14 +220,80 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   };
 
   const visibleAddresses = addresses.slice(0, MAX_VISIBLE_ADDRESSES);
+  const isMobile = useIsMobile();
+
+  const handleCloseAddressPanel = useCallback(
+    () => setShowAllAddresses(false),
+    []
+  );
+
+  const addressListItems = (
+    <div className="space-y-2">
+      {addresses.map((address) => (
+        <Card
+          key={address.id}
+          padding="sm"
+          className={`relative group min-h-[60px] cursor-pointer transition-colors ${
+            isMobile ? '' : 'hover:bg-accent'
+          }`}
+          onClick={() => handleEditAddress(address)}
+        >
+          <div className="space-y-0.5 pr-8">
+            {getAddressDisplayLines(address).length > 0 ? (
+              getAddressDisplayLines(address).map((line, i) => (
+                <Text
+                  key={i}
+                  variant={i === 0 ? 'bodySmall' : 'caption'}
+                  color={i === 0 ? 'primary' : 'muted'}
+                  className="line-clamp-1"
+                >
+                  {line}
+                </Text>
+              ))
+            ) : (
+              <Text variant="bodySmall" color="muted">
+                —
+              </Text>
+            )}
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className={`absolute top-1 right-1 size-6 transition-opacity ${
+              isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              removeAddress(address.id);
+            }}
+            aria-label={t('client.address.remove')}
+          >
+            <Trash2 className="size-3 text-muted-foreground" />
+          </Button>
+        </Card>
+      ))}
+    </div>
+  );
+
+  const addressPanelHeader = (
+    <div className="flex items-center justify-between p-4 border-b">
+      <Text variant="h3">{t('client.address.allTitle')}</Text>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        onClick={handleCloseAddressPanel}
+        aria-label={t('app.cancel')}
+      >
+        <X className="size-4" />
+      </Button>
+    </div>
+  );
 
   return (
-    <div className="flex max-w-6xl mx-auto py-8 px-4 gap-4 overflow-hidden">
-      <div
-        className={`transition-all duration-300 ease-in-out ${
-          showAllAddresses ? 'w-1/2 min-w-0' : 'w-full max-w-3xl mx-auto'
-        }`}
-      >
+    <>
+      <div className="max-w-3xl mx-auto py-8 px-4">
         <Card padding="lg">
           <div className="space-y-6">
             <form className="space-y-6" onSubmit={handleSubmit}>
@@ -340,15 +423,18 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                       </Card>
                     ))}
                     {addresses.length >= MAX_VISIBLE_ADDRESSES + 1 && (
-                      <div className="flex items-center justify-center min-h-[80px]">
+                      <Card
+                        padding="sm"
+                        className="flex items-center justify-center min-h-[80px]"
+                      >
                         <Button
                           type="button"
                           variant="link"
                           onClick={() => setShowAllAddresses(true)}
                         >
-                          {t('client.address.viewAll')}
+                          {`+${addresses.length - MAX_VISIBLE_ADDRESSES}`}
                         </Button>
-                      </div>
+                      </Card>
                     )}
                   </div>
                 )}
@@ -421,61 +507,52 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
         </Card>
       </div>
 
-      <div
-        className={`transition-all duration-300 ease-in-out overflow-hidden ${
-          showAllAddresses
-            ? 'w-1/2 min-w-0 opacity-100 translate-x-0'
-            : 'w-0 opacity-0 translate-x-full'
-        }`}
-      >
-        {showAllAddresses && (
-          <Card padding="lg" className="h-full">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Text variant="h3">{t('client.address.allTitle')}</Text>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowAllAddresses(false)}
-                  aria-label={t('app.cancel')}
-                >
-                  <X className="size-4" />
-                </Button>
-              </div>
-              <div className="space-y-2">
-                {addresses.map((address) => (
-                  <Card
-                    key={address.id}
-                    padding="sm"
-                    className="cursor-pointer hover:bg-accent transition-colors"
-                    onClick={() => handleEditAddress(address)}
-                  >
-                    <div className="space-y-0.5 pr-6">
-                      {getAddressDisplayLines(address).length > 0 ? (
-                        getAddressDisplayLines(address).map((line, i) => (
-                          <Text
-                            key={i}
-                            variant={i === 0 ? 'bodySmall' : 'caption'}
-                            color={i === 0 ? 'primary' : 'muted'}
-                            className="line-clamp-1"
-                          >
-                            {line}
-                          </Text>
-                        ))
-                      ) : (
-                        <Text variant="bodySmall" color="muted">
-                          —
-                        </Text>
-                      )}
-                    </div>
-                  </Card>
-                ))}
+      {/* Address panel: drawer (desktop) or bottom sheet (mobile) */}
+      {isMobile ? (
+        <>
+          {showAllAddresses && (
+            <div
+              className="fixed inset-0 z-40 bg-black/20"
+              onClick={handleCloseAddressPanel}
+            />
+          )}
+          <div
+            className={`fixed inset-x-0 bottom-0 z-50 bg-background border-t rounded-t-2xl shadow-lg transition-transform duration-300 ease-in-out ${
+              showAllAddresses ? 'translate-y-0' : 'translate-y-full'
+            }`}
+            style={{ maxHeight: '75vh' }}
+          >
+            {addressPanelHeader}
+            <div
+              className="overflow-y-auto p-4"
+              style={{ maxHeight: 'calc(75vh - 57px)' }}
+            >
+              {addressListItems}
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div
+            className={`fixed inset-y-0 right-0 z-50 w-80 bg-background border-l shadow-lg transition-transform duration-300 ease-in-out ${
+              showAllAddresses ? 'translate-x-0' : 'translate-x-full'
+            }`}
+          >
+            <div className="flex flex-col h-full">
+              {addressPanelHeader}
+              <div className="flex-1 overflow-y-auto p-4">
+                {addressListItems}
               </div>
             </div>
-          </Card>
-        )}
-      </div>
+          </div>
+          {showAllAddresses && (
+            <div
+              className="fixed inset-0 z-40 bg-black/20 transition-opacity"
+              onClick={handleCloseAddressPanel}
+            />
+          )}
+        </>
+      )}
 
       {/* Discard confirmation dialog */}
       <Dialog
@@ -640,6 +717,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
