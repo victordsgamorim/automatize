@@ -79,6 +79,10 @@ export {
   DialogDescription,
 } from './components/Dialog/Dialog.web';
 
+// Kbd
+export { Kbd } from './components/Kbd/Kbd.web';
+export type { KbdProps } from './components/Kbd/Kbd.web';
+
 export {
   Command,
   CommandDialog,
