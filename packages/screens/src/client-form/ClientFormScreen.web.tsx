@@ -432,7 +432,9 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                           variant="link"
                           onClick={() => setShowAllAddresses(true)}
                         >
-                          {`+${addresses.length - MAX_VISIBLE_ADDRESSES}`}
+                          {t('client.address.viewMore', {
+                            count: addresses.length - MAX_VISIBLE_ADDRESSES,
+                          })}
                         </Button>
                       </Card>
                     )}
@@ -711,7 +713,11 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
             >
               {t('app.cancel')}
             </Button>
-            <Button type="button" onClick={handleSaveAddress}>
+            <Button
+              type="button"
+              onClick={handleSaveAddress}
+              disabled={!newAddress.street.trim()}
+            >
               {t('client.address.save')}
             </Button>
           </DialogFooter>

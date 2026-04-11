@@ -108,6 +108,7 @@
   "client.address.save": "Save Address",
   "client.address.empty": "No addresses added yet. Click the + button to add one.",
   "client.address.allTitle": "All Addresses",
+  "client.address.viewMore": "View +{{count}}",
   "client.phones": "Phones",
   "client.phone.add": "Add Phone",
   "client.phone.remove": "Remove phone",

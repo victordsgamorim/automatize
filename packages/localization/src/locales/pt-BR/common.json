@@ -108,6 +108,7 @@
   "client.address.save": "Salvar Endereço",
   "client.address.empty": "Nenhum endereço adicionado ainda. Clique no botão + para adicionar.",
   "client.address.allTitle": "Todos os Endereços",
+  "client.address.viewMore": "Ver +{{count}}",
   "client.phones": "Telefones",
   "client.phone.add": "Adicionar Telefone",
   "client.phone.remove": "Remover telefone",
