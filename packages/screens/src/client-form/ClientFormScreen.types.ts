@@ -8,8 +8,6 @@ export type ClientType = 'individual' | 'business';
 
 export type AddressType = 'residence' | 'establishment';
 
-export type PhoneType = 'mobile' | 'telephone';
-
 export interface Address {
   id: string;
   addressType: AddressType;
@@ -23,7 +21,6 @@ export interface Address {
 
 export interface Phone {
   id: string;
-  phoneType: PhoneType;
   number: string;
 }
 
