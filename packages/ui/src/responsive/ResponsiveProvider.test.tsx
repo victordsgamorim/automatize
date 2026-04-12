@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import React from 'react';
 import { render, act, screen } from '@testing-library/react';
-import { ResponsiveProvider } from '../src/ResponsiveProvider';
-import { useResponsive } from '../src/useResponsive';
+import { ResponsiveProvider } from './ResponsiveProvider';
+import { useResponsive } from './useResponsive';
 
 function ResponsiveConsumer() {
   const { isSm, isMd, isLg, isXl, is2xl, isMobile } = useResponsive();
@@ -20,15 +20,13 @@ function ResponsiveConsumer() {
 
 describe('ResponsiveProvider', () => {
   beforeEach(() => {
-    // Reset matchMedia mock to default (no breakpoint matched)
     const listeners: Array<(e: { matches: boolean }) => void> = [];
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: vi.fn().mockImplementation((query: string) => {
-        // Parse min-width from query
         const match = query.match(/min-width:\s*(\d+)/);
         const minWidth = match ? parseInt(match[1], 10) : 0;
-        const matches = minWidth === 0; // only match 0px queries
+        const matches = minWidth === 0;
 
         return {
           matches,
@@ -61,7 +59,6 @@ describe('ResponsiveProvider', () => {
   });
 
   it('throws when useResponsive is used outside provider', () => {
-    // Suppress console.error for expected error
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     expect(() => {
@@ -91,13 +88,11 @@ describe('ResponsiveProvider', () => {
   });
 
   it('isMobile is true when isLg is false', async () => {
-    // Simulate a viewport where lg is not matched (e.g., 800px wide)
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
       value: vi.fn().mockImplementation((query: string) => {
         const match = query.match(/min-width:\s*(\d+)/);
         const minWidth = match ? parseInt(match[1], 10) : 0;
-        // Simulate 800px viewport: sm(640) ✓, md(768) ✓, lg(1024) ✗, xl(1280) ✗, 2xl(1536) ✗
         const viewportWidth = 800;
         const matches = viewportWidth >= minWidth;
 
@@ -134,7 +129,6 @@ describe('ResponsiveProvider', () => {
       value: vi.fn().mockImplementation((query: string) => {
         const match = query.match(/min-width:\s*(\d+)/);
         const minWidth = match ? parseInt(match[1], 10) : 0;
-        // Simulate 1440px viewport: all breakpoints matched except 2xl
         const viewportWidth = 1440;
         const matches = viewportWidth >= minWidth;
 

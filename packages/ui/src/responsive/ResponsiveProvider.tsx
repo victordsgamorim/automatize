@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState, useMemo } from 'react';
-import { breakpoints } from '@automatize/ui/tokens';
+import { breakpoints } from '../tokens';
 
-import type { BreakpointName } from '@automatize/ui/tokens';
+import type { BreakpointName } from '../tokens';
 
 export interface ResponsiveContextValue {
   /** Viewport >= 640px */
@@ -65,10 +65,8 @@ export function ResponsiveProvider({
       });
     };
 
-    // Set initial values
     update();
 
-    // Listen for changes
     for (const mql of mqls) {
       mql.addEventListener('change', update);
     }

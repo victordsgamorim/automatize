@@ -3,12 +3,6 @@ export { ThemeProvider } from './ThemeProvider';
 export type { ThemeProviderProps } from './ThemeProvider';
 export { useTheme } from './useTheme';
 
-// Responsive
-export { ResponsiveProvider } from './ResponsiveProvider';
-export type { ResponsiveProviderProps } from './ResponsiveProvider';
-export { useResponsive } from './useResponsive';
-export type { ResponsiveContextValue } from './ResponsiveProvider';
-
 // Singleton
 export { initTheme, _resetTheme } from './singleton';
 
