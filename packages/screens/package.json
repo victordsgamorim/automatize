@@ -82,6 +82,7 @@
     "@automatize/form-validator": "workspace:*",
     "@automatize/core-localization": "workspace:*",
     "@automatize/core-theme": "workspace:*",
+    "@automatize/theme": "workspace:*",
     "@automatize/utils": "workspace:*",
     "@automatize/ui": "workspace:*",
     "date-fns": "catalog:",

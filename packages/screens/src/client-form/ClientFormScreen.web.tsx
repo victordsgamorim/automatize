@@ -24,6 +24,7 @@ import {
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { formatCpf, formatCnpj } from '@automatize/form-validator';
+import { useResponsive } from '@automatize/theme';
 import type { ClientFormScreenProps, Address } from './ClientFormScreen.types';
 import { useClientForm } from './useClientForm';
 
@@ -82,23 +83,6 @@ const EMPTY_ADDRESS: NewAddressFields = {
   state: '',
   info: '',
 };
-
-const MOBILE_BREAKPOINT = 1024;
-
-function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-    setIsMobile(mql.matches);
-
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mql.addEventListener('change', handler);
-    return () => mql.removeEventListener('change', handler);
-  }, []);
-
-  return isMobile;
-}
 
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onSubmit,
@@ -222,7 +206,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   };
 
   const visibleAddresses = addresses.slice(0, MAX_VISIBLE_ADDRESSES);
-  const isMobile = useIsMobile();
+  const { isMobile } = useResponsive();
 
   const handleCloseAddressPanel = useCallback(
     () => setShowAllAddresses(false),
@@ -536,6 +520,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               type="button"
               variant="outline"
               onClick={handleCancelDiscard}
+              shortcut="Esc"
             >
               {t('client.discard.cancel')}
             </Button>
@@ -561,7 +546,19 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
             </DialogTitle>
             <DialogDescription>{t('client.address.add')}</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div
+            className="space-y-4"
+            onKeyDown={(e) => {
+              if (
+                e.key === 'Enter' &&
+                !e.shiftKey &&
+                newAddress.street.trim()
+              ) {
+                e.preventDefault();
+                handleSaveAddress();
+              }
+            }}
+          >
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
               <div className="sm:col-span-3">
                 <Input
@@ -669,6 +666,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               type="button"
               variant="outline"
               onClick={() => setAddressDialogOpen(false)}
+              shortcut="Esc"
             >
               {t('app.cancel')}
             </Button>
@@ -676,6 +674,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               type="button"
               onClick={handleSaveAddress}
               disabled={!newAddress.street.trim()}
+              shortcut="Enter"
             >
               {t('client.address.save')}
             </Button>

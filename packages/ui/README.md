@@ -67,6 +67,7 @@ Generated: src/tokens/*.ts + src/styles/_tokens.css + src/styles/_animation.css
    | `typography.json` | Font families, sizes, weights, line heights                  |
    | `shadow.json`     | Shadow definitions (with RN elevation)                       |
    | `radius.json`     | Border radius values                                         |
+   | `breakpoint.json` | Responsive breakpoint values (Tailwind-aligned)              |
    | `animation.json`  | Animation values (duration, easing, blur, translate, delays) |
 
 2. **Build the project** (tokens are generated automatically):
@@ -115,6 +116,7 @@ Generated: src/tokens/*.ts + src/styles/_tokens.css + src/styles/_animation.css
 | `src/tokens/typography.ts`  | React Native      | `export const typography = { ... }`                 |
 | `src/tokens/shadows.ts`     | React Native      | `export const shadows/borderRadius`                 |
 | `src/tokens/animation.ts`   | React Native      | `export const animation = { ... }`                  |
+| `src/tokens/breakpoints.ts` | Cross-platform    | `export const breakpoints = { ... }`                |
 | `src/tokens/index.ts`       | Barrel re-export  | `export * from './...'`                             |
 | `src/styles/_tokens.css`    | Web / Tailwind v4 | CSS custom properties in `:root`                    |
 | `src/styles/_animation.css` | Web / Tailwind v4 | Keyframes + utility classes + CSS custom properties |
@@ -268,5 +270,29 @@ CSS custom properties are also available for custom animations:
 
 ---
 
-**Last Updated:** 2026-04-02
+**Last Updated:** 2026-04-12
 ```
+
+### Breakpoint tokens
+
+Breakpoint values are Tailwind-aligned and shared across the monorepo:
+
+| Name  | Min Width |
+| ----- | --------- |
+| `sm`  | 640px     |
+| `md`  | 768px     |
+| `lg`  | 1024px    |
+| `xl`  | 1280px    |
+| `2xl` | 1536px    |
+
+```ts
+import { breakpoints, type BreakpointName } from '@automatize/ui/tokens';
+
+// Numeric values for matchMedia / comparisons
+const mql = window.matchMedia(`(min-width: ${breakpoints.lg}px)`);
+
+// Type-safe breakpoint access
+const bp: BreakpointName = 'md'; // 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+```
+
+Consumed by `@automatize/theme`'s `ResponsiveProvider` + `useResponsive()` hook for React-based breakpoint state.

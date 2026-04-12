@@ -112,6 +112,7 @@ out/
 *.tsbuildinfo
 *.tsbuildinfo.json
 .eslintcache
+.ruff_cache/
 .rpt2_cache/
 .rts2_cache_cjs/
 .rts2_cache_esm/
@@ -198,6 +199,8 @@ supabase/seed.sql
 .claude/
 .claude/settings.json
 .claude/launch.json
+**/CLAUDE.md
+**/AGENTS.md
 
 # ============================================================================
 # MISC DIRECTORIES

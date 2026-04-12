@@ -5,6 +5,7 @@ import { AuthProviderWrapper } from './auth-provider';
 import { LocalizationWrapper } from './localization-provider';
 import { ThemeWrapper } from './theme-provider';
 import { ToastProvider } from '@automatize/ui/web';
+import { ResponsiveProvider } from '@automatize/theme';
 import './globals.css';
 
 // Inline anti-flash script — prevents flash of wrong theme before hydration.
@@ -44,9 +45,11 @@ export default function RootLayout({
       >
         <ThemeWrapper>
           <LocalizationWrapper>
-            <AuthProviderWrapper>
-              <ToastProvider>{children}</ToastProvider>
-            </AuthProviderWrapper>
+            <ResponsiveProvider>
+              <AuthProviderWrapper>
+                <ToastProvider>{children}</ToastProvider>
+              </AuthProviderWrapper>
+            </ResponsiveProvider>
           </LocalizationWrapper>
         </ThemeWrapper>
       </body>

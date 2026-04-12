@@ -94,4 +94,37 @@ describe('Button (web)', () => {
     render(<Button>Submit</Button>);
     expect(screen.getByRole('button').textContent).toBe('Submit');
   });
+
+  // ── Shortcut ──────────────────────────────────────────────────────────────
+
+  it('does not render a Kbd badge when shortcut is not provided', () => {
+    render(<Button>Save</Button>);
+    expect(document.querySelector('[data-slot="kbd"]')).toBeNull();
+  });
+
+  it('renders a Kbd badge with the shortcut text', () => {
+    render(<Button shortcut="Esc">Cancel</Button>);
+    const kbd = document.querySelector('[data-slot="kbd"]');
+    expect(kbd).toBeTruthy();
+    expect(kbd?.textContent).toBe('Esc');
+  });
+
+  it('renders a Kbd badge with React node shortcut', () => {
+    render(<Button shortcut="Enter">Save</Button>);
+    const kbd = document.querySelector('[data-slot="kbd"]');
+    expect(kbd).toBeTruthy();
+    expect(kbd?.textContent).toBe('Enter');
+  });
+
+  it('renders both button text and shortcut badge', () => {
+    render(<Button shortcut="Enter">Save</Button>);
+    const btn = screen.getByRole('button');
+    expect(btn.textContent).toContain('Save');
+    expect(btn.textContent).toContain('Enter');
+  });
+
+  it('does not render Kbd when shortcut is undefined', () => {
+    render(<Button shortcut={undefined}>Click</Button>);
+    expect(document.querySelector('[data-slot="kbd"]')).toBeNull();
+  });
 });
