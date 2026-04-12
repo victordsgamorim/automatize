@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, House, Building2 } from 'lucide-react';
 import {
   Button,
   Input,
@@ -21,11 +21,18 @@ import {
   DialogFooter,
   Drawer,
   BottomSheet,
+  Tabs,
+  TabsList,
+  TabsTrigger,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { formatCpf, formatCnpj } from '@automatize/form-validator';
 import { useResponsive } from '@automatize/ui/responsive';
-import type { ClientFormScreenProps, Address } from './ClientFormScreen.types';
+import type {
+  ClientFormScreenProps,
+  Address,
+  AddressType,
+} from './ClientFormScreen.types';
 import { useClientForm } from './useClientForm';
 
 const BRAZILIAN_STATES = [
@@ -76,6 +83,7 @@ function getAddressDisplayLines(address: Address): string[] {
 }
 
 const EMPTY_ADDRESS: NewAddressFields = {
+  addressType: 'residence',
   street: '',
   number: '',
   neighborhood: '',
@@ -83,6 +91,20 @@ const EMPTY_ADDRESS: NewAddressFields = {
   state: '',
   info: '',
 };
+
+function AddressTypeIcon({
+  addressType,
+  className = 'size-4 shrink-0 text-muted-foreground',
+}: {
+  addressType: AddressType;
+  className?: string;
+}) {
+  return addressType === 'residence' ? (
+    <House className={className} />
+  ) : (
+    <Building2 className={className} />
+  );
+}
 
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onSubmit,
@@ -182,6 +204,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   const handleEditAddress = (address: Address) => {
     setEditingAddressId(address.id);
     setNewAddress({
+      addressType: address.addressType,
       street: address.street,
       number: address.number,
       neighborhood: address.neighborhood,
@@ -224,23 +247,29 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
           }`}
           onClick={() => handleEditAddress(address)}
         >
-          <div className="space-y-0.5 pr-8">
-            {getAddressDisplayLines(address).length > 0 ? (
-              getAddressDisplayLines(address).map((line, i) => (
-                <Text
-                  key={i}
-                  variant={i === 0 ? 'bodySmall' : 'caption'}
-                  color={i === 0 ? 'primary' : 'muted'}
-                  className="line-clamp-1"
-                >
-                  {line}
+          <div className="flex items-start gap-2 pr-8">
+            <AddressTypeIcon
+              addressType={address.addressType}
+              className="size-4 shrink-0 mt-0.5 text-muted-foreground"
+            />
+            <div className="space-y-0.5 min-w-0">
+              {getAddressDisplayLines(address).length > 0 ? (
+                getAddressDisplayLines(address).map((line, i) => (
+                  <Text
+                    key={i}
+                    variant={i === 0 ? 'bodySmall' : 'caption'}
+                    color={i === 0 ? 'primary' : 'muted'}
+                    className="line-clamp-1"
+                  >
+                    {line}
+                  </Text>
+                ))
+              ) : (
+                <Text variant="bodySmall" color="muted">
+                  —
                 </Text>
-              ))
-            ) : (
-              <Text variant="bodySmall" color="muted">
-                —
-              </Text>
-            )}
+              )}
+            </div>
           </div>
           <Button
             type="button"
@@ -360,23 +389,29 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                         className="relative group min-h-[80px] cursor-pointer hover:bg-accent transition-colors"
                         onClick={() => handleEditAddress(address)}
                       >
-                        <div className="space-y-0.5 pr-6">
-                          {getAddressDisplayLines(address).length > 0 ? (
-                            getAddressDisplayLines(address).map((line, i) => (
-                              <Text
-                                key={i}
-                                variant={i === 0 ? 'bodySmall' : 'caption'}
-                                color={i === 0 ? 'primary' : 'muted'}
-                                className="line-clamp-1"
-                              >
-                                {line}
+                        <div className="flex items-start gap-2 pr-6">
+                          <AddressTypeIcon
+                            addressType={address.addressType}
+                            className="size-4 shrink-0 mt-0.5 text-muted-foreground"
+                          />
+                          <div className="space-y-0.5 min-w-0">
+                            {getAddressDisplayLines(address).length > 0 ? (
+                              getAddressDisplayLines(address).map((line, i) => (
+                                <Text
+                                  key={i}
+                                  variant={i === 0 ? 'bodySmall' : 'caption'}
+                                  color={i === 0 ? 'primary' : 'muted'}
+                                  className="line-clamp-1"
+                                >
+                                  {line}
+                                </Text>
+                              ))
+                            ) : (
+                              <Text variant="bodySmall" color="muted">
+                                —
                               </Text>
-                            ))
-                          ) : (
-                            <Text variant="bodySmall" color="muted">
-                              —
-                            </Text>
-                          )}
+                            )}
+                          </div>
                         </div>
                         <Button
                           type="button"
@@ -559,6 +594,27 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               }
             }}
           >
+            <Tabs
+              value={newAddress.addressType}
+              onValueChange={(val: string) =>
+                setNewAddress((prev) => ({
+                  ...prev,
+                  addressType: val as AddressType,
+                }))
+              }
+            >
+              <TabsList variant="default" size="sm">
+                <TabsTrigger value="residence">
+                  <House className="size-3.5" />
+                  {t('client.address.type.residence')}
+                </TabsTrigger>
+                <TabsTrigger value="establishment">
+                  <Building2 className="size-3.5" />
+                  {t('client.address.type.establishment')}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
               <div className="sm:col-span-3">
                 <Input

@@ -171,3 +171,11 @@ export type { DrawerProps } from './components/Drawer/Drawer.web';
 // BottomSheet
 export { BottomSheet } from './components/BottomSheet/BottomSheet.web';
 export type { BottomSheetProps } from './components/BottomSheet/BottomSheet.web';
+
+// Tabs
+export {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from './components/Tabs/Tabs.web';

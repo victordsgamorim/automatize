@@ -188,6 +188,7 @@ const sampleData: ClientFormData = {
   addresses: [
     {
       id: 'a1',
+      addressType: 'residence' as const,
       street: '',
       number: '',
       neighborhood: '',

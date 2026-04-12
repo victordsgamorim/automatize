@@ -26,6 +26,7 @@ describe('useClientForm', () => {
       addresses: [
         {
           id: 'addr-1',
+          addressType: 'residence' as const,
           street: 'Rua A',
           number: '100',
           neighborhood: 'Centro',
@@ -118,6 +119,7 @@ describe('useClientForm', () => {
             addresses: [
               {
                 id: 'a1',
+                addressType: 'residence' as const,
                 street: 'R',
                 number: '1',
                 neighborhood: 'N',
