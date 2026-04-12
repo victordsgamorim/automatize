@@ -12,7 +12,7 @@ describe('useClientForm', () => {
       expect(result.current.clientType).toBe('individual');
       expect(result.current.name).toBe('');
       expect(result.current.document).toBe('');
-      expect(result.current.addresses).toHaveLength(1);
+      expect(result.current.addresses).toHaveLength(0);
       expect(result.current.phones).toHaveLength(1);
       expect(result.current.phones[0].number).toBe('');
     });
@@ -35,7 +35,7 @@ describe('useClientForm', () => {
           info: 'Sala 5',
         },
       ],
-      phones: [{ id: 'phone-1', phoneType: 'mobile', number: '11999999999' }],
+      phones: [{ id: 'phone-1', number: '11999999999' }],
     };
 
     it('restores all fields from initialData', () => {
@@ -63,7 +63,7 @@ describe('useClientForm', () => {
         })
       );
 
-      expect(result.current.addresses).toHaveLength(1);
+      expect(result.current.addresses).toHaveLength(0);
       expect(result.current.phones).toHaveLength(1);
     });
   });
@@ -128,7 +128,7 @@ describe('useClientForm', () => {
                 info: '',
               },
             ],
-            phones: [{ id: 'p1', phoneType: 'mobile', number: '999' }],
+            phones: [{ id: 'p1', number: '999' }],
           },
         })
       );
@@ -238,7 +238,7 @@ describe('useClientForm', () => {
       const id = result.current.phones[0].id;
 
       act(() => {
-        result.current.updatePhone(id, 'number', '11999887766');
+        result.current.updatePhone(id, '11999887766');
       });
 
       expect(result.current.phones[0].number).toBe('11999887766');

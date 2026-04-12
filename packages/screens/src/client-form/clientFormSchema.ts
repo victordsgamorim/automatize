@@ -13,12 +13,7 @@ export const clientFormSchema = z.object({
   document: z.union([cpfSchema, cnpjSchema]),
   addresses: z.array(addressSchema).min(1, 'At least one address is required'),
   phones: z
-    .array(
-      z.object({
-        phoneType: z.enum(['mobile', 'telephone']),
-        number: phoneSchema,
-      })
-    )
+    .array(z.object({ number: phoneSchema }))
     .min(1, 'At least one phone is required'),
 });
 
