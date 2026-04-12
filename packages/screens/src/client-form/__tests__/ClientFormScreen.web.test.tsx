@@ -54,6 +54,43 @@ vi.mock('@automatize/ui/web', () => ({
   ),
   Card: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
   Separator: () => <hr />,
+  Tabs: ({
+    children,
+    value,
+    _onValueChange,
+  }: {
+    children?: React.ReactNode;
+    value?: string;
+    _onValueChange?: (val: string) => void;
+  }) => (
+    <div data-testid="tabs" data-value={value}>
+      {children}
+    </div>
+  ),
+  TabsList: ({
+    children,
+    variant,
+    size,
+  }: {
+    children?: React.ReactNode;
+    variant?: string;
+    size?: string;
+  }) => (
+    <div data-testid="tabs-list" data-variant={variant} data-size={size}>
+      {children}
+    </div>
+  ),
+  TabsTrigger: ({
+    children,
+    value,
+  }: {
+    children?: React.ReactNode;
+    value?: string;
+  }) => (
+    <button data-testid="tabs-trigger" data-value={value}>
+      {children}
+    </button>
+  ),
   Select: ({ children }: { children?: React.ReactNode }) => (
     <div>{children}</div>
   ),
@@ -134,6 +171,10 @@ vi.mock('@automatize/ui/web', () => ({
   ),
 }));
 
+vi.mock('@automatize/ui/responsive', () => ({
+  useResponsive: () => ({ isMobile: false }),
+}));
+
 vi.mock('@automatize/core-localization', () => ({
   useTranslation: () => ({
     t: (key: string) =>
@@ -161,6 +202,14 @@ vi.mock('@automatize/core-localization', () => ({
         'client.phone.add': 'Add Phone',
         'client.phone.remove': 'Remove phone',
         'client.phone.label': 'Phone',
+        'client.phone.type.mobile': 'Mobile',
+        'client.phone.type.telephone': 'Landline',
+        'client.phone.dialog.title': 'New Phone',
+        'client.phone.dialog.editTitle': 'Edit Phone',
+        'client.phone.save': 'Save Phone',
+        'client.phone.empty': 'No phones added yet.',
+        'client.phone.allTitle': 'All Phones',
+        'client.phone.viewMore': 'View +{{count}}',
         'client.discard.title': 'Discard new client?',
         'client.discard.description':
           'If you continue, all data will be reset.',
@@ -197,7 +246,7 @@ const sampleData: ClientFormData = {
       info: '',
     },
   ],
-  phones: [{ id: 'p1', number: '' }],
+  phones: [{ id: 'p1', phoneType: 'mobile', number: '' }],
 };
 
 describe('ClientFormScreen (web)', () => {
