@@ -23,6 +23,7 @@ function createEmptyAddress(): Address {
 function createEmptyPhone(): Phone {
   return {
     id: generateId(),
+    phoneType: 'mobile',
     number: '',
   };
 }
@@ -50,9 +51,13 @@ export interface UseClientFormResult {
     value: string
   ) => void;
   phones: Phone[];
-  addPhone: () => void;
+  addPhone: (data?: Partial<Omit<Phone, 'id'>>) => void;
   removePhone: (id: string) => void;
-  updatePhone: (id: string, value: string) => void;
+  updatePhone: (
+    id: string,
+    field: keyof Omit<Phone, 'id'>,
+    value: string
+  ) => void;
   getFormData: () => ClientFormData;
   /** Resets all form fields to their empty defaults */
   resetForm: () => void;
@@ -71,9 +76,7 @@ export function useClientForm(
   const [addresses, setAddresses] = useState<Address[]>(
     initialData?.addresses ?? []
   );
-  const [phones, setPhones] = useState<Phone[]>(
-    initialData?.phones?.length ? initialData.phones : [createEmptyPhone()]
-  );
+  const [phones, setPhones] = useState<Phone[]>(initialData?.phones ?? []);
 
   // Track whether we've mounted to avoid firing onDataChange with initial values
   const mountedRef = useRef(false);
@@ -108,21 +111,22 @@ export function useClientForm(
     []
   );
 
-  const addPhone = useCallback(() => {
-    setPhones((prev) => [...prev, createEmptyPhone()]);
+  const addPhone = useCallback((data?: Partial<Omit<Phone, 'id'>>) => {
+    setPhones((prev) => [...prev, { ...createEmptyPhone(), ...data }]);
   }, []);
 
   const removePhone = useCallback((id: string) => {
-    setPhones((prev) =>
-      prev.length > 1 ? prev.filter((p) => p.id !== id) : prev
-    );
+    setPhones((prev) => prev.filter((p) => p.id !== id));
   }, []);
 
-  const updatePhone = useCallback((id: string, value: string) => {
-    setPhones((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, number: value } : p))
-    );
-  }, []);
+  const updatePhone = useCallback(
+    (id: string, field: keyof Omit<Phone, 'id'>, value: string) => {
+      setPhones((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, [field]: value } : p))
+      );
+    },
+    []
+  );
 
   const getFormData = useCallback(
     (): ClientFormData => ({
@@ -140,7 +144,7 @@ export function useClientForm(
     setName('');
     setDocument('');
     setAddresses([]);
-    setPhones([createEmptyPhone()]);
+    setPhones([]);
   }, []);
 
   return {

@@ -54,6 +54,37 @@ vi.mock('@automatize/ui/web', () => ({
   ),
   Card: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
   Separator: () => <hr />,
+  Tabs: ({
+    children,
+    value,
+    _onValueChange,
+  }: {
+    children?: React.ReactNode;
+    value?: string;
+    _onValueChange?: (val: string) => void;
+  }) => (
+    <div data-testid="tabs" data-value={value}>
+      {children}
+    </div>
+  ),
+  TabsList: ({
+    children,
+  }: {
+    children?: React.ReactNode;
+    variant?: string;
+    size?: string;
+  }) => <div data-testid="tabs-list">{children}</div>,
+  TabsTrigger: ({
+    children,
+    value,
+  }: {
+    children?: React.ReactNode;
+    value?: string;
+  }) => (
+    <button data-testid="tabs-trigger" data-value={value}>
+      {children}
+    </button>
+  ),
   Select: ({ children }: { children?: React.ReactNode }) => (
     <div>{children}</div>
   ),
@@ -170,6 +201,10 @@ vi.mock('@automatize/core-localization', () => ({
   }),
 }));
 
+vi.mock('@automatize/ui/responsive', () => ({
+  useResponsive: () => ({ isMobile: false }),
+}));
+
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
 const defaultProps: ClientFormScreenProps = {
@@ -197,7 +232,7 @@ const sampleData: ClientFormData = {
       info: '',
     },
   ],
-  phones: [{ id: 'p1', number: '' }],
+  phones: [{ id: 'p1', phoneType: 'mobile', number: '' }],
 };
 
 describe('ClientFormScreen (web)', () => {

@@ -19,8 +19,11 @@ export interface Address {
   info: string;
 }
 
+export type PhoneType = 'mobile' | 'telephone';
+
 export interface Phone {
   id: string;
+  phoneType: PhoneType;
   number: string;
 }
 
