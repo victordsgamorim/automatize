@@ -5,5 +5,6 @@ export type {
   ClientType,
   AddressType,
   Address,
+  PhoneType,
   Phone,
 } from './ClientFormScreen.types';

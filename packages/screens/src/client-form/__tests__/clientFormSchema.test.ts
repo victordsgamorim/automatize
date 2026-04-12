@@ -14,7 +14,7 @@ const validIndividualForm = {
       state: 'SP',
     },
   ],
-  phones: [{ number: '(11) 98765-4321' }],
+  phones: [{ phoneType: 'mobile', number: '(11) 98765-4321' }],
 };
 
 describe('clientFormSchema', () => {
