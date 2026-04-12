@@ -12,9 +12,8 @@ describe('useClientForm', () => {
       expect(result.current.clientType).toBe('individual');
       expect(result.current.name).toBe('');
       expect(result.current.document).toBe('');
-      expect(result.current.addresses).toHaveLength(1);
-      expect(result.current.phones).toHaveLength(1);
-      expect(result.current.phones[0].number).toBe('');
+      expect(result.current.addresses).toHaveLength(0);
+      expect(result.current.phones).toHaveLength(0);
     });
   });
 
@@ -63,8 +62,8 @@ describe('useClientForm', () => {
         })
       );
 
-      expect(result.current.addresses).toHaveLength(1);
-      expect(result.current.phones).toHaveLength(1);
+      expect(result.current.addresses).toHaveLength(0);
+      expect(result.current.phones).toHaveLength(0);
     });
   });
 
@@ -140,10 +139,8 @@ describe('useClientForm', () => {
       expect(result.current.clientType).toBe('individual');
       expect(result.current.name).toBe('');
       expect(result.current.document).toBe('');
-      expect(result.current.addresses).toHaveLength(1);
-      expect(result.current.addresses[0].street).toBe('');
-      expect(result.current.phones).toHaveLength(1);
-      expect(result.current.phones[0].number).toBe('');
+      expect(result.current.addresses).toHaveLength(0);
+      expect(result.current.phones).toHaveLength(0);
     });
   });
 
@@ -169,99 +166,113 @@ describe('useClientForm', () => {
         result.current.addAddress();
       });
 
-      expect(result.current.addresses).toHaveLength(2);
-      expect(result.current.addresses[1].street).toBe('');
-    });
-
-    it('removeAddress removes by id but keeps at least one', () => {
-      const { result } = renderHook(() => useClientForm());
-      const firstId = result.current.addresses[0].id;
-
-      // Cannot remove the last address
-      act(() => {
-        result.current.removeAddress(firstId);
-      });
       expect(result.current.addresses).toHaveLength(1);
-
-      // Add a second, then remove the first
-      act(() => {
-        result.current.addAddress();
-      });
-      act(() => {
-        result.current.removeAddress(firstId);
-      });
-      expect(result.current.addresses).toHaveLength(1);
-      expect(result.current.addresses[0].id).not.toBe(firstId);
-    });
-
-    it('updateAddress updates a specific field', () => {
-      const { result } = renderHook(() => useClientForm());
-      const id = result.current.addresses[0].id;
-
-      act(() => {
-        result.current.updateAddress(id, 'street', 'Rua Nova');
-      });
-
-      expect(result.current.addresses[0].street).toBe('Rua Nova');
-    });
-
-    it('addPhone adds a new empty phone', () => {
-      const { result } = renderHook(() => useClientForm());
-
-      act(() => {
-        result.current.addPhone();
-      });
-
-      expect(result.current.phones).toHaveLength(2);
-    });
-
-    it('removePhone removes by id but keeps at least one', () => {
-      const { result } = renderHook(() => useClientForm());
-      const firstId = result.current.phones[0].id;
-
-      act(() => {
-        result.current.removePhone(firstId);
-      });
-      expect(result.current.phones).toHaveLength(1);
-
-      act(() => {
-        result.current.addPhone();
-      });
-      act(() => {
-        result.current.removePhone(firstId);
-      });
-      expect(result.current.phones).toHaveLength(1);
-    });
-
-    it('updatePhone updates phone number by id', () => {
-      const { result } = renderHook(() => useClientForm());
-      const id = result.current.phones[0].id;
-
-      act(() => {
-        result.current.updatePhone(id, 'number', '11999887766');
-      });
-
-      expect(result.current.phones[0].number).toBe('11999887766');
+      expect(result.current.addresses[0].street).toBe('');
     });
   });
 
-  describe('getFormData', () => {
-    it('returns a snapshot of all current form data', () => {
-      const { result } = renderHook(() => useClientForm());
+  it('removeAddress removes by id but keeps at least one', () => {
+    const { result } = renderHook(() => useClientForm());
+    act(() => {
+      result.current.addAddress();
+    });
+    const firstId = result.current.addresses[0].id;
 
-      act(() => {
-        result.current.setName('Maria');
-        result.current.setDocument('111');
-      });
+    // Cannot remove the last address
+    act(() => {
+      result.current.removeAddress(firstId);
+    });
+    expect(result.current.addresses).toHaveLength(1);
 
-      const data = result.current.getFormData();
-      expect(data).toEqual({
-        clientType: 'individual',
-        name: 'Maria',
-        document: '111',
-        addresses: result.current.addresses,
-        phones: result.current.phones,
-      });
+    // Add a second, then remove the first
+    act(() => {
+      result.current.addAddress();
+    });
+    act(() => {
+      result.current.removeAddress(firstId);
+    });
+    expect(result.current.addresses).toHaveLength(1);
+    expect(result.current.addresses[0].id).not.toBe(firstId);
+  });
+
+  it('updateAddress updates a specific field', () => {
+    const { result } = renderHook(() => useClientForm());
+    act(() => {
+      result.current.addAddress();
+    });
+    const id = result.current.addresses[0].id;
+
+    act(() => {
+      result.current.updateAddress(id, 'street', 'Rua Nova');
+    });
+
+    expect(result.current.addresses[0].street).toBe('Rua Nova');
+  });
+
+  it('addPhone adds a new empty phone', () => {
+    const { result } = renderHook(() => useClientForm());
+
+    act(() => {
+      result.current.addPhone();
+    });
+
+    expect(result.current.phones).toHaveLength(1);
+  });
+
+  it('removePhone removes by id but keeps at least one', () => {
+    const { result } = renderHook(() => useClientForm());
+    act(() => {
+      result.current.addPhone();
+    });
+    const firstId = result.current.phones[0].id;
+
+    // Cannot remove the last phone
+    act(() => {
+      result.current.removePhone(firstId);
+    });
+    expect(result.current.phones).toHaveLength(1);
+
+    // Add a second, then remove the first
+    act(() => {
+      result.current.addPhone();
+    });
+    act(() => {
+      result.current.removePhone(firstId);
+    });
+    expect(result.current.phones).toHaveLength(1);
+  });
+
+  it('updatePhone updates phone number by id', () => {
+    const { result } = renderHook(() => useClientForm());
+    act(() => {
+      result.current.addPhone();
+    });
+    const id = result.current.phones[0].id;
+
+    act(() => {
+      result.current.updatePhone(id, 'number', '11999887766');
+    });
+
+    expect(result.current.phones[0].number).toBe('11999887766');
+  });
+});
+
+describe('getFormData', () => {
+  it('returns a snapshot of all current form data', () => {
+    const { result } = renderHook(() => useClientForm());
+
+    act(() => {
+      result.current.setName('Maria');
+      result.current.setDocument('111');
+    });
+
+    const data = result.current.getFormData();
+    expect(data).toEqual({
+      clientType: 'individual',
+      name: 'Maria',
+      document: '111',
+      addresses: result.current.addresses,
+      phones: result.current.phones,
     });
   });
 

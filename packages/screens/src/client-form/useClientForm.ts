@@ -74,13 +74,9 @@ export function useClientForm(
   const [name, setName] = useState(initialData?.name ?? '');
   const [document, setDocument] = useState(initialData?.document ?? '');
   const [addresses, setAddresses] = useState<Address[]>(
-    initialData?.addresses?.length
-      ? initialData.addresses
-      : [createEmptyAddress()]
+    initialData?.addresses ?? []
   );
-  const [phones, setPhones] = useState<Phone[]>(
-    initialData?.phones?.length ? initialData.phones : [createEmptyPhone()]
-  );
+  const [phones, setPhones] = useState<Phone[]>(initialData?.phones ?? []);
 
   // Track whether we've mounted to avoid firing onDataChange with initial values
   const mountedRef = useRef(false);
@@ -151,8 +147,8 @@ export function useClientForm(
     setClientTypeState('individual');
     setName('');
     setDocument('');
-    setAddresses([createEmptyAddress()]);
-    setPhones([createEmptyPhone()]);
+    setAddresses([]);
+    setPhones([]);
   }, []);
 
   return {
