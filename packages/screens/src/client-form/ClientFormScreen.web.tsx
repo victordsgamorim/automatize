@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Plus, Trash2, House, Building2 } from 'lucide-react';
+import {
+  Plus,
+  Trash2,
+  House,
+  Building2,
+  Smartphone,
+  Phone as PhoneIcon,
+} from 'lucide-react';
 import {
   Button,
   Input,
@@ -32,6 +39,8 @@ import type {
   ClientFormScreenProps,
   Address,
   AddressType,
+  Phone,
+  PhoneType,
 } from './ClientFormScreen.types';
 import { useClientForm } from './useClientForm';
 
@@ -66,6 +75,7 @@ const BRAZILIAN_STATES = [
 ] as const;
 
 const MAX_VISIBLE_ADDRESSES = 5;
+const MAX_VISIBLE_PHONES = 5;
 
 type NewAddressFields = Omit<Address, 'id'>;
 
@@ -106,6 +116,27 @@ function AddressTypeIcon({
   );
 }
 
+function PhoneTypeIcon({
+  phoneType,
+  className = 'size-4 shrink-0 text-muted-foreground',
+}: {
+  phoneType: PhoneType;
+  className?: string;
+}) {
+  return phoneType === 'mobile' ? (
+    <Smartphone className={className} />
+  ) : (
+    <PhoneIcon className={className} />
+  );
+}
+
+type NewPhoneFields = Omit<Phone, 'id'>;
+
+const EMPTY_PHONE: NewPhoneFields = {
+  phoneType: 'mobile',
+  number: '',
+};
+
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onSubmit,
   initialData,
@@ -139,6 +170,10 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   const [newAddress, setNewAddress] = useState<NewAddressFields>(EMPTY_ADDRESS);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [showAllAddresses, setShowAllAddresses] = useState(false);
+  const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
+  const [newPhone, setNewPhone] = useState<NewPhoneFields>(EMPTY_PHONE);
+  const [editingPhoneId, setEditingPhoneId] = useState<string | null>(null);
+  const [showAllPhones, setShowAllPhones] = useState(false);
 
   const isControlled = showDiscardDialog !== undefined;
   const dialogOpen = isControlled ? showDiscardDialog : internalDialogOpen;
@@ -228,12 +263,93 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     setAddressDialogOpen(false);
   };
 
+  const handleOpenPhoneDialog = () => {
+    setEditingPhoneId(null);
+    setNewPhone(EMPTY_PHONE);
+    setPhoneDialogOpen(true);
+  };
+
+  const handleEditPhone = (phone: Phone) => {
+    setEditingPhoneId(phone.id);
+    setNewPhone({
+      phoneType: phone.phoneType,
+      number: phone.number,
+    });
+    setPhoneDialogOpen(true);
+  };
+
+  const handleSavePhone = () => {
+    if (editingPhoneId) {
+      (Object.keys(newPhone) as (keyof NewPhoneFields)[]).forEach((field) => {
+        updatePhone(editingPhoneId, field, newPhone[field]);
+      });
+    } else {
+      addPhone(newPhone);
+    }
+    setPhoneDialogOpen(false);
+  };
+
   const visibleAddresses = addresses.slice(0, MAX_VISIBLE_ADDRESSES);
+  const visiblePhones = phones.slice(0, MAX_VISIBLE_PHONES);
   const { isMobile } = useResponsive();
 
   const handleCloseAddressPanel = useCallback(
     () => setShowAllAddresses(false),
     []
+  );
+
+  const handleClosePhonePanel = useCallback(() => setShowAllPhones(false), []);
+
+  const phoneListItems = (
+    <div className="space-y-2">
+      {phones.map((phone) => (
+        <Card
+          key={phone.id}
+          padding="sm"
+          className={`relative group min-h-[60px] cursor-pointer transition-colors ${
+            isMobile ? '' : 'hover:bg-accent'
+          }`}
+          onClick={() => handleEditPhone(phone)}
+        >
+          <div className="flex items-start gap-2 pr-8">
+            <PhoneTypeIcon
+              phoneType={phone.phoneType}
+              className="size-4 shrink-0 mt-0.5 text-muted-foreground"
+            />
+            <div className="space-y-0.5 min-w-0">
+              {phone.number ? (
+                <Text
+                  variant="bodySmall"
+                  color="primary"
+                  className="line-clamp-1"
+                >
+                  {phone.number}
+                </Text>
+              ) : (
+                <Text variant="bodySmall" color="muted">
+                  —
+                </Text>
+              )}
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className={`absolute top-1 right-1 size-6 transition-opacity ${
+              isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              removePhone(phone.id);
+            }}
+            aria-label={t('client.phone.remove')}
+          >
+            <Trash2 className="size-3 text-muted-foreground" />
+          </Button>
+        </Card>
+      ))}
+    </div>
   );
 
   const addressListItems = (
@@ -458,47 +574,84 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                     type="button"
                     variant="outline"
                     size="icon"
-                    onClick={addPhone}
+                    onClick={handleOpenPhoneDialog}
                     aria-label={t('client.phone.add')}
                   >
                     <Plus className="size-4" />
                   </Button>
                 </div>
 
-                {phones.map((phone, index) => (
-                  <div key={phone.id} className="space-y-1.5">
-                    <Text
-                      htmlFor={`phone-${phone.id}`}
-                      color="muted"
-                      className="pl-3"
-                    >
-                      {`${t('client.phone.label')} ${index + 1}`}
-                    </Text>
-                    <div className="flex items-center gap-2">
-                      <div className="flex-1">
-                        <Input
-                          id={`phone-${phone.id}`}
-                          placeholder={t('client.phone.placeholder')}
-                          value={phone.number}
-                          onChange={(e) =>
-                            updatePhone(phone.id, e.target.value)
-                          }
-                        />
-                      </div>
-                      {phones.length > 1 && (
+                {visiblePhones.length === 0 ? (
+                  <Text
+                    variant="bodySmall"
+                    color="muted"
+                    className="text-center py-4"
+                  >
+                    {t('client.phone.empty')}
+                  </Text>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {visiblePhones.map((phone) => (
+                      <Card
+                        key={phone.id}
+                        padding="sm"
+                        className="relative group min-h-[80px] cursor-pointer hover:bg-accent transition-colors"
+                        onClick={() => handleEditPhone(phone)}
+                      >
+                        <div className="flex items-start gap-2 pr-6">
+                          <PhoneTypeIcon
+                            phoneType={phone.phoneType}
+                            className="size-4 shrink-0 mt-0.5 text-muted-foreground"
+                          />
+                          <div className="space-y-0.5 min-w-0">
+                            {phone.number ? (
+                              <Text
+                                variant="bodySmall"
+                                color="primary"
+                                className="line-clamp-1"
+                              >
+                                {phone.number}
+                              </Text>
+                            ) : (
+                              <Text variant="bodySmall" color="muted">
+                                —
+                              </Text>
+                            )}
+                          </div>
+                        </div>
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
-                          onClick={() => removePhone(phone.id)}
+                          className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removePhone(phone.id);
+                          }}
                           aria-label={t('client.phone.remove')}
                         >
-                          <Trash2 className="size-4 text-muted-foreground" />
+                          <Trash2 className="size-3 text-muted-foreground" />
                         </Button>
-                      )}
-                    </div>
+                      </Card>
+                    ))}
+                    {phones.length >= MAX_VISIBLE_PHONES + 1 && (
+                      <Card
+                        padding="sm"
+                        className="flex items-center justify-center min-h-[80px]"
+                      >
+                        <Button
+                          type="button"
+                          variant="link"
+                          onClick={() => setShowAllPhones(true)}
+                        >
+                          {t('client.phone.viewMore', {
+                            count: phones.length - MAX_VISIBLE_PHONES,
+                          })}
+                        </Button>
+                      </Card>
+                    )}
                   </div>
-                ))}
+                )}
               </div>
 
               <Separator />
@@ -531,6 +684,25 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
           title={t('client.address.allTitle')}
         >
           {addressListItems}
+        </Drawer>
+      )}
+
+      {/* Phone panel: drawer (desktop) or bottom sheet (mobile) */}
+      {isMobile ? (
+        <BottomSheet
+          open={showAllPhones}
+          onClose={handleClosePhonePanel}
+          title={t('client.phone.allTitle')}
+        >
+          {phoneListItems}
+        </BottomSheet>
+      ) : (
+        <Drawer
+          open={showAllPhones}
+          onClose={handleClosePhonePanel}
+          title={t('client.phone.allTitle')}
+        >
+          {phoneListItems}
         </Drawer>
       )}
 
@@ -733,6 +905,81 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               shortcut="Enter"
             >
               {t('client.address.save')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Phone creation/edit dialog */}
+      <Dialog open={phoneDialogOpen} onOpenChange={setPhoneDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingPhoneId
+                ? t('client.phone.dialog.editTitle')
+                : t('client.phone.dialog.title')}
+            </DialogTitle>
+            <DialogDescription>{t('client.phone.add')}</DialogDescription>
+          </DialogHeader>
+          <div
+            className="space-y-4"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey && newPhone.number.trim()) {
+                e.preventDefault();
+                handleSavePhone();
+              }
+            }}
+          >
+            <Tabs
+              value={newPhone.phoneType}
+              onValueChange={(val: string) =>
+                setNewPhone((prev) => ({
+                  ...prev,
+                  phoneType: val as PhoneType,
+                }))
+              }
+            >
+              <TabsList variant="default" size="sm">
+                <TabsTrigger value="mobile">
+                  <Smartphone className="size-3.5" />
+                  {t('client.phone.type.mobile')}
+                </TabsTrigger>
+                <TabsTrigger value="telephone">
+                  <PhoneIcon className="size-3.5" />
+                  {t('client.phone.type.telephone')}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            <Input
+              id="new-phone-number"
+              label={t('client.phone.label')}
+              placeholder={t('client.phone.placeholder')}
+              value={newPhone.number}
+              onChange={(e) =>
+                setNewPhone((prev) => ({
+                  ...prev,
+                  number: e.target.value,
+                }))
+              }
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setPhoneDialogOpen(false)}
+              shortcut="Esc"
+            >
+              {t('app.cancel')}
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSavePhone}
+              disabled={!newPhone.number.trim()}
+              shortcut="Enter"
+            >
+              {t('client.phone.save')}
             </Button>
           </DialogFooter>
         </DialogContent>
