@@ -163,6 +163,7 @@ vi.mock('@automatize/ui/web', () => ({
       <button aria-label="Close" onClick={onClose} />
     </div>
   ),
+  Kbd: ({ children }: { children?: React.ReactNode }) => <kbd>{children}</kbd>,
 }));
 
 vi.mock('@automatize/core-localization', () => ({

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Plus,
   Trash2,
@@ -30,6 +30,7 @@ import {
   Tabs,
   TabsList,
   TabsTrigger,
+  Kbd,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { formatCpf, formatCnpj } from '@automatize/form-validator';
@@ -145,6 +146,12 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onDiscardCancel,
 }) => {
   const { t } = useTranslation();
+  const isMac = useMemo(
+    () =>
+      typeof navigator !== 'undefined' &&
+      /Mac|iPod|iPhone|iPad/.test(navigator.platform),
+    []
+  );
   const {
     clientType,
     setClientType,
@@ -196,6 +203,16 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     ) ||
     phones.some((p) => p.number.trim() !== '');
 
+  const handleSaveWithShortcut = useCallback(() => {
+    if (name.trim() || document.trim()) {
+      onSubmit(getFormData());
+    }
+  }, [name, document, getFormData, onSubmit]);
+
+  const handleClearWithShortcut = useCallback(() => {
+    resetForm();
+  }, [resetForm]);
+
   useEffect(() => {
     if (!hasFormData) return;
 
@@ -210,6 +227,24 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [hasFormData]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isMod = e.ctrlKey || e.metaKey;
+      const isShift = e.shiftKey;
+
+      if (isMod && !isShift && e.key === 's') {
+        e.preventDefault();
+        handleSaveWithShortcut();
+      } else if (isMod && e.key === 'e') {
+        e.preventDefault();
+        handleClearWithShortcut();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleSaveWithShortcut, handleClearWithShortcut]);
 
   const handleConfirmDiscard = () => {
     if (isControlled) {
@@ -658,10 +693,34 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
 
               {/* Submit */}
               <div className="flex justify-end gap-2">
-                <Button type="button" variant="destructive" onClick={resetForm}>
-                  {t('client.reset')}
-                </Button>
-                <Button type="submit">{t('client.submit')}</Button>
+                <div className="flex items-center gap-1">
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={resetForm}
+                    shortcut={
+                      <>
+                        {isMac ? <Kbd>⌘</Kbd> : <Kbd>Ctrl</Kbd>}
+                        <Kbd>E</Kbd>
+                      </>
+                    }
+                  >
+                    {t('client.reset')}
+                  </Button>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Button
+                    type="submit"
+                    shortcut={
+                      <>
+                        {isMac ? <Kbd>⌘</Kbd> : <Kbd>Ctrl</Kbd>}
+                        <Kbd>S</Kbd>
+                      </>
+                    }
+                  >
+                    {t('client.submit')}
+                  </Button>
+                </div>
               </div>
             </form>
           </div>
