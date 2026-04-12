@@ -6,8 +6,11 @@ export type { ThemeData, ThemeOption } from '@automatize/core-theme';
 
 export type ClientType = 'individual' | 'business';
 
+export type AddressType = 'residence' | 'establishment';
+
 export interface Address {
   id: string;
+  addressType: AddressType;
   street: string;
   number: string;
   neighborhood: string;

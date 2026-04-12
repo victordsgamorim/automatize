@@ -10,6 +10,7 @@ import type {
 function createEmptyAddress(): Address {
   return {
     id: generateId(),
+    addressType: 'residence',
     street: '',
     number: '',
     neighborhood: '',

@@ -109,6 +109,8 @@
   "client.address.empty": "Nenhum endereço adicionado ainda. Clique no botão + para adicionar.",
   "client.address.allTitle": "Todos os Endereços",
   "client.address.viewMore": "Ver +{{count}}",
+  "client.address.type.residence": "Residência",
+  "client.address.type.establishment": "Estabelecimento",
   "client.phones": "Telefones",
   "client.phone.add": "Adicionar Telefone",
   "client.phone.remove": "Remover telefone",
