@@ -11,6 +11,7 @@ import React, {
 } from 'react';
 import { ChevronsUpDown, PanelLeft } from 'lucide-react';
 import { cn } from '../../utils';
+import { breakpoints } from '../../tokens';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -23,7 +24,6 @@ import {
 
 const SIDEBAR_WIDTH = '16rem'; // 256px (w-64)
 const SIDEBAR_WIDTH_COLLAPSED = '4rem'; // 64px (w-16)
-const MOBILE_BREAKPOINT = 1024;
 
 /* ─── Context ───────────────────────────────────────────────────────────────── */
 
@@ -63,7 +63,7 @@ export function SidebarProvider({
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const mql = window.matchMedia(`(max-width: ${breakpoints.lg - 1}px)`);
     const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
       setIsMobile(e.matches);
       if (e.matches) setOpen(false);

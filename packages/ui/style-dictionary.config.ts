@@ -437,6 +437,28 @@ StyleDictionary.registerFormat({
 });
 
 StyleDictionary.registerFormat({
+  name: 'ts/breakpoints',
+  format: ({ dictionary }) => {
+    const tokens = dictionary.allTokens.filter(
+      (t) => t.path[0] === 'breakpoint'
+    );
+
+    const breakpoints = buildNested(tokens, 1, (t) =>
+      dimToNumber(t.$value ?? t.value)
+    );
+
+    return [
+      TS_HEADER,
+      '',
+      `export const breakpoints = ${toTs(breakpoints)} as const;`,
+      '',
+      'export type BreakpointName = keyof typeof breakpoints;',
+      '',
+    ].join('\n');
+  },
+});
+
+StyleDictionary.registerFormat({
   name: 'ts/barrel',
   format: () => {
     return [
@@ -447,6 +469,7 @@ StyleDictionary.registerFormat({
       "export * from './typography';",
       "export * from './shadows';",
       "export * from './animation';",
+      "export * from './breakpoints';",
       '',
     ].join('\n');
   },
@@ -527,6 +550,11 @@ const config: Config = {
           destination: 'animation.ts',
           format: 'ts/animation',
           filter: (token) => token.path[0] === 'animation',
+        },
+        {
+          destination: 'breakpoints.ts',
+          format: 'ts/breakpoints',
+          filter: (token) => token.path[0] === 'breakpoint',
         },
         {
           destination: 'index.ts',
