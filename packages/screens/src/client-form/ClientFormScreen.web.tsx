@@ -24,7 +24,7 @@ import {
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { formatCpf, formatCnpj } from '@automatize/form-validator';
-import { useResponsive } from '@automatize/theme';
+import { useResponsive } from '@automatize/ui/responsive';
 import type { ClientFormScreenProps, Address } from './ClientFormScreen.types';
 import { useClientForm } from './useClientForm';
 

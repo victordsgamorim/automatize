@@ -5,7 +5,7 @@ import { AuthProviderWrapper } from './auth-provider';
 import { LocalizationWrapper } from './localization-provider';
 import { ThemeWrapper } from './theme-provider';
 import { ToastProvider } from '@automatize/ui/web';
-import { ResponsiveProvider } from '@automatize/theme';
+import { ResponsiveProvider } from '@automatize/ui/responsive';
 import './globals.css';
 
 // Inline anti-flash script — prevents flash of wrong theme before hydration.

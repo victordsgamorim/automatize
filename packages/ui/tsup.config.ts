@@ -2,7 +2,12 @@ import { defineConfig } from 'tsup';
 import { readFileSync, writeFileSync } from 'fs';
 
 export default defineConfig({
-  entry: ['src/index.ts', 'src/tokens/index.ts', 'src/web.ts'],
+  entry: [
+    'src/index.ts',
+    'src/tokens/index.ts',
+    'src/web.ts',
+    'src/responsive/index.ts',
+  ],
   format: ['cjs', 'esm'],
   dts: true,
   splitting: true,
@@ -26,6 +31,8 @@ export default defineConfig({
       'dist/tokens/index.mjs',
       'dist/web.js',
       'dist/web.mjs',
+      'dist/responsive/index.js',
+      'dist/responsive/index.mjs',
     ];
     for (const file of files) {
       try {

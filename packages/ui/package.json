@@ -21,6 +21,11 @@
       "import": "./dist/web.mjs",
       "require": "./dist/web.js"
     },
+    "./responsive": {
+      "types": "./dist/responsive/index.d.ts",
+      "import": "./dist/responsive/index.mjs",
+      "require": "./dist/responsive/index.js"
+    },
     "./styles": "./src/styles/globals.css"
   },
   "scripts": {
