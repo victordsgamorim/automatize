@@ -6,6 +6,7 @@ import {
   Building2,
   Smartphone,
   Phone as PhoneIcon,
+  User,
 } from 'lucide-react';
 import {
   Button,
@@ -18,8 +19,6 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-  RadioGroup,
-  RadioGroupItem,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -418,22 +417,23 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                 <Text variant="bodySmall" color="muted">
                   {t('client.type')}
                 </Text>
-                <RadioGroup
+                <Tabs
                   value={clientType}
                   onValueChange={(val) =>
                     setClientType(val as 'individual' | 'business')
                   }
-                  orientation="horizontal"
                 >
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <RadioGroupItem value="individual" />
-                    <Text variant="body">{t('client.type.individual')}</Text>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <RadioGroupItem value="business" />
-                    <Text variant="body">{t('client.type.business')}</Text>
-                  </label>
-                </RadioGroup>
+                  <TabsList variant="default" size="sm">
+                    <TabsTrigger value="individual">
+                      <User className="size-3.5" />
+                      {t('client.type.individual')}
+                    </TabsTrigger>
+                    <TabsTrigger value="business">
+                      <Building2 className="size-3.5" />
+                      {t('client.type.business')}
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
               </div>
 
               {/* Name */}

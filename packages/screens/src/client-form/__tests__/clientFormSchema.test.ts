@@ -14,7 +14,7 @@ const validIndividualForm = {
       state: 'SP',
     },
   ],
-  phones: [{ number: '(11) 98765-4321' }],
+  phones: [{ phoneType: 'mobile' as const, number: '(11) 98765-4321' }],
 };
 
 describe('clientFormSchema', () => {
@@ -58,5 +58,39 @@ describe('clientFormSchema', () => {
     expect(() =>
       clientFormSchema.parse({ ...validIndividualForm, phones: [] })
     ).toThrow();
+  });
+
+  it('accepts telephone phoneType', () => {
+    const result = clientFormSchema.parse({
+      ...validIndividualForm,
+      phones: [{ phoneType: 'telephone' as const, number: '(11) 3456-7890' }],
+    });
+    expect(result.phones[0].phoneType).toBe('telephone');
+  });
+
+  it('rejects invalid phoneType', () => {
+    expect(() =>
+      clientFormSchema.parse({
+        ...validIndividualForm,
+        phones: [{ phoneType: 'fax' as never, number: '12345678' }],
+      })
+    ).toThrow();
+  });
+
+  it('accepts valid address with establishment type', () => {
+    const result = clientFormSchema.parse({
+      ...validIndividualForm,
+      addresses: [
+        {
+          addressType: 'establishment' as const,
+          street: 'Av. Paulista',
+          number: '1000',
+          neighborhood: 'Bela Vista',
+          city: 'São Paulo',
+          state: 'SP',
+        },
+      ],
+    });
+    expect(result.addresses[0].addressType).toBe('establishment');
   });
 });
