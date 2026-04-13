@@ -25,8 +25,8 @@ import type {
   Phone,
 } from './ClientFormScreen.types';
 import { useClientForm } from './useClientForm';
-import { AddressSection } from './components/AddressSection.web';
-import { PhoneSection } from './components/PhoneSection.web';
+import { AddressSection } from './components/AddressSection/AddressSection.web';
+import { PhoneSection } from './components/PhoneSection/PhoneSection.web';
 
 type NewAddressFields = Omit<Address, 'id'>;
 type NewPhoneFields = Omit<Phone, 'id'>;

@@ -24,7 +24,7 @@ import {
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
-import type { Address, AddressType } from '../ClientFormScreen.types';
+import type { Address, AddressType } from '../../ClientFormScreen.types';
 
 const BRAZILIAN_STATES = [
   { value: 'AC', label: 'Acre' },
@@ -72,7 +72,9 @@ export interface AddressSectionProps {
   isDialogOpen: boolean;
   onDialogOpenChange: (open: boolean) => void;
   newAddress: NewAddressFields;
-  onNewAddressChange: (data: NewAddressFields) => void;
+  onNewAddressChange: (
+    data: NewAddressFields | ((prev: NewAddressFields) => NewAddressFields)
+  ) => void;
   editingAddressId: string | null;
   onEditingAddressIdChange: (id: string | null) => void;
   showAllAddresses: boolean;
@@ -86,7 +88,7 @@ function AddressTypeIcon({
 }: {
   addressType: AddressType;
   className?: string;
-}) {
+}): React.ReactElement {
   return addressType === 'residence' ? (
     <House className={className} />
   ) : (
@@ -97,11 +99,13 @@ function AddressTypeIcon({
 function getAddressDisplayLines(address: Address): string[] {
   const lines: string[] = [];
   const streetNumber = [address.street, address.number]
-    .filter(Boolean)
+    .filter((s): s is string => Boolean(s))
     .join(', ');
   if (streetNumber) lines.push(streetNumber);
   if (address.neighborhood) lines.push(address.neighborhood);
-  const cityState = [address.city, address.state].filter(Boolean).join(' - ');
+  const cityState = [address.city, address.state]
+    .filter((s): s is string => Boolean(s))
+    .join(' - ');
   if (cityState) lines.push(cityState);
   if (address.info) lines.push(address.info);
   return lines;
@@ -158,11 +162,18 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
 
   const handleSaveAddress = () => {
     if (editingAddressId) {
-      (Object.keys(newAddress) as (keyof NewAddressFields)[]).forEach(
-        (field) => {
-          updateAddress(editingAddressId, field, newAddress[field]);
-        }
-      );
+      const fields: (keyof NewAddressFields)[] = [
+        'addressType',
+        'street',
+        'number',
+        'neighborhood',
+        'city',
+        'state',
+        'info',
+      ];
+      fields.forEach((field) => {
+        updateAddress(editingAddressId, field, newAddress[field]);
+      });
     } else {
       addAddress(newAddress);
     }
