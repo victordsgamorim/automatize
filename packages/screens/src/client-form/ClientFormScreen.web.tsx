@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Button,
   Card,
@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  Kbd,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
@@ -50,12 +49,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onDiscardCancel,
 }) => {
   const { t } = useTranslation();
-  const isMac = useMemo(
-    () =>
-      typeof navigator !== 'undefined' &&
-      /Mac|iPod|iPhone|iPad/.test(navigator.platform),
-    []
-  );
   const {
     clientType,
     setClientType,
