@@ -54,7 +54,7 @@ export interface ButtonProps
   extends React.ComponentProps<'button'>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   /** Keyboard shortcut hint displayed as a badge. e.g. "Esc", "Enter" */
-  shortcut?: React.ReactNode;
+  shortcut?: string;
 }
 
 function Button({
@@ -87,7 +87,7 @@ function Button({
       {...props}
     >
       {children}
-      {shortcut && <Kbd>{shortcut}</Kbd>}
+      {shortcut && <Kbd keyLabel={shortcut} />}
     </button>
   );
 }

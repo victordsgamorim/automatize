@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Button,
   Card,
+  Kbd,
   Separator,
   Dialog,
   DialogContent,
@@ -161,12 +162,51 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     resetForm();
     onBack?.();
-  };
+  }, [resetForm, onBack]);
 
   const { isMobile } = useResponsive();
+
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleSave = useCallback(() => {
+    if (name.trim() === '') return;
+    onSubmit(getFormData());
+  }, [name, onSubmit, getFormData]);
+
+  // ── Keyboard shortcuts ───────────────────────────────────────────────────
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const isMod = e.ctrlKey || e.metaKey;
+      if (!isMod) return;
+
+      // Ctrl+S → Save
+      if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        handleSave();
+        return;
+      }
+
+      // Ctrl+Escape → Cancel
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        handleCancel();
+        return;
+      }
+
+      // Ctrl+E → Clear / Reset
+      if (e.key === 'e' || e.key === 'E') {
+        e.preventDefault();
+        resetForm();
+        return;
+      }
+    };
+
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [handleSave, handleCancel, resetForm]);
 
   return (
     <>
@@ -191,12 +231,13 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                 className="w-full sm:w-auto h-10"
               >
                 {t('client.reset')}
+                {!isMobile && <Kbd keyLabel="E" control />}
               </Button>
             </div>
           </div>
 
           <div className="space-y-6">
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form ref={formRef} className="space-y-6" onSubmit={handleSubmit}>
               {/* Personal Details Section */}
               <PersonalDetailsSection
                 clientType={clientType}
@@ -259,6 +300,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                   className="h-10"
                 >
                   {t('client.cancel')}
+                  {!isMobile && <Kbd keyLabel="Esc" control />}
                 </Button>
                 <Button
                   type="submit"
@@ -267,6 +309,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                   disabled={name.trim() === ''}
                 >
                   {t('client.submit')}
+                  {!isMobile && <Kbd keyLabel="S" control />}
                 </Button>
               </div>
             </form>
