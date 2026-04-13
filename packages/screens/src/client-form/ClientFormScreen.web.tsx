@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Button,
   Card,
@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  Kbd,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
@@ -50,12 +49,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onDiscardCancel,
 }) => {
   const { t } = useTranslation();
-  const isMac = useMemo(
-    () =>
-      typeof navigator !== 'undefined' &&
-      /Mac|iPod|iPhone|iPad/.test(navigator.platform),
-    []
-  );
   const {
     clientType,
     setClientType,
@@ -168,12 +161,40 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     }
   };
 
+  const handleCancel = () => {
+    resetForm();
+    onBack?.();
+  };
+
   const { isMobile } = useResponsive();
 
   return (
     <>
       <div className="max-w-3xl mx-auto py-8 px-4">
         <Card padding="lg">
+          {/* Header with clear button at top right */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                {t('client.form.title')}
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                {t('client.form.description')}
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={resetForm}
+                size={isMobile ? 'sm' : 'default'}
+                className="w-full sm:w-auto h-10"
+              >
+                {t('client.reset')}
+              </Button>
+            </div>
+          </div>
+
           <div className="space-y-6">
             <form className="space-y-6" onSubmit={handleSubmit}>
               {/* Personal Details Section */}
@@ -228,36 +249,25 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
 
               <Separator />
 
-              {/* Submit */}
+              {/* Action buttons at bottom */}
               <div className="flex justify-end gap-2">
-                <div className="flex items-center gap-1">
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={resetForm}
-                    shortcut={
-                      <>
-                        {isMac ? <Kbd>⌘</Kbd> : <Kbd>Ctrl</Kbd>}
-                        <Kbd>E</Kbd>
-                      </>
-                    }
-                  >
-                    {t('client.reset')}
-                  </Button>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    type="submit"
-                    shortcut={
-                      <>
-                        {isMac ? <Kbd>⌘</Kbd> : <Kbd>Ctrl</Kbd>}
-                        <Kbd>S</Kbd>
-                      </>
-                    }
-                  >
-                    {t('client.submit')}
-                  </Button>
-                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCancel}
+                  size={isMobile ? 'sm' : 'default'}
+                  className="h-10"
+                >
+                  {t('client.cancel')}
+                </Button>
+                <Button
+                  type="submit"
+                  size={isMobile ? 'sm' : 'default'}
+                  className="h-10"
+                  disabled={name.trim() === ''}
+                >
+                  {t('client.submit')}
+                </Button>
               </div>
             </form>
           </div>
