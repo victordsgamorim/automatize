@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Building2, User } from 'lucide-react';
 import {
   Button,
-  Input,
-  Text,
   Card,
   Separator,
   Dialog,
@@ -12,13 +9,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  Kbd,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
-import { formatCpf, formatCnpj } from '@automatize/form-validator';
 import { useResponsive } from '@automatize/ui/responsive';
 import type {
   ClientFormScreenProps,
@@ -28,6 +20,7 @@ import type {
 import { useClientForm } from './useClientForm';
 import { AddressSection } from './components/AddressSection/AddressSection.web';
 import { PhoneSection } from './components/PhoneSection/PhoneSection.web';
+import { PersonalDetailsSection } from './components/PersonalDetailsSection/PersonalDetailsSection.web';
 
 type NewAddressFields = Omit<Address, 'id'>;
 type NewPhoneFields = Omit<Phone, 'id'>;
@@ -182,63 +175,14 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
         <Card padding="lg">
           <div className="space-y-6">
             <form className="space-y-6" onSubmit={handleSubmit}>
-              {/* Client Type */}
-              <div className="space-y-2">
-                <Text variant="bodySmall" color="muted">
-                  {t('client.type')}
-                </Text>
-                <Tabs
-                  value={clientType}
-                  onValueChange={(val) =>
-                    setClientType(val as 'individual' | 'business')
-                  }
-                >
-                  <TabsList variant="default" size="sm">
-                    <TabsTrigger value="individual">
-                      <User className="size-3.5" />
-                      {t('client.type.individual')}
-                    </TabsTrigger>
-                    <TabsTrigger value="business">
-                      <Building2 className="size-3.5" />
-                      {t('client.type.business')}
-                    </TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </div>
-
-              {/* Name */}
-              <Input
-                id="client-name"
-                name="name"
-                label={t('client.name')}
-                placeholder={t('client.name.placeholder')}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-
-              {/* CPF / CNPJ */}
-              <Input
-                id="client-document"
-                name="document"
-                label={
-                  clientType === 'individual'
-                    ? t('client.cpf')
-                    : t('client.cnpj')
-                }
-                placeholder={
-                  clientType === 'individual'
-                    ? '000.000.000-00'
-                    : '00.000.000/0000-00'
-                }
-                value={document}
-                onChange={(e) => {
-                  const formatted =
-                    clientType === 'individual'
-                      ? formatCpf(e.target.value)
-                      : formatCnpj(e.target.value);
-                  setDocument(formatted);
-                }}
-                maxLength={clientType === 'individual' ? 14 : 18}
+              {/* Personal Details Section */}
+              <PersonalDetailsSection
+                clientType={clientType}
+                onClientTypeChange={setClientType}
+                name={name}
+                onNameChange={setName}
+                document={document}
+                onDocumentChange={setDocument}
               />
 
               <Separator />
