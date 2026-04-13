@@ -19,7 +19,7 @@ import {
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
-import type { Phone, PhoneType } from '../ClientFormScreen.types';
+import type { Phone, PhoneType } from '../../ClientFormScreen.types';
 
 const MAX_VISIBLE_PHONES = 5;
 
@@ -33,7 +33,9 @@ export interface PhoneSectionProps {
   isDialogOpen: boolean;
   onDialogOpenChange: (open: boolean) => void;
   newPhone: NewPhoneFields;
-  onNewPhoneChange: (data: NewPhoneFields) => void;
+  onNewPhoneChange: (
+    data: NewPhoneFields | ((prev: NewPhoneFields) => NewPhoneFields)
+  ) => void;
   editingPhoneId: string | null;
   onEditingPhoneIdChange: (id: string | null) => void;
   showAllPhones: boolean;
@@ -47,7 +49,7 @@ function PhoneTypeIcon({
 }: {
   phoneType: PhoneType;
   className?: string;
-}) {
+}): React.ReactElement {
   return phoneType === 'mobile' ? (
     <Smartphone className={className} />
   ) : (
@@ -96,7 +98,8 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
 
   const handleSavePhone = () => {
     if (editingPhoneId) {
-      (Object.keys(newPhone) as (keyof NewPhoneFields)[]).forEach((field) => {
+      const fields: (keyof NewPhoneFields)[] = ['phoneType', 'number'];
+      fields.forEach((field) => {
         updatePhone(editingPhoneId, field, newPhone[field]);
       });
     } else {
