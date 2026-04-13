@@ -40,6 +40,7 @@ export interface PhoneSectionProps {
   onEditingPhoneIdChange: (id: string | null) => void;
   showAllPhones: boolean;
   onShowAllPhonesChange: (show: boolean) => void;
+  clientType?: 'individual' | 'business';
   isMobile?: boolean;
 }
 
@@ -70,6 +71,7 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
   onEditingPhoneIdChange,
   showAllPhones,
   onShowAllPhonesChange,
+  clientType = 'individual',
   isMobile: propIsMobile,
 }) => {
   const { t } = useTranslation();
@@ -81,7 +83,7 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
   const handleOpenPhoneDialog = () => {
     onEditingPhoneIdChange(null);
     onNewPhoneChange({
-      phoneType: 'mobile',
+      phoneType: clientType === 'business' ? 'telephone' : 'mobile',
       number: '',
     });
     onDialogOpenChange(true);

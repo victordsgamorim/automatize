@@ -83,6 +83,7 @@
   "client.type.business": "Pessoa Jurídica",
   "client.name": "Nome",
   "client.name.placeholder": "João da Silva",
+  "client.name.placeholder.business": "Nome da Empresa",
   "client.cpf": "CPF",
   "client.cpf.placeholder": "Digite o CPF",
   "client.cnpj": "CNPJ",

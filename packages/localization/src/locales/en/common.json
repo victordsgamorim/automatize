@@ -83,6 +83,7 @@
   "client.type.business": "Business",
   "client.name": "Name",
   "client.name.placeholder": "John Smith",
+  "client.name.placeholder.business": "Company Name",
   "client.cpf": "CPF",
   "client.cpf.placeholder": "Enter CPF",
   "client.cnpj": "CNPJ",

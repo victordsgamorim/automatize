@@ -79,6 +79,7 @@ export interface AddressSectionProps {
   onEditingAddressIdChange: (id: string | null) => void;
   showAllAddresses: boolean;
   onShowAllAddressesChange: (show: boolean) => void;
+  clientType?: 'individual' | 'business';
   isMobile?: boolean;
 }
 
@@ -124,6 +125,7 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
   onEditingAddressIdChange,
   showAllAddresses,
   onShowAllAddressesChange,
+  clientType = 'individual',
   isMobile: propIsMobile,
 }) => {
   const { t } = useTranslation();
@@ -135,7 +137,7 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
   const handleOpenAddressDialog = () => {
     onEditingAddressIdChange(null);
     onNewAddressChange({
-      addressType: 'residence',
+      addressType: clientType === 'business' ? 'establishment' : 'residence',
       street: '',
       number: '',
       neighborhood: '',

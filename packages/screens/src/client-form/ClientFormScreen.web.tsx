@@ -201,6 +201,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                 onEditingAddressIdChange={setEditingAddressId}
                 showAllAddresses={showAllAddresses}
                 onShowAllAddressesChange={setShowAllAddresses}
+                clientType={clientType}
                 isMobile={isMobile}
               />
 
@@ -220,6 +221,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                 onEditingPhoneIdChange={setEditingPhoneId}
                 showAllPhones={showAllPhones}
                 onShowAllPhonesChange={setShowAllPhones}
+                clientType={clientType}
                 isMobile={isMobile}
               />
 

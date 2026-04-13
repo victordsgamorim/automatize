@@ -35,6 +35,10 @@ export const PersonalDetailsSection: React.FC<PersonalDetailsSectionProps> = ({
   const documentMaxLength = clientType === 'individual' ? 14 : 18;
   const documentPlaceholder =
     clientType === 'individual' ? '000.000.000-00' : '00.000.000/0000-00';
+  const namePlaceholder =
+    clientType === 'individual'
+      ? t('client.name.placeholder')
+      : t('client.name.placeholder.business');
 
   return (
     <div className="space-y-6">
@@ -67,7 +71,7 @@ export const PersonalDetailsSection: React.FC<PersonalDetailsSectionProps> = ({
         id="client-name"
         name="name"
         label={t('client.name')}
-        placeholder={t('client.name.placeholder')}
+        placeholder={namePlaceholder}
         value={name}
         onChange={(e) => onNameChange(e.target.value)}
       />
