@@ -16,6 +16,7 @@
 
 import * as React from 'react';
 
+import { usePlatform } from '../../responsive';
 import { cn } from '../../utils';
 
 export interface KbdProps extends Omit<
@@ -32,20 +33,6 @@ export interface KbdProps extends Omit<
   alt?: boolean;
 }
 
-function getIsMac(): boolean {
-  if (typeof navigator === 'undefined') return false;
-
-  // navigator.userAgentData is the modern API (Chromium-based browsers)
-  const nav = navigator as Navigator & {
-    userAgentData?: { platform?: string };
-  };
-  if (nav.userAgentData?.platform) {
-    return nav.userAgentData.platform === 'macOS';
-  }
-
-  return /Mac|iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
 function Kbd({
   className,
   keyLabel,
@@ -54,7 +41,7 @@ function Kbd({
   alt = false,
   ...props
 }: KbdProps): React.JSX.Element {
-  const isMac = getIsMac();
+  const { isMac } = usePlatform();
 
   const parts: string[] = [];
   if (control) parts.push(isMac ? '⌘' : 'Ctrl');
