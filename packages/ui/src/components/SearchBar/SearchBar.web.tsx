@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Command as CommandIcon } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 import { cn, sharedBreakpoints } from '../../utils';
 import {
@@ -11,6 +11,7 @@ import {
   CommandList,
   CommandEmpty,
 } from '../../actions/CommandPalette/CommandPalette.web';
+import { Kbd } from '../Kbd/Kbd.web';
 
 export interface SearchBarProps {
   /** Placeholder text for the trigger button and search input */
@@ -33,14 +34,6 @@ function SearchBar({
   children,
 }: SearchBarProps): React.JSX.Element {
   const [open, setOpen] = useState(false);
-  const [isMac, setIsMac] = useState(false);
-
-  useEffect(() => {
-    setIsMac(
-      typeof navigator !== 'undefined' &&
-        /Mac|iPod|iPhone|iPad/.test(navigator.userAgent)
-    );
-  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -80,15 +73,11 @@ function SearchBar({
         <span className={cn('flex-1 text-left', sharedBreakpoints.triggerText)}>
           {placeholder}
         </span>
-        <kbd
-          className={cn(
-            'pointer-events-none ml-auto h-5 select-none items-center gap-0.5 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground',
-            sharedBreakpoints.triggerKbd
-          )}
-        >
-          {isMac ? <CommandIcon className="size-3" /> : <span>Ctrl</span>}
-          <span>K</span>
-        </kbd>
+        <Kbd
+          control
+          keyLabel="K"
+          className={cn('ml-auto', sharedBreakpoints.triggerKbd)}
+        />
       </button>
 
       <CommandDialog

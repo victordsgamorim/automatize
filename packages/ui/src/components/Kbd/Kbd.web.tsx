@@ -58,8 +58,8 @@ function Kbd({
 
   const parts: string[] = [];
   if (control) parts.push(isMac ? '⌘' : 'Ctrl');
-  if (shift) parts.push('Shift');
-  if (alt) parts.push('Alt');
+  if (shift) parts.push(isMac ? '⇧' : 'Shift');
+  if (alt) parts.push(isMac ? '⌥' : 'Alt');
   parts.push(keyLabel);
 
   return (
