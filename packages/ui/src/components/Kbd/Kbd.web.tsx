@@ -63,4 +63,16 @@ function Kbd({
   );
 }
 
-export { Kbd };
+function DestructiveKbd({ className, ...props }: KbdProps): React.JSX.Element {
+  return (
+    <Kbd
+      className={cn(
+        'border-transparent bg-on-destructive text-on-destructive-foreground',
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export { Kbd, DestructiveKbd };

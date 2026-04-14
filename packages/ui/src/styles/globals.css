@@ -48,6 +48,8 @@
   /* Semantic state */
   --destructive: var(--semantic-destructive);
   --destructive-foreground: #ffffff;
+  --on-destructive: var(--color-error-900);
+  --on-destructive-foreground: var(--color-error-50);
   --success: var(--semantic-success);
   --success-foreground: #ffffff;
   --warning: var(--semantic-warning);
@@ -124,6 +126,8 @@
   --accent-foreground: var(--color-neutral-50);
   --destructive: var(--color-error-700);
   --destructive-foreground: var(--color-error-400);
+  --on-destructive: var(--color-error-950);
+  --on-destructive-foreground: var(--color-error-200);
   --success: var(--color-success-700);
   --success-foreground: #ffffff;
   --warning: var(--color-warning-600);
