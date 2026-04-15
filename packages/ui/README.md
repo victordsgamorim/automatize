@@ -196,6 +196,34 @@ src/actions/ErrorBoundary/
 - Every interactive component is accessible (WCAG 2.1 Level AA minimum)
 - Form-related components (`Input`, `Text` with `htmlFor`) handle both label association and error display
 
+## Button Variants
+
+Buttons support three variants for different use cases:
+
+| Variant       | Use case                           |
+| ------------- | ---------------------------------- |
+| `primary`     | Main action (submit, confirm)      |
+| `secondary`   | Secondary actions (cancel, back)   |
+| `destructive` | Dangerous actions (delete, remove) |
+
+## Form Components & Validation
+
+Input components work with `@automatize/form-validator` for validation:
+
+| Component   | Purpose                                         |
+| ----------- | ----------------------------------------------- |
+| `Input`     | Text input with label, error, helperText        |
+| `FormField` | Wrapper for complex forms with validation state |
+
+```tsx
+import { Input } from '@automatize/ui';
+import { useFormValidator } from '@automatize/form-validator';
+
+const { register, errors } = useFormValidator(schema);
+
+<Input label="Email" error={errors.email} {...register('email')} />;
+```
+
 ## Usage pattern
 
 Apps import from this package instead of creating their own styling. This guarantees that every button, input, and card looks exactly the same across the entire application.
