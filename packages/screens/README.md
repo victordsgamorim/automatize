@@ -1,22 +1,19 @@
 # @automatize/screens
 
-Consolidated cross-platform screen package for the Automatize monorepo. Contains all feature screens with `.web.tsx` and `.native.tsx` implementations.
+Cross-platform screen package for the Automatize monorepo. Contains feature screens with `.web.tsx` and `.native.tsx` implementations.
 
 ---
 
 ## Available Screens
 
-| Screen          | Subpath                               | Description                           |
-| --------------- | ------------------------------------- | ------------------------------------- |
-| Sign In         | `@automatize/screens/sign-in`         | Email/password authentication         |
-| Forgot Password | `@automatize/screens/forgot-password` | Password reset flow                   |
-| Content (Home)  | `@automatize/screens/content`         | Dashboard layout with sidebar         |
-| Settings        | `@automatize/screens/settings`        | App settings (theme, language, about) |
+| Screen       | Subpath                             | Description          |
+| ------------ | ----------------------------------- | -------------------- |
+| <ScreenName> | `@automatize/screens/<screen-name>` | <Screen description> |
 
 Each screen exposes two entry points:
 
-- **Native** (default): `@automatize/screens/<screen>` — React Native implementation
-- **Web**: `@automatize/screens/<screen>/web` — HTML/Tailwind implementation
+- **Native** (default): `@automatize/screens/<screen-name>` — React Native implementation
+- **Web**: `@automatize/screens/<screen-name>/web` — HTML/Tailwind implementation
 
 ---
 
@@ -25,18 +22,13 @@ Each screen exposes two entry points:
 ### Web (Next.js / Expo Web)
 
 ```tsx
-import { SignInScreen } from '@automatize/screens/sign-in/web';
-import { ForgotPasswordScreen } from '@automatize/screens/forgot-password/web';
-import { SettingsScreen } from '@automatize/screens/settings/web';
-import { HomeScreen } from '@automatize/screens/content/web';
+import { <ScreenName>Screen } from '@automatize/screens/<screen-name>/web';
 ```
 
 ### Mobile (React Native / Expo)
 
 ```tsx
-import { SignInScreen } from '@automatize/screens/sign-in';
-import { ForgotPasswordScreen } from '@automatize/screens/forgot-password';
-import { SettingsScreen } from '@automatize/screens/settings';
+import { <ScreenName>Screen } from '@automatize/screens/<screen-name>';
 ```
 
 ---
@@ -45,22 +37,66 @@ import { SettingsScreen } from '@automatize/screens/settings';
 
 This package centralizes shared dependencies so individual screens inherit them:
 
-| Dependency                      | Purpose                                                   |
-| ------------------------------- | --------------------------------------------------------- |
-| `@automatize/core-localization` | Translation hook (`useTranslation`) for i18n              |
-| `@automatize/core-theme`        | Theme types (light/dark/system preferences)               |
-| `@automatize/ui`                | Design system components (Button, Input, FormField, etc.) |
-| `@automatize/auth`              | Auth context and Zod schemas                              |
-| `@automatize/utils`             | ULID generation, timestamps                               |
+| Dependency                   | Purpose                                                   |
+| ---------------------------- | --------------------------------------------------------- |
+| `@automatize/localization`   | Translation hook (`useTranslation`) for i18n              |
+| `@automatize/form-validator` | Zod schemas and validation helpers                        |
+| `@automatize/ui`             | Design system components (Button, Input, FormField, etc.) |
+| `@automatize/ui/web`         | Web-specific components (Radix primitives)                |
+| `@automatize/auth`           | Auth context and Zod schemas                              |
+| `@automatize/utils`          | ULID generation, timestamps                               |
+
+### Button Variants
+
+Buttons use variants from `@automatize/ui`:
+
+| Variant       | Use case                           |
+| ------------- | ---------------------------------- |
+| `primary`     | Main action (submit, confirm)      |
+| `secondary`   | Secondary actions (cancel, back)   |
+| `destructive` | Dangerous actions (delete, remove) |
+
+```tsx
+// Native
+import { Button } from '@automatize/ui';
+
+// Web
+import { Button } from '@automatize/ui/web';
+```
+
+### Form Validation
+
+Forms use `@automatize/form-validator` for Zod schemas. Input components from `@automatize/ui` integrate with the validation library:
+
+```tsx
+import { FormField } from '@automatize/ui';
+import { useFormValidator } from '@automatize/form-validator';
+```
+
+### Screen Hooks
+
+Each screen can have a co-located hook for business logic:
+
+```
+src/<screen-name>/
+  use<ScreenName>.ts         # Shared hook (optional)
+```
+
+Hooks handle:
+
+- Form validation logic
+- API calls
+- State management
+- Business rules
 
 ### How Localization Works
 
-Screens use `useTranslation()` from `@automatize/core-localization` — a platform-agnostic hook that reads from React context. The actual i18next integration lives in `@automatize/localization` (the runtime provider), which apps wrap at their root.
+Screens use `useTranslation()` from `@automatize/localization` — the translation hook. The actual i18next runtime lives in the singleton (see `@automatize/localization` docs), which apps wrap at their root.
 
 Screens receive locale configuration via props:
 
 ```tsx
-<SignInScreen
+<<ScreenName>Screen
   locale={{
     languages: [{ code: 'en', label: 'English', ext: 'US' }],
     currentLanguage: 'en',
@@ -71,10 +107,10 @@ Screens receive locale configuration via props:
 
 ### How Theming Works
 
-Screens use theme types from `@automatize/core-theme`. Theme state (preference, isDark) is passed as props from the app's `ThemeProvider`:
+Screens use theme types from `@automatize/ui/tokens`. Theme state is passed as props from the app's theme provider:
 
 ```tsx
-<SignInScreen
+<<ScreenName>Screen
   theme={{
     currentTheme: preference,
     isDarkTheme: isDark,
@@ -95,34 +131,13 @@ All UI primitives come from `@automatize/ui`. Screens import components like `Bu
 ```
 packages/screens/
   src/
-    sign-in/
-      SignInScreen.web.tsx       # Web implementation
-      SignInScreen.native.tsx    # React Native implementation
-      SignInScreen.types.ts      # Shared prop types
-      useSignIn.ts               # Auth hook
+    <screen-name>/
+      <ScreenName>.web.tsx       # Web implementation
+      <ScreenName>.native.tsx    # React Native implementation
+      <ScreenName>.types.ts      # Shared prop types
+      use<ScreenName>.ts         # Auth hook (optional)
       index.ts                   # Native entry
       web.ts                     # Web entry
-      __tests__/
-    forgot-password/
-      ForgotPasswordScreen.web.tsx
-      ForgotPasswordScreen.native.tsx
-      ForgotPasswordScreen.types.ts
-      useForgotPassword.ts
-      index.ts
-      web.ts
-      __tests__/
-    content/
-      HomeScreen.web.tsx
-      HomeScreen.types.ts
-      index.ts                   # Re-exports from web (no native yet)
-      web.ts
-      __tests__/
-    settings/
-      SettingsScreen.web.tsx
-      SettingsScreen.native.tsx
-      SettingsScreen.types.ts
-      index.ts
-      web.ts
       __tests__/
     test/
       setup.ts                   # Shared test setup (ResizeObserver polyfill)
@@ -191,10 +206,10 @@ pnpm --filter @automatize/screens lint
 ## Testing Conventions
 
 - Mock `@automatize/ui/web` with simple HTML equivalents (see existing tests for examples)
-- Mock `@automatize/core-localization` with a translation map for your screen's keys
+- Mock `@automatize/localization` with a translation map for your screen's keys
 - Use the shared `src/test/setup.ts` for jsdom polyfills (ResizeObserver)
 - Tests resolve `.web.tsx` files via the vitest `resolve.extensions` config
 
 ---
 
-**Last Updated:** 2026-03-25
+**Last Updated:** 2026-04-15

@@ -12,26 +12,26 @@ This project follows a **Modular Monolith** architecture with **Core-Driven Depe
 
 ```
 apps/                 # Platform applications
-├── mobile/           # Expo app (iOS + Android + Web)
-├── web/              # Next.js web app
+├── <platform1>/      # Expo app (iOS + Android + Web)
+├── <platform2>/      # Next.js web app
 │   └── components/
 │       ├── screens/  # Full-page components (auth, dashboard, etc.)
 │       └── composites/ # Reusable UI pieces
-└── windows/          # Windows desktop app
+└── <platform3>/      # Windows desktop app
 
-core/                 # Workspace boundary for abstract "Wirer" modules
-  auth/                 # @automatize/auth (Interfaces, types, contexts — NO implementation, NO tests)
-  utils/                # @automatize/utils (Abstract utilities)
+core/                 # Workspace boundary for abstract, platform-agnostic modules
+  ├── <domain>/       # @scope/auth (Interfaces, types, contexts — NO implementation, NO tests)
+  └── <util>/         # @scope/utils (Abstract utilities)
 
-  packages/             # Feature modules
-    ├── navigation/     # Cross-platform navigation logic
-    ├── screens/        # Cross-platform screens (sign-in, forgot-password, etc.)
-    └── ui/             # Design system
+packages/             # Feature modules
+  ├── <navigation>/   # Cross-platform navigation logic
+  ├── <screens>/      # Cross-platform screens (sign-in, forgot-password, etc.)
+  └── <ui>/           # Design system
 
 integration/          # Infrastructure implementations
-├── supabase/        # Supabase clients & auth
-├── storage/         # WatermelonDB
-└── sync/            # Sync engine
+├── <supabase>/       # Supabase clients & auth
+├── <storage>/        # WatermelonDB
+└── <sync>/           # Sync engine
 ```
 
 ### Architecture
@@ -113,39 +113,39 @@ Automatize is a production-grade invoice management application supporting:
 ```
 automatize/
 ├── apps/
-│   ├── mobile/         # Expo app (iOS + Android + Web)
-│   ├── web/            # Next.js web app
+│   ├── <platform1>/         # Expo app (iOS + Android + Web)
+│   ├── <platform2>/         # Next.js web app
 │   │   └── components/
 │   │       └── composites/ # Reusable UI pieces (AppSidebar, etc.)
-│   └── windows/        # Windows desktop app
-├── core/               # Workspace boundary for abstract "Wirer" modules
-│   ├── auth/           # @automatize/auth (Interfaces, types, contexts — NO implementation, NO tests)
-│   ├── utils/          # @automatize/utils (Abstract utilities)
+│   └── <platform3>/        # Windows desktop app
+├── core/                    # Workspace boundary for abstract, platform-agnostic modules
+│   ├── <domain>/            # @scope/auth (Interfaces, types, contexts — NO implementation, NO tests)
+│   ├── <util>/              # @scope/utils (Abstract utilities)
 │   └── README.md
-├── integration/        # Infrastructure implementations
-│   ├── supabase/       # Supabase ecosystem
-│   │   ├── auth/       # @automatize/supabase-auth (Auth implementation + tests, NO interfaces)
+├── integration/             # Infrastructure implementations
+│   ├── <supabase>/         # Supabase ecosystem
+│   │   ├── <domain>/       # @automatize/supabase-<domain> (Implementation + tests, NO interfaces)
 │   │   │   └── README.md
-│   │   └── docs/       # Auth config, RLS policies
-│   ├── storage/        # @automatize/storage
-│   └── sync/           # @automatize/sync
+│   │   └── docs/           # Auth config, RLS policies
+│   ├── <storage>/          # @automatize/storage
+│   └── <sync>/             # @automatize/sync
 ├── packages/
-│   ├── localization/   # @automatize/localization (i18n singleton, adapter pattern)
-│   ├── navigation/     # Cross-platform navigation logic
-│   ├── screens/        # Cross-platform screens (sign-in, forgot-password, content, settings)
-│   └── ui/             # Design system + components
+│   ├── localization/        # @automatize/localization (i18n singleton, adapter pattern)
+│   ├── <navigation>/       # Cross-platform navigation logic
+│   ├── <screens>/          # Cross-platform screens (sign-in, forgot-password, content, settings)
+│   └── <ui>/               # Design system + components
 │       ├── src/
-│       │   ├── components/  # Cross-platform components (Button/, Input/, etc.)
-│       │   │   └── <Name>/  # Each has .web.tsx/.native.tsx (no per-component barrels)
-│       │   ├── index.ts     # Main entry — exports native implementations
-│       │   ├── web.ts       # Web entry — exports web implementations
-│       │   └── tokens/      # Generated design tokens
+│       │   ├── components/ # Cross-platform components (Button/, Input/, etc.)
+│       │   │   └── <Name>/ # Each has .web.tsx/.native.tsx (no per-component barrels)
+│       │   ├── index.ts    # Main entry — exports native implementations
+│       │   ├── web.ts      # Web entry — exports web implementations
+│       │   └── tokens/     # Generated design tokens
 │       └── README.md
 ├── scripts/
-│   └── scan-deps.ts    # Dependency deduplication scanner
+│   └── scan-deps.ts        # Dependency deduplication scanner
 └── tools/
-    ├── eslint-config/  # Shared ESLint configs
-    └── tsconfig/       # Shared TypeScript configs
+    ├── eslint-config/       # Shared ESLint configs
+    └── tsconfig/           # Shared TypeScript configs
 ```
 
 ---
