@@ -6,6 +6,9 @@ import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { ClientFormScreen } from '@automatize/screens/client-form/web';
 import type { ClientFormData } from '@automatize/screens/client-form/web';
+import type { ClientRow } from '@automatize/screens/client/web';
+import { generateId } from '@automatize/utils';
+import { addSavedClient } from '../clientStore';
 
 /**
  * Module-level draft store. Survives client-side (SPA) navigations
@@ -13,6 +16,25 @@ import type { ClientFormData } from '@automatize/screens/client-form/web';
  * since the JS runtime restarts.
  */
 let formDraft: ClientFormData | undefined;
+
+function toClientRow(data: ClientFormData): ClientRow {
+  return {
+    id: generateId(),
+    name: data.name,
+    addresses: data.addresses.map((a) => ({
+      id: a.id,
+      street: a.street,
+      number: a.number,
+      neighborhood: a.neighborhood,
+      city: a.city,
+      state: a.state,
+    })),
+    phones: data.phones.map((p) => ({
+      id: p.id,
+      number: p.number,
+    })),
+  };
+}
 
 export default function NewClientPage(): React.JSX.Element {
   const { navigate } = useNavigation();
@@ -44,8 +66,7 @@ export default function NewClientPage(): React.JSX.Element {
   }, []);
 
   const handleSubmit = (data: ClientFormData) => {
-    // eslint-disable-next-line no-console
-    console.warn('New client data:', data);
+    addSavedClient(toClientRow(data));
     formDraft = undefined;
     navigate('/clients');
   };
