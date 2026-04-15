@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
-  Button,
+  PrimaryButton,
+  SecondaryButton,
+  DestructiveButton,
   Card,
   Kbd,
   Separator,
@@ -224,16 +226,15 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               </p>
             </div>
             <div className="flex justify-end">
-              <Button
+              <DestructiveButton
                 type="button"
-                variant="destructive"
                 onClick={resetForm}
                 size={isMobile ? 'sm' : 'default'}
                 className="w-full sm:w-auto h-10"
               >
                 {t('client.reset')}
                 {!isMobile && <DestructiveKbd keyLabel="E" control />}
-              </Button>
+              </DestructiveButton>
             </div>
           </div>
 
@@ -293,17 +294,16 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
 
               {/* Action buttons at bottom */}
               <div className="flex justify-end gap-2">
-                <Button
+                <SecondaryButton
                   type="button"
-                  variant="outline"
                   onClick={handleCancel}
                   size={isMobile ? 'sm' : 'default'}
                   className="h-10"
                 >
                   {t('client.cancel')}
                   {!isMobile && <Kbd keyLabel="Esc" control />}
-                </Button>
-                <Button
+                </SecondaryButton>
+                <PrimaryButton
                   type="submit"
                   size={isMobile ? 'sm' : 'default'}
                   className="h-10"
@@ -311,7 +311,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                 >
                   {t('client.submit')}
                   {!isMobile && <Kbd keyLabel="S" control />}
-                </Button>
+                </PrimaryButton>
               </div>
             </form>
           </div>
@@ -335,21 +335,16 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
+            <SecondaryButton
               type="button"
-              variant="outline"
               onClick={handleCancelDiscard}
               shortcut="Esc"
             >
               {t('client.discard.cancel')}
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleConfirmDiscard}
-            >
+            </SecondaryButton>
+            <DestructiveButton type="button" onClick={handleConfirmDiscard}>
               {t('client.discard.continue')}
-            </Button>
+            </DestructiveButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>

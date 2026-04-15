@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { MailCheck, ArrowLeft } from 'lucide-react';
-import { Button, Input, useToasts, Fade } from '@automatize/ui/web';
+import { PrimaryButton, Input, useToasts, Fade } from '@automatize/ui/web';
 import { ThemeSwitcher } from '../components/ThemeSwitcher/ThemeSwitcher.web';
 import { LanguageSwitcher } from '../components/LanguageSwitcher/LanguageSwitcher.web';
 import { useTranslation } from '@automatize/core-localization';
@@ -63,9 +63,13 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
               <p className="text-muted-foreground text-center">
                 {t('forgot-password.success.message')}
               </p>
-              <Button type="button" onClick={onBackToSignIn} className="w-full">
+              <PrimaryButton
+                type="button"
+                onClick={onBackToSignIn}
+                className="w-full"
+              >
                 {t('forgot-password.back-to-sign-in')}
-              </Button>
+              </PrimaryButton>
             </Fade>
           ) : (
             <div className="flex flex-col gap-4">
@@ -115,7 +119,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                 </Fade>
 
                 <Fade delay={400}>
-                  <Button
+                  <PrimaryButton
                     type="submit"
                     disabled={isLoading || !email}
                     className="w-full"
@@ -123,7 +127,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                     {isLoading
                       ? t('forgot-password.submitting')
                       : t('forgot-password.submit')}
-                  </Button>
+                  </PrimaryButton>
                 </Fade>
               </form>
             </div>

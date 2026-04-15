@@ -11,6 +11,12 @@ export { cn } from './utils';
 
 // Components (source of truth: src/components/)
 export { Button, buttonVariants } from './components/Button/Button.web';
+export { PrimaryButton } from './components/Button/PrimaryButton.web';
+export type { PrimaryButtonProps } from './components/Button/PrimaryButton.web';
+export { SecondaryButton } from './components/Button/SecondaryButton.web';
+export type { SecondaryButtonProps } from './components/Button/SecondaryButton.web';
+export { DestructiveButton } from './components/Button/DestructiveButton.web';
+export type { DestructiveButtonProps } from './components/Button/DestructiveButton.web';
 export { Input } from './components/Input/Input.web';
 export type { InputProps } from './components/Input/Input.web';
 export { Text } from './components/Text/Text.web';

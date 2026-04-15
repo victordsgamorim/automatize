@@ -2,6 +2,8 @@ import React from 'react';
 import { Smartphone, Phone as PhoneIcon, Trash2, Plus } from 'lucide-react';
 import {
   Button,
+  PrimaryButton,
+  SecondaryButton,
   Text,
   Card,
   Dialog,
@@ -146,9 +148,8 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
               )}
             </div>
           </div>
-          <Button
+          <SecondaryButton
             type="button"
-            variant="ghost"
             size="icon"
             className={`absolute top-1 right-1 size-6 transition-opacity ${
               isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
@@ -160,7 +161,7 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
             aria-label={t('client.phone.remove')}
           >
             <Trash2 className="size-3 text-muted-foreground" />
-          </Button>
+          </SecondaryButton>
         </Card>
       ))}
     </div>
@@ -171,15 +172,14 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <Text variant="h3">{t('client.phones')}</Text>
-          <Button
+          <SecondaryButton
             type="button"
-            variant="outline"
             size="icon"
             onClick={handleOpenPhoneDialog}
             aria-label={t('client.phone.add')}
           >
             <Plus className="size-4" />
-          </Button>
+          </SecondaryButton>
         </div>
 
         {visiblePhones.length === 0 ? (
@@ -187,12 +187,12 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
             {t('client.phone.empty')}
           </Text>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="flex flex-wrap gap-3">
             {visiblePhones.map((phone) => (
               <Card
                 key={phone.id}
                 padding="sm"
-                className="relative group min-h-[80px] cursor-pointer hover:bg-accent transition-colors"
+                className="relative group w-fit cursor-pointer hover:bg-accent transition-colors"
                 onClick={() => handleEditPhone(phone)}
               >
                 <div className="flex items-start gap-2 pr-6">
@@ -216,9 +216,8 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
                     )}
                   </div>
                 </div>
-                <Button
+                <SecondaryButton
                   type="button"
-                  variant="ghost"
                   size="icon"
                   className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => {
@@ -228,7 +227,7 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
                   aria-label={t('client.phone.remove')}
                 >
                   <Trash2 className="size-3 text-muted-foreground" />
-                </Button>
+                </SecondaryButton>
               </Card>
             ))}
             {phones.length >= MAX_VISIBLE_PHONES + 1 && (
@@ -325,22 +324,21 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
             />
           </div>
           <DialogFooter>
-            <Button
+            <SecondaryButton
               type="button"
-              variant="outline"
               onClick={() => onDialogOpenChange(false)}
               shortcut="Esc"
             >
               {t('app.cancel')}
-            </Button>
-            <Button
+            </SecondaryButton>
+            <PrimaryButton
               type="button"
               onClick={handleSavePhone}
               disabled={!newPhone.number.trim()}
               shortcut="Enter"
             >
               {t('client.phone.save')}
-            </Button>
+            </PrimaryButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>

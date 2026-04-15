@@ -21,7 +21,7 @@ vi.mock('@automatize/ui/web', () => ({
     shortcut,
   }: {
     children?: React.ReactNode;
-    onClick?: () => void;
+    onClick?: ((e: React.MouseEvent) => void) | (() => void);
     type?: string;
     'aria-label'?: string;
     variant?: string;
@@ -32,9 +32,73 @@ vi.mock('@automatize/ui/web', () => ({
   }) => (
     <button
       type={(type as 'button' | 'submit' | 'reset') ?? 'button'}
-      onClick={onClick}
+      onClick={onClick as React.MouseEventHandler}
       aria-label={ariaLabel}
       data-variant={variant}
+      data-size={size}
+      className={className}
+      disabled={disabled}
+      data-shortcut={shortcut}
+    >
+      {children}
+    </button>
+  ),
+  PrimaryButton: ({
+    children,
+    onClick,
+    type,
+    'aria-label': ariaLabel,
+    size,
+    className,
+    disabled,
+    shortcut,
+  }: {
+    children?: React.ReactNode;
+    onClick?: ((e: React.MouseEvent) => void) | (() => void);
+    type?: string;
+    'aria-label'?: string;
+    size?: string;
+    className?: string;
+    disabled?: boolean;
+    shortcut?: string;
+  }) => (
+    <button
+      type={(type as 'button' | 'submit' | 'reset') ?? 'button'}
+      onClick={onClick as React.MouseEventHandler}
+      aria-label={ariaLabel}
+      data-variant="default"
+      data-size={size}
+      className={className}
+      disabled={disabled}
+      data-shortcut={shortcut}
+    >
+      {children}
+    </button>
+  ),
+  SecondaryButton: ({
+    children,
+    onClick,
+    type,
+    'aria-label': ariaLabel,
+    size,
+    className,
+    disabled,
+    shortcut,
+  }: {
+    children?: React.ReactNode;
+    onClick?: ((e: React.MouseEvent) => void) | (() => void);
+    type?: string;
+    'aria-label'?: string;
+    size?: string;
+    className?: string;
+    disabled?: boolean;
+    shortcut?: string;
+  }) => (
+    <button
+      type={(type as 'button' | 'submit' | 'reset') ?? 'button'}
+      onClick={onClick as React.MouseEventHandler}
+      aria-label={ariaLabel}
+      data-variant="secondary"
       data-size={size}
       className={className}
       disabled={disabled}

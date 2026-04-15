@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import {
   Button,
+  PrimaryButton,
   Input,
   Text,
   Checkbox,
@@ -158,13 +159,13 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
               </Fade>
 
               <Fade delay={600}>
-                <Button
+                <PrimaryButton
                   type="submit"
                   disabled={isLoading || !email || !password}
                   className="w-full"
                 >
                   {isLoading ? t('sign-in.submitting') : t('sign-in.submit')}
-                </Button>
+                </PrimaryButton>
               </Fade>
             </form>
           </div>
