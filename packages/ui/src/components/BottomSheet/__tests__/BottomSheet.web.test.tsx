@@ -27,13 +27,13 @@ describe('BottomSheet (web)', () => {
     render(<BottomSheet {...defaults} />);
     const panel = screen.getByText('Sheet content').closest('[class*="fixed"]');
     expect(panel?.className).toContain('translate-y-0');
-    expect(panel?.className).not.toContain('translate-y-full');
+    expect(panel?.className).not.toContain('translate-y-[calc(100%+2rem)]');
   });
 
-  it('applies translate-y-full when closed', () => {
+  it('applies translate-y-[calc(100%+2rem)] when closed', () => {
     render(<BottomSheet {...defaults} open={false} />);
     const panel = screen.getByText('Sheet content').closest('[class*="fixed"]');
-    expect(panel?.className).toContain('translate-y-full');
+    expect(panel?.className).toContain('translate-y-[calc(100%+2rem)]');
     expect(panel?.className).not.toContain('translate-y-0');
   });
 

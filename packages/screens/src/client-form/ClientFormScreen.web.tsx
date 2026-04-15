@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
+  DestructiveKbd,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
@@ -231,7 +232,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                 className="w-full sm:w-auto h-10"
               >
                 {t('client.reset')}
-                {!isMobile && <Kbd keyLabel="E" control />}
+                {!isMobile && <DestructiveKbd keyLabel="E" control />}
               </Button>
             </div>
           </div>

@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  allowedDevOrigins: ['10.5.0.2'],
   reactStrictMode: true,
   transpilePackages: ['@automatize/navigation', '@automatize/screens'],
   compiler: {

@@ -29,7 +29,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
       <div
         className={cn(
           'fixed inset-x-0 bottom-0 z-50 bg-background border-t rounded-t-2xl shadow-lg transition-transform duration-300 ease-in-out',
-          open ? 'translate-y-0' : 'translate-y-full',
+          open ? 'translate-y-0' : 'translate-y-[calc(100%+2rem)]',
           className
         )}
         style={{ maxHeight }}
