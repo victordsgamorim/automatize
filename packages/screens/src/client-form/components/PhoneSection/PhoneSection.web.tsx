@@ -187,12 +187,12 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
             {t('client.phone.empty')}
           </Text>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="flex flex-wrap gap-3">
             {visiblePhones.map((phone) => (
               <Card
                 key={phone.id}
                 padding="sm"
-                className="relative group min-h-[80px] cursor-pointer hover:bg-accent transition-colors"
+                className="relative group w-fit cursor-pointer hover:bg-accent transition-colors"
                 onClick={() => handleEditPhone(phone)}
               >
                 <div className="flex items-start gap-2 pr-6">
