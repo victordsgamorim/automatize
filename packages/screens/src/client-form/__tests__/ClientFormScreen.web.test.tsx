@@ -33,6 +33,83 @@ vi.mock('@automatize/ui/web', () => ({
       {children}
     </button>
   ),
+  PrimaryButton: ({
+    children,
+    onClick,
+    type,
+    'aria-label': ariaLabel,
+    disabled,
+  }: {
+    children?: React.ReactNode;
+    onClick?: () => void;
+    type?: string;
+    'aria-label'?: string;
+    disabled?: boolean;
+    size?: string;
+    className?: string;
+    shortcut?: string;
+  }) => (
+    <button
+      type={(type as 'button' | 'submit' | 'reset') ?? 'button'}
+      onClick={onClick}
+      aria-label={ariaLabel}
+      disabled={disabled}
+      data-variant="default"
+    >
+      {children}
+    </button>
+  ),
+  SecondaryButton: ({
+    children,
+    onClick,
+    type,
+    'aria-label': ariaLabel,
+    disabled,
+  }: {
+    children?: React.ReactNode;
+    onClick?: () => void;
+    type?: string;
+    'aria-label'?: string;
+    disabled?: boolean;
+    size?: string;
+    className?: string;
+    shortcut?: string;
+  }) => (
+    <button
+      type={(type as 'button' | 'submit' | 'reset') ?? 'button'}
+      onClick={onClick}
+      aria-label={ariaLabel}
+      disabled={disabled}
+      data-variant="secondary"
+    >
+      {children}
+    </button>
+  ),
+  DestructiveButton: ({
+    children,
+    onClick,
+    type,
+    'aria-label': ariaLabel,
+    disabled,
+  }: {
+    children?: React.ReactNode;
+    onClick?: () => void;
+    type?: string;
+    'aria-label'?: string;
+    disabled?: boolean;
+    size?: string;
+    className?: string;
+  }) => (
+    <button
+      type={(type as 'button' | 'submit' | 'reset') ?? 'button'}
+      onClick={onClick}
+      aria-label={ariaLabel}
+      disabled={disabled}
+      data-variant="destructive"
+    >
+      {children}
+    </button>
+  ),
   Input: ({
     id,
     value,
@@ -164,6 +241,7 @@ vi.mock('@automatize/ui/web', () => ({
     </div>
   ),
   Kbd: ({ children }: { children?: React.ReactNode }) => <kbd>{children}</kbd>,
+  DestructiveKbd: () => null,
 }));
 
 vi.mock('@automatize/core-localization', () => ({

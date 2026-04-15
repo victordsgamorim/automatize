@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, useColorScheme } from 'react-native';
-import { Button, Text } from '@automatize/ui';
+import { SecondaryButton, Text } from '@automatize/ui';
 import { semanticColors } from '@automatize/ui/tokens';
 import type { SettingsScreenProps } from './SettingsScreen.types';
 
@@ -60,8 +60,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         <Text variant="body" color="primary">
           {labels.languageTitle}
         </Text>
-        <Button
-          variant="ghost"
+        <SecondaryButton
           onPress={() => {
             const idx = locale.languages.findIndex(
               (l) => l.code === locale.currentLanguage
@@ -73,7 +72,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           accessibilityLabel={labels.languageLabel}
         >
           {currentLangLabel}
-        </Button>
+        </SecondaryButton>
       </View>
 
       {/* About */}

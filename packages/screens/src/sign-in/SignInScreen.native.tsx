@@ -7,7 +7,14 @@ import {
   Platform,
   useColorScheme,
 } from 'react-native';
-import { Button, Text, Input, Card, Fade } from '@automatize/ui';
+import {
+  PrimaryButton,
+  SecondaryButton,
+  Text,
+  Input,
+  Card,
+  Fade,
+} from '@automatize/ui';
 import { semanticColors, animation } from '@automatize/ui/tokens';
 import { useTranslation } from '@automatize/core-localization';
 import type { SignInScreenProps } from './SignInScreen.types';
@@ -158,8 +165,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
 
             {/* Toggle Password Visibility */}
             <Fade delay={animation.delay[700]}>
-              <Button
-                variant="ghost"
+              <SecondaryButton
                 onPress={toggleShowPassword}
                 disabled={isLoading}
                 testID="sign-in-toggle-password"
@@ -167,13 +173,12 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 {showPassword
                   ? t('sign-in.password.hide')
                   : t('sign-in.password.show')}
-              </Button>
+              </SecondaryButton>
             </Fade>
 
             {/* Sign In Button */}
             <Fade delay={animation.delay[800]}>
-              <Button
-                variant="primary"
+              <PrimaryButton
                 onPress={onSignIn}
                 disabled={!email || !password || isLoading}
                 isLoading={isLoading}
@@ -181,26 +186,24 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                 style={styles.submitButton}
               >
                 {t('sign-in.submit')}
-              </Button>
+              </PrimaryButton>
             </Fade>
 
             {/* Forgot Password Link */}
             <Fade delay={animation.delay[900]}>
-              <Button
-                variant="ghost"
+              <SecondaryButton
                 onPress={onResetPassword}
                 disabled={isLoading}
                 testID="sign-in-forgot-password"
               >
                 {t('sign-in.forgot-password')}
-              </Button>
+              </SecondaryButton>
             </Fade>
 
             {/* Language Switcher */}
             <Fade delay={animation.delay[1000]}>
               <View style={styles.languageSwitcher}>
-                <Button
-                  variant="ghost"
+                <SecondaryButton
                   onPress={() => {
                     const idx = locale.languages.findIndex(
                       (l) => l.code === locale.currentLanguage
@@ -213,7 +216,7 @@ export const SignInScreen: React.FC<SignInScreenProps> = ({
                   accessibilityLabel={t('language.switch-label')}
                 >
                   {currentLangLabel}
-                </Button>
+                </SecondaryButton>
               </View>
             </Fade>
           </Card>

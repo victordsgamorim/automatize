@@ -7,7 +7,14 @@ import {
   Platform,
   useColorScheme,
 } from 'react-native';
-import { Button, Text, Input, Card, Fade } from '@automatize/ui';
+import {
+  PrimaryButton,
+  SecondaryButton,
+  Text,
+  Input,
+  Card,
+  Fade,
+} from '@automatize/ui';
 import { semanticColors, animation } from '@automatize/ui/tokens';
 import { useTranslation } from '@automatize/core-localization';
 import type { ForgotPasswordScreenProps } from './ForgotPasswordScreen.types';
@@ -112,14 +119,13 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                   <Text variant="body" color="secondary">
                     {t('forgot-password.success.message')}
                   </Text>
-                  <Button
-                    variant="primary"
+                  <PrimaryButton
                     onPress={onBackToSignIn}
                     testID="forgot-password-back-to-sign-in"
                     style={styles.submitButton}
                   >
                     {t('forgot-password.back-to-sign-in')}
-                  </Button>
+                  </PrimaryButton>
                 </View>
               </Fade>
             ) : (
@@ -154,8 +160,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                 </Fade>
 
                 <Fade delay={animation.delay[600]}>
-                  <Button
-                    variant="primary"
+                  <PrimaryButton
                     onPress={onSubmit}
                     disabled={!email || isLoading}
                     isLoading={isLoading}
@@ -163,25 +168,23 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                     style={styles.submitButton}
                   >
                     {t('forgot-password.submit')}
-                  </Button>
+                  </PrimaryButton>
                 </Fade>
 
                 <Fade delay={animation.delay[700]}>
-                  <Button
-                    variant="ghost"
+                  <SecondaryButton
                     onPress={onBackToSignIn}
                     disabled={isLoading}
                     testID="forgot-password-back-button"
                   >
                     {t('forgot-password.back-to-sign-in')}
-                  </Button>
+                  </SecondaryButton>
                 </Fade>
 
                 {/* Language Switcher */}
                 <Fade delay={animation.delay[800]}>
                   <View style={styles.languageSwitcher}>
-                    <Button
-                      variant="ghost"
+                    <SecondaryButton
                       onPress={() => {
                         const idx = locale.languages.findIndex(
                           (l) => l.code === locale.currentLanguage
@@ -194,7 +197,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
                       accessibilityLabel={t('language.switch-label')}
                     >
                       {currentLangLabel}
-                    </Button>
+                    </SecondaryButton>
                   </View>
                 </Fade>
               </>

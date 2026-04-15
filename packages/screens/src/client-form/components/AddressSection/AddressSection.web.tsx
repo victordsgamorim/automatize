@@ -2,6 +2,8 @@ import React from 'react';
 import { House, Building2, Trash2, Plus } from 'lucide-react';
 import {
   Button,
+  PrimaryButton,
+  SecondaryButton,
   Text,
   Card,
   Dialog,
@@ -221,9 +223,8 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
               )}
             </div>
           </div>
-          <Button
+          <SecondaryButton
             type="button"
-            variant="ghost"
             size="icon"
             className={`absolute top-1 right-1 size-6 transition-opacity ${
               isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
@@ -235,7 +236,7 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
             aria-label={t('client.address.remove')}
           >
             <Trash2 className="size-3 text-muted-foreground" />
-          </Button>
+          </SecondaryButton>
         </Card>
       ))}
     </div>
@@ -246,15 +247,14 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <Text variant="h3">{t('client.addresses')}</Text>
-          <Button
+          <SecondaryButton
             type="button"
-            variant="outline"
             size="icon"
             onClick={handleOpenAddressDialog}
             aria-label={t('client.address.add')}
           >
             <Plus className="size-4" />
-          </Button>
+          </SecondaryButton>
         </div>
 
         {visibleAddresses.length === 0 ? (
@@ -294,9 +294,8 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
                     )}
                   </div>
                 </div>
-                <Button
+                <SecondaryButton
                   type="button"
-                  variant="ghost"
                   size="icon"
                   className="absolute top-1 right-1 size-6 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => {
@@ -306,7 +305,7 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
                   aria-label={t('client.address.remove')}
                 >
                   <Trash2 className="size-3 text-muted-foreground" />
-                </Button>
+                </SecondaryButton>
               </Card>
             ))}
             {addresses.length >= MAX_VISIBLE_ADDRESSES + 1 && (
@@ -499,22 +498,21 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
             </div>
           </div>
           <DialogFooter>
-            <Button
+            <SecondaryButton
               type="button"
-              variant="outline"
               onClick={() => onDialogOpenChange(false)}
               shortcut="Esc"
             >
               {t('app.cancel')}
-            </Button>
-            <Button
+            </SecondaryButton>
+            <PrimaryButton
               type="button"
               onClick={handleSaveAddress}
               disabled={!newAddress.street.trim()}
               shortcut="Enter"
             >
               {t('client.address.save')}
-            </Button>
+            </PrimaryButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>

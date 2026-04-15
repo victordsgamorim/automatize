@@ -23,6 +23,27 @@ vi.mock('@automatize/ui/web', () => ({
       {children}
     </button>
   ),
+  SecondaryButton: ({
+    children,
+    onClick,
+    className,
+    ...rest
+  }: {
+    children?: React.ReactNode;
+    onClick?: () => void;
+    className?: string;
+    size?: string;
+    'aria-label'?: string;
+  }) => (
+    <button
+      onClick={onClick}
+      className={className}
+      data-variant="secondary"
+      {...rest}
+    >
+      {children}
+    </button>
+  ),
   Input: ({
     onChange,
     value,

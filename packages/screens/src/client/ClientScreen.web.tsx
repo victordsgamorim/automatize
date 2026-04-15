@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Plus, Search } from 'lucide-react';
-import { Button, Input, Table } from '@automatize/ui/web';
+import { SecondaryButton, Input, Table } from '@automatize/ui/web';
 import type { TableColumn } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import type { ClientScreenProps, ClientRow } from './ClientScreen.types';
@@ -112,15 +112,14 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
           </div>
         }
         toolbarRight={
-          <Button
-            variant="outline"
+          <SecondaryButton
             size="icon"
             onClick={onAddClient}
             aria-label={t('client.list.add')}
             className="size-8"
           >
             <Plus className="size-4" />
-          </Button>
+          </SecondaryButton>
         }
         getItemId={(client) => client.id}
         onRowClick={onClientClick}

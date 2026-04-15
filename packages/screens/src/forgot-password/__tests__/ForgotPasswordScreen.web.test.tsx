@@ -71,6 +71,32 @@ vi.mock('@automatize/ui/web', () => ({
       {children}
     </button>
   ),
+  PrimaryButton: ({
+    children,
+    onClick,
+    disabled,
+    type,
+    className,
+    ...rest
+  }: {
+    children: React.ReactNode;
+    onClick?: () => void;
+    disabled?: boolean;
+    type?: string;
+    className?: string;
+    size?: string;
+  }) => (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      type={type as 'button' | 'submit' | 'reset'}
+      className={className}
+      data-variant="default"
+      {...rest}
+    >
+      {children}
+    </button>
+  ),
   Input: ({
     onChange,
     value,

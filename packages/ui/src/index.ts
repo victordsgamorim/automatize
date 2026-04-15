@@ -20,6 +20,15 @@ export type {
   ButtonSize,
 } from './components/Button/Button.native';
 
+export { PrimaryButton } from './components/Button/PrimaryButton.native';
+export type { PrimaryButtonProps } from './components/Button/PrimaryButton.native';
+
+export { SecondaryButton } from './components/Button/SecondaryButton.native';
+export type { SecondaryButtonProps } from './components/Button/SecondaryButton.native';
+
+export { DestructiveButton } from './components/Button/DestructiveButton.native';
+export type { DestructiveButtonProps } from './components/Button/DestructiveButton.native';
+
 // Input (RN implementation)
 export { Input } from './components/Input/Input.native';
 export type { InputProps } from './components/Input/Input.native';
