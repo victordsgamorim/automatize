@@ -5,7 +5,8 @@ import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { ClientScreen } from '@automatize/screens/client/web';
-import { getSavedClients } from './clientStore';
+import type { ClientRow } from '@automatize/screens/client/web';
+import { getSavedClients, setClientToEdit } from './clientStore';
 
 export default function ClientsPage(): React.JSX.Element {
   const { navigate } = useNavigation();
@@ -15,10 +16,16 @@ export default function ClientsPage(): React.JSX.Element {
   // Read from module-level store on each mount — picks up clients saved during this session.
   const [clients] = useState(() => getSavedClients());
 
+  const handleEditClient = (client: ClientRow) => {
+    setClientToEdit(client.id);
+    navigate('/clients/edit');
+  };
+
   return (
     <ClientScreen
       clients={clients}
       onAddClient={() => navigate('/clients/new')}
+      onEditClient={handleEditClient}
       locale={{
         languages: SUPPORTED_LANGUAGES.map((lang) => ({
           code: lang,

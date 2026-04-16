@@ -132,8 +132,18 @@
   "client.cancel": "Cancel",
   "client.back": "Back",
   "client.form.description": "Fill in the client details below",
+  "client.form.title.edit": "Edit Client",
+  "client.form.description.edit": "Update the client details below",
+  "client.submit.edit": "Update Client",
+  "client.detail.type": "Type",
+  "client.detail.document": "Document",
   "client.discard.title": "Discard new client?",
   "client.discard.description": "If you continue, all the data you entered will be reset and you will go back to the clients list. Do you still want to add this new client?",
   "client.discard.cancel": "Cancel",
-  "client.discard.continue": "Continue"
+  "client.discard.continue": "Continue",
+  "client.detail.edit": "Edit",
+  "client.detail.noAddresses": "No addresses",
+  "client.detail.noPhones": "No phones",
+  "client.edit.confirm.title": "Edit client?",
+  "client.edit.confirm.description": "You are about to save changes to {{name}}. Continue to apply them."
 }

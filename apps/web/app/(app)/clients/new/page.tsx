@@ -21,16 +21,21 @@ function toClientRow(data: ClientFormData): ClientRow {
   return {
     id: generateId(),
     name: data.name,
+    clientType: data.clientType,
+    document: data.document,
     addresses: data.addresses.map((a) => ({
       id: a.id,
+      addressType: a.addressType,
       street: a.street,
       number: a.number,
       neighborhood: a.neighborhood,
       city: a.city,
       state: a.state,
+      info: a.info,
     })),
     phones: data.phones.map((p) => ({
       id: p.id,
+      phoneType: p.phoneType,
       number: p.number,
     })),
   };
@@ -66,7 +71,7 @@ export default function NewClientPage(): React.JSX.Element {
   }, []);
 
   const handleSubmit = (data: ClientFormData) => {
-    addSavedClient(toClientRow(data));
+    addSavedClient(toClientRow(data), data);
     formDraft = undefined;
     navigate('/clients');
   };

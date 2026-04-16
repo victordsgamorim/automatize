@@ -44,6 +44,27 @@ vi.mock('@automatize/ui/web', () => ({
       {children}
     </button>
   ),
+  PrimaryButton: ({
+    children,
+    onClick,
+    className,
+    ...rest
+  }: {
+    children?: React.ReactNode;
+    onClick?: () => void;
+    className?: string;
+    size?: string;
+    'aria-label'?: string;
+  }) => (
+    <button
+      onClick={onClick}
+      className={className}
+      data-variant="primary"
+      {...rest}
+    >
+      {children}
+    </button>
+  ),
   Input: ({
     onChange,
     value,
@@ -72,7 +93,6 @@ vi.mock('@automatize/ui/web', () => ({
     toolbarRight,
     emptyMessage,
     onRowClick,
-    onRowSelect: _onRowSelect,
     getItemId,
   }: {
     columns: {
@@ -86,8 +106,8 @@ vi.mock('@automatize/ui/web', () => ({
     toolbarRight?: React.ReactNode;
     emptyMessage?: string;
     onRowClick?: (item: ClientRow) => void;
-    onRowSelect?: (_id: string) => void;
     getItemId: (item: ClientRow) => string;
+    selectable?: boolean;
     itemLabel?: string;
     previousLabel?: string;
     nextLabel?: string;
@@ -132,6 +152,55 @@ vi.mock('@automatize/ui/web', () => ({
       </table>
     </div>
   ),
+  Drawer: ({
+    open,
+    title,
+    children,
+    onClose,
+  }: {
+    open?: boolean;
+    title?: React.ReactNode;
+    children?: React.ReactNode;
+    onClose?: () => void;
+  }) =>
+    open ? (
+      <div data-testid="drawer">
+        <div data-testid="drawer-title">{title}</div>
+        <div data-testid="drawer-content">{children}</div>
+        <button aria-label="Close" onClick={onClose} />
+      </div>
+    ) : null,
+  BottomSheet: ({
+    open,
+    title,
+    children,
+    onClose,
+  }: {
+    open?: boolean;
+    title?: React.ReactNode;
+    children?: React.ReactNode;
+    onClose?: () => void;
+  }) =>
+    open ? (
+      <div data-testid="bottom-sheet">
+        <div data-testid="bottom-sheet-title">{title}</div>
+        <div data-testid="bottom-sheet-content">{children}</div>
+        <button aria-label="Close" onClick={onClose} />
+      </div>
+    ) : null,
+  Separator: () => <hr />,
+  Text: ({
+    children,
+    className,
+  }: {
+    children?: React.ReactNode;
+    className?: string;
+    variant?: string;
+  }) => <span className={className}>{children}</span>,
+}));
+
+vi.mock('@automatize/ui/responsive', () => ({
+  useResponsive: () => ({ isMobile: false }),
 }));
 
 const translationMap: Record<string, string> = {
@@ -145,6 +214,11 @@ const translationMap: Record<string, string> = {
   'client.list.previous': 'Previous',
   'client.list.next': 'Next',
   'client.list.page': 'Page {{current}} of {{total}}',
+  'client.addresses': 'Addresses',
+  'client.phones': 'Phones',
+  'client.detail.edit': 'Edit',
+  'client.detail.noAddresses': 'No addresses',
+  'client.detail.noPhones': 'No phones',
 };
 
 vi.mock('@automatize/core-localization', () => ({
@@ -214,8 +288,6 @@ const mockClients: ClientRow[] = [
 const defaultProps: ClientScreenProps = {
   clients: mockClients,
   onAddClient: vi.fn(),
-  onClientClick: vi.fn(),
-  onClientSelect: vi.fn(),
   locale: {
     languages: [{ code: 'en', label: 'English', ext: 'US' }],
     currentLanguage: 'en',
@@ -282,6 +354,11 @@ describe('ClientScreen (web)', () => {
       headers.forEach((header) => {
         expect(header.getAttribute('data-sortable')).toBe('true');
       });
+    });
+
+    it('does not render drawer when no row is clicked', () => {
+      renderScreen();
+      expect(screen.queryByTestId('drawer')).toBeNull();
     });
   });
 
@@ -370,14 +447,112 @@ describe('ClientScreen (web)', () => {
     });
   });
 
-  describe('interactions', () => {
-    it('calls onClientClick when a row is clicked', () => {
-      const onClientClick = vi.fn();
-      renderScreen({ onClientClick });
+  describe('row detail drawer', () => {
+    it('opens drawer when a row is clicked', () => {
+      renderScreen();
       fireEvent.click(screen.getByTestId('row-1'));
-      expect(onClientClick).toHaveBeenCalledWith(mockClients[0]);
+      expect(screen.getByTestId('drawer')).toBeDefined();
     });
 
+    it('shows client name as drawer title', () => {
+      renderScreen();
+      fireEvent.click(screen.getByTestId('row-1'));
+      expect(screen.getByTestId('drawer-title').textContent).toBe(
+        'Alice Johnson'
+      );
+    });
+
+    it('shows formatted address in drawer content', () => {
+      renderScreen();
+      fireEvent.click(screen.getByTestId('row-1'));
+      const content = screen.getByTestId('drawer-content');
+      const text = content.textContent ?? '';
+      expect(text.includes('Maple Avenue, 100')).toBe(true);
+      expect(text.includes('Downtown')).toBe(true);
+      expect(text.includes('New York - NY')).toBe(true);
+    });
+
+    it('shows phone number in drawer content', () => {
+      renderScreen();
+      fireEvent.click(screen.getByTestId('row-1'));
+      const content = screen.getByTestId('drawer-content');
+      expect(content.textContent?.includes('(11) 99999-0001')).toBe(true);
+    });
+
+    it('shows "No addresses" for client with no addresses', () => {
+      const clientNoAddresses: ClientRow = {
+        id: '99',
+        name: 'Empty',
+        addresses: [],
+        phones: [],
+      };
+      renderScreen({ clients: [clientNoAddresses] });
+      fireEvent.click(screen.getByTestId('row-99'));
+      expect(screen.getByTestId('drawer-content').textContent).toContain(
+        'No addresses'
+      );
+    });
+
+    it('shows "No phones" for client with no phones', () => {
+      const clientNoPhones: ClientRow = {
+        id: '99',
+        name: 'Empty',
+        addresses: [],
+        phones: [],
+      };
+      renderScreen({ clients: [clientNoPhones] });
+      fireEvent.click(screen.getByTestId('row-99'));
+      expect(screen.getByTestId('drawer-content').textContent).toContain(
+        'No phones'
+      );
+    });
+
+    it('closes drawer when Close button is clicked', () => {
+      renderScreen();
+      fireEvent.click(screen.getByTestId('row-1'));
+      expect(screen.getByTestId('drawer')).toBeDefined();
+      fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+      expect(screen.queryByTestId('drawer')).toBeNull();
+    });
+
+    it('opens different client detail when another row is clicked', () => {
+      renderScreen();
+      fireEvent.click(screen.getByTestId('row-1'));
+      expect(screen.getByTestId('drawer-title').textContent).toBe(
+        'Alice Johnson'
+      );
+      fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+      fireEvent.click(screen.getByTestId('row-2'));
+      expect(screen.getByTestId('drawer-title').textContent).toBe('Bob Smith');
+    });
+  });
+
+  describe('edit action', () => {
+    it('calls onEditClient with correct client when Edit is clicked', () => {
+      const onEditClient = vi.fn();
+      renderScreen({ onEditClient });
+      fireEvent.click(screen.getByTestId('row-1'));
+      fireEvent.click(screen.getByText('Edit'));
+      expect(onEditClient).toHaveBeenCalledWith(mockClients[0]);
+    });
+
+    it('closes drawer after Edit is clicked', () => {
+      const onEditClient = vi.fn();
+      renderScreen({ onEditClient });
+      fireEvent.click(screen.getByTestId('row-1'));
+      fireEvent.click(screen.getByText('Edit'));
+      expect(screen.queryByTestId('drawer')).toBeNull();
+    });
+
+    it('does not crash when onEditClient is not provided', () => {
+      renderScreen({ onEditClient: undefined });
+      fireEvent.click(screen.getByTestId('row-1'));
+      fireEvent.click(screen.getByText('Edit'));
+      expect(screen.queryByTestId('drawer')).toBeNull();
+    });
+  });
+
+  describe('interactions', () => {
     it('calls onAddClient when add button is clicked', () => {
       const onAddClient = vi.fn();
       renderScreen({ onAddClient });

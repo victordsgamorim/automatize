@@ -46,6 +46,7 @@ const EMPTY_PHONE: NewPhoneFields = {
 };
 
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
+  mode = 'create',
   onSubmit,
   initialData,
   onDataChange,
@@ -53,6 +54,12 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   showDiscardDialog,
   onDiscardCancel,
 }) => {
+  const isEdit = mode === 'edit';
+  const titleKey = isEdit ? 'client.form.title.edit' : 'client.form.title';
+  const descriptionKey = isEdit
+    ? 'client.form.description.edit'
+    : 'client.form.description';
+  const submitKey = isEdit ? 'client.submit.edit' : 'client.submit';
   const { t } = useTranslation();
   const toast = useToasts();
   const {
@@ -251,10 +258,10 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                {t('client.form.title')}
+                {t(titleKey)}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {t('client.form.description')}
+                {t(descriptionKey)}
               </p>
             </div>
             <div className="flex justify-end">
@@ -341,7 +348,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                   className="h-10"
                   disabled={name.trim() === ''}
                 >
-                  {t('client.submit')}
+                  {t(submitKey)}
                   {!isMobile && <Kbd keyLabel="S" control />}
                 </PrimaryButton>
               </div>

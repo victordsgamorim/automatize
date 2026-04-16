@@ -132,8 +132,18 @@
   "client.cancel": "Cancelar",
   "client.back": "Voltar",
   "client.form.description": "Preencha os detalhes do cliente abaixo",
+  "client.form.title.edit": "Editar Cliente",
+  "client.form.description.edit": "Atualize os detalhes do cliente abaixo",
+  "client.submit.edit": "Atualizar Cliente",
+  "client.detail.type": "Tipo",
+  "client.detail.document": "Documento",
   "client.discard.title": "Descartar novo cliente?",
   "client.discard.description": "Se você continuar, todos os dados preenchidos serão apagados e você voltará para a lista de clientes. Ainda deseja adicionar este novo cliente?",
   "client.discard.cancel": "Cancelar",
-  "client.discard.continue": "Continuar"
+  "client.discard.continue": "Continuar",
+  "client.detail.edit": "Editar",
+  "client.detail.noAddresses": "Sem endereços",
+  "client.detail.noPhones": "Sem telefones",
+  "client.edit.confirm.title": "Editar cliente?",
+  "client.edit.confirm.description": "Você está prestes a salvar alterações em {{name}}. Continue para aplicá-las."
 }
