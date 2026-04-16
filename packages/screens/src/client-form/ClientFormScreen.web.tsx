@@ -13,6 +13,7 @@ import {
   DialogDescription,
   DialogFooter,
   DestructiveKbd,
+  useToasts,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
@@ -53,6 +54,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   onDiscardCancel,
 }) => {
   const { t } = useTranslation();
+  const toast = useToasts();
   const {
     clientType,
     setClientType,
@@ -63,14 +65,44 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     addresses,
     addAddress,
     removeAddress,
+    insertAddressAt,
     updateAddress,
     phones,
     addPhone,
     removePhone,
+    insertPhoneAt,
     updatePhone,
     getFormData,
     resetForm,
   } = useClientForm({ initialData, onDataChange });
+
+  const handleRemoveAddress = useCallback(
+    (id: string) => {
+      const index = addresses.findIndex((a) => a.id === id);
+      if (index === -1) return;
+      const removed = addresses[index];
+      removeAddress(id);
+      toast.message({
+        text: t('client.address.removed'),
+        onUndoAction: () => insertAddressAt(index, removed),
+      });
+    },
+    [addresses, removeAddress, insertAddressAt, toast, t]
+  );
+
+  const handleRemovePhone = useCallback(
+    (id: string) => {
+      const index = phones.findIndex((p) => p.id === id);
+      if (index === -1) return;
+      const removed = phones[index];
+      removePhone(id);
+      toast.message({
+        text: t('client.phone.removed'),
+        onUndoAction: () => insertPhoneAt(index, removed),
+      });
+    },
+    [phones, removePhone, insertPhoneAt, toast, t]
+  );
 
   const [internalDialogOpen, setInternalDialogOpen] = useState(false);
   const [addressDialogOpen, setAddressDialogOpen] = useState(false);
@@ -256,7 +288,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               <AddressSection
                 addresses={addresses}
                 addAddress={addAddress}
-                removeAddress={removeAddress}
+                removeAddress={handleRemoveAddress}
                 updateAddress={updateAddress}
                 isDialogOpen={addressDialogOpen}
                 onDialogOpenChange={setAddressDialogOpen}
@@ -276,7 +308,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               <PhoneSection
                 phones={phones}
                 addPhone={addPhone}
-                removePhone={removePhone}
+                removePhone={handleRemovePhone}
                 updatePhone={updatePhone}
                 isDialogOpen={phoneDialogOpen}
                 onDialogOpenChange={setPhoneDialogOpen}

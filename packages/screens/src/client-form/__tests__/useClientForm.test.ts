@@ -232,6 +232,97 @@ describe('useClientForm', () => {
       expect(result.current.phones[0].id).not.toBe(firstId);
     });
 
+    it('insertAddressAt re-inserts address at specific index', () => {
+      const { result } = renderHook(() => useClientForm());
+      act(() => {
+        result.current.addAddress();
+      });
+      act(() => {
+        result.current.updateAddress(
+          result.current.addresses[0].id,
+          'street',
+          'First'
+        );
+      });
+      const firstId = result.current.addresses[0].id;
+
+      act(() => {
+        result.current.addAddress();
+      });
+      act(() => {
+        result.current.updateAddress(
+          result.current.addresses[1].id,
+          'street',
+          'Second'
+        );
+      });
+
+      act(() => {
+        result.current.removeAddress(firstId);
+      });
+      expect(result.current.addresses).toHaveLength(1);
+      expect(result.current.addresses[0].street).toBe('Second');
+
+      act(() => {
+        result.current.insertAddressAt(0, {
+          id: firstId,
+          addressType: 'residence',
+          street: 'First',
+          number: '',
+          neighborhood: '',
+          city: '',
+          state: '',
+          info: '',
+        });
+      });
+      expect(result.current.addresses).toHaveLength(2);
+      expect(result.current.addresses[0].street).toBe('First');
+      expect(result.current.addresses[1].street).toBe('Second');
+    });
+
+    it('insertPhoneAt re-inserts phone at specific index', () => {
+      const { result } = renderHook(() => useClientForm());
+      act(() => {
+        result.current.addPhone();
+      });
+      act(() => {
+        result.current.updatePhone(
+          result.current.phones[0].id,
+          'number',
+          '111'
+        );
+      });
+      const firstId = result.current.phones[0].id;
+
+      act(() => {
+        result.current.addPhone();
+      });
+      act(() => {
+        result.current.updatePhone(
+          result.current.phones[1].id,
+          'number',
+          '222'
+        );
+      });
+
+      act(() => {
+        result.current.removePhone(firstId);
+      });
+      expect(result.current.phones).toHaveLength(1);
+      expect(result.current.phones[0].number).toBe('222');
+
+      act(() => {
+        result.current.insertPhoneAt(0, {
+          id: firstId,
+          phoneType: 'mobile',
+          number: '111',
+        });
+      });
+      expect(result.current.phones).toHaveLength(2);
+      expect(result.current.phones[0].number).toBe('111');
+      expect(result.current.phones[1].number).toBe('222');
+    });
+
     it('updatePhone updates phone number by id', () => {
       const { result } = renderHook(() => useClientForm());
       act(() => {
