@@ -314,15 +314,13 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
           </div>
         )}
       </div>
-
-      <Separator />
-
-      <div className="pt-2">
-        <PrimaryButton type="button" onClick={handleEdit} className="w-full">
-          {t('client.detail.edit')}
-        </PrimaryButton>
-      </div>
     </div>
+  ) : null;
+
+  const detailFooter = selectedClient ? (
+    <PrimaryButton type="button" onClick={handleEdit} className="w-full">
+      {t('client.detail.edit')}
+    </PrimaryButton>
   ) : null;
 
   return (
@@ -374,6 +372,7 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
           open={selectedClient !== null}
           onClose={handleCloseDetail}
           title={selectedClient?.name ?? ''}
+          footer={detailFooter}
         >
           {detailContent}
         </BottomSheet>
@@ -382,6 +381,7 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
           open={selectedClient !== null}
           onClose={handleCloseDetail}
           title={selectedClient?.name ?? ''}
+          footer={detailFooter}
         >
           {detailContent}
         </Drawer>

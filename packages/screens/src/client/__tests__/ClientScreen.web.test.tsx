@@ -156,17 +156,20 @@ vi.mock('@automatize/ui/web', () => ({
     open,
     title,
     children,
+    footer,
     onClose,
   }: {
     open?: boolean;
     title?: React.ReactNode;
     children?: React.ReactNode;
+    footer?: React.ReactNode;
     onClose?: () => void;
   }) =>
     open ? (
       <div data-testid="drawer">
         <div data-testid="drawer-title">{title}</div>
         <div data-testid="drawer-content">{children}</div>
+        {footer ? <div data-testid="drawer-footer">{footer}</div> : null}
         <button aria-label="Close" onClick={onClose} />
       </div>
     ) : null,
@@ -174,17 +177,20 @@ vi.mock('@automatize/ui/web', () => ({
     open,
     title,
     children,
+    footer,
     onClose,
   }: {
     open?: boolean;
     title?: React.ReactNode;
     children?: React.ReactNode;
+    footer?: React.ReactNode;
     onClose?: () => void;
   }) =>
     open ? (
       <div data-testid="bottom-sheet">
         <div data-testid="bottom-sheet-title">{title}</div>
         <div data-testid="bottom-sheet-content">{children}</div>
+        {footer ? <div data-testid="bottom-sheet-footer">{footer}</div> : null}
         <button aria-label="Close" onClick={onClose} />
       </div>
     ) : null,
