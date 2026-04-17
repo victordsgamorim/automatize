@@ -11,13 +11,27 @@ import {
 import { SidebarLogo } from './components/SidebarLogo/SidebarLogo.web';
 import type { HomeScreenProps } from './HomeScreen.types';
 import { AppHeaderActions } from './components/AppHeaderActions/AppHeaderActions.web';
+import { ProfileProvider, useProfile } from '../profile/ProfileProvider';
+import type { ProfileData } from '../profile/ProfileProvider';
+
+const EMPTY_PROFILE: ProfileData = {
+  name: '',
+  email: '',
+  companyName: '',
+  phones: [],
+};
 
 function HomeScreenContent({
   navProps,
   pageHeaderProps,
   children,
-}: HomeScreenProps) {
+}: Omit<HomeScreenProps, 'initialProfileData'>) {
   const { isMobile } = useSidebar();
+  const { profile } = useProfile();
+
+  const sidebarProfile = navProps.profile
+    ? { ...navProps.profile, label: profile.name, subtitle: profile.email }
+    : navProps.profile;
 
   return (
     <>
@@ -26,7 +40,7 @@ function HomeScreenContent({
           header={<SidebarLogo />}
           items={navProps.items}
           activeIndex={navProps.activeIndex}
-          profile={navProps.profile}
+          profile={sidebarProfile}
           profileMenuItems={navProps.profileMenuItems}
         />
       )}
@@ -48,7 +62,7 @@ function HomeScreenContent({
                 locale={pageHeaderProps.locale}
                 dateRangePickerProps={pageHeaderProps.dateRangePickerProps}
                 searchBarProps={pageHeaderProps.searchBarProps}
-                profile={isMobile ? navProps.profile : undefined}
+                profile={isMobile ? sidebarProfile : undefined}
                 profileMenuItems={
                   isMobile ? navProps.profileMenuItems : undefined
                 }
@@ -77,10 +91,17 @@ function HomeScreenContent({
   );
 }
 
-export function HomeScreen(props: HomeScreenProps): React.JSX.Element {
+export function HomeScreen({
+  initialProfileData,
+  ...props
+}: HomeScreenProps): React.JSX.Element {
+  const providerData: ProfileData = initialProfileData ?? EMPTY_PROFILE;
+
   return (
     <SidebarProvider>
-      <HomeScreenContent {...props} />
+      <ProfileProvider initialData={providerData}>
+        <HomeScreenContent {...props} />
+      </ProfileProvider>
     </SidebarProvider>
   );
 }
