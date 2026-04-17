@@ -160,16 +160,16 @@ export const ProductScreen: React.FC<ProductScreenProps> = ({
       )}
 
       {/* Price & Quantity */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="space-y-3">
         <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
           <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
             <Tag className="size-5" />
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <Text variant="label" className="block text-muted-foreground">
               {t('product.price')}
             </Text>
-            <Text variant="body" className="font-medium">
+            <Text variant="body" className="font-medium block truncate">
               {formatPrice(selectedProduct.price)}
             </Text>
           </div>
@@ -178,12 +178,12 @@ export const ProductScreen: React.FC<ProductScreenProps> = ({
           <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
             <Hash className="size-5" />
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <Text variant="label" className="block text-muted-foreground">
               {t('product.quantity')}
             </Text>
-            <Text variant="body" className="font-medium">
-              {selectedProduct.quantity}
+            <Text variant="body" className="font-medium block truncate">
+              {String(selectedProduct.quantity)}
             </Text>
           </div>
         </div>

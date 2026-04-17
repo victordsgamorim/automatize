@@ -307,11 +307,11 @@ describe('CompanySection (web)', () => {
       fireEvent.change(screen.getByTestId('add-company-input'), {
         target: { value: '  New Company  ' },
       });
-      fireEvent.click(
-        screen
-          .getAllByRole('button')
-          .find((b) => b.textContent === 'Add company')!
-      );
+      const addBtn = screen
+        .getAllByRole('button')
+        .find((b) => b.textContent === 'Add company');
+      expect(addBtn).toBeDefined();
+      fireEvent.click(addBtn as HTMLButtonElement);
       expect(onAddCompany).toHaveBeenCalledWith('New Company');
     });
 
@@ -320,9 +320,11 @@ describe('CompanySection (web)', () => {
       fireEvent.click(screen.getByRole('combobox'));
       fireEvent.click(screen.getByText('Add new company'));
       expect(screen.getByTestId('add-company-input')).toBeDefined();
-      fireEvent.click(
-        screen.getAllByRole('button').find((b) => b.textContent === 'Cancel')!
-      );
+      const cancelBtn = screen
+        .getAllByRole('button')
+        .find((b) => b.textContent === 'Cancel');
+      expect(cancelBtn).toBeDefined();
+      fireEvent.click(cancelBtn as HTMLButtonElement);
       expect(screen.queryByTestId('add-company-input')).toBeNull();
     });
   });

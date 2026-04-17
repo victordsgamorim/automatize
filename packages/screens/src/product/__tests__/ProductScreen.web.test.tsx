@@ -489,4 +489,76 @@ describe('ProductScreen (web)', () => {
       expect(onAddProduct).toHaveBeenCalledOnce();
     });
   });
+
+  describe('price and quantity overflow layout', () => {
+    const largeNumberProduct: ProductRow = {
+      id: '99',
+      name: 'Big Number Product',
+      quantity: 123123123123,
+      price: 123123123123.99,
+      companyName: 'Corp',
+    };
+
+    it('price and quantity are in separate rows (not side-by-side)', () => {
+      renderScreen({ products: [largeNumberProduct] });
+      fireEvent.click(screen.getByTestId('row-99'));
+      const content = screen.getByTestId('drawer-content');
+      const tiles = content.querySelectorAll(
+        '.rounded-lg.border.border-border'
+      );
+      // both price and quantity tiles must exist
+      expect(tiles.length).toBeGreaterThanOrEqual(2);
+      // they must NOT share a grid-cols-2 parent
+      const gridParent = content.querySelector('.grid-cols-2');
+      expect(gridParent).toBeNull();
+    });
+
+    it('price value element has truncate class for overflow suppression', () => {
+      renderScreen({ products: [largeNumberProduct] });
+      fireEvent.click(screen.getByTestId('row-99'));
+      const content = screen.getByTestId('drawer-content');
+      // find the span that contains the formatted price value
+      const allSpans = Array.from(content.querySelectorAll('span'));
+      const priceSpan = allSpans.find(
+        (el) =>
+          el.textContent?.includes('123') && el.classList.contains('truncate')
+      );
+      expect(priceSpan).toBeDefined();
+    });
+
+    it('quantity value element has truncate class for overflow suppression', () => {
+      renderScreen({ products: [largeNumberProduct] });
+      fireEvent.click(screen.getByTestId('row-99'));
+      const content = screen.getByTestId('drawer-content');
+      const allSpans = Array.from(content.querySelectorAll('span'));
+      const qtySpan = allSpans.find(
+        (el) =>
+          el.textContent === '123123123123' && el.classList.contains('truncate')
+      );
+      expect(qtySpan).toBeDefined();
+    });
+
+    it('renders large price value without throwing', () => {
+      expect(() => {
+        renderScreen({ products: [largeNumberProduct] });
+        fireEvent.click(screen.getByTestId('row-99'));
+      }).not.toThrow();
+    });
+
+    it('renders large quantity value without throwing', () => {
+      renderScreen({ products: [largeNumberProduct] });
+      fireEvent.click(screen.getByTestId('row-99'));
+      const content = screen.getByTestId('drawer-content');
+      expect(content.textContent?.includes('123123123123')).toBe(true);
+    });
+
+    it('price and quantity tiles each have flex-1 for proper width containment', () => {
+      renderScreen({ products: [largeNumberProduct] });
+      fireEvent.click(screen.getByTestId('row-99'));
+      const content = screen.getByTestId('drawer-content');
+      const flexOneEls = content.querySelectorAll('.flex-1.min-w-0');
+      // at least price and quantity text containers should have flex-1 min-w-0
+      expect(flexOneEls.length).toBeGreaterThanOrEqual(2);
+    });
+  });
 });
