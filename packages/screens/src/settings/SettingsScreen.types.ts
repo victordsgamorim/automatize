@@ -27,3 +27,10 @@ export interface SettingsScreenProps {
   /** App version string displayed in the About section */
   appVersion: string;
 }
+
+export interface SettingsDialogProps extends SettingsScreenProps {
+  /** Whether the dialog is currently open */
+  isOpen: boolean;
+  /** Called when the dialog requests to close */
+  onClose: () => void;
+}

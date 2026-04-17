@@ -111,6 +111,7 @@
     "@automatize/auth": "workspace:*",
     "@automatize/form-validator": "workspace:*",
     "@automatize/core-localization": "workspace:*",
+    "@automatize/core-settings": "workspace:*",
     "@automatize/core-theme": "workspace:*",
     "@automatize/utils": "workspace:*",
     "@automatize/ui": "workspace:*",
