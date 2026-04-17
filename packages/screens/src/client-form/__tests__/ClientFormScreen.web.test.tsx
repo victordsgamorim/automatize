@@ -10,6 +10,8 @@ import type {
 
 // ── Mocks ───────────────────────────────────────────────────────────────────
 
+const toastMessageMock = vi.fn();
+
 vi.mock('@automatize/ui/web', () => ({
   Button: ({
     children,
@@ -242,6 +244,12 @@ vi.mock('@automatize/ui/web', () => ({
   ),
   Kbd: ({ children }: { children?: React.ReactNode }) => <kbd>{children}</kbd>,
   DestructiveKbd: () => null,
+  useToasts: () => ({
+    message: toastMessageMock,
+    success: vi.fn(),
+    warning: vi.fn(),
+    error: vi.fn(),
+  }),
 }));
 
 vi.mock('@automatize/core-localization', () => ({
@@ -259,6 +267,7 @@ vi.mock('@automatize/core-localization', () => ({
         'client.cpf': 'CPF',
         'client.cnpj': 'CNPJ',
         'client.addresses': 'Addresses',
+        'client.address.removed': 'Address removed',
         'client.address.add': 'Add Address',
         'client.address.remove': 'Remove address',
         'client.address.street': 'Street',
@@ -268,6 +277,7 @@ vi.mock('@automatize/core-localization', () => ({
         'client.address.state': 'State',
         'client.address.info': 'Additional Info',
         'client.phones': 'Phones',
+        'client.phone.removed': 'Phone removed',
         'client.phone.add': 'Add Phone',
         'client.phone.remove': 'Remove phone',
         'client.phone.label': 'Phone',
@@ -406,6 +416,73 @@ describe('ClientFormScreen (web)', () => {
       );
       fireEvent.click(screen.getByRole('button', { name: 'Reset form' }));
       expect(onBack).not.toHaveBeenCalled();
+    });
+  });
+
+  // ── Toast notifications with undo ─────────────────────────────────────────
+
+  describe('toast notifications on remove', () => {
+    beforeEach(() => {
+      toastMessageMock.mockClear();
+    });
+
+    it('shows toast with undo when address is removed', () => {
+      render(
+        <ClientFormScreen
+          {...defaultProps}
+          initialData={{
+            ...sampleData,
+            addresses: [
+              {
+                id: 'a1',
+                addressType: 'residence' as const,
+                street: 'Street 1',
+                number: '1',
+                neighborhood: 'Neighborhood',
+                city: 'City',
+                state: 'SP',
+                info: '',
+              },
+            ],
+          }}
+        />
+      );
+
+      const deleteButtons = screen.getAllByRole('button', {
+        name: 'Remove address',
+      });
+      fireEvent.click(deleteButtons[0]);
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      expect(toastMessageMock).toHaveBeenCalledWith({
+        text: 'Address removed',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        onUndoAction: expect.any(Function),
+      });
+    });
+
+    it('shows toast with undo when phone is removed', () => {
+      render(
+        <ClientFormScreen
+          {...defaultProps}
+          initialData={{
+            ...sampleData,
+            phones: [{ id: 'p1', phoneType: 'mobile', number: '11999999999' }],
+          }}
+        />
+      );
+
+      const deleteButtons = screen.getAllByRole('button', {
+        name: 'Remove phone',
+      });
+      fireEvent.click(deleteButtons[0]);
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      expect(toastMessageMock).toHaveBeenCalledWith({
+        text: 'Phone removed',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        onUndoAction: expect.any(Function),
+      });
     });
   });
 });

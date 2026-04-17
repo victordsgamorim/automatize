@@ -66,6 +66,8 @@ export interface TableProps<T> {
   toolbarLeft?: React.ReactNode;
   /** Content rendered on the right side of the toolbar (e.g. action buttons) */
   toolbarRight?: React.ReactNode;
+  /** Optional row rendered above body rows (e.g. inline edit row) */
+  prependRow?: React.ReactNode;
 }
 
 /* ------------------------------------------------------------------ */
@@ -93,6 +95,7 @@ export function Table<T>({
   exportLabel = 'Export',
   toolbarLeft,
   toolbarRight,
+  prependRow,
 }: TableProps<T>): React.JSX.Element {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -309,6 +312,16 @@ export function Table<T>({
             </div>
           ))}
         </div>
+
+        {/* Optional prepend row (e.g. inline edit row) */}
+        {prependRow && (
+          <div className="flex bg-muted/5 border-b border-border">
+            {selectable && (
+              <div className="w-12 shrink-0 border-r border-border" />
+            )}
+            {prependRow}
+          </div>
+        )}
 
         {/* Body rows */}
         {paginatedData.length === 0 ? (

@@ -13,6 +13,7 @@ import {
   DialogDescription,
   DialogFooter,
   DestructiveKbd,
+  useToasts,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
@@ -45,6 +46,7 @@ const EMPTY_PHONE: NewPhoneFields = {
 };
 
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
+  mode = 'create',
   onSubmit,
   initialData,
   onDataChange,
@@ -52,7 +54,14 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   showDiscardDialog,
   onDiscardCancel,
 }) => {
+  const isEdit = mode === 'edit';
+  const titleKey = isEdit ? 'client.form.title.edit' : 'client.form.title';
+  const descriptionKey = isEdit
+    ? 'client.form.description.edit'
+    : 'client.form.description';
+  const submitKey = isEdit ? 'client.submit.edit' : 'client.submit';
   const { t } = useTranslation();
+  const toast = useToasts();
   const {
     clientType,
     setClientType,
@@ -63,14 +72,44 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     addresses,
     addAddress,
     removeAddress,
+    insertAddressAt,
     updateAddress,
     phones,
     addPhone,
     removePhone,
+    insertPhoneAt,
     updatePhone,
     getFormData,
     resetForm,
   } = useClientForm({ initialData, onDataChange });
+
+  const handleRemoveAddress = useCallback(
+    (id: string) => {
+      const index = addresses.findIndex((a) => a.id === id);
+      if (index === -1) return;
+      const removed = addresses[index];
+      removeAddress(id);
+      toast.message({
+        text: t('client.address.removed'),
+        onUndoAction: () => insertAddressAt(index, removed),
+      });
+    },
+    [addresses, removeAddress, insertAddressAt, toast, t]
+  );
+
+  const handleRemovePhone = useCallback(
+    (id: string) => {
+      const index = phones.findIndex((p) => p.id === id);
+      if (index === -1) return;
+      const removed = phones[index];
+      removePhone(id);
+      toast.message({
+        text: t('client.phone.removed'),
+        onUndoAction: () => insertPhoneAt(index, removed),
+      });
+    },
+    [phones, removePhone, insertPhoneAt, toast, t]
+  );
 
   const [internalDialogOpen, setInternalDialogOpen] = useState(false);
   const [addressDialogOpen, setAddressDialogOpen] = useState(false);
@@ -219,10 +258,10 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                {t('client.form.title')}
+                {t(titleKey)}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {t('client.form.description')}
+                {t(descriptionKey)}
               </p>
             </div>
             <div className="flex justify-end">
@@ -256,7 +295,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               <AddressSection
                 addresses={addresses}
                 addAddress={addAddress}
-                removeAddress={removeAddress}
+                removeAddress={handleRemoveAddress}
                 updateAddress={updateAddress}
                 isDialogOpen={addressDialogOpen}
                 onDialogOpenChange={setAddressDialogOpen}
@@ -276,7 +315,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
               <PhoneSection
                 phones={phones}
                 addPhone={addPhone}
-                removePhone={removePhone}
+                removePhone={handleRemovePhone}
                 updatePhone={updatePhone}
                 isDialogOpen={phoneDialogOpen}
                 onDialogOpenChange={setPhoneDialogOpen}
@@ -309,7 +348,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                   className="h-10"
                   disabled={name.trim() === ''}
                 >
-                  {t('client.submit')}
+                  {t(submitKey)}
                   {!isMobile && <Kbd keyLabel="S" control />}
                 </PrimaryButton>
               </div>

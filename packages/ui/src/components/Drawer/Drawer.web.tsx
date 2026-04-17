@@ -9,6 +9,8 @@ export interface DrawerProps {
   onClose: () => void;
   title: React.ReactNode;
   children: React.ReactNode;
+  /** Optional footer pinned to the bottom — does not scroll with content */
+  footer?: React.ReactNode;
   className?: string;
 }
 
@@ -17,6 +19,7 @@ export const Drawer: React.FC<DrawerProps> = ({
   onClose,
   title,
   children,
+  footer,
   className,
 }) => {
   return (
@@ -29,7 +32,7 @@ export const Drawer: React.FC<DrawerProps> = ({
         )}
       >
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center justify-between p-4 border-b shrink-0">
             <Text variant="h3">{title}</Text>
             <Button
               type="button"
@@ -42,6 +45,9 @@ export const Drawer: React.FC<DrawerProps> = ({
             </Button>
           </div>
           <div className="flex-1 overflow-y-auto p-4">{children}</div>
+          {footer && (
+            <div className="border-t p-4 shrink-0 bg-background">{footer}</div>
+          )}
         </div>
       </div>
       {open && (

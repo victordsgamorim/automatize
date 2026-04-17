@@ -35,7 +35,11 @@ export interface ClientFormData {
   phones: Phone[];
 }
 
+export type ClientFormMode = 'create' | 'edit';
+
 export interface ClientFormScreenProps {
+  /** Form mode — controls title, description, and submit labels. Default: 'create' */
+  mode?: ClientFormMode;
   /** Called when the form is submitted with valid data */
   onSubmit: (data: ClientFormData) => void;
   /** Language switcher data */

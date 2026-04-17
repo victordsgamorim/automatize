@@ -9,6 +9,8 @@ export interface BottomSheetProps {
   onClose: () => void;
   title: React.ReactNode;
   children: React.ReactNode;
+  /** Optional footer pinned to the bottom — does not scroll with content */
+  footer?: React.ReactNode;
   maxHeight?: string;
   className?: string;
 }
@@ -18,6 +20,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
   onClose,
   title,
   children,
+  footer,
   maxHeight = '75vh',
   className,
 }) => {
@@ -28,13 +31,13 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
       )}
       <div
         className={cn(
-          'fixed inset-x-0 bottom-0 z-50 bg-background border-t rounded-t-2xl shadow-lg transition-transform duration-300 ease-in-out',
+          'fixed inset-x-0 bottom-0 z-50 bg-background border-t rounded-t-2xl shadow-lg flex flex-col transition-transform duration-300 ease-in-out',
           open ? 'translate-y-0' : 'translate-y-[calc(100%+2rem)]',
           className
         )}
         style={{ maxHeight }}
       >
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between p-4 border-b shrink-0">
           <Text variant="h3">{title}</Text>
           <Button
             type="button"
@@ -46,12 +49,10 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
             <X className="size-4" />
           </Button>
         </div>
-        <div
-          className="overflow-y-auto p-4"
-          style={{ maxHeight: `calc(${maxHeight} - 57px)` }}
-        >
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto p-4">{children}</div>
+        {footer && (
+          <div className="border-t p-4 shrink-0 bg-background">{footer}</div>
+        )}
       </div>
     </>
   );

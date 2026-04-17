@@ -249,6 +249,21 @@ describe('Table (web)', () => {
     });
   });
 
+  describe('prependRow', () => {
+    it('renders prependRow content above body rows', () => {
+      renderTable({
+        prependRow: <div data-testid="prepend">custom row</div>,
+      });
+      expect(screen.getByTestId('prepend')).toBeDefined();
+      expect(screen.getByText('custom row')).toBeDefined();
+    });
+
+    it('does not render prependRow slot when prop is omitted', () => {
+      renderTable();
+      expect(screen.queryByTestId('prepend')).toBeNull();
+    });
+  });
+
   describe('selection', () => {
     it('renders checkboxes when selectable is true', () => {
       renderTable({ selectable: true });

@@ -45,6 +45,8 @@ export interface UseClientFormResult {
   addresses: Address[];
   addAddress: (data?: Partial<Omit<Address, 'id'>>) => void;
   removeAddress: (id: string) => void;
+  /** Re-inserts a complete Address at a specific index (used for undo). */
+  insertAddressAt: (index: number, address: Address) => void;
   updateAddress: (
     id: string,
     field: keyof Omit<Address, 'id'>,
@@ -53,6 +55,8 @@ export interface UseClientFormResult {
   phones: Phone[];
   addPhone: (data?: Partial<Omit<Phone, 'id'>>) => void;
   removePhone: (id: string) => void;
+  /** Re-inserts a complete Phone at a specific index (used for undo). */
+  insertPhoneAt: (index: number, phone: Phone) => void;
   updatePhone: (
     id: string,
     field: keyof Omit<Phone, 'id'>,
@@ -102,6 +106,14 @@ export function useClientForm(
     setAddresses((prev) => prev.filter((a) => a.id !== id));
   }, []);
 
+  const insertAddressAt = useCallback((index: number, address: Address) => {
+    setAddresses((prev) => {
+      const next = [...prev];
+      next.splice(index, 0, address);
+      return next;
+    });
+  }, []);
+
   const updateAddress = useCallback(
     (id: string, field: keyof Omit<Address, 'id'>, value: string) => {
       setAddresses((prev) =>
@@ -117,6 +129,14 @@ export function useClientForm(
 
   const removePhone = useCallback((id: string) => {
     setPhones((prev) => prev.filter((p) => p.id !== id));
+  }, []);
+
+  const insertPhoneAt = useCallback((index: number, phone: Phone) => {
+    setPhones((prev) => {
+      const next = [...prev];
+      next.splice(index, 0, phone);
+      return next;
+    });
   }, []);
 
   const updatePhone = useCallback(
@@ -157,10 +177,12 @@ export function useClientForm(
     addresses,
     addAddress,
     removeAddress,
+    insertAddressAt,
     updateAddress,
     phones,
     addPhone,
     removePhone,
+    insertPhoneAt,
     updatePhone,
     getFormData,
     resetForm,
