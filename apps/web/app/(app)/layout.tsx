@@ -90,6 +90,9 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
 
   const SUB_ROUTE_TITLES: Record<string, string> = {
     '/clients/new': t('client.form.title'),
+    '/clients/edit': t('client.form.title.edit'),
+    '/products/new': t('product.form.title'),
+    '/products/edit': t('product.form.title.edit'),
     '/settings': t('settings.title'),
   };
 

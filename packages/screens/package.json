@@ -63,6 +63,26 @@
       "import": "./dist/client-form/web.mjs",
       "require": "./dist/client-form/web.js"
     },
+    "./product": {
+      "types": "./dist/product/index.d.ts",
+      "import": "./dist/product/index.mjs",
+      "require": "./dist/product/index.js"
+    },
+    "./product/web": {
+      "types": "./dist/product/web.d.ts",
+      "import": "./dist/product/web.mjs",
+      "require": "./dist/product/web.js"
+    },
+    "./product-form": {
+      "types": "./dist/product-form/index.d.ts",
+      "import": "./dist/product-form/index.mjs",
+      "require": "./dist/product-form/index.js"
+    },
+    "./product-form/web": {
+      "types": "./dist/product-form/web.d.ts",
+      "import": "./dist/product-form/web.mjs",
+      "require": "./dist/product-form/web.js"
+    },
     "./draft-persistence": {
       "types": "./dist/draft-persistence/index.d.ts",
       "import": "./dist/draft-persistence/index.mjs",
