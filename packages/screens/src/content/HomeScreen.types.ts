@@ -1,5 +1,6 @@
 import type { SidebarProps, HeaderProps } from '@automatize/ui/web';
 import type { AppHeaderActionsProps } from './components/AppHeaderActions/AppHeaderActions.types';
+import type { ProfileData } from '../profile/ProfileProvider';
 
 export type {
   SidebarProps,
@@ -30,4 +31,9 @@ export interface HomeScreenProps {
   pageHeaderProps?: HeaderProps & AppHeaderActionsProps;
   /** Main content area. */
   children: React.ReactNode;
+  /**
+   * Initial profile data for the sidebar profile tile and ProfileScreen.
+   * When provided, the sidebar label/subtitle become reactive to profile updates.
+   */
+  initialProfileData?: ProfileData;
 }

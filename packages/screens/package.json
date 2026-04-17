@@ -87,6 +87,16 @@
       "types": "./dist/draft-persistence/index.d.ts",
       "import": "./dist/draft-persistence/index.mjs",
       "require": "./dist/draft-persistence/index.js"
+    },
+    "./profile": {
+      "types": "./dist/profile/index.d.ts",
+      "import": "./dist/profile/index.mjs",
+      "require": "./dist/profile/index.js"
+    },
+    "./profile/web": {
+      "types": "./dist/profile/web.d.ts",
+      "import": "./dist/profile/web.mjs",
+      "require": "./dist/profile/web.js"
     }
   },
   "scripts": {

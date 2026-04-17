@@ -38,6 +38,8 @@ export default defineConfig({
     'src/product-form/index.ts',
     'src/product-form/web.ts',
     'src/draft-persistence/index.ts',
+    'src/profile/index.ts',
+    'src/profile/web.ts',
   ],
   format: ['cjs', 'esm'],
   dts: true,

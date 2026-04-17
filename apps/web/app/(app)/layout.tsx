@@ -66,7 +66,8 @@ const ROUTE_TO_ID = buildRouteToIdMap(ITEMS);
 /* ─── Inner layout — owns all route-aware logic (useRoute → useSearchParams) ── */
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useUserAuthentication();
+  const { isAuthenticated, user, userProfile, currentTenant } =
+    useUserAuthentication();
   const { navigate } = useNavigation();
   const { path: pathname } = useRoute();
 
@@ -94,6 +95,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     '/products/new': t('product.form.title'),
     '/products/edit': t('product.form.title.edit'),
     '/settings': t('settings.title'),
+    '/profile': t('profile.form.title'),
   };
 
   const pageTitle = resolvePageTitle(
@@ -164,6 +166,12 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <HomeScreen
       navProps={navProps}
+      initialProfileData={{
+        name: userProfile?.display_name ?? '',
+        email: user?.email ?? '',
+        companyName: currentTenant?.name ?? '',
+        phones: [],
+      }}
       pageHeaderProps={{
         title: pageTitle,
         locale: { code: i18n.language, label: i18n.language },
