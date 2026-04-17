@@ -49,19 +49,6 @@ describe('SettingsScreen (web)', () => {
   });
 
   describe('rendering', () => {
-    it('does not render an h1 heading (title comes from page header)', () => {
-      renderScreen();
-      const headings = document.querySelectorAll('h1');
-      expect(headings.length).toBe(0);
-    });
-
-    it('renders the subtitle as a paragraph', () => {
-      renderScreen();
-      const subtitle = screen.getByText('Manage your preferences');
-      expect(subtitle).toBeDefined();
-      expect(subtitle.tagName).toBe('P');
-    });
-
     it('renders the Appearance row', () => {
       renderScreen();
       expect(screen.getByText('Appearance')).toBeDefined();

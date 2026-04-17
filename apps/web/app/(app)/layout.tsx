@@ -10,7 +10,8 @@ import {
   resolvePageTitle,
   resolveNavigationTarget,
 } from '@automatize/navigation';
-import { useTranslation } from '@automatize/localization';
+import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
+import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import type {
   SidebarProps,
   SidebarProfileConfig,
@@ -19,6 +20,11 @@ import type {
 import { HomeScreen } from '@automatize/screens/content/web';
 import type { HomeScreenItem } from '@automatize/screens/content/web';
 import {
+  SettingsDialog,
+  SettingsProvider,
+  useSettings,
+} from '@automatize/screens/settings/web';
+import {
   LayoutDashboard,
   FileText,
   Package,
@@ -26,6 +32,7 @@ import {
   Settings,
   LogOut,
   UserCog,
+  CircleUser,
 } from 'lucide-react';
 
 /* ─── Tile definitions ─────────────────────────────────────────────────────── */
@@ -78,6 +85,8 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   }, [isAuthenticated, navigate]);
 
   const { t, i18n } = useTranslation();
+  const { preference, isDark, setTheme } = useTheme();
+  const { isOpen: settingsOpen, openSettings, closeSettings } = useSettings();
 
   const lastVisitedRef = useRef<Record<string, string>>({});
 
@@ -94,7 +103,6 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     '/clients/edit': t('client.form.title.edit'),
     '/products/new': t('product.form.title'),
     '/products/edit': t('product.form.title.edit'),
-    '/settings': t('settings.title'),
     '/profile': t('profile.form.title'),
   };
 
@@ -108,7 +116,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const profile: SidebarProfileConfig = useMemo(
     () => ({
       icon: (
-        <div className="size-7 rounded-full bg-sidebar-accent flex-shrink-0" />
+        <CircleUser className="size-7 flex-shrink-0 text-sidebar-foreground/70" />
       ),
       label: 'John Doe',
       subtitle: 'john@automatize.com',
@@ -126,7 +134,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
       {
         icon: <Settings className="size-4" />,
         label: 'Settings',
-        onTap: () => navigate('/settings'),
+        onTap: openSettings,
       },
       {
         icon: <LogOut className="size-4" />,
@@ -138,7 +146,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
         },
       },
     ],
-    [navigate]
+    [navigate, openSettings]
   );
 
   const activeIndex = ITEMS.findIndex((item) => item.id === activeTile);
@@ -164,30 +172,68 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <HomeScreen
-      navProps={navProps}
-      initialProfileData={{
-        name: userProfile?.display_name ?? '',
-        email: user?.email ?? '',
-        companyName: currentTenant?.name ?? '',
-        phones: [],
-      }}
-      pageHeaderProps={{
-        title: pageTitle,
-        locale: { code: i18n.language, label: i18n.language },
-        dateRangePickerProps: {
-          placeholder: t('calendar.placeholder'),
-          clearLabel: t('calendar.clear'),
-          applyLabel: t('calendar.apply'),
-        },
-        searchBarProps: {
-          placeholder: t('search.placeholder'),
-          emptyMessage: t('search.no-results'),
-        },
-      }}
-    >
-      {children}
-    </HomeScreen>
+    <>
+      <HomeScreen
+        navProps={navProps}
+        initialProfileData={{
+          name: userProfile?.display_name ?? '',
+          email: user?.email ?? '',
+          companyName: currentTenant?.name ?? '',
+          phones: [],
+        }}
+        pageHeaderProps={{
+          title: pageTitle,
+          locale: { code: i18n.language, label: i18n.language },
+          dateRangePickerProps: {
+            placeholder: t('calendar.placeholder'),
+            clearLabel: t('calendar.clear'),
+            applyLabel: t('calendar.apply'),
+          },
+          searchBarProps: {
+            placeholder: t('search.placeholder'),
+            emptyMessage: t('search.no-results'),
+          },
+        }}
+      >
+        {children}
+      </HomeScreen>
+
+      <SettingsDialog
+        isOpen={settingsOpen}
+        onClose={closeSettings}
+        labels={{
+          title: t('settings.title'),
+          subtitle: t('settings.subtitle'),
+          appearanceTitle: t('settings.appearance.title'),
+          appearanceDescription: t('settings.appearance.description'),
+          themeLabel: t('settings.appearance.theme-label'),
+          languageTitle: t('settings.language.title'),
+          languageDescription: t('settings.language.description'),
+          languageLabel: t('settings.language.language-label'),
+          aboutTitle: t('settings.about.title'),
+          versionLabel: t('settings.about.version'),
+        }}
+        locale={{
+          languages: SUPPORTED_LANGUAGES.map((lang) => ({
+            code: lang,
+            label: t(`app.language.${lang}`),
+            ext: t(`app.language.${lang}.ext`),
+          })),
+          currentLanguage: i18n.language,
+          onLanguageChange: (code) => void i18n.changeLanguage(code),
+        }}
+        theme={{
+          currentTheme: preference,
+          isDarkTheme: isDark,
+          themeOptions: THEME_PREFERENCES.map((pref) => ({
+            value: pref,
+            label: t(`theme.${pref}`),
+          })),
+          onThemeChange: setTheme,
+        }}
+        appVersion="0.1.0"
+      />
+    </>
   );
 }
 
@@ -200,7 +246,9 @@ export default function AppLayout({
 }): React.JSX.Element | null {
   return (
     <Suspense>
-      <AppLayoutContent>{children}</AppLayoutContent>
+      <SettingsProvider>
+        <AppLayoutContent>{children}</AppLayoutContent>
+      </SettingsProvider>
     </Suspense>
   );
 }
