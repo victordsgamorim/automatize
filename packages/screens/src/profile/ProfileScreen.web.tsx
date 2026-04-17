@@ -152,16 +152,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
     <>
       <div className="max-w-3xl mx-auto py-8 px-4">
         <Card padding="lg">
-          {/* Header */}
-          <div className="mb-6">
-            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-              {t('profile.form.title')}
-            </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              {t('profile.form.description')}
-            </p>
-          </div>
-
           <div className="space-y-6">
             <form ref={formRef} className="space-y-6" onSubmit={handleSubmit}>
               {/* Section 1: Account Info (read-only) */}

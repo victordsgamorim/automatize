@@ -180,6 +180,12 @@ describe('HomeScreen (web)', () => {
       render(
         <HomeScreen
           {...defaultProps}
+          initialProfileData={{
+            name: 'John Doe',
+            email: 'john@example.com',
+            companyName: '',
+            phones: [],
+          }}
           navProps={{
             ...defaultSidebar,
             profile: {
@@ -280,10 +286,20 @@ describe('HomeScreen (web)', () => {
       render(
         <HomeScreen
           {...defaultProps}
+          initialProfileData={{
+            name: 'Jane',
+            email: 'jane@example.com',
+            companyName: '',
+            phones: [],
+          }}
           navProps={{ ...defaultSidebar, profile, profileMenuItems }}
         />
       );
-      expect(capturedSidebarLayoutProps?.profile).toBe(profile);
+      // profile is merged with context data (label/subtitle come from ProfileProvider)
+      expect(capturedSidebarLayoutProps?.profile).toMatchObject({
+        label: 'Jane',
+        subtitle: 'jane@example.com',
+      });
       expect(capturedSidebarLayoutProps?.profileMenuItems).toBe(
         profileMenuItems
       );
