@@ -73,3 +73,20 @@ export type { IconProps } from './components/Icon/Icon';
 // Fade (entrance animation + visibility toggle)
 export { Fade } from './actions/Fade/Fade.native';
 export type { FadeProps } from './actions/Fade/Fade.native';
+
+// Chip (RN implementation)
+export { Chip } from './components/Chip/Chip.native';
+export type {
+  ChipProps,
+  ChipVariant,
+  ChipSize,
+} from './components/Chip/Chip.native';
+
+export { PrimaryChip } from './components/Chip/PrimaryChip.native';
+export type { PrimaryChipProps } from './components/Chip/PrimaryChip.native';
+
+export { SecondaryChip } from './components/Chip/SecondaryChip.native';
+export type { SecondaryChipProps } from './components/Chip/SecondaryChip.native';
+
+export { DestructiveChip } from './components/Chip/DestructiveChip.native';
+export type { DestructiveChipProps } from './components/Chip/DestructiveChip.native';

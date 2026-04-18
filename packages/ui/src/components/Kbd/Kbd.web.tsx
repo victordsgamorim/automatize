@@ -63,6 +63,30 @@ function Kbd({
   );
 }
 
+function PrimaryKbd({ className, ...props }: KbdProps): React.JSX.Element {
+  return (
+    <Kbd
+      className={cn(
+        'border-transparent bg-primary-foreground/20 text-primary-foreground',
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function SecondaryKbd({ className, ...props }: KbdProps): React.JSX.Element {
+  return (
+    <Kbd
+      className={cn(
+        'border-secondary-foreground/20 bg-secondary-foreground/10 text-secondary-foreground',
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
 function DestructiveKbd({ className, ...props }: KbdProps): React.JSX.Element {
   return (
     <Kbd
@@ -75,4 +99,4 @@ function DestructiveKbd({ className, ...props }: KbdProps): React.JSX.Element {
   );
 }
 
-export { Kbd, DestructiveKbd };
+export { Kbd, PrimaryKbd, SecondaryKbd, DestructiveKbd };
