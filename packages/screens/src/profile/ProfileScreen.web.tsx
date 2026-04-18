@@ -16,19 +16,12 @@ import {
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
-import type { ProfileScreenProps, Phone } from './ProfileScreen.types';
+import type { ProfileScreenProps } from './ProfileScreen.types';
 import { useProfileForm } from './useProfileForm';
 import { useProfileSafe } from './ProfileProvider';
 import { AccountInfoSection } from './components/AccountInfoSection/AccountInfoSection.web';
 import { PersonalSection } from './components/PersonalSection/PersonalSection.web';
 import { PasswordSection } from './components/PasswordSection/PasswordSection.web';
-
-type NewPhoneFields = Omit<Phone, 'id'>;
-
-const EMPTY_PHONE: NewPhoneFields = {
-  phoneType: 'mobile',
-  number: '',
-};
 
 export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   email: emailProp = '',
@@ -81,10 +74,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
   );
 
   const [internalDialogOpen, setInternalDialogOpen] = useState(false);
-  const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
-  const [newPhone, setNewPhone] = useState<NewPhoneFields>(EMPTY_PHONE);
-  const [editingPhoneId, setEditingPhoneId] = useState<string | null>(null);
-  const [showAllPhones, setShowAllPhones] = useState(false);
 
   const isControlled = showDiscardDialog !== undefined;
   const dialogOpen = isControlled ? showDiscardDialog : internalDialogOpen;
@@ -170,14 +159,6 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                 addPhone={addPhone}
                 removePhone={handleRemovePhone}
                 updatePhone={updatePhone}
-                isPhoneDialogOpen={phoneDialogOpen}
-                onPhoneDialogOpenChange={setPhoneDialogOpen}
-                newPhone={newPhone}
-                onNewPhoneChange={setNewPhone}
-                editingPhoneId={editingPhoneId}
-                onEditingPhoneIdChange={setEditingPhoneId}
-                showAllPhones={showAllPhones}
-                onShowAllPhonesChange={setShowAllPhones}
                 isMobile={isMobile}
               />
 

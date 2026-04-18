@@ -3,13 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import { AddressSection } from '../AddressSection.web';
-import type {
-  AddressSectionProps,
-  NewAddressFields,
-} from '../AddressSection.web';
+import type { AddressSectionProps } from '../AddressSection.web';
 import type { Address } from '../../../ClientFormScreen.types';
-
-// ── Mocks ───────────────────────────────────────────────────────────────────
 
 vi.mock('@automatize/ui/web', () => ({
   Button: ({
@@ -343,8 +338,6 @@ vi.mock('@automatize/ui/responsive', () => ({
   useResponsive: () => ({ isMobile: false }),
 }));
 
-// ── Test Data ───────────────────────────────────────────────────────────────
-
 const sampleAddresses: Address[] = [
   {
     id: 'addr1',
@@ -413,26 +406,8 @@ const defaultProps: AddressSectionProps = {
   addAddress: vi.fn(),
   removeAddress: vi.fn(),
   updateAddress: vi.fn(),
-  isDialogOpen: false,
-  onDialogOpenChange: vi.fn(),
-  newAddress: {
-    addressType: 'residence',
-    street: '',
-    number: '',
-    neighborhood: '',
-    city: '',
-    state: '',
-    info: '',
-  },
-  onNewAddressChange: vi.fn(),
-  editingAddressId: null,
-  onEditingAddressIdChange: vi.fn(),
-  showAllAddresses: false,
-  onShowAllAddressesChange: vi.fn(),
   isMobile: false,
 };
-
-// ── Tests ───────────────────────────────────────────────────────────────────
 
 describe('AddressSection', () => {
   it('renders empty state when no addresses', () => {
@@ -446,11 +421,9 @@ describe('AddressSection', () => {
     const addresses = sampleAddresses.slice(0, 5);
     render(<AddressSection {...defaultProps} addresses={addresses} />);
 
-    // Should show 5 address cards - use getAllByText since there are multiple
     const addressElements = screen.getAllByText('123 Main St, 10');
     expect(addressElements.length).toBeGreaterThan(0);
 
-    // Should show "View +0" when exactly 5 addresses
     expect(screen.queryByText(/View \+/)).toBeNull();
   });
 
@@ -460,92 +433,43 @@ describe('AddressSection', () => {
     expect(screen.getByText('View +1')).toBeTruthy();
   });
 
-  it('calls onShowAllAddressesChange when "View More" is clicked', () => {
-    const onShowAllAddressesChange = vi.fn();
-    render(
-      <AddressSection
-        {...defaultProps}
-        addresses={sampleAddresses}
-        onShowAllAddressesChange={onShowAllAddressesChange}
-      />
-    );
+  it('opens drawer when "View More" is clicked', () => {
+    render(<AddressSection {...defaultProps} addresses={sampleAddresses} />);
 
+    expect(screen.getByTestId('drawer').getAttribute('data-open')).toBe(
+      'false'
+    );
     fireEvent.click(screen.getByText('View +1'));
-    expect(onShowAllAddressesChange).toHaveBeenCalledWith(true);
+    expect(screen.getByTestId('drawer').getAttribute('data-open')).toBe('true');
   });
 
   it('opens dialog when add button is clicked', () => {
-    const onDialogOpenChange = vi.fn();
-    render(
-      <AddressSection
-        {...defaultProps}
-        onDialogOpenChange={onDialogOpenChange}
-      />
-    );
+    render(<AddressSection {...defaultProps} />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Address' }));
-    expect(onDialogOpenChange).toHaveBeenCalledWith(true);
-  });
-
-  it('resets form when opening dialog for new address', () => {
-    const onNewAddressChange = vi.fn();
-    const onEditingAddressIdChange = vi.fn();
-    render(
-      <AddressSection
-        {...defaultProps}
-        onNewAddressChange={onNewAddressChange}
-        onEditingAddressIdChange={onEditingAddressIdChange}
-      />
-    );
+    expect(screen.queryByRole('dialog')).toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: 'Add Address' }));
 
-    expect(onEditingAddressIdChange).toHaveBeenCalledWith(null);
-    expect(onNewAddressChange).toHaveBeenCalledWith({
-      addressType: 'residence',
-      street: '',
-      number: '',
-      neighborhood: '',
-      city: '',
-      state: '',
-      info: '',
-    });
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.getByText('New Address')).toBeTruthy();
   });
 
-  it('pre-fills form when editing existing address', () => {
-    const address = sampleAddresses[0];
-    const onNewAddressChange = vi.fn();
-    const onEditingAddressIdChange = vi.fn();
-    const onDialogOpenChange = vi.fn();
+  it('calls addAddress when saving new address through dialog', () => {
+    const addAddress = vi.fn();
+    render(<AddressSection {...defaultProps} addAddress={addAddress} />);
 
-    render(
-      <AddressSection
-        {...defaultProps}
-        addresses={[address]}
-        onNewAddressChange={onNewAddressChange}
-        onEditingAddressIdChange={onEditingAddressIdChange}
-        onDialogOpenChange={onDialogOpenChange}
-      />
+    fireEvent.click(screen.getByRole('button', { name: 'Add Address' }));
+
+    const streetInput = screen.getByLabelText('Street');
+    fireEvent.change(streetInput, { target: { value: 'New Street' } });
+
+    const saveButton = screen.getByRole('button', { name: 'Save Address' });
+    fireEvent.click(saveButton);
+
+    expect(addAddress).toHaveBeenCalledTimes(1);
+    expect(addAddress).toHaveBeenCalledWith(
+      expect.objectContaining({ street: 'New Street' })
     );
-
-    // Click on address card to edit - use getAllByText and get the first one
-    const addressElements = screen.getAllByText('123 Main St, 10');
-    const addressCard = addressElements[0].closest('div');
-    if (addressCard) {
-      fireEvent.click(addressCard);
-    }
-
-    expect(onEditingAddressIdChange).toHaveBeenCalledWith('addr1');
-    expect(onNewAddressChange).toHaveBeenCalledWith({
-      addressType: 'residence',
-      street: '123 Main St',
-      number: '10',
-      neighborhood: 'Downtown',
-      city: 'Sao Paulo',
-      state: 'SP',
-      info: 'Apt 201',
-    });
-    expect(onDialogOpenChange).toHaveBeenCalledWith(true);
   });
 
   it('calls removeAddress when delete button is clicked', () => {
@@ -558,7 +482,6 @@ describe('AddressSection', () => {
       />
     );
 
-    // Find and click delete button (aria-label="Remove address") - use getAllByRole
     const deleteButtons = screen.getAllByRole('button', {
       name: 'Remove address',
     });
@@ -567,148 +490,55 @@ describe('AddressSection', () => {
     expect(removeAddress).toHaveBeenCalledWith('addr1');
   });
 
-  it('shows drawer for desktop when showAllAddresses is true', () => {
-    render(
-      <AddressSection
-        {...defaultProps}
-        addresses={sampleAddresses}
-        showAllAddresses={true}
-      />
-    );
-
-    const drawer = screen.getByTestId('drawer');
-    expect(drawer.getAttribute('data-open')).toBe('true');
-  });
-
-  it('shows bottom sheet for mobile when showAllAddresses is true', () => {
-    render(
-      <AddressSection
-        {...defaultProps}
-        addresses={sampleAddresses}
-        showAllAddresses={true}
-        isMobile={true}
-      />
-    );
-
-    const bottomSheet = screen.getByTestId('bottom-sheet');
-    expect(bottomSheet.getAttribute('data-open')).toBe('true');
-  });
-
-  it('calls addAddress when saving new address', () => {
-    const addAddress = vi.fn();
-    const onDialogOpenChange = vi.fn();
-    const newAddress: NewAddressFields = {
-      addressType: 'residence',
-      street: 'New Street',
-      number: '100',
-      neighborhood: 'New Neighborhood',
-      city: 'New City',
-      state: 'SP',
-      info: 'New Info',
-    };
-
-    render(
-      <AddressSection
-        {...defaultProps}
-        addAddress={addAddress}
-        onDialogOpenChange={onDialogOpenChange}
-        newAddress={newAddress}
-        isDialogOpen={true}
-      />
-    );
-
-    // Click save button in dialog
-    const saveButton = screen.getByRole('button', { name: 'Save Address' });
-    fireEvent.click(saveButton);
-
-    expect(addAddress).toHaveBeenCalledWith(newAddress);
-    expect(onDialogOpenChange).toHaveBeenCalledWith(false);
-  });
-
-  it('calls updateAddress when saving edited address', () => {
+  it('calls updateAddress when saving edited address through dialog', () => {
     const updateAddress = vi.fn();
-    const onDialogOpenChange = vi.fn();
-    const newAddress: NewAddressFields = {
-      addressType: 'establishment',
-      street: 'Updated Street',
-      number: '200',
-      neighborhood: 'Updated Neighborhood',
-      city: 'Updated City',
-      state: 'RJ',
-      info: 'Updated Info',
-    };
-
+    const address = sampleAddresses[0];
     render(
       <AddressSection
         {...defaultProps}
+        addresses={[address]}
         updateAddress={updateAddress}
-        onDialogOpenChange={onDialogOpenChange}
-        newAddress={newAddress}
-        editingAddressId="addr1"
-        isDialogOpen={true}
       />
     );
 
-    // Click save button in dialog
+    const addressElements = screen.getAllByText('123 Main St, 10');
+    const addressCard = addressElements[0].closest('div');
+    if (addressCard) {
+      fireEvent.click(addressCard);
+    }
+
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.getByText('Edit Address')).toBeTruthy();
+
+    const streetInput = screen.getByLabelText('Street');
+    fireEvent.change(streetInput, { target: { value: 'Updated Street' } });
+
     const saveButton = screen.getByRole('button', { name: 'Save Address' });
     fireEvent.click(saveButton);
 
-    // Should update all fields
-    expect(updateAddress).toHaveBeenCalledTimes(7); // 7 fields
-    expect(updateAddress).toHaveBeenCalledWith(
-      'addr1',
-      'addressType',
-      'establishment'
-    );
     expect(updateAddress).toHaveBeenCalledWith(
       'addr1',
       'street',
       'Updated Street'
     );
-    expect(onDialogOpenChange).toHaveBeenCalledWith(false);
   });
 
   it('disables save button when street is empty', () => {
-    const newAddress: NewAddressFields = {
-      addressType: 'residence',
-      street: '', // Empty street
-      number: '100',
-      neighborhood: 'Test',
-      city: 'Test City',
-      state: 'SP',
-      info: '',
-    };
+    render(<AddressSection {...defaultProps} />);
 
-    render(
-      <AddressSection
-        {...defaultProps}
-        newAddress={newAddress}
-        isDialogOpen={true}
-      />
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'Add Address' }));
 
     const saveButton = screen.getByRole('button', { name: 'Save Address' });
     expect(saveButton.hasAttribute('disabled')).toBe(true);
   });
 
   it('enables save button when street is not empty', () => {
-    const newAddress: NewAddressFields = {
-      addressType: 'residence',
-      street: 'Valid Street',
-      number: '100',
-      neighborhood: 'Test',
-      city: 'Test City',
-      state: 'SP',
-      info: '',
-    };
+    render(<AddressSection {...defaultProps} />);
 
-    render(
-      <AddressSection
-        {...defaultProps}
-        newAddress={newAddress}
-        isDialogOpen={true}
-      />
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'Add Address' }));
+
+    const streetInput = screen.getByLabelText('Street');
+    fireEvent.change(streetInput, { target: { value: 'Valid Street' } });
 
     const saveButton = screen.getByRole('button', { name: 'Save Address' });
     expect(saveButton.hasAttribute('disabled')).toBe(false);
