@@ -67,5 +67,6 @@ export interface InvoiceFormScreenProps {
   onSaveAddressToClient?: (clientId: string, address: ClientAddress) => void;
   onSavePhoneToClient?: (clientId: string, phone: ClientPhone) => void;
   onAddTechnician?: (name: string) => void;
+  onSaveTechnicianToTable?: (name: string) => void;
   onAddWarrantyOption?: (label: string, months: number) => void;
 }

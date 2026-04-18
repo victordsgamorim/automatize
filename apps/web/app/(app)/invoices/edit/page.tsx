@@ -32,11 +32,16 @@ import {
   getInvoiceDate,
   updateSavedInvoice,
   clearInvoiceToEdit,
-  getSavedTechnicians,
-  addSavedTechnician,
+  getSavedTechnicians as getInvoiceTechnicians,
+  addSavedTechnician as addInvoiceTechnician,
   getSavedWarrantyOptions,
   addSavedWarrantyOption,
 } from '../invoiceStore';
+import {
+  getSavedTechnicians as getTableTechnicians,
+  addSavedTechnician as addTableTechnician,
+} from '../../technician/technicianStore';
+import type { TechnicianRow } from '@automatize/screens/technician/web';
 
 /**
  * Module-level draft store. Survives SPA navigations;
@@ -58,6 +63,15 @@ function toInvoiceRow(
   };
 }
 
+function mergedTechnicians(): TechnicianRow[] {
+  const table = getTableTechnicians();
+  const tableNames = new Set(table.map((t) => t.name.toLowerCase()));
+  const invoiceOnly = getInvoiceTechnicians().filter(
+    (t) => !tableNames.has(t.name.toLowerCase())
+  );
+  return [...table, ...invoiceOnly];
+}
+
 export default function EditInvoicePage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { t } = useTranslation();
@@ -70,7 +84,8 @@ export default function EditInvoicePage(): React.JSX.Element {
 
   const [clients] = useState(() => getSavedClients());
   const [products] = useState(() => getSavedProducts());
-  const [technicians, setTechnicians] = useState(() => getSavedTechnicians());
+  const [technicians, setTechnicians] =
+    useState<TechnicianRow[]>(mergedTechnicians);
   const [warrantyOptions, setWarrantyOptions] = useState<WarrantyOption[]>(() =>
     getSavedWarrantyOptions()
   );
@@ -146,9 +161,27 @@ export default function EditInvoicePage(): React.JSX.Element {
   };
 
   const handleAddTechnician = (name: string) => {
-    const tech = addSavedTechnician(name);
+    // If already in the main table, skip adding to invoice-local store
+    const inTable = getTableTechnicians().some(
+      (t) => t.name.toLowerCase() === name.toLowerCase()
+    );
+    if (!inTable) {
+      const tech = addInvoiceTechnician(name);
+      setTechnicians((prev) =>
+        prev.some((t) => t.name.toLowerCase() === name.toLowerCase())
+          ? prev
+          : [...prev, tech]
+      );
+    }
+  };
+
+  const handleSaveTechnicianToTable = (name: string) => {
+    const today = new Date().toISOString().split('T')[0] ?? '';
+    const tech = addTableTechnician(name, today);
     setTechnicians((prev) =>
-      prev.some((t) => t.id === tech.id) ? prev : [...prev, tech]
+      prev.some((t) => t.name.toLowerCase() === name.toLowerCase())
+        ? prev
+        : [...prev, tech]
     );
   };
 
@@ -192,6 +225,7 @@ export default function EditInvoicePage(): React.JSX.Element {
           warrantyOptions.length > 0 ? warrantyOptions : undefined
         }
         onAddTechnician={handleAddTechnician}
+        onSaveTechnicianToTable={handleSaveTechnicianToTable}
         onAddWarrantyOption={handleAddWarrantyOption}
       />
 

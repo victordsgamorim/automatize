@@ -43,6 +43,7 @@ export const InvoiceFormScreen: React.FC<InvoiceFormScreenProps> = ({
   onSaveAddressToClient,
   onSavePhoneToClient,
   onAddTechnician,
+  onSaveTechnicianToTable,
   onAddWarrantyOption,
 }) => {
   const isEdit = mode === 'edit';
@@ -266,6 +267,7 @@ export const InvoiceFormScreen: React.FC<InvoiceFormScreenProps> = ({
                 onToggleTechnician={toggleTechnician}
                 onRemoveTechnician={removeTechnician}
                 onAddNewTechnician={handleAddNewTechnician}
+                onSaveTechnicianToTable={onSaveTechnicianToTable}
               />
 
               <Separator />

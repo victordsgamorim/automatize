@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
 import { Check, X, UserPlus } from 'lucide-react';
-import { PrimaryButton, Input, Text, cn } from '@automatize/ui/web';
+import {
+  PrimaryButton,
+  SecondaryButton,
+  Input,
+  Text,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  cn,
+} from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import type {
   TechnicianRow,
@@ -14,6 +26,7 @@ export interface TechniciansSectionProps {
   onToggleTechnician: (id: string) => void;
   onRemoveTechnician: (id: string) => void;
   onAddNewTechnician: (name: string) => void;
+  onSaveTechnicianToTable?: (name: string) => void;
 }
 
 export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
@@ -23,11 +36,13 @@ export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
   onToggleTechnician,
   onRemoveTechnician,
   onAddNewTechnician,
+  onSaveTechnicianToTable,
 }) => {
   const { t } = useTranslation();
   const [newName, setNewName] = useState('');
+  const [pendingName, setPendingName] = useState<string | null>(null);
 
-  const selectedIds = new Set(selectedTechnicians.map((t) => t.id));
+  const selectedIds = new Set(selectedTechnicians.map((tech) => tech.id));
   const unselectedTechnicians = availableTechnicians.filter(
     (tech) => !selectedIds.has(tech.id)
   );
@@ -35,8 +50,25 @@ export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
   const handleAddNew = () => {
     const trimmed = newName.trim();
     if (!trimmed) return;
-    onAddNewTechnician(trimmed);
     setNewName('');
+    if (onSaveTechnicianToTable) {
+      setPendingName(trimmed);
+    } else {
+      onAddNewTechnician(trimmed);
+    }
+  };
+
+  const handleSaveToTable = () => {
+    if (!pendingName) return;
+    onSaveTechnicianToTable?.(pendingName);
+    onAddNewTechnician(pendingName);
+    setPendingName(null);
+  };
+
+  const handleSkipSave = () => {
+    if (!pendingName) return;
+    onAddNewTechnician(pendingName);
+    setPendingName(null);
   };
 
   return (
@@ -142,6 +174,35 @@ export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
           {t('invoice.technicians.add')}
         </PrimaryButton>
       </div>
+
+      {/* Save-to-table confirmation dialog */}
+      <Dialog
+        open={pendingName !== null}
+        onOpenChange={(open) => {
+          if (!open) handleSkipSave();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {t('invoice.technicians.saveToTable.title')}
+            </DialogTitle>
+            <DialogDescription>
+              {t('invoice.technicians.saveToTable.description', {
+                name: pendingName ?? '',
+              })}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <SecondaryButton type="button" onClick={handleSkipSave}>
+              {t('invoice.technicians.saveToTable.skip')}
+            </SecondaryButton>
+            <PrimaryButton type="button" onClick={handleSaveToTable}>
+              {t('invoice.technicians.saveToTable.confirm')}
+            </PrimaryButton>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
