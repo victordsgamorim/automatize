@@ -55,14 +55,16 @@ export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
   const [pendingName, setPendingName] = useState<string | null>(null);
 
   const selectedIds = new Set(selectedTechnicians.map((tech) => tech.id));
-  const availableIds = new Set(availableTechnicians.map((tech) => tech.id));
+  const availableNames = new Set(
+    availableTechnicians.map((tech) => tech.name.toLowerCase())
+  );
 
   const dropdownTechnicians = useMemo(() => {
     const extras = selectedTechnicians
-      .filter((tech) => !availableIds.has(tech.id))
+      .filter((tech) => !availableNames.has(tech.name.toLowerCase()))
       .map(({ id, name }) => ({ id, name, entryDate: '' }));
     return [...availableTechnicians, ...extras];
-  }, [availableTechnicians, selectedTechnicians, availableIds]);
+  }, [availableTechnicians, selectedTechnicians, availableNames]);
 
   const selectedCount = selectedTechnicians.length;
 
@@ -77,11 +79,7 @@ export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
   const handleAddNew = () => {
     const trimmed = newName.trim();
     if (!trimmed) return;
-    if (onSaveTechnicianToTable) {
-      setPendingName(trimmed);
-    } else {
-      onAddNewTechnician(trimmed);
-    }
+    setPendingName(trimmed);
     setNewName('');
     setAddMode(false);
     setOpen(false);
@@ -181,7 +179,11 @@ export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
                 <CommandEmpty>{t('invoice.technicians.empty')}</CommandEmpty>
                 <CommandGroup>
                   {dropdownTechnicians.map((tech) => {
-                    const isSelected = selectedIds.has(tech.id);
+                    const isSelected =
+                      selectedIds.has(tech.id) ||
+                      selectedTechnicians.some(
+                        (s) => s.name.toLowerCase() === tech.name.toLowerCase()
+                      );
                     return (
                       <CommandItem
                         key={tech.id}

@@ -20,6 +20,10 @@ import type {
   WarrantyOption,
 } from '@automatize/screens/invoice-form/web';
 import type { InvoiceRow } from '@automatize/screens/invoice/web';
+import type {
+  ClientAddress,
+  ClientPhone,
+} from '@automatize/screens/client/web';
 import { getSavedClients } from '../../clients/clientStore';
 import {
   getSavedProducts,
@@ -82,7 +86,7 @@ export default function EditInvoicePage(): React.JSX.Element {
     return formDraft as InvoiceFormData | undefined;
   });
 
-  const [clients] = useState(() => getSavedClients());
+  const [clients, setClients] = useState(() => getSavedClients());
   const [products] = useState(() => getSavedProducts());
   const [technicians, setTechnicians] =
     useState<TechnicianRow[]>(mergedTechnicians);
@@ -190,6 +194,28 @@ export default function EditInvoicePage(): React.JSX.Element {
     setWarrantyOptions((prev) => [...prev, option]);
   };
 
+  const handleSaveAddressToClient = useCallback(
+    (clientId: string, address: ClientAddress) => {
+      setClients((prev) =>
+        prev.map((c) =>
+          c.id === clientId ? { ...c, addresses: [...c.addresses, address] } : c
+        )
+      );
+    },
+    []
+  );
+
+  const handleSavePhoneToClient = useCallback(
+    (clientId: string, phone: ClientPhone) => {
+      setClients((prev) =>
+        prev.map((c) =>
+          c.id === clientId ? { ...c, phones: [...c.phones, phone] } : c
+        )
+      );
+    },
+    []
+  );
+
   // Keyboard shortcuts for the confirm dialog
   useEffect(() => {
     if (!showConfirmDialog) return;
@@ -226,6 +252,8 @@ export default function EditInvoicePage(): React.JSX.Element {
         }
         onAddTechnician={handleAddTechnician}
         onSaveTechnicianToTable={handleSaveTechnicianToTable}
+        onSaveAddressToClient={handleSaveAddressToClient}
+        onSavePhoneToClient={handleSavePhoneToClient}
         onAddWarrantyOption={handleAddWarrantyOption}
       />
 

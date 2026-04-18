@@ -201,12 +201,7 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
     setPendingAddress(created);
     setAddressDialogOpen(false);
     setNewAddress(EMPTY_ADDRESS);
-    if (onSaveAddressToClient) {
-      setSaveAddressDialogOpen(true);
-    } else {
-      onAddAddress(newAddress);
-      setPendingAddress(null);
-    }
+    setSaveAddressDialogOpen(true);
   };
 
   const handleSaveAddressToProfile = () => {
@@ -237,12 +232,7 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
     setPendingPhone(created);
     setPhoneDialogOpen(false);
     setNewPhone(EMPTY_PHONE);
-    if (onSavePhoneToClient) {
-      setSavePhoneDialogOpen(true);
-    } else {
-      onAddPhone(newPhone);
-      setPendingPhone(null);
-    }
+    setSavePhoneDialogOpen(true);
   };
 
   const handleSavePhoneToProfile = () => {

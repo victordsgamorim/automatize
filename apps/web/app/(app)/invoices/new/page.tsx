@@ -8,6 +8,10 @@ import type {
   WarrantyOption,
 } from '@automatize/screens/invoice-form/web';
 import type { InvoiceRow } from '@automatize/screens/invoice/web';
+import type {
+  ClientAddress,
+  ClientPhone,
+} from '@automatize/screens/client/web';
 import { generateId } from '@automatize/utils';
 import { getSavedClients } from '../../clients/clientStore';
 import {
@@ -56,7 +60,7 @@ export default function NewInvoicePage(): React.JSX.Element {
   const { navigate } = useNavigation();
 
   const [initialData] = useState(() => formDraft);
-  const [clients] = useState(() => getSavedClients());
+  const [clients, setClients] = useState(() => getSavedClients());
   const [products] = useState(() => getSavedProducts());
   const [technicians, setTechnicians] =
     useState<TechnicianRow[]>(mergedTechnicians);
@@ -136,6 +140,28 @@ export default function NewInvoicePage(): React.JSX.Element {
     setWarrantyOptions((prev) => [...prev, option]);
   };
 
+  const handleSaveAddressToClient = useCallback(
+    (clientId: string, address: ClientAddress) => {
+      setClients((prev) =>
+        prev.map((c) =>
+          c.id === clientId ? { ...c, addresses: [...c.addresses, address] } : c
+        )
+      );
+    },
+    []
+  );
+
+  const handleSavePhoneToClient = useCallback(
+    (clientId: string, phone: ClientPhone) => {
+      setClients((prev) =>
+        prev.map((c) =>
+          c.id === clientId ? { ...c, phones: [...c.phones, phone] } : c
+        )
+      );
+    },
+    []
+  );
+
   return (
     <InvoiceFormScreen
       onSubmit={handleSubmit}
@@ -152,6 +178,8 @@ export default function NewInvoicePage(): React.JSX.Element {
       }
       onAddTechnician={handleAddTechnician}
       onSaveTechnicianToTable={handleSaveTechnicianToTable}
+      onSaveAddressToClient={handleSaveAddressToClient}
+      onSavePhoneToClient={handleSavePhoneToClient}
       onAddWarrantyOption={handleAddWarrantyOption}
     />
   );
