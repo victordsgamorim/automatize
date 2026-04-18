@@ -33,6 +33,7 @@ import {
   LogOut,
   UserCog,
   CircleUser,
+  Wrench,
 } from 'lucide-react';
 
 /* ─── Tile definitions ─────────────────────────────────────────────────────── */
@@ -104,6 +105,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     '/products/new': t('product.form.title'),
     '/products/edit': t('product.form.title.edit'),
     '/profile': t('profile.form.title'),
+    '/technician': t('technician.list.title'),
   };
 
   const pageTitle = resolvePageTitle(
@@ -132,15 +134,20 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
         onTap: () => navigate('/profile'),
       },
       {
+        icon: <Wrench className="size-4" />,
+        label: 'Technician',
+        onTap: () => navigate('/technician'),
+      },
+      {
         icon: <Settings className="size-4" />,
         label: 'Settings',
+        separator: true,
         onTap: openSettings,
       },
       {
         icon: <LogOut className="size-4" />,
         label: 'Log out',
         variant: 'destructive' as const,
-        separator: true,
         onTap: () => {
           // TODO: integrate with auth signOut
         },

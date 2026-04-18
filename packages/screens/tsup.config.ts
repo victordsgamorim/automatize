@@ -40,6 +40,8 @@ export default defineConfig({
     'src/draft-persistence/index.ts',
     'src/profile/index.ts',
     'src/profile/web.ts',
+    'src/technician/index.ts',
+    'src/technician/web.ts',
   ],
   format: ['cjs', 'esm'],
   dts: true,

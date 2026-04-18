@@ -226,5 +226,22 @@
   "profile.discard.title": "Descartar alterações?",
   "profile.discard.description": "Se você continuar, todas as alterações feitas serão perdidas. Deseja mesmo sair?",
   "profile.discard.cancel": "Cancelar",
-  "profile.discard.continue": "Continuar"
+  "profile.discard.continue": "Continuar",
+  "technician.list.title": "Técnicos",
+  "technician.list.empty": "Nenhum técnico cadastrado",
+  "technician.list.itemLabel": "técnicos",
+  "technician.list.previous": "Anterior",
+  "technician.list.next": "Próximo",
+  "technician.list.page": "Página {{current}} de {{total}}",
+  "technician.table.name": "Nome",
+  "technician.table.entryDate": "Data de Entrada",
+  "technician.form.name": "Nome",
+  "technician.form.entryDate": "Data de Entrada",
+  "technician.form.namePlaceholder": "Nome do técnico",
+  "technician.form.datePlaceholder": "Selecionar data",
+  "technician.form.add": "Adicionar",
+  "technician.form.save": "Salvar",
+  "technician.form.cancel": "Cancelar",
+  "technician.action.edit": "Editar técnico",
+  "technician.action.delete": "Excluir técnico"
 }
