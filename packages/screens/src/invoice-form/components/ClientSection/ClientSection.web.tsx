@@ -348,7 +348,13 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setAddressDialogOpen(true)}
-                className="flex items-center gap-1 text-xs text-primary hover:underline"
+                disabled={!!currentAddress}
+                className={cn(
+                  'flex items-center gap-1 text-xs',
+                  currentAddress
+                    ? 'text-muted-foreground/50 cursor-not-allowed'
+                    : 'text-primary hover:underline'
+                )}
               >
                 <Plus className="size-3" />
                 {t('invoice.client.address.add')}
