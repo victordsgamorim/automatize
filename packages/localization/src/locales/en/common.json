@@ -226,5 +226,22 @@
   "profile.discard.title": "Discard changes?",
   "profile.discard.description": "If you continue, all the changes you made will be lost. Do you still want to leave?",
   "profile.discard.cancel": "Cancel",
-  "profile.discard.continue": "Continue"
+  "profile.discard.continue": "Continue",
+  "technician.list.title": "Technicians",
+  "technician.list.empty": "No technicians registered yet",
+  "technician.list.itemLabel": "technicians",
+  "technician.list.previous": "Previous",
+  "technician.list.next": "Next",
+  "technician.list.page": "Page {{current}} of {{total}}",
+  "technician.table.name": "Name",
+  "technician.table.entryDate": "Entry Date",
+  "technician.form.name": "Name",
+  "technician.form.entryDate": "Entry Date",
+  "technician.form.namePlaceholder": "Technician name",
+  "technician.form.datePlaceholder": "Select date",
+  "technician.form.add": "Add",
+  "technician.form.save": "Save",
+  "technician.form.cancel": "Cancel",
+  "technician.action.edit": "Edit technician",
+  "technician.action.delete": "Delete technician"
 }

@@ -6,9 +6,9 @@ Cross-platform screen package for the Automatize monorepo. Contains feature scre
 
 ## Available Screens
 
-| Screen       | Subpath                             | Description          |
-| ------------ | ----------------------------------- | -------------------- |
-| <ScreenName> | `@automatize/screens/<screen-name>` | <Screen description> |
+| Screen           | Subpath                          | Description                               |
+| ---------------- | -------------------------------- | ----------------------------------------- |
+| TechnicianScreen | `@automatize/screens/technician` | Technician management — add, edit, delete |
 
 Each screen exposes two entry points:
 

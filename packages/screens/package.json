@@ -97,6 +97,16 @@
       "types": "./dist/profile/web.d.ts",
       "import": "./dist/profile/web.mjs",
       "require": "./dist/profile/web.js"
+    },
+    "./technician": {
+      "types": "./dist/technician/index.d.ts",
+      "import": "./dist/technician/index.mjs",
+      "require": "./dist/technician/index.js"
+    },
+    "./technician/web": {
+      "types": "./dist/technician/web.d.ts",
+      "import": "./dist/technician/web.mjs",
+      "require": "./dist/technician/web.js"
     }
   },
   "scripts": {
