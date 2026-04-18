@@ -1,20 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { ClientScreen } from '@automatize/screens/client/web';
 import type { ClientRow } from '@automatize/screens/client/web';
-import { getSavedClients, setClientToEdit } from './clientStore';
+import { setClientToEdit } from './clientStore';
+import { useClients } from './useClients';
 
 export default function ClientsPage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
-  // Read from module-level store on each mount — picks up clients saved during this session.
-  const [clients] = useState(() => getSavedClients());
+  const clients = useClients();
 
   const handleEditClient = (client: ClientRow) => {
     setClientToEdit(client.id);

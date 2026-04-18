@@ -24,7 +24,11 @@ import type {
   ClientAddress,
   ClientPhone,
 } from '@automatize/screens/client/web';
-import { getSavedClients } from '../../clients/clientStore';
+import {
+  addAddressToClient,
+  addPhoneToClient,
+} from '../../clients/clientStore';
+import { useClients } from '../../clients/useClients';
 import {
   getSavedProducts,
   decrementProductStock,
@@ -86,7 +90,7 @@ export default function EditInvoicePage(): React.JSX.Element {
     return formDraft as InvoiceFormData | undefined;
   });
 
-  const [clients, setClients] = useState(() => getSavedClients());
+  const clients = useClients();
   const [products] = useState(() => getSavedProducts());
   const [technicians, setTechnicians] =
     useState<TechnicianRow[]>(mergedTechnicians);
@@ -195,23 +199,15 @@ export default function EditInvoicePage(): React.JSX.Element {
   };
 
   const handleSaveAddressToClient = useCallback(
-    (clientId: string, address: ClientAddress) => {
-      setClients((prev) =>
-        prev.map((c) =>
-          c.id === clientId ? { ...c, addresses: [...c.addresses, address] } : c
-        )
-      );
+    (_clientId: string, address: ClientAddress) => {
+      addAddressToClient(_clientId, address);
     },
     []
   );
 
   const handleSavePhoneToClient = useCallback(
-    (clientId: string, phone: ClientPhone) => {
-      setClients((prev) =>
-        prev.map((c) =>
-          c.id === clientId ? { ...c, phones: [...c.phones, phone] } : c
-        )
-      );
+    (_clientId: string, phone: ClientPhone) => {
+      addPhoneToClient(_clientId, phone);
     },
     []
   );
