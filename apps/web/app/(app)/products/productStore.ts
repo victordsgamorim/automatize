@@ -57,3 +57,15 @@ export function getSavedCompanies(): Company[] {
 export function addSavedCompany(company: Company): void {
   savedCompanies = [...savedCompanies, company];
 }
+
+export function decrementProductStock(id: string, qty: number): void {
+  savedProducts = savedProducts.map((p) =>
+    p.id === id ? { ...p, quantity: Math.max(0, p.quantity - qty) } : p
+  );
+}
+
+export function incrementProductStock(id: string, qty: number): void {
+  savedProducts = savedProducts.map((p) =>
+    p.id === id ? { ...p, quantity: p.quantity + qty } : p
+  );
+}
