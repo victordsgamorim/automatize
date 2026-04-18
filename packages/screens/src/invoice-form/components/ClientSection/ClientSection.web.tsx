@@ -20,22 +20,8 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandItem,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  PrimaryButton,
-  SecondaryButton,
-  Input,
   Text,
   Separator,
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
   cn,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
@@ -44,36 +30,11 @@ import type {
   ClientAddress,
   ClientPhone,
 } from '../../InvoiceFormScreen.types';
-
-const BRAZILIAN_STATES = [
-  'AC',
-  'AL',
-  'AP',
-  'AM',
-  'BA',
-  'CE',
-  'DF',
-  'ES',
-  'GO',
-  'MA',
-  'MT',
-  'MS',
-  'MG',
-  'PA',
-  'PB',
-  'PR',
-  'PE',
-  'PI',
-  'RJ',
-  'RN',
-  'RS',
-  'RO',
-  'RR',
-  'SC',
-  'SP',
-  'SE',
-  'TO',
-];
+import { AddressDialog } from '../../../components/AddressDialog/AddressDialog.web';
+import { useAddressDialog } from '../../../components/AddressDialog/useAddressDialog';
+import { PhoneDialog } from '../../../components/PhoneDialog/PhoneDialog.web';
+import { usePhoneDialog } from '../../../components/PhoneDialog/usePhoneDialog';
+import { SaveToProfileDialog } from '../../../components/SaveToProfileDialog/SaveToProfileDialog.web';
 
 type EmptyAddress = Omit<ClientAddress, 'id'>;
 type EmptyPhone = Omit<ClientPhone, 'id'>;
@@ -145,40 +106,34 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // Client selector
   const [open, setOpen] = useState(false);
-
-  // Address dropdown
   const [addressOpen, setAddressOpen] = useState(false);
-
-  // Phone dropdown
   const [phoneOpen, setPhoneOpen] = useState(false);
 
-  // Address dialog
-  const [addressDialogOpen, setAddressDialogOpen] = useState(false);
-  const [newAddress, setNewAddress] = useState<EmptyAddress>(EMPTY_ADDRESS);
+  const addressDialog = useAddressDialog<EmptyAddress>(EMPTY_ADDRESS);
+  const phoneDialog = usePhoneDialog<EmptyPhone>(EMPTY_PHONE);
+
   const [pendingAddress, setPendingAddress] = useState<ClientAddress | null>(
     null
   );
   const [saveAddressDialogOpen, setSaveAddressDialogOpen] = useState(false);
 
-  // Phone dialog
-  const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
-  const [newPhone, setNewPhone] = useState<EmptyPhone>(EMPTY_PHONE);
   const [pendingPhone, setPendingPhone] = useState<ClientPhone | null>(null);
   const [savePhoneDialogOpen, setSavePhoneDialogOpen] = useState(false);
 
-  // Derive saved lists from the selected client
   const selectedClient = availableClients.find(
     (c) => c.id === selectedClientId
   );
   const savedAddresses: ClientAddress[] = selectedClient?.addresses ?? [];
   const savedPhones: ClientPhone[] = selectedClient?.phones ?? [];
 
-  // The currently selected address (0 or 1)
-  const currentAddress: ClientAddress | null = clientAddresses[0] ?? null;
+  const savedPhoneIds = new Set(savedPhones.map((p) => p.id));
+  const allDropdownPhones: ClientPhone[] = [
+    ...savedPhones,
+    ...clientPhones.filter((p) => !savedPhoneIds.has(p.id)),
+  ];
 
-  // ── Client selection ────────────────────────────────────────────────────────
+  const currentAddress: ClientAddress | null = clientAddresses[0] ?? null;
 
   const handleSelectClient = (client: ClientRow) => {
     onSelectClient(client);
@@ -187,20 +142,14 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
 
   // ── Address flow ────────────────────────────────────────────────────────────
 
-  const handleAddressDialogClose = () => {
-    setAddressDialogOpen(false);
-    setNewAddress(EMPTY_ADDRESS);
-  };
-
   const handleAddressSave = () => {
-    if (!newAddress.street.trim()) return;
+    if (!addressDialog.data.street.trim()) return;
     const created: ClientAddress = {
       id: `pending-${Date.now()}`,
-      ...newAddress,
+      ...addressDialog.data,
     };
     setPendingAddress(created);
-    setAddressDialogOpen(false);
-    setNewAddress(EMPTY_ADDRESS);
+    addressDialog.close();
     setSaveAddressDialogOpen(true);
   };
 
@@ -221,17 +170,14 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
 
   // ── Phone flow ──────────────────────────────────────────────────────────────
 
-  const handlePhoneDialogClose = () => {
-    setPhoneDialogOpen(false);
-    setNewPhone(EMPTY_PHONE);
-  };
-
   const handlePhoneSave = () => {
-    if (!newPhone.number.trim()) return;
-    const created: ClientPhone = { id: `pending-${Date.now()}`, ...newPhone };
+    if (!phoneDialog.data.number.trim()) return;
+    const created: ClientPhone = {
+      id: `pending-${Date.now()}`,
+      ...phoneDialog.data,
+    };
     setPendingPhone(created);
-    setPhoneDialogOpen(false);
-    setNewPhone(EMPTY_PHONE);
+    phoneDialog.close();
     setSavePhoneDialogOpen(true);
   };
 
@@ -337,7 +283,7 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
               </div>
               <button
                 type="button"
-                onClick={() => setAddressDialogOpen(true)}
+                onClick={() => addressDialog.openNew()}
                 disabled={!!currentAddress}
                 className={cn(
                   'flex items-center gap-1 text-xs',
@@ -351,7 +297,6 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
               </button>
             </div>
 
-            {/* Dropdown — only if client has saved addresses */}
             {savedAddresses.length > 0 && (
               <div className="flex items-center gap-1">
                 <Popover open={addressOpen} onOpenChange={setAddressOpen}>
@@ -441,7 +386,6 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
                   </PopoverContent>
                 </Popover>
 
-                {/* Clear selected address */}
                 {currentAddress && (
                   <button
                     type="button"
@@ -455,7 +399,6 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
               </div>
             )}
 
-            {/* Custom address card (when client has no saved addresses) */}
             {savedAddresses.length === 0 && currentAddress && (
               <div className="flex items-start gap-2 rounded-md border border-border bg-background p-2.5">
                 {currentAddress.addressType === 'establishment' ? (
@@ -477,7 +420,6 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
               </div>
             )}
 
-            {/* Empty state */}
             {!currentAddress && savedAddresses.length === 0 && (
               <Text variant="caption" className="text-muted-foreground">
                 {t('invoice.client.noAddresses')}
@@ -496,7 +438,7 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
               </div>
               <button
                 type="button"
-                onClick={() => setPhoneDialogOpen(true)}
+                onClick={() => phoneDialog.openNew()}
                 className="flex items-center gap-1 text-xs text-primary hover:underline"
               >
                 <Plus className="size-3" />
@@ -504,8 +446,7 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
               </button>
             </div>
 
-            {/* Multi-select dropdown — only if client has saved phones */}
-            {savedPhones.length > 0 && (
+            {allDropdownPhones.length > 0 && (
               <Popover open={phoneOpen} onOpenChange={setPhoneOpen}>
                 <PopoverTrigger asChild>
                   <button
@@ -544,7 +485,7 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
                         {t('invoice.client.phone.noSaved')}
                       </CommandEmpty>
                       <CommandGroup>
-                        {savedPhones.map((phone) => {
+                        {allDropdownPhones.map((phone) => {
                           const isSelected = clientPhones.some(
                             (p) => p.id === phone.id
                           );
@@ -583,7 +524,6 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
               </Popover>
             )}
 
-            {/* Selected phones as chips */}
             {clientPhones.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {clientPhones.map((phone) => {
@@ -610,7 +550,6 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
               </div>
             )}
 
-            {/* Empty state */}
             {clientPhones.length === 0 && savedPhones.length === 0 && (
               <Text variant="caption" className="text-muted-foreground">
                 {t('invoice.client.noPhones')}
@@ -620,279 +559,59 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
         </div>
       )}
 
-      {/* ── Add Address Dialog ──────────────────────────────────────────────── */}
-      <Dialog
-        open={addressDialogOpen}
+      {/* ── Address Dialog ──────────────────────────────────────────────────── */}
+      <AddressDialog
+        open={addressDialog.isOpen}
         onOpenChange={(v) => {
-          if (!v) handleAddressDialogClose();
+          if (!v) addressDialog.close();
         }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {t('invoice.client.address.dialog.title')}
-            </DialogTitle>
-          </DialogHeader>
-          <div
-            className="space-y-3 py-2"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && newAddress.street.trim()) {
-                e.preventDefault();
-                handleAddressSave();
-              }
-            }}
-          >
-            {/* Address type */}
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() =>
-                  setNewAddress((p) => ({ ...p, addressType: 'residence' }))
-                }
-                className={cn(
-                  'flex flex-1 items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors',
-                  newAddress.addressType === 'residence'
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border text-muted-foreground hover:bg-muted/30'
-                )}
-              >
-                <Home className="size-4" />
-                {t('client.address.type.residence')}
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  setNewAddress((p) => ({ ...p, addressType: 'establishment' }))
-                }
-                className={cn(
-                  'flex flex-1 items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors',
-                  newAddress.addressType === 'establishment'
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border text-muted-foreground hover:bg-muted/30'
-                )}
-              >
-                <Building2 className="size-4" />
-                {t('client.address.type.establishment')}
-              </button>
-            </div>
-            <div className="flex gap-3">
-              <div className="flex-[3]">
-                <Input
-                  label={t('client.address.street')}
-                  placeholder={t('client.address.street.placeholder')}
-                  value={newAddress.street}
-                  onChange={(e) =>
-                    setNewAddress((p) => ({ ...p, street: e.target.value }))
-                  }
-                  autoFocus
-                />
-              </div>
-              <div className="flex-1">
-                <Input
-                  label={t('client.address.number')}
-                  placeholder={t('client.address.number.placeholder')}
-                  value={newAddress.number}
-                  onChange={(e) =>
-                    setNewAddress((p) => ({ ...p, number: e.target.value }))
-                  }
-                />
-              </div>
-            </div>
-            <Input
-              label={t('client.address.neighborhood')}
-              placeholder={t('client.address.neighborhood.placeholder')}
-              value={newAddress.neighborhood}
-              onChange={(e) =>
-                setNewAddress((p) => ({ ...p, neighborhood: e.target.value }))
-              }
-            />
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                label={t('client.address.city')}
-                placeholder={t('client.address.city.placeholder')}
-                value={newAddress.city}
-                onChange={(e) =>
-                  setNewAddress((p) => ({ ...p, city: e.target.value }))
-                }
-              />
-              <div className="space-y-1">
-                <Text variant="label">{t('client.address.state')}</Text>
-                <Select
-                  value={newAddress.state}
-                  onValueChange={(v) =>
-                    setNewAddress((p) => ({ ...p, state: v }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={t('client.address.state.placeholder')}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {BRAZILIAN_STATES.map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {s}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <Input
-              label={t('client.address.info')}
-              placeholder={t('client.address.info.placeholder')}
-              value={newAddress.info ?? ''}
-              onChange={(e) =>
-                setNewAddress((p) => ({ ...p, info: e.target.value }))
-              }
-            />
-          </div>
-          <DialogFooter>
-            <SecondaryButton type="button" onClick={handleAddressDialogClose}>
-              {t('app.cancel')}
-            </SecondaryButton>
-            <PrimaryButton
-              type="button"
-              onClick={handleAddressSave}
-              disabled={!newAddress.street.trim()}
-            >
-              {t('invoice.client.address.save')}
-            </PrimaryButton>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        data={addressDialog.data}
+        onChange={addressDialog.setData}
+        onSave={handleAddressSave}
+        editingId={addressDialog.editingId}
+        variant="tabs"
+        title={t('invoice.client.address.dialog.title')}
+        description={t('client.address.add')}
+        saveLabel={t('invoice.client.address.save')}
+      />
 
       {/* Save Address to Profile Dialog */}
-      <Dialog
+      <SaveToProfileDialog
         open={saveAddressDialogOpen}
-        onOpenChange={(v) => {
-          if (!v) handleSkipSaveAddress();
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {t('invoice.client.address.saveToClient.title')}
-            </DialogTitle>
-            <DialogDescription>
-              {t('invoice.client.address.saveToClient.description')}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <SecondaryButton type="button" onClick={handleSkipSaveAddress}>
-              {t('invoice.client.address.saveToClient.no')}
-            </SecondaryButton>
-            <PrimaryButton type="button" onClick={handleSaveAddressToProfile}>
-              {t('invoice.client.address.saveToClient.yes')}
-            </PrimaryButton>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        onConfirm={handleSaveAddressToProfile}
+        onSkip={handleSkipSaveAddress}
+        title={t('invoice.client.address.saveToClient.title')}
+        description={t('invoice.client.address.saveToClient.description')}
+        confirmLabel={t('invoice.client.address.saveToClient.yes')}
+        skipLabel={t('invoice.client.address.saveToClient.no')}
+      />
 
-      {/* ── Add Phone Dialog ────────────────────────────────────────────────── */}
-      <Dialog
-        open={phoneDialogOpen}
+      {/* ── Phone Dialog ────────────────────────────────────────────────────── */}
+      <PhoneDialog
+        open={phoneDialog.isOpen}
         onOpenChange={(v) => {
-          if (!v) handlePhoneDialogClose();
+          if (!v) phoneDialog.close();
         }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('invoice.client.phone.dialog.title')}</DialogTitle>
-          </DialogHeader>
-          <div
-            className="space-y-3 py-2"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && newPhone.number.trim()) {
-                e.preventDefault();
-                handlePhoneSave();
-              }
-            }}
-          >
-            {/* Phone type */}
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() =>
-                  setNewPhone((p) => ({ ...p, phoneType: 'mobile' }))
-                }
-                className={cn(
-                  'flex flex-1 items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors',
-                  newPhone.phoneType === 'mobile'
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border text-muted-foreground hover:bg-muted/30'
-                )}
-              >
-                <Smartphone className="size-4" />
-                {t('client.phone.type.mobile')}
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  setNewPhone((p) => ({ ...p, phoneType: 'telephone' }))
-                }
-                className={cn(
-                  'flex flex-1 items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors',
-                  newPhone.phoneType === 'telephone'
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border text-muted-foreground hover:bg-muted/30'
-                )}
-              >
-                <Phone className="size-4" />
-                {t('client.phone.type.telephone')}
-              </button>
-            </div>
-            <Input
-              label={t('client.phone.label')}
-              placeholder={t('client.phone.placeholder')}
-              value={newPhone.number}
-              onChange={(e) =>
-                setNewPhone((p) => ({ ...p, number: e.target.value }))
-              }
-              autoFocus
-            />
-          </div>
-          <DialogFooter>
-            <SecondaryButton type="button" onClick={handlePhoneDialogClose}>
-              {t('app.cancel')}
-            </SecondaryButton>
-            <PrimaryButton
-              type="button"
-              onClick={handlePhoneSave}
-              disabled={!newPhone.number.trim()}
-            >
-              {t('invoice.client.phone.save')}
-            </PrimaryButton>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        data={phoneDialog.data}
+        onChange={phoneDialog.setData}
+        onSave={handlePhoneSave}
+        editingId={phoneDialog.editingId}
+        variant="tabs"
+        title={t('invoice.client.phone.dialog.title')}
+        description={t('client.phone.add')}
+        saveLabel={t('invoice.client.phone.save')}
+      />
 
       {/* Save Phone to Profile Dialog */}
-      <Dialog
+      <SaveToProfileDialog
         open={savePhoneDialogOpen}
-        onOpenChange={(v) => {
-          if (!v) handleSkipSavePhone();
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {t('invoice.client.phone.saveToClient.title')}
-            </DialogTitle>
-            <DialogDescription>
-              {t('invoice.client.phone.saveToClient.description')}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <SecondaryButton type="button" onClick={handleSkipSavePhone}>
-              {t('invoice.client.phone.saveToClient.no')}
-            </SecondaryButton>
-            <PrimaryButton type="button" onClick={handleSavePhoneToProfile}>
-              {t('invoice.client.phone.saveToClient.yes')}
-            </PrimaryButton>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        onConfirm={handleSavePhoneToProfile}
+        onSkip={handleSkipSavePhone}
+        title={t('invoice.client.phone.saveToClient.title')}
+        description={t('invoice.client.phone.saveToClient.description')}
+        confirmLabel={t('invoice.client.phone.saveToClient.yes')}
+        skipLabel={t('invoice.client.phone.saveToClient.no')}
+      />
     </div>
   );
 };

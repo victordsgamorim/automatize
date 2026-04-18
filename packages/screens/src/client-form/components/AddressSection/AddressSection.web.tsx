@@ -1,66 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { House, Building2, Trash2, Plus } from 'lucide-react';
 import {
   Button,
-  PrimaryButton,
   SecondaryButton,
   Text,
   Card,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
   Drawer,
   BottomSheet,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  Input,
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
 import type { Address, AddressType } from '../../ClientFormScreen.types';
-
-const BRAZILIAN_STATES = [
-  { value: 'AC', label: 'Acre' },
-  { value: 'AL', label: 'Alagoas' },
-  { value: 'AM', label: 'Amazonas' },
-  { value: 'AP', label: 'Amapa' },
-  { value: 'BA', label: 'Bahia' },
-  { value: 'CE', label: 'Ceara' },
-  { value: 'DF', label: 'Distrito Federal' },
-  { value: 'ES', label: 'Espirito Santo' },
-  { value: 'GO', label: 'Goias' },
-  { value: 'MA', label: 'Maranhao' },
-  { value: 'MG', label: 'Minas Gerais' },
-  { value: 'MS', label: 'Mato Grosso do Sul' },
-  { value: 'MT', label: 'Mato Grosso' },
-  { value: 'PA', label: 'Para' },
-  { value: 'PB', label: 'Paraiba' },
-  { value: 'PE', label: 'Pernambuco' },
-  { value: 'PI', label: 'Piaui' },
-  { value: 'PR', label: 'Parana' },
-  { value: 'RJ', label: 'Rio de Janeiro' },
-  { value: 'RN', label: 'Rio Grande do Norte' },
-  { value: 'RO', label: 'Rondonia' },
-  { value: 'RR', label: 'Roraima' },
-  { value: 'RS', label: 'Rio Grande do Sul' },
-  { value: 'SC', label: 'Santa Catarina' },
-  { value: 'SE', label: 'Sergipe' },
-  { value: 'SP', label: 'Sao Paulo' },
-  { value: 'TO', label: 'Tocantins' },
-] as const;
+import { AddressDialog } from '../../../components/AddressDialog/AddressDialog.web';
+import { useAddressDialog } from '../../../components/AddressDialog/useAddressDialog';
 
 const MAX_VISIBLE_ADDRESSES = 5;
 
 export type NewAddressFields = Omit<Address, 'id'>;
+
+const EMPTY_ADDRESS: NewAddressFields = {
+  addressType: 'residence',
+  street: '',
+  number: '',
+  neighborhood: '',
+  city: '',
+  state: '',
+  info: '',
+};
 
 export interface AddressSectionProps {
   addresses: Address[];
@@ -71,16 +37,6 @@ export interface AddressSectionProps {
     field: keyof NewAddressFields,
     value: string
   ) => void;
-  isDialogOpen: boolean;
-  onDialogOpenChange: (open: boolean) => void;
-  newAddress: NewAddressFields;
-  onNewAddressChange: (
-    data: NewAddressFields | ((prev: NewAddressFields) => NewAddressFields)
-  ) => void;
-  editingAddressId: string | null;
-  onEditingAddressIdChange: (id: string | null) => void;
-  showAllAddresses: boolean;
-  onShowAllAddressesChange: (show: boolean) => void;
   clientType?: 'individual' | 'business';
   isMobile?: boolean;
 }
@@ -119,14 +75,6 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
   addAddress,
   removeAddress,
   updateAddress,
-  isDialogOpen,
-  onDialogOpenChange,
-  newAddress,
-  onNewAddressChange,
-  editingAddressId,
-  onEditingAddressIdChange,
-  showAllAddresses,
-  onShowAllAddressesChange,
   clientType = 'individual',
   isMobile: propIsMobile,
 }) => {
@@ -134,38 +82,24 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
   const { isMobile: responsiveIsMobile } = useResponsive();
   const isMobile = propIsMobile ?? responsiveIsMobile;
 
+  const [showAllAddresses, setShowAllAddresses] = useState(false);
+  const addressDialog = useAddressDialog<NewAddressFields>(EMPTY_ADDRESS);
+
   const visibleAddresses = addresses.slice(0, MAX_VISIBLE_ADDRESSES);
 
-  const handleOpenAddressDialog = () => {
-    onEditingAddressIdChange(null);
-    onNewAddressChange({
+  const handleOpenNew = () => {
+    addressDialog.openNew({
       addressType: clientType === 'business' ? 'establishment' : 'residence',
-      street: '',
-      number: '',
-      neighborhood: '',
-      city: '',
-      state: '',
-      info: '',
     });
-    onDialogOpenChange(true);
   };
 
-  const handleEditAddress = (address: Address) => {
-    onEditingAddressIdChange(address.id);
-    onNewAddressChange({
-      addressType: address.addressType,
-      street: address.street,
-      number: address.number,
-      neighborhood: address.neighborhood,
-      city: address.city,
-      state: address.state,
-      info: address.info,
-    });
-    onDialogOpenChange(true);
+  const handleEdit = (address: Address) => {
+    addressDialog.openEdit(address);
   };
 
-  const handleSaveAddress = () => {
-    if (editingAddressId) {
+  const handleSave = () => {
+    const editingId = addressDialog.editingId;
+    if (editingId) {
       const fields: (keyof NewAddressFields)[] = [
         'addressType',
         'street',
@@ -176,16 +110,16 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
         'info',
       ];
       fields.forEach((field) => {
-        updateAddress(editingAddressId, field, newAddress[field]);
+        updateAddress(editingId, field, addressDialog.data[field]);
       });
     } else {
-      addAddress(newAddress);
+      addAddress(addressDialog.data);
     }
-    onDialogOpenChange(false);
+    addressDialog.close();
   };
 
-  const handleCloseAddressPanel = () => {
-    onShowAllAddressesChange(false);
+  const handleClosePanel = () => {
+    setShowAllAddresses(false);
   };
 
   const addressListItems = (
@@ -197,7 +131,7 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
           className={`relative group min-h-[60px] cursor-pointer transition-colors ${
             isMobile ? '' : 'hover:bg-accent'
           }`}
-          onClick={() => handleEditAddress(address)}
+          onClick={() => handleEdit(address)}
         >
           <div className="flex items-start gap-2 pr-8">
             <AddressTypeIcon
@@ -250,7 +184,7 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
           <SecondaryButton
             type="button"
             size="icon"
-            onClick={handleOpenAddressDialog}
+            onClick={handleOpenNew}
             aria-label={t('client.address.add')}
           >
             <Plus className="size-4" />
@@ -268,7 +202,7 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
                 key={address.id}
                 padding="sm"
                 className="relative group min-h-[80px] cursor-pointer hover:bg-accent transition-colors"
-                onClick={() => handleEditAddress(address)}
+                onClick={() => handleEdit(address)}
               >
                 <div className="flex items-start gap-2 pr-6">
                   <AddressTypeIcon
@@ -316,7 +250,7 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
                 <Button
                   type="button"
                   variant="link"
-                  onClick={() => onShowAllAddressesChange(true)}
+                  onClick={() => setShowAllAddresses(true)}
                 >
                   {t('client.address.viewMore', {
                     count: addresses.length - MAX_VISIBLE_ADDRESSES,
@@ -328,11 +262,10 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
         )}
       </div>
 
-      {/* Address panel: drawer (desktop) or bottom sheet (mobile) */}
       {isMobile ? (
         <BottomSheet
           open={showAllAddresses}
-          onClose={handleCloseAddressPanel}
+          onClose={handleClosePanel}
           title={t('client.address.allTitle')}
         >
           {addressListItems}
@@ -340,182 +273,31 @@ export const AddressSection: React.FC<AddressSectionProps> = ({
       ) : (
         <Drawer
           open={showAllAddresses}
-          onClose={handleCloseAddressPanel}
+          onClose={handleClosePanel}
           title={t('client.address.allTitle')}
         >
           {addressListItems}
         </Drawer>
       )}
 
-      {/* Address creation dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={onDialogOpenChange}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editingAddressId
-                ? t('client.address.dialog.editTitle')
-                : t('client.address.dialog.title')}
-            </DialogTitle>
-            <DialogDescription>{t('client.address.add')}</DialogDescription>
-          </DialogHeader>
-          <div
-            className="space-y-4"
-            onKeyDown={(e) => {
-              if (
-                e.key === 'Enter' &&
-                !e.shiftKey &&
-                newAddress.street.trim()
-              ) {
-                e.preventDefault();
-                handleSaveAddress();
-              }
-            }}
-          >
-            <Tabs
-              value={newAddress.addressType}
-              onValueChange={(val: string) =>
-                onNewAddressChange({
-                  ...newAddress,
-                  addressType: val as AddressType,
-                })
-              }
-            >
-              <TabsList variant="default" size="sm">
-                <TabsTrigger value="residence">
-                  <House className="size-3.5" />
-                  {t('client.address.type.residence')}
-                </TabsTrigger>
-                <TabsTrigger value="establishment">
-                  <Building2 className="size-3.5" />
-                  {t('client.address.type.establishment')}
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-              <div className="sm:col-span-3">
-                <Input
-                  id="new-address-street"
-                  label={t('client.address.street')}
-                  placeholder={t('client.address.street.placeholder')}
-                  value={newAddress.street}
-                  onChange={(e) =>
-                    onNewAddressChange({
-                      ...newAddress,
-                      street: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <Input
-                id="new-address-number"
-                label={t('client.address.number')}
-                placeholder={t('client.address.number.placeholder')}
-                value={newAddress.number}
-                onChange={(e) =>
-                  onNewAddressChange({
-                    ...newAddress,
-                    number: e.target.value,
-                  })
-                }
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                id="new-address-neighborhood"
-                label={t('client.address.neighborhood')}
-                placeholder={t('client.address.neighborhood.placeholder')}
-                value={newAddress.neighborhood}
-                onChange={(e) =>
-                  onNewAddressChange({
-                    ...newAddress,
-                    neighborhood: e.target.value,
-                  })
-                }
-              />
-              <Input
-                id="new-address-city"
-                label={t('client.address.city')}
-                placeholder={t('client.address.city.placeholder')}
-                value={newAddress.city}
-                onChange={(e) =>
-                  onNewAddressChange({
-                    ...newAddress,
-                    city: e.target.value,
-                  })
-                }
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Text
-                  htmlFor="new-address-state"
-                  color="muted"
-                  className="pl-3"
-                >
-                  {t('client.address.state')}
-                </Text>
-                <Select
-                  value={newAddress.state}
-                  onValueChange={(val) =>
-                    onNewAddressChange({
-                      ...newAddress,
-                      state: val,
-                    })
-                  }
-                >
-                  <SelectTrigger
-                    id="new-address-state"
-                    className="border-border bg-foreground/5 backdrop-blur-sm"
-                  >
-                    <SelectValue
-                      placeholder={t('client.address.state.placeholder')}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {BRAZILIAN_STATES.map((state) => (
-                      <SelectItem key={state.value} value={state.value}>
-                        {state.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Input
-                id="new-address-info"
-                label={t('client.address.info')}
-                placeholder={t('client.address.info.placeholder')}
-                value={newAddress.info}
-                onChange={(e) =>
-                  onNewAddressChange({
-                    ...newAddress,
-                    info: e.target.value,
-                  })
-                }
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <SecondaryButton
-              type="button"
-              onClick={() => onDialogOpenChange(false)}
-              shortcut="Esc"
-            >
-              {t('app.cancel')}
-            </SecondaryButton>
-            <PrimaryButton
-              type="button"
-              onClick={handleSaveAddress}
-              disabled={!newAddress.street.trim()}
-              shortcut="Enter"
-            >
-              {t('client.address.save')}
-            </PrimaryButton>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddressDialog
+        open={addressDialog.isOpen}
+        onOpenChange={(v) => {
+          if (!v) addressDialog.close();
+        }}
+        data={addressDialog.data}
+        onChange={addressDialog.setData}
+        onSave={handleSave}
+        editingId={addressDialog.editingId}
+        variant="tabs"
+        title={
+          addressDialog.editingId
+            ? t('client.address.dialog.editTitle')
+            : t('client.address.dialog.title')
+        }
+        description={t('client.address.add')}
+        saveLabel={t('client.address.save')}
+      />
     </>
   );
 };

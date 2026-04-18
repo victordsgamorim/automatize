@@ -17,33 +17,11 @@ import {
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
-import type {
-  ClientFormScreenProps,
-  Address,
-  Phone,
-} from './ClientFormScreen.types';
+import type { ClientFormScreenProps } from './ClientFormScreen.types';
 import { useClientForm } from './useClientForm';
 import { AddressSection } from './components/AddressSection/AddressSection.web';
 import { PhoneSection } from './components/PhoneSection/PhoneSection.web';
 import { PersonalDetailsSection } from './components/PersonalDetailsSection/PersonalDetailsSection.web';
-
-type NewAddressFields = Omit<Address, 'id'>;
-type NewPhoneFields = Omit<Phone, 'id'>;
-
-const EMPTY_ADDRESS: NewAddressFields = {
-  addressType: 'residence',
-  street: '',
-  number: '',
-  neighborhood: '',
-  city: '',
-  state: '',
-  info: '',
-};
-
-const EMPTY_PHONE: NewPhoneFields = {
-  phoneType: 'mobile',
-  number: '',
-};
 
 export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   mode = 'create',
@@ -112,14 +90,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
   );
 
   const [internalDialogOpen, setInternalDialogOpen] = useState(false);
-  const [addressDialogOpen, setAddressDialogOpen] = useState(false);
-  const [newAddress, setNewAddress] = useState<NewAddressFields>(EMPTY_ADDRESS);
-  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
-  const [showAllAddresses, setShowAllAddresses] = useState(false);
-  const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
-  const [newPhone, setNewPhone] = useState<NewPhoneFields>(EMPTY_PHONE);
-  const [editingPhoneId, setEditingPhoneId] = useState<string | null>(null);
-  const [showAllPhones, setShowAllPhones] = useState(false);
 
   const isControlled = showDiscardDialog !== undefined;
   const dialogOpen = isControlled ? showDiscardDialog : internalDialogOpen;
@@ -218,27 +188,23 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     onSubmit(getFormData());
   }, [name, onSubmit, getFormData]);
 
-  // ── Keyboard shortcuts ───────────────────────────────────────────────────
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const isMod = e.ctrlKey || e.metaKey;
       if (!isMod) return;
 
-      // Ctrl+S → Save
       if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
         handleSave();
         return;
       }
 
-      // Ctrl+Escape → Cancel
       if (e.key === 'Escape') {
         e.preventDefault();
         handleCancel();
         return;
       }
 
-      // Ctrl+E → Clear / Reset
       if (e.key === 'e' || e.key === 'E') {
         e.preventDefault();
         resetForm();
@@ -254,7 +220,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
     <>
       <div className="max-w-3xl mx-auto py-8 px-4">
         <Card padding="lg">
-          {/* Header with clear button at top right */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
@@ -279,7 +244,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
 
           <div className="space-y-6">
             <form ref={formRef} className="space-y-6" onSubmit={handleSubmit}>
-              {/* Personal Details Section */}
               <PersonalDetailsSection
                 clientType={clientType}
                 onClientTypeChange={setClientType}
@@ -291,47 +255,28 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
 
               <Separator />
 
-              {/* Addresses Section */}
               <AddressSection
                 addresses={addresses}
                 addAddress={addAddress}
                 removeAddress={handleRemoveAddress}
                 updateAddress={updateAddress}
-                isDialogOpen={addressDialogOpen}
-                onDialogOpenChange={setAddressDialogOpen}
-                newAddress={newAddress}
-                onNewAddressChange={setNewAddress}
-                editingAddressId={editingAddressId}
-                onEditingAddressIdChange={setEditingAddressId}
-                showAllAddresses={showAllAddresses}
-                onShowAllAddressesChange={setShowAllAddresses}
                 clientType={clientType}
                 isMobile={isMobile}
               />
 
               <Separator />
 
-              {/* Phones Section */}
               <PhoneSection
                 phones={phones}
                 addPhone={addPhone}
                 removePhone={handleRemovePhone}
                 updatePhone={updatePhone}
-                isDialogOpen={phoneDialogOpen}
-                onDialogOpenChange={setPhoneDialogOpen}
-                newPhone={newPhone}
-                onNewPhoneChange={setNewPhone}
-                editingPhoneId={editingPhoneId}
-                onEditingPhoneIdChange={setEditingPhoneId}
-                showAllPhones={showAllPhones}
-                onShowAllPhonesChange={setShowAllPhones}
                 clientType={clientType}
                 isMobile={isMobile}
               />
 
               <Separator />
 
-              {/* Action buttons at bottom */}
               <div className="flex justify-end gap-2">
                 <SecondaryButton
                   type="button"
@@ -357,7 +302,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
         </Card>
       </div>
 
-      {/* Discard confirmation dialog */}
       <Dialog
         open={dialogOpen}
         onOpenChange={(open) => {

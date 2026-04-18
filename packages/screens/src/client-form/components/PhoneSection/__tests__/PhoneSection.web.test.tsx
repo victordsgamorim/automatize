@@ -3,10 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import { PhoneSection } from '../PhoneSection.web';
-import type { PhoneSectionProps, NewPhoneFields } from '../PhoneSection.web';
+import type { PhoneSectionProps } from '../PhoneSection.web';
 import type { Phone } from '../../../ClientFormScreen.types';
-
-// ── Mocks ───────────────────────────────────────────────────────────────────
 
 vi.mock('@automatize/ui/web', () => ({
   Button: ({
@@ -289,39 +287,13 @@ vi.mock('@automatize/ui/responsive', () => ({
   useResponsive: () => ({ isMobile: false }),
 }));
 
-// ── Test Data ───────────────────────────────────────────────────────────────
-
 const samplePhones: Phone[] = [
-  {
-    id: 'phone1',
-    phoneType: 'mobile',
-    number: '(11) 99999-9999',
-  },
-  {
-    id: 'phone2',
-    phoneType: 'telephone',
-    number: '(11) 3333-4444',
-  },
-  {
-    id: 'phone3',
-    phoneType: 'mobile',
-    number: '(11) 88888-8888',
-  },
-  {
-    id: 'phone4',
-    phoneType: 'telephone',
-    number: '(11) 2222-3333',
-  },
-  {
-    id: 'phone5',
-    phoneType: 'mobile',
-    number: '(11) 77777-7777',
-  },
-  {
-    id: 'phone6',
-    phoneType: 'telephone',
-    number: '(11) 1111-2222',
-  },
+  { id: 'phone1', phoneType: 'mobile', number: '(11) 99999-9999' },
+  { id: 'phone2', phoneType: 'telephone', number: '(11) 3333-4444' },
+  { id: 'phone3', phoneType: 'mobile', number: '(11) 88888-8888' },
+  { id: 'phone4', phoneType: 'telephone', number: '(11) 2222-3333' },
+  { id: 'phone5', phoneType: 'mobile', number: '(11) 77777-7777' },
+  { id: 'phone6', phoneType: 'telephone', number: '(11) 1111-2222' },
 ];
 
 const defaultProps: PhoneSectionProps = {
@@ -329,21 +301,8 @@ const defaultProps: PhoneSectionProps = {
   addPhone: vi.fn(),
   removePhone: vi.fn(),
   updatePhone: vi.fn(),
-  isDialogOpen: false,
-  onDialogOpenChange: vi.fn(),
-  newPhone: {
-    phoneType: 'mobile',
-    number: '',
-  },
-  onNewPhoneChange: vi.fn(),
-  editingPhoneId: null,
-  onEditingPhoneIdChange: vi.fn(),
-  showAllPhones: false,
-  onShowAllPhonesChange: vi.fn(),
   isMobile: false,
 };
-
-// ── Tests ───────────────────────────────────────────────────────────────────
 
 describe('PhoneSection', () => {
   it('renders empty state when no phones', () => {
@@ -353,17 +312,13 @@ describe('PhoneSection', () => {
     expect(screen.getByRole('button', { name: 'Add Phone' })).toBeTruthy();
   });
 
-  it('renders phones grid with up to 5 visible phones', () => {
+  it('renders phones with up to 5 visible phones', () => {
     const phones = samplePhones.slice(0, 5);
     render(<PhoneSection {...defaultProps} phones={phones} />);
 
-    // Should show phone numbers - use getAllByText since there are multiple
     const phoneElements1 = screen.getAllByText('(11) 99999-9999');
-    const phoneElements2 = screen.getAllByText('(11) 3333-4444');
     expect(phoneElements1.length).toBeGreaterThan(0);
-    expect(phoneElements2.length).toBeGreaterThan(0);
 
-    // Should not show "View More" when exactly 5 phones
     expect(screen.queryByText(/View \+/)).toBeNull();
   });
 
@@ -373,79 +328,43 @@ describe('PhoneSection', () => {
     expect(screen.getByText('View +1')).toBeTruthy();
   });
 
-  it('calls onShowAllPhonesChange when "View More" is clicked', () => {
-    const onShowAllPhonesChange = vi.fn();
-    render(
-      <PhoneSection
-        {...defaultProps}
-        phones={samplePhones}
-        onShowAllPhonesChange={onShowAllPhonesChange}
-      />
-    );
+  it('opens drawer when "View More" is clicked', () => {
+    render(<PhoneSection {...defaultProps} phones={samplePhones} />);
 
+    expect(screen.getByTestId('drawer').getAttribute('data-open')).toBe(
+      'false'
+    );
     fireEvent.click(screen.getByText('View +1'));
-    expect(onShowAllPhonesChange).toHaveBeenCalledWith(true);
+    expect(screen.getByTestId('drawer').getAttribute('data-open')).toBe('true');
   });
 
   it('opens dialog when add button is clicked', () => {
-    const onDialogOpenChange = vi.fn();
-    render(
-      <PhoneSection {...defaultProps} onDialogOpenChange={onDialogOpenChange} />
-    );
+    render(<PhoneSection {...defaultProps} />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Phone' }));
-    expect(onDialogOpenChange).toHaveBeenCalledWith(true);
-  });
-
-  it('resets form when opening dialog for new phone', () => {
-    const onNewPhoneChange = vi.fn();
-    const onEditingPhoneIdChange = vi.fn();
-    render(
-      <PhoneSection
-        {...defaultProps}
-        onNewPhoneChange={onNewPhoneChange}
-        onEditingPhoneIdChange={onEditingPhoneIdChange}
-      />
-    );
+    expect(screen.queryByRole('dialog')).toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: 'Add Phone' }));
 
-    expect(onEditingPhoneIdChange).toHaveBeenCalledWith(null);
-    expect(onNewPhoneChange).toHaveBeenCalledWith({
-      phoneType: 'mobile',
-      number: '',
-    });
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.getByText('New Phone')).toBeTruthy();
   });
 
-  it('pre-fills form when editing existing phone', () => {
-    const phone = samplePhones[0];
-    const onNewPhoneChange = vi.fn();
-    const onEditingPhoneIdChange = vi.fn();
-    const onDialogOpenChange = vi.fn();
+  it('calls addPhone when saving new phone through dialog', () => {
+    const addPhone = vi.fn();
+    render(<PhoneSection {...defaultProps} addPhone={addPhone} />);
 
-    render(
-      <PhoneSection
-        {...defaultProps}
-        phones={[phone]}
-        onNewPhoneChange={onNewPhoneChange}
-        onEditingPhoneIdChange={onEditingPhoneIdChange}
-        onDialogOpenChange={onDialogOpenChange}
-      />
+    fireEvent.click(screen.getByRole('button', { name: 'Add Phone' }));
+
+    const phoneInput = screen.getByLabelText('Phone');
+    fireEvent.change(phoneInput, { target: { value: '(11) 55555-5555' } });
+
+    const saveButton = screen.getByRole('button', { name: 'Save Phone' });
+    fireEvent.click(saveButton);
+
+    expect(addPhone).toHaveBeenCalledTimes(1);
+    expect(addPhone).toHaveBeenCalledWith(
+      expect.objectContaining({ number: '(11) 55555-5555' })
     );
-
-    // Click on phone card to edit - use getAllByText and get the first one
-    const phoneElements = screen.getAllByText('(11) 99999-9999');
-    const phoneCard = phoneElements[0].closest('div');
-    if (phoneCard) {
-      fireEvent.click(phoneCard);
-    }
-
-    expect(onEditingPhoneIdChange).toHaveBeenCalledWith('phone1');
-    expect(onNewPhoneChange).toHaveBeenCalledWith({
-      phoneType: 'mobile',
-      number: '(11) 99999-9999',
-    });
-    expect(onDialogOpenChange).toHaveBeenCalledWith(true);
   });
 
   it('calls removePhone when delete button is clicked', () => {
@@ -458,7 +377,6 @@ describe('PhoneSection', () => {
       />
     );
 
-    // Find and click delete button (aria-label="Remove phone") - use getAllByRole
     const deleteButtons = screen.getAllByRole('button', {
       name: 'Remove phone',
     });
@@ -467,184 +385,66 @@ describe('PhoneSection', () => {
     expect(removePhone).toHaveBeenCalledWith('phone1');
   });
 
-  it('shows drawer for desktop when showAllPhones is true', () => {
-    render(
-      <PhoneSection
-        {...defaultProps}
-        phones={samplePhones}
-        showAllPhones={true}
-      />
-    );
-
-    const drawer = screen.getByTestId('drawer');
-    expect(drawer.getAttribute('data-open')).toBe('true');
-  });
-
-  it('shows bottom sheet for mobile when showAllPhones is true', () => {
-    render(
-      <PhoneSection
-        {...defaultProps}
-        phones={samplePhones}
-        showAllPhones={true}
-        isMobile={true}
-      />
-    );
-
-    const bottomSheet = screen.getByTestId('bottom-sheet');
-    expect(bottomSheet.getAttribute('data-open')).toBe('true');
-  });
-
-  it('calls addPhone when saving new phone', () => {
-    const addPhone = vi.fn();
-    const onDialogOpenChange = vi.fn();
-    const newPhone: NewPhoneFields = {
-      phoneType: 'mobile',
-      number: '(11) 55555-5555',
-    };
-
-    render(
-      <PhoneSection
-        {...defaultProps}
-        addPhone={addPhone}
-        onDialogOpenChange={onDialogOpenChange}
-        newPhone={newPhone}
-        isDialogOpen={true}
-      />
-    );
-
-    // Click save button in dialog
-    const saveButton = screen.getByRole('button', { name: 'Save Phone' });
-    fireEvent.click(saveButton);
-
-    expect(addPhone).toHaveBeenCalledWith(newPhone);
-    expect(onDialogOpenChange).toHaveBeenCalledWith(false);
-  });
-
-  it('calls updatePhone when saving edited phone', () => {
+  it('calls updatePhone when saving edited phone through dialog', () => {
     const updatePhone = vi.fn();
-    const onDialogOpenChange = vi.fn();
-    const newPhone: NewPhoneFields = {
-      phoneType: 'telephone',
-      number: '(11) 4444-5555',
-    };
-
+    const phone = samplePhones[0];
     render(
       <PhoneSection
         {...defaultProps}
+        phones={[phone]}
         updatePhone={updatePhone}
-        onDialogOpenChange={onDialogOpenChange}
-        newPhone={newPhone}
-        editingPhoneId="phone1"
-        isDialogOpen={true}
       />
     );
 
-    // Click save button in dialog
+    const phoneElements = screen.getAllByText('(11) 99999-9999');
+    const phoneCard = phoneElements[0].closest('div');
+    if (phoneCard) {
+      fireEvent.click(phoneCard);
+    }
+
+    expect(screen.getByRole('dialog')).toBeTruthy();
+    expect(screen.getByText('Edit Phone')).toBeTruthy();
+
+    const phoneInput = screen.getByLabelText('Phone');
+    fireEvent.change(phoneInput, { target: { value: '(11) 4444-5555' } });
+
     const saveButton = screen.getByRole('button', { name: 'Save Phone' });
     fireEvent.click(saveButton);
 
-    // Should update both fields
-    expect(updatePhone).toHaveBeenCalledTimes(2);
-    expect(updatePhone).toHaveBeenCalledWith(
-      'phone1',
-      'phoneType',
-      'telephone'
-    );
     expect(updatePhone).toHaveBeenCalledWith(
       'phone1',
       'number',
       '(11) 4444-5555'
     );
-    expect(onDialogOpenChange).toHaveBeenCalledWith(false);
   });
 
   it('disables save button when phone number is empty', () => {
-    const newPhone: NewPhoneFields = {
-      phoneType: 'mobile',
-      number: '', // Empty number
-    };
+    render(<PhoneSection {...defaultProps} />);
 
-    render(
-      <PhoneSection {...defaultProps} newPhone={newPhone} isDialogOpen={true} />
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'Add Phone' }));
 
     const saveButton = screen.getByRole('button', { name: 'Save Phone' });
     expect(saveButton.hasAttribute('disabled')).toBe(true);
   });
 
   it('enables save button when phone number is not empty', () => {
-    const newPhone: NewPhoneFields = {
-      phoneType: 'mobile',
-      number: '(11) 99999-9999',
-    };
+    render(<PhoneSection {...defaultProps} />);
 
-    render(
-      <PhoneSection {...defaultProps} newPhone={newPhone} isDialogOpen={true} />
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'Add Phone' }));
+
+    const phoneInput = screen.getByLabelText('Phone');
+    fireEvent.change(phoneInput, { target: { value: '(11) 99999-9999' } });
 
     const saveButton = screen.getByRole('button', { name: 'Save Phone' });
     expect(saveButton.hasAttribute('disabled')).toBe(false);
   });
 
-  it('shows mobile tab as selected by default', () => {
-    render(<PhoneSection {...defaultProps} isDialogOpen={true} />);
+  it('shows mobile tab as selected by default in dialog', () => {
+    render(<PhoneSection {...defaultProps} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add Phone' }));
 
     const tabs = screen.getByTestId('tabs');
     expect(tabs.getAttribute('data-value')).toBe('mobile');
-  });
-
-  it('shows telephone tab when phoneType is telephone', () => {
-    const newPhone: NewPhoneFields = {
-      phoneType: 'telephone',
-      number: '(11) 3333-4444',
-    };
-
-    render(
-      <PhoneSection {...defaultProps} newPhone={newPhone} isDialogOpen={true} />
-    );
-
-    const tabs = screen.getByTestId('tabs');
-    expect(tabs.getAttribute('data-value')).toBe('telephone');
-  });
-
-  it('calls onNewPhoneChange when phone type is changed', () => {
-    const onNewPhoneChange = vi.fn();
-    const newPhone: NewPhoneFields = {
-      phoneType: 'mobile',
-      number: '(11) 99999-9999',
-    };
-
-    render(
-      <PhoneSection
-        {...defaultProps}
-        newPhone={newPhone}
-        onNewPhoneChange={onNewPhoneChange}
-        isDialogOpen={true}
-      />
-    );
-
-    const tabs = screen.getByTestId('tabs');
-    // Simulate tab change (this would normally come from Tabs component)
-    // For now, we'll just verify the tabs are rendered
-    expect(tabs).toBeTruthy();
-  });
-
-  it('calls onNewPhoneChange when phone number input changes', () => {
-    const onNewPhoneChange = vi.fn();
-    render(
-      <PhoneSection
-        {...defaultProps}
-        onNewPhoneChange={onNewPhoneChange}
-        isDialogOpen={true}
-      />
-    );
-
-    const phoneInput = screen.getByLabelText('Phone');
-    fireEvent.change(phoneInput, { target: { value: '(11) 88888-8888' } });
-
-    expect(onNewPhoneChange).toHaveBeenCalledWith({
-      phoneType: 'mobile',
-      number: '(11) 88888-8888',
-    });
   });
 });

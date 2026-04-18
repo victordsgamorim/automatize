@@ -1,47 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Smartphone, Phone as PhoneIcon, Trash2, Plus } from 'lucide-react';
 import {
   Button,
-  PrimaryButton,
   SecondaryButton,
   Text,
   Card,
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
   Drawer,
   BottomSheet,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  Input,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useResponsive } from '@automatize/ui/responsive';
 import type { Phone, PhoneType } from '../../ClientFormScreen.types';
+import { PhoneDialog } from '../../../components/PhoneDialog/PhoneDialog.web';
+import { usePhoneDialog } from '../../../components/PhoneDialog/usePhoneDialog';
 
 const MAX_VISIBLE_PHONES = 5;
 
 export type NewPhoneFields = Omit<Phone, 'id'>;
+
+const EMPTY_PHONE: NewPhoneFields = {
+  phoneType: 'mobile',
+  number: '',
+};
 
 export interface PhoneSectionProps {
   phones: Phone[];
   addPhone: (data: NewPhoneFields) => void;
   removePhone: (id: string) => void;
   updatePhone: (id: string, field: keyof NewPhoneFields, value: string) => void;
-  isDialogOpen: boolean;
-  onDialogOpenChange: (open: boolean) => void;
-  newPhone: NewPhoneFields;
-  onNewPhoneChange: (
-    data: NewPhoneFields | ((prev: NewPhoneFields) => NewPhoneFields)
-  ) => void;
-  editingPhoneId: string | null;
-  onEditingPhoneIdChange: (id: string | null) => void;
-  showAllPhones: boolean;
-  onShowAllPhonesChange: (show: boolean) => void;
   clientType?: 'individual' | 'business';
   isMobile?: boolean;
 }
@@ -65,14 +51,6 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
   addPhone,
   removePhone,
   updatePhone,
-  isDialogOpen,
-  onDialogOpenChange,
-  newPhone,
-  onNewPhoneChange,
-  editingPhoneId,
-  onEditingPhoneIdChange,
-  showAllPhones,
-  onShowAllPhonesChange,
   clientType = 'individual',
   isMobile: propIsMobile,
 }) => {
@@ -80,40 +58,36 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
   const { isMobile: responsiveIsMobile } = useResponsive();
   const isMobile = propIsMobile ?? responsiveIsMobile;
 
+  const [showAllPhones, setShowAllPhones] = useState(false);
+  const phoneDialog = usePhoneDialog<NewPhoneFields>(EMPTY_PHONE);
+
   const visiblePhones = phones.slice(0, MAX_VISIBLE_PHONES);
 
-  const handleOpenPhoneDialog = () => {
-    onEditingPhoneIdChange(null);
-    onNewPhoneChange({
+  const handleOpenNew = () => {
+    phoneDialog.openNew({
       phoneType: clientType === 'business' ? 'telephone' : 'mobile',
-      number: '',
     });
-    onDialogOpenChange(true);
   };
 
-  const handleEditPhone = (phone: Phone) => {
-    onEditingPhoneIdChange(phone.id);
-    onNewPhoneChange({
-      phoneType: phone.phoneType,
-      number: phone.number,
-    });
-    onDialogOpenChange(true);
+  const handleEdit = (phone: Phone) => {
+    phoneDialog.openEdit(phone);
   };
 
-  const handleSavePhone = () => {
-    if (editingPhoneId) {
+  const handleSave = () => {
+    const editingId = phoneDialog.editingId;
+    if (editingId) {
       const fields: (keyof NewPhoneFields)[] = ['phoneType', 'number'];
       fields.forEach((field) => {
-        updatePhone(editingPhoneId, field, newPhone[field]);
+        updatePhone(editingId, field, phoneDialog.data[field]);
       });
     } else {
-      addPhone(newPhone);
+      addPhone(phoneDialog.data);
     }
-    onDialogOpenChange(false);
+    phoneDialog.close();
   };
 
-  const handleClosePhonePanel = () => {
-    onShowAllPhonesChange(false);
+  const handleClosePanel = () => {
+    setShowAllPhones(false);
   };
 
   const phoneListItems = (
@@ -125,7 +99,7 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
           className={`relative group min-h-[60px] cursor-pointer transition-colors ${
             isMobile ? '' : 'hover:bg-accent'
           }`}
-          onClick={() => handleEditPhone(phone)}
+          onClick={() => handleEdit(phone)}
         >
           <div className="flex items-start gap-2 pr-8">
             <PhoneTypeIcon
@@ -175,7 +149,7 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
           <SecondaryButton
             type="button"
             size="icon"
-            onClick={handleOpenPhoneDialog}
+            onClick={handleOpenNew}
             aria-label={t('client.phone.add')}
           >
             <Plus className="size-4" />
@@ -193,7 +167,7 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
                 key={phone.id}
                 padding="sm"
                 className="relative group w-fit cursor-pointer hover:bg-accent transition-colors"
-                onClick={() => handleEditPhone(phone)}
+                onClick={() => handleEdit(phone)}
               >
                 <div className="flex items-start gap-2 pr-6">
                   <PhoneTypeIcon
@@ -238,7 +212,7 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
                 <Button
                   type="button"
                   variant="link"
-                  onClick={() => onShowAllPhonesChange(true)}
+                  onClick={() => setShowAllPhones(true)}
                 >
                   {t('client.phone.viewMore', {
                     count: phones.length - MAX_VISIBLE_PHONES,
@@ -250,11 +224,10 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
         )}
       </div>
 
-      {/* Phone panel: drawer (desktop) or bottom sheet (mobile) */}
       {isMobile ? (
         <BottomSheet
           open={showAllPhones}
-          onClose={handleClosePhonePanel}
+          onClose={handleClosePanel}
           title={t('client.phone.allTitle')}
         >
           {phoneListItems}
@@ -262,86 +235,31 @@ export const PhoneSection: React.FC<PhoneSectionProps> = ({
       ) : (
         <Drawer
           open={showAllPhones}
-          onClose={handleClosePhonePanel}
+          onClose={handleClosePanel}
           title={t('client.phone.allTitle')}
         >
           {phoneListItems}
         </Drawer>
       )}
 
-      {/* Phone creation/edit dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={onDialogOpenChange}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editingPhoneId
-                ? t('client.phone.dialog.editTitle')
-                : t('client.phone.dialog.title')}
-            </DialogTitle>
-            <DialogDescription>{t('client.phone.add')}</DialogDescription>
-          </DialogHeader>
-          <div
-            className="space-y-4"
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey && newPhone.number.trim()) {
-                e.preventDefault();
-                handleSavePhone();
-              }
-            }}
-          >
-            <Tabs
-              value={newPhone.phoneType}
-              onValueChange={(val: string) =>
-                onNewPhoneChange({
-                  ...newPhone,
-                  phoneType: val as PhoneType,
-                })
-              }
-            >
-              <TabsList variant="default" size="sm">
-                <TabsTrigger value="mobile">
-                  <Smartphone className="size-3.5" />
-                  {t('client.phone.type.mobile')}
-                </TabsTrigger>
-                <TabsTrigger value="telephone">
-                  <PhoneIcon className="size-3.5" />
-                  {t('client.phone.type.telephone')}
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-
-            <Input
-              id="new-phone-number"
-              label={t('client.phone.label')}
-              placeholder={t('client.phone.placeholder')}
-              value={newPhone.number}
-              onChange={(e) =>
-                onNewPhoneChange({
-                  ...newPhone,
-                  number: e.target.value,
-                })
-              }
-            />
-          </div>
-          <DialogFooter>
-            <SecondaryButton
-              type="button"
-              onClick={() => onDialogOpenChange(false)}
-              shortcut="Esc"
-            >
-              {t('app.cancel')}
-            </SecondaryButton>
-            <PrimaryButton
-              type="button"
-              onClick={handleSavePhone}
-              disabled={!newPhone.number.trim()}
-              shortcut="Enter"
-            >
-              {t('client.phone.save')}
-            </PrimaryButton>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <PhoneDialog
+        open={phoneDialog.isOpen}
+        onOpenChange={(v) => {
+          if (!v) phoneDialog.close();
+        }}
+        data={phoneDialog.data}
+        onChange={phoneDialog.setData}
+        onSave={handleSave}
+        editingId={phoneDialog.editingId}
+        variant="tabs"
+        title={
+          phoneDialog.editingId
+            ? t('client.phone.dialog.editTitle')
+            : t('client.phone.dialog.title')
+        }
+        description={t('client.phone.add')}
+        saveLabel={t('client.phone.save')}
+      />
     </>
   );
 };
