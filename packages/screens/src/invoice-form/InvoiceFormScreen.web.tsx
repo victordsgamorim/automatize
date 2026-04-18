@@ -64,8 +64,10 @@ export const InvoiceFormScreen: React.FC<InvoiceFormScreenProps> = ({
     clientPhones,
     selectClient,
     clearClient,
+    pickClientAddress,
     addClientAddress,
     removeClientAddress,
+    pickClientPhone,
     addClientPhone,
     removeClientPhone,
     products,
@@ -235,8 +237,10 @@ export const InvoiceFormScreen: React.FC<InvoiceFormScreenProps> = ({
                 clientPhones={clientPhones}
                 onSelectClient={selectClient}
                 onClearClient={clearClient}
+                onSelectAddress={pickClientAddress}
                 onAddAddress={addClientAddress}
                 onRemoveAddress={removeClientAddress}
+                onTogglePhone={pickClientPhone}
                 onAddPhone={addClientPhone}
                 onRemovePhone={removeClientPhone}
                 onSaveAddressToClient={handleSaveAddressToClient}

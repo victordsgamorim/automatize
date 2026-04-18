@@ -24,8 +24,10 @@ export interface UseInvoiceFormResult {
   clientPhones: ClientPhone[];
   selectClient: (client: ClientRow) => void;
   clearClient: () => void;
+  pickClientAddress: (address: ClientAddress) => void;
   addClientAddress: (data: Omit<ClientAddress, 'id'>) => void;
   removeClientAddress: (id: string) => void;
+  pickClientPhone: (phone: ClientPhone) => void;
   addClientPhone: (data: Omit<ClientPhone, 'id'>) => void;
   removeClientPhone: (id: string) => void;
 
@@ -129,8 +131,9 @@ export function useInvoiceForm(
   const selectClient = useCallback((client: ClientRow) => {
     setClientId(client.id);
     setClientName(client.name);
-    setClientAddresses(client.addresses);
-    setClientPhones(client.phones);
+    // Don't auto-copy: user selects addresses and phones via dropdowns
+    setClientAddresses([]);
+    setClientPhones([]);
   }, []);
 
   const clearClient = useCallback(() => {
@@ -140,12 +143,27 @@ export function useInvoiceForm(
     setClientPhones([]);
   }, []);
 
+  /** Select one address from client's saved list (preserves ID, replaces any existing). */
+  const pickClientAddress = useCallback((address: ClientAddress) => {
+    setClientAddresses([address]);
+  }, []);
+
+  /** Add a custom address entered via dialog (replaces any existing — single address UX). */
   const addClientAddress = useCallback((data: Omit<ClientAddress, 'id'>) => {
-    setClientAddresses((prev) => [...prev, { ...data, id: generateId() }]);
+    setClientAddresses([{ ...data, id: generateId() }]);
   }, []);
 
   const removeClientAddress = useCallback((id: string) => {
     setClientAddresses((prev) => prev.filter((a) => a.id !== id));
+  }, []);
+
+  /** Toggle a phone from client's saved list (preserves ID, multi-select). */
+  const pickClientPhone = useCallback((phone: ClientPhone) => {
+    setClientPhones((prev) => {
+      const exists = prev.some((p) => p.id === phone.id);
+      if (exists) return prev.filter((p) => p.id !== phone.id);
+      return [...prev, phone];
+    });
   }, []);
 
   const addClientPhone = useCallback((data: Omit<ClientPhone, 'id'>) => {
@@ -284,8 +302,10 @@ export function useInvoiceForm(
     clientPhones,
     selectClient,
     clearClient,
+    pickClientAddress,
     addClientAddress,
     removeClientAddress,
+    pickClientPhone,
     addClientPhone,
     removeClientPhone,
     products,
