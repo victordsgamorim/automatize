@@ -170,7 +170,7 @@ vi.mock('@automatize/core-localization', () => ({
 }));
 
 import { WarrantySection } from '../WarrantySection.web';
-import type { WarrantyOption } from '../../InvoiceFormScreen.types';
+import type { WarrantyOption } from '../../../InvoiceFormScreen.types';
 
 const mockWarrantyOptions: WarrantyOption[] = [
   { id: 'custom-1', label: 'Custom 1 Month', months: 1 },

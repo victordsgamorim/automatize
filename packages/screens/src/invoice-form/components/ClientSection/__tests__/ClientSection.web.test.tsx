@@ -241,7 +241,7 @@ import type {
   ClientRow,
   ClientAddress,
   ClientPhone,
-} from '../../InvoiceFormScreen.types';
+} from '../../../InvoiceFormScreen.types';
 
 const mockClients: ClientRow[] = [
   {

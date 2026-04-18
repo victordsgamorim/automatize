@@ -70,6 +70,13 @@ module.exports = {
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
+        // Unused args in test mocks use underscore prefix convention
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+        ],
+        // Mock props need explicit types that may be unused in test context
+        '@typescript-eslint/no-explicit-any': 'off',
       },
     },
   ],

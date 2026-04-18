@@ -124,7 +124,7 @@ import { ProductsSection } from '../ProductsSection.web';
 import type {
   ProductRow,
   InvoiceProductItem,
-} from '../../InvoiceFormScreen.types';
+} from '../../../InvoiceFormScreen.types';
 
 const mockProducts: ProductRow[] = [
   { id: 'prod-1', name: 'Product A', price: 100, quantity: 10 },

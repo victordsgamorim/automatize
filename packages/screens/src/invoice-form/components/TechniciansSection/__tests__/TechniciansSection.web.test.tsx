@@ -208,12 +208,12 @@ import { TechniciansSection } from '../TechniciansSection.web';
 import type {
   TechnicianRow,
   InvoiceTechnician,
-} from '../../InvoiceFormScreen.types';
+} from '../../../InvoiceFormScreen.types';
 
 const mockTechnicians: TechnicianRow[] = [
-  { id: 'tech-1', name: 'John Doe', active: true },
-  { id: 'tech-2', name: 'Jane Smith', active: true },
-  { id: 'tech-3', name: 'Bob Wilson', active: false },
+  { id: 'tech-1', name: 'John Doe', entryDate: '2024-01-01' },
+  { id: 'tech-2', name: 'Jane Smith', entryDate: '2024-02-01' },
+  { id: 'tech-3', name: 'Bob Wilson', entryDate: '2024-03-01' },
 ];
 
 const mockSelectedTechnicians: InvoiceTechnician[] = [

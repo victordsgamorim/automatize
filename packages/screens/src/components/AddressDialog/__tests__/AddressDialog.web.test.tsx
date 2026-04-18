@@ -193,21 +193,10 @@ vi.mock('@automatize/core-localization', () => ({
 }));
 
 import { AddressDialog } from '../AddressDialog.web';
-import type { AddressFields } from '../useAddressDialog';
 
 function renderAddressDialog(
   overrides: Partial<React.ComponentProps<typeof AddressDialog>> = {}
 ) {
-  const defaults: AddressFields = {
-    street: '',
-    number: '',
-    neighborhood: '',
-    city: '',
-    state: '',
-    info: undefined,
-    addressType: 'residence',
-  };
-
   const onChange = vi.fn();
   const onSave = vi.fn();
   const onOpenChange = vi.fn();
@@ -215,11 +204,11 @@ function renderAddressDialog(
   const props = {
     open: true,
     onOpenChange,
-    data: defaults,
+    data: {},
     onChange,
     onSave,
     editingId: null,
-    variant: 'tabs',
+    variant: 'tabs' as const,
     title: 'Test Title',
     description: 'Test Description',
     saveLabel: 'Save',

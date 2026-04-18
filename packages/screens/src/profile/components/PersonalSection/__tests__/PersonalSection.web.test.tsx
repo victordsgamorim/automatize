@@ -68,7 +68,7 @@ vi.mock(
 );
 
 import { PersonalSection } from '../PersonalSection.web';
-import type { Phone } from '../../ProfileScreen.types';
+import type { Phone } from '../../../ProfileScreen.types';
 
 function renderPersonalSection(
   overrides: Partial<React.ComponentProps<typeof PersonalSection>> = {}
