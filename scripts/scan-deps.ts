@@ -271,7 +271,7 @@ function resolveVersion(
 
   const namedMatch = version.match(/^catalog:(\w[\w-]*)$/);
   if (namedMatch) {
-    const catalogName = namedMatch[1]!;
+    const catalogName = namedMatch[1];
     const catalog = namedCatalogs.get(catalogName);
     const resolved = catalog?.get(depName);
     return {
@@ -398,7 +398,7 @@ function scan(): ScanResult {
     const versions = [...new Set(entries.map((e) => e.resolvedVersion))];
     const hasConflict = versions.length > 1;
 
-    let recommendedVersion = versions[0]!;
+    let recommendedVersion = versions[0];
     for (const v of versions.slice(1)) {
       recommendedVersion = pickHigherVersion(recommendedVersion, v);
     }
