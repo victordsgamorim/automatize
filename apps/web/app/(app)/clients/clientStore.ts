@@ -62,7 +62,19 @@ export function addAddressToClient(
   if (formData) {
     clientFormDataMap.set(clientId, {
       ...formData,
-      addresses: [...formData.addresses, address],
+      addresses: [
+        ...formData.addresses,
+        {
+          id: address.id,
+          addressType: address.addressType ?? 'residence',
+          street: address.street,
+          number: address.number,
+          neighborhood: address.neighborhood,
+          city: address.city,
+          state: address.state,
+          info: address.info ?? '',
+        },
+      ],
     });
   }
   emitChange();
@@ -76,7 +88,14 @@ export function addPhoneToClient(clientId: string, phone: ClientPhone): void {
   if (formData) {
     clientFormDataMap.set(clientId, {
       ...formData,
-      phones: [...formData.phones, phone],
+      phones: [
+        ...formData.phones,
+        {
+          id: phone.id,
+          phoneType: phone.phoneType ?? 'mobile',
+          number: phone.number,
+        },
+      ],
     });
   }
   emitChange();
