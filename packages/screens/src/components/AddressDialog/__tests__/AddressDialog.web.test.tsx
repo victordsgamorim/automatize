@@ -64,11 +64,13 @@ vi.mock('@automatize/ui/web', async () => {
     id,
     _autoFocus,
   }: {
+    _label?: unknown;
     label?: string;
     value: string;
     onChange: (value: string) => void;
     placeholder?: string;
     id: string;
+    _autoFocus?: unknown;
     autoFocus?: boolean;
   }) => {
     return React.createElement('input', {
@@ -84,6 +86,7 @@ vi.mock('@automatize/ui/web', async () => {
     className,
     children,
   }: {
+    _color?: unknown;
     htmlFor?: string;
     color?: string;
     className?: string;
@@ -132,8 +135,8 @@ vi.mock('@automatize/ui/web', async () => {
     children,
     onClick,
     disabled,
-    _shortcut,
   }: {
+    _shortcut?: unknown;
     children?: React.ReactNode;
     onClick: () => void;
     disabled?: boolean;
@@ -150,8 +153,8 @@ vi.mock('@automatize/ui/web', async () => {
   const SecondaryButton = ({
     children,
     onClick,
-    _shortcut,
   }: {
+    _shortcut?: unknown;
     children?: React.ReactNode;
     onClick: () => void;
     shortcut?: string;
