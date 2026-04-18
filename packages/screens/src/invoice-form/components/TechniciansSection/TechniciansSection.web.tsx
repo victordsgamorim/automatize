@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Check, ChevronsUpDown, X, Wrench } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Check, ChevronsUpDown, Plus, X, Wrench } from 'lucide-react';
 import {
   Popover,
   PopoverTrigger,
@@ -10,6 +10,7 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandItem,
+  CommandSeparator,
   Dialog,
   DialogContent,
   DialogHeader,
@@ -49,20 +50,41 @@ export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [addMode, setAddMode] = useState(false);
   const [newName, setNewName] = useState('');
   const [pendingName, setPendingName] = useState<string | null>(null);
 
   const selectedIds = new Set(selectedTechnicians.map((tech) => tech.id));
+  const availableIds = new Set(availableTechnicians.map((tech) => tech.id));
+
+  const dropdownTechnicians = useMemo(() => {
+    const extras = selectedTechnicians
+      .filter((tech) => !availableIds.has(tech.id))
+      .map(({ id, name }) => ({ id, name, entryDate: '' }));
+    return [...availableTechnicians, ...extras];
+  }, [availableTechnicians, selectedTechnicians, availableIds]);
+
+  const selectedCount = selectedTechnicians.length;
+
+  const handleOpenChange = (value: boolean) => {
+    setOpen(value);
+    if (!value) {
+      setAddMode(false);
+      setNewName('');
+    }
+  };
 
   const handleAddNew = () => {
     const trimmed = newName.trim();
     if (!trimmed) return;
-    setNewName('');
     if (onSaveTechnicianToTable) {
       setPendingName(trimmed);
     } else {
       onAddNewTechnician(trimmed);
     }
+    setNewName('');
+    setAddMode(false);
+    setOpen(false);
   };
 
   const handleSaveToTable = () => {
@@ -78,16 +100,13 @@ export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
     setPendingName(null);
   };
 
-  const selectedCount = selectedTechnicians.length;
-
   return (
     <div className="space-y-4">
       <Text variant="bodySmall" color="muted">
         {t('invoice.technicians')}
       </Text>
 
-      {/* Dropdown to pick technicians */}
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
           <button
             type="button"
@@ -109,48 +128,99 @@ export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
             <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
           </button>
         </PopoverTrigger>
+
         <PopoverContent
           className="p-0"
           style={{ width: 'var(--radix-popover-trigger-width)' }}
           align="start"
         >
-          <Command>
-            <CommandInput placeholder={t('invoice.technicians.search')} />
-            <CommandList>
-              <CommandEmpty>{t('invoice.technicians.empty')}</CommandEmpty>
-              <CommandGroup>
-                {availableTechnicians.map((tech) => {
-                  const isSelected = selectedIds.has(tech.id);
-                  return (
-                    <CommandItem
-                      key={tech.id}
-                      value={tech.name}
-                      onSelect={() => {
-                        if (!isSelected) {
-                          onAddTechnician(tech);
-                        }
-                      }}
-                      disabled={isSelected}
-                      className={cn(isSelected && 'opacity-60 cursor-default')}
-                    >
-                      <Check
+          {addMode ? (
+            <div className="p-3 space-y-3">
+              <Input
+                placeholder={t('invoice.technicians.addPlaceholder')}
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddNew();
+                  }
+                  if (e.key === 'Escape') {
+                    e.preventDefault();
+                    setAddMode(false);
+                    setNewName('');
+                  }
+                }}
+              />
+              <div className="flex gap-2 justify-end">
+                <SecondaryButton
+                  type="button"
+                  size="sm"
+                  onClick={() => {
+                    setAddMode(false);
+                    setNewName('');
+                  }}
+                >
+                  {t('invoice.cancel')}
+                </SecondaryButton>
+                <PrimaryButton
+                  type="button"
+                  size="sm"
+                  onClick={handleAddNew}
+                  disabled={!newName.trim()}
+                >
+                  {t('invoice.technicians.add')}
+                </PrimaryButton>
+              </div>
+            </div>
+          ) : (
+            <Command>
+              <CommandInput placeholder={t('invoice.technicians.search')} />
+              <CommandList>
+                <CommandEmpty>{t('invoice.technicians.empty')}</CommandEmpty>
+                <CommandGroup>
+                  {dropdownTechnicians.map((tech) => {
+                    const isSelected = selectedIds.has(tech.id);
+                    return (
+                      <CommandItem
+                        key={tech.id}
+                        value={tech.name}
+                        onSelect={() => {
+                          if (!isSelected) {
+                            onAddTechnician(tech);
+                          }
+                        }}
+                        disabled={isSelected}
                         className={cn(
-                          'mr-2 size-4 shrink-0',
-                          isSelected ? 'opacity-100' : 'opacity-0'
+                          isSelected && 'opacity-60 cursor-default'
                         )}
-                      />
-                      <Wrench className="mr-2 size-4 shrink-0 text-muted-foreground" />
-                      {tech.name}
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-            </CommandList>
-          </Command>
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 size-4 shrink-0',
+                            isSelected ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                        <Wrench className="mr-2 size-4 shrink-0 text-muted-foreground" />
+                        {tech.name}
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+                <CommandSeparator />
+                <CommandGroup>
+                  <CommandItem onSelect={() => setAddMode(true)}>
+                    <Plus className="mr-2 size-4" />
+                    {t('invoice.technicians.addNew')}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          )}
         </PopoverContent>
       </Popover>
 
-      {/* Selected technician chips */}
       {selectedTechnicians.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {selectedTechnicians.map((tech) => (
@@ -191,31 +261,6 @@ export const TechniciansSection: React.FC<TechniciansSectionProps> = ({
         </div>
       )}
 
-      {/* Add new technician inline */}
-      <div className="flex gap-2">
-        <Input
-          placeholder={t('invoice.technicians.addPlaceholder')}
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              handleAddNew();
-            }
-          }}
-          className="flex-1"
-        />
-        <PrimaryButton
-          type="button"
-          onClick={handleAddNew}
-          disabled={!newName.trim()}
-          className="h-10 shrink-0"
-        >
-          {t('invoice.technicians.add')}
-        </PrimaryButton>
-      </div>
-
-      {/* Save-to-table confirmation dialog */}
       <Dialog
         open={pendingName !== null}
         onOpenChange={(open) => {

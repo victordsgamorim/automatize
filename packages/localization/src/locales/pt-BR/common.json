@@ -341,6 +341,7 @@
   "invoice.technicians.saveToTable.description": "Deseja adicionar \"{{name}}\" à lista de técnicos?",
   "invoice.technicians.saveToTable.confirm": "Salvar na lista",
   "invoice.technicians.saveToTable.skip": "Apenas nesta fatura",
+  "invoice.technicians.addNew": "Adicionar novo técnico",
   "invoice.warranty": "Garantia",
   "invoice.warranty.placeholder": "Selecione o período de garantia",
   "invoice.warranty.search": "Buscar opções de garantia...",
