@@ -107,6 +107,26 @@
       "types": "./dist/technician/web.d.ts",
       "import": "./dist/technician/web.mjs",
       "require": "./dist/technician/web.js"
+    },
+    "./invoice": {
+      "types": "./dist/invoice/index.d.ts",
+      "import": "./dist/invoice/index.mjs",
+      "require": "./dist/invoice/index.js"
+    },
+    "./invoice/web": {
+      "types": "./dist/invoice/web.d.ts",
+      "import": "./dist/invoice/web.mjs",
+      "require": "./dist/invoice/web.js"
+    },
+    "./invoice-form": {
+      "types": "./dist/invoice-form/index.d.ts",
+      "import": "./dist/invoice-form/index.mjs",
+      "require": "./dist/invoice-form/index.js"
+    },
+    "./invoice-form/web": {
+      "types": "./dist/invoice-form/web.d.ts",
+      "import": "./dist/invoice-form/web.mjs",
+      "require": "./dist/invoice-form/web.js"
     }
   },
   "scripts": {
