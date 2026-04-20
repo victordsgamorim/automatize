@@ -58,6 +58,10 @@ function toTs(obj: unknown, depth = 0): string {
 
   if (Array.isArray(obj)) {
     if (obj.length === 0) return '[]';
+    const inline = obj.every((v) => typeof v !== 'object' || v === null);
+    if (inline && obj.length <= 6) {
+      return `[${obj.map((v) => toTs(v, depth)).join(', ')}]`;
+    }
     const items = obj.map((v) => `${pad1}${toTs(v, depth + 1)}`);
     return `[\n${items.join(',\n')},\n${pad}]`;
   }
