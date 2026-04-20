@@ -139,7 +139,7 @@ export const ProductScreen: React.FC<ProductScreenProps> = ({
 
       <Separator />
 
-      {/* Company */}
+      {/* Supplier */}
       {selectedProduct.companyName && (
         <>
           <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
@@ -148,7 +148,7 @@ export const ProductScreen: React.FC<ProductScreenProps> = ({
             </div>
             <div className="min-w-0">
               <Text variant="label" className="block text-muted-foreground">
-                {t('product.company')}
+                {t('product.supplier')}
               </Text>
               <Text variant="body" className="font-medium">
                 {selectedProduct.companyName}

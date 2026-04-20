@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import { CompanySection } from '../CompanySection.web';
-import type { CompanySectionProps } from '../CompanySection.web';
+import { SupplierSection } from '../SupplierSection.web';
+import type { SupplierSectionProps } from '../SupplierSection.web';
 
 vi.mock('@automatize/ui/web', () => ({
   Popover: ({
@@ -150,7 +150,7 @@ vi.mock('@automatize/ui/web', () => ({
     autoFocus?: boolean;
   }) => (
     <input
-      data-testid="add-company-input"
+      data-testid="add-supplier-input"
       value={value}
       onChange={onChange}
       placeholder={placeholder}
@@ -171,36 +171,36 @@ vi.mock('@automatize/core-localization', () => ({
   useTranslation: () => ({
     t: (key: string) =>
       ({
-        'product.company': 'Company',
-        'product.company.placeholder': 'Select a company',
-        'product.company.search': 'Search companies...',
-        'product.company.empty': 'No companies found',
-        'product.company.add': 'Add company',
-        'product.company.addNew': 'Add new company',
-        'product.company.new': 'New company name',
-        'product.company.new.placeholder': 'Enter company name',
+        'product.supplier': 'Supplier',
+        'product.supplier.placeholder': 'Select a supplier',
+        'product.supplier.search': 'Search suppliers...',
+        'product.supplier.empty': 'No suppliers found',
+        'product.supplier.add': 'Add supplier',
+        'product.supplier.addNew': 'Add new supplier',
+        'product.supplier.new': 'New supplier name',
+        'product.supplier.new.placeholder': 'Enter supplier name',
         'product.cancel': 'Cancel',
       })[key] ?? key,
   }),
 }));
 
-const mockCompanies = [
-  { id: 'c1', name: 'Acme Corp' },
-  { id: 'c2', name: 'TechCo' },
+const mockSuppliers = [
+  { id: 's1', name: 'Acme Corp' },
+  { id: 's2', name: 'TechCo' },
 ];
 
-const defaultProps: CompanySectionProps = {
-  companies: mockCompanies,
-  selectedCompanyId: undefined,
-  onCompanySelect: vi.fn(),
-  onAddCompany: vi.fn(),
+const defaultProps: SupplierSectionProps = {
+  suppliers: mockSuppliers,
+  selectedSupplierId: undefined,
+  onSupplierSelect: vi.fn(),
+  onAddSupplier: vi.fn(),
 };
 
-function renderSection(props: Partial<CompanySectionProps> = {}) {
-  return render(<CompanySection {...defaultProps} {...props} />);
+function renderSection(props: Partial<SupplierSectionProps> = {}) {
+  return render(<SupplierSection {...defaultProps} {...props} />);
 }
 
-describe('CompanySection (web)', () => {
+describe('SupplierSection (web)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -208,16 +208,16 @@ describe('CompanySection (web)', () => {
   describe('rendering', () => {
     it('renders the section label', () => {
       renderSection();
-      expect(screen.getByText('Company')).toBeDefined();
+      expect(screen.getByText('Supplier')).toBeDefined();
     });
 
-    it('shows placeholder when no company is selected', () => {
+    it('shows placeholder when no supplier is selected', () => {
       renderSection();
-      expect(screen.getByText('Select a company')).toBeDefined();
+      expect(screen.getByText('Select a supplier')).toBeDefined();
     });
 
-    it('shows selected company name when one is selected', () => {
-      renderSection({ selectedCompanyId: 'c1' });
+    it('shows selected supplier name when one is selected', () => {
+      renderSection({ selectedSupplierId: 's1' });
       const trigger = screen.getByRole('combobox');
       expect(trigger.textContent?.includes('Acme Corp')).toBe(true);
     });
@@ -231,7 +231,7 @@ describe('CompanySection (web)', () => {
       expect(screen.getByTestId('popover-content')).toBeDefined();
     });
 
-    it('shows company list when popover is open', () => {
+    it('shows supplier list when popover is open', () => {
       renderSection();
       fireEvent.click(screen.getByRole('combobox'));
       expect(screen.getByTestId('command')).toBeDefined();
@@ -240,92 +240,92 @@ describe('CompanySection (web)', () => {
     it('shows search input in popover', () => {
       renderSection();
       fireEvent.click(screen.getByRole('combobox'));
-      expect(screen.getByPlaceholderText('Search companies...')).toBeDefined();
+      expect(screen.getByPlaceholderText('Search suppliers...')).toBeDefined();
     });
 
-    it('shows "No companies found" empty message', () => {
+    it('shows "No suppliers found" empty message', () => {
       renderSection();
       fireEvent.click(screen.getByRole('combobox'));
-      expect(screen.getByText('No companies found')).toBeDefined();
+      expect(screen.getByText('No suppliers found')).toBeDefined();
     });
   });
 
-  describe('company selection', () => {
-    it('calls onCompanySelect when a company item is clicked', () => {
-      const onCompanySelect = vi.fn();
-      renderSection({ onCompanySelect });
+  describe('supplier selection', () => {
+    it('calls onSupplierSelect when a supplier item is clicked', () => {
+      const onSupplierSelect = vi.fn();
+      renderSection({ onSupplierSelect });
       fireEvent.click(screen.getByRole('combobox'));
       fireEvent.click(screen.getByTestId('command-item-Acme Corp'));
-      expect(onCompanySelect).toHaveBeenCalledWith('c1');
+      expect(onSupplierSelect).toHaveBeenCalledWith('s1');
     });
 
-    it('calls onCompanySelect with undefined when clicking the already-selected company', () => {
-      const onCompanySelect = vi.fn();
-      renderSection({ selectedCompanyId: 'c1', onCompanySelect });
+    it('calls onSupplierSelect with undefined when clicking the already-selected supplier', () => {
+      const onSupplierSelect = vi.fn();
+      renderSection({ selectedSupplierId: 's1', onSupplierSelect });
       fireEvent.click(screen.getByRole('combobox'));
       fireEvent.click(screen.getByTestId('command-item-Acme Corp'));
-      expect(onCompanySelect).toHaveBeenCalledWith(undefined);
+      expect(onSupplierSelect).toHaveBeenCalledWith(undefined);
     });
   });
 
-  describe('add new company', () => {
-    it('shows "Add new company" option when onAddCompany is provided', () => {
+  describe('add new supplier', () => {
+    it('shows "Add new supplier" option when onAddSupplier is provided', () => {
       renderSection();
       fireEvent.click(screen.getByRole('combobox'));
-      expect(screen.getByText('Add new company')).toBeDefined();
+      expect(screen.getByText('Add new supplier')).toBeDefined();
     });
 
-    it('does not show "Add new company" when onAddCompany is undefined', () => {
-      renderSection({ onAddCompany: undefined });
+    it('does not show "Add new supplier" when onAddSupplier is undefined', () => {
+      renderSection({ onAddSupplier: undefined });
       fireEvent.click(screen.getByRole('combobox'));
-      expect(screen.queryByText('Add new company')).toBeNull();
+      expect(screen.queryByText('Add new supplier')).toBeNull();
     });
 
-    it('switches to add mode when "Add new company" is clicked', () => {
+    it('switches to add mode when "Add new supplier" is clicked', () => {
       renderSection();
       fireEvent.click(screen.getByRole('combobox'));
-      fireEvent.click(screen.getByText('Add new company'));
-      expect(screen.getByTestId('add-company-input')).toBeDefined();
-      expect(screen.getByText('New company name')).toBeDefined();
+      fireEvent.click(screen.getByText('Add new supplier'));
+      expect(screen.getByTestId('add-supplier-input')).toBeDefined();
+      expect(screen.getByText('New supplier name')).toBeDefined();
     });
 
-    it('"Add company" button is disabled when input is empty', () => {
+    it('"Add supplier" button is disabled when input is empty', () => {
       renderSection();
       fireEvent.click(screen.getByRole('combobox'));
-      fireEvent.click(screen.getByText('Add new company'));
+      fireEvent.click(screen.getByText('Add new supplier'));
       const addBtn = screen
         .getAllByRole('button')
-        .find((b) => b.textContent === 'Add company');
+        .find((b) => b.textContent === 'Add supplier');
       expect((addBtn as HTMLButtonElement)?.disabled).toBe(true);
     });
 
-    it('calls onAddCompany with trimmed name when form is submitted', () => {
-      const onAddCompany = vi.fn();
-      renderSection({ onAddCompany });
+    it('calls onAddSupplier with trimmed name when form is submitted', () => {
+      const onAddSupplier = vi.fn();
+      renderSection({ onAddSupplier });
       fireEvent.click(screen.getByRole('combobox'));
-      fireEvent.click(screen.getByText('Add new company'));
-      fireEvent.change(screen.getByTestId('add-company-input'), {
-        target: { value: '  New Company  ' },
+      fireEvent.click(screen.getByText('Add new supplier'));
+      fireEvent.change(screen.getByTestId('add-supplier-input'), {
+        target: { value: '  New Supplier  ' },
       });
       const addBtn = screen
         .getAllByRole('button')
-        .find((b) => b.textContent === 'Add company');
+        .find((b) => b.textContent === 'Add supplier');
       expect(addBtn).toBeDefined();
       fireEvent.click(addBtn as HTMLButtonElement);
-      expect(onAddCompany).toHaveBeenCalledWith('New Company');
+      expect(onAddSupplier).toHaveBeenCalledWith('New Supplier');
     });
 
     it('returns to list mode when Cancel is clicked in add form', () => {
       renderSection();
       fireEvent.click(screen.getByRole('combobox'));
-      fireEvent.click(screen.getByText('Add new company'));
-      expect(screen.getByTestId('add-company-input')).toBeDefined();
+      fireEvent.click(screen.getByText('Add new supplier'));
+      expect(screen.getByTestId('add-supplier-input')).toBeDefined();
       const cancelBtn = screen
         .getAllByRole('button')
         .find((b) => b.textContent === 'Cancel');
       expect(cancelBtn).toBeDefined();
       fireEvent.click(cancelBtn as HTMLButtonElement);
-      expect(screen.queryByTestId('add-company-input')).toBeNull();
+      expect(screen.queryByTestId('add-supplier-input')).toBeNull();
     });
   });
 });

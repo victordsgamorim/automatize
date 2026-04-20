@@ -108,6 +108,16 @@
       "import": "./dist/technician/web.mjs",
       "require": "./dist/technician/web.js"
     },
+    "./supplier": {
+      "types": "./dist/supplier/index.d.ts",
+      "import": "./dist/supplier/index.mjs",
+      "require": "./dist/supplier/index.js"
+    },
+    "./supplier/web": {
+      "types": "./dist/supplier/web.d.ts",
+      "import": "./dist/supplier/web.mjs",
+      "require": "./dist/supplier/web.js"
+    },
     "./invoice": {
       "types": "./dist/invoice/index.d.ts",
       "import": "./dist/invoice/index.mjs",

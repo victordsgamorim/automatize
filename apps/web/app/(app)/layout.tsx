@@ -34,6 +34,7 @@ import {
   UserCog,
   CircleUser,
   Wrench,
+  Building2,
 } from 'lucide-react';
 
 /* ─── Tile definitions ─────────────────────────────────────────────────────── */
@@ -106,6 +107,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     '/products/edit': t('product.form.title.edit'),
     '/profile': t('profile.form.title'),
     '/technician': t('technician.list.title'),
+    '/supplier': t('supplier.list.title'),
   };
 
   const pageTitle = resolvePageTitle(
@@ -137,6 +139,11 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
         icon: <Wrench className="size-4" />,
         label: 'Technician',
         onTap: () => navigate('/technician'),
+      },
+      {
+        icon: <Building2 className="size-4" />,
+        label: 'Suppliers',
+        onTap: () => navigate('/supplier'),
       },
       {
         icon: <Settings className="size-4" />,

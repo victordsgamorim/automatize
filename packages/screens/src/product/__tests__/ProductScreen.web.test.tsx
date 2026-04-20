@@ -204,7 +204,7 @@ const translationMap: Record<string, string> = {
   'product.list.previous': 'Previous',
   'product.list.next': 'Next',
   'product.list.page': 'Page {{current}} of {{total}}',
-  'product.company': 'Company',
+  'product.supplier': 'Supplier',
   'product.price': 'Price',
   'product.quantity': 'Quantity',
   'product.info': 'Info',

@@ -7,24 +7,23 @@ import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { ProductFormScreen } from '@automatize/screens/product-form/web';
 import type {
   ProductFormData,
-  Company,
+  Supplier,
 } from '@automatize/screens/product-form/web';
 import type { ProductRow } from '@automatize/screens/product/web';
 import { generateId } from '@automatize/utils';
 import {
   addSavedProduct,
-  getSavedCompanies,
-  addSavedCompany,
+  getSavedSuppliers,
+  addSavedSupplier,
 } from '../productStore';
 
-/**
- * Module-level draft store. Survives SPA navigations;
- * cleared on page refresh (JS runtime restart).
- */
 let formDraft: Partial<ProductFormData> | undefined;
 
-function toProductRow(data: ProductFormData, companies: Company[]): ProductRow {
-  const company = companies.find((c) => c.id === data.companyId);
+function toProductRow(
+  data: ProductFormData,
+  suppliers: Supplier[]
+): ProductRow {
+  const supplier = suppliers.find((s) => s.id === data.companyId);
   return {
     id: generateId(),
     name: data.name,
@@ -33,7 +32,7 @@ function toProductRow(data: ProductFormData, companies: Company[]): ProductRow {
     info: data.info || undefined,
     photo: data.photoUrl,
     companyId: data.companyId,
-    companyName: company?.name,
+    companyName: supplier?.name,
   };
 }
 
@@ -43,7 +42,7 @@ export default function NewProductPage(): React.JSX.Element {
   const { preference, isDark, setTheme } = useTheme();
 
   const [initialData] = useState(() => formDraft);
-  const [companies, setCompanies] = useState(() => getSavedCompanies());
+  const [suppliers, setSuppliers] = useState(() => getSavedSuppliers());
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
 
   useEffect(() => {
@@ -68,7 +67,7 @@ export default function NewProductPage(): React.JSX.Element {
   }, []);
 
   const handleSubmit = (data: ProductFormData) => {
-    addSavedProduct(toProductRow(data, companies), data);
+    addSavedProduct(toProductRow(data, suppliers), data);
     formDraft = undefined;
     navigate('/products');
   };
@@ -83,10 +82,9 @@ export default function NewProductPage(): React.JSX.Element {
     window.history.pushState(null, '', window.location.href);
   };
 
-  const handleAddCompany = (name: string) => {
-    const company: Company = { id: generateId(), name };
-    addSavedCompany(company);
-    setCompanies((prev) => [...prev, company]);
+  const handleAddSupplier = (name: string) => {
+    const supplier = addSavedSupplier(name);
+    setSuppliers((prev) => [...prev, supplier]);
   };
 
   return (
@@ -97,8 +95,8 @@ export default function NewProductPage(): React.JSX.Element {
       onBack={handleBack}
       showDiscardDialog={showDiscardDialog}
       onDiscardCancel={handleDiscardCancel}
-      companies={companies}
-      onAddCompany={handleAddCompany}
+      suppliers={suppliers}
+      onAddSupplier={handleAddSupplier}
       locale={{
         languages: SUPPORTED_LANGUAGES.map((lang) => ({
           code: lang,

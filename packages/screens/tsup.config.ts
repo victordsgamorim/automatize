@@ -42,6 +42,8 @@ export default defineConfig({
     'src/profile/web.ts',
     'src/technician/index.ts',
     'src/technician/web.ts',
+    'src/supplier/index.ts',
+    'src/supplier/web.ts',
     'src/invoice/index.ts',
     'src/invoice/web.ts',
     'src/invoice-form/index.ts',

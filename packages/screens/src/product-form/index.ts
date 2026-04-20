@@ -3,5 +3,5 @@ export type {
   ProductFormScreenProps,
   ProductFormData,
   ProductFormMode,
-  Company,
+  Supplier,
 } from './ProductFormScreen.types';
