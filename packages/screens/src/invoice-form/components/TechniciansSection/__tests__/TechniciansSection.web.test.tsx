@@ -340,7 +340,7 @@ describe('TechniciansSection (web)', () => {
           'invoice.technicians.toggle'
     );
     expect(techTag).toBeDefined();
-    fireEvent.click(techTag!.closest('button') as Element);
+    fireEvent.click((techTag as HTMLElement).closest('button') as Element);
     expect(onToggleTechnician).toHaveBeenCalledWith('tech-1');
   });
 

@@ -9,7 +9,7 @@ vi.mock('@automatize/ui/web', async () => {
 
   const Dialog = ({
     children,
-    open,
+    open: _open,
     onOpenChange,
   }: WithChildren & {
     open: boolean;
