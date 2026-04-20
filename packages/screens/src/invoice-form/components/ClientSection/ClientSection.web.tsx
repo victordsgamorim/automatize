@@ -128,15 +128,12 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
   const savedAddresses: ClientAddress[] = selectedClient?.addresses ?? [];
   const savedPhones: ClientPhone[] = selectedClient?.phones ?? [];
 
-  const savedPhoneIds = new Set(savedPhones.map((p) => p.id));
+  const savedPhoneNumbers = new Set(savedPhones.map((p) => p.number));
   const allDropdownPhones: ClientPhone[] = [
     ...savedPhones,
-    ...clientPhones.filter((p) => !savedPhoneIds.has(p.id)),
+    ...clientPhones.filter((p) => !savedPhoneNumbers.has(p.number)),
   ];
-  // Only chip-display saved phones that were selected from the dropdown.
-  // Custom phones (added via dialog, not in savedPhones) are shown only in the
-  // dropdown as selected — showing them as chips too would duplicate them.
-  const chipPhones = clientPhones.filter((p) => savedPhoneIds.has(p.id));
+  const chipPhones = clientPhones;
 
   const currentAddress: ClientAddress | null = clientAddresses[0] ?? null;
 
@@ -492,7 +489,7 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
                       <CommandGroup>
                         {allDropdownPhones.map((phone) => {
                           const isSelected = clientPhones.some(
-                            (p) => p.id === phone.id
+                            (p) => p.number === phone.number
                           );
                           const PhoneIcon =
                             phone.phoneType === 'mobile' ? Smartphone : Phone;

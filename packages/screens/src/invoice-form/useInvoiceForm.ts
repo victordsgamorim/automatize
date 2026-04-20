@@ -160,8 +160,8 @@ export function useInvoiceForm(
   /** Toggle a phone from client's saved list (preserves ID, multi-select). */
   const pickClientPhone = useCallback((phone: ClientPhone) => {
     setClientPhones((prev) => {
-      const exists = prev.some((p) => p.id === phone.id);
-      if (exists) return prev.filter((p) => p.id !== phone.id);
+      const exists = prev.some((p) => p.number === phone.number);
+      if (exists) return prev.filter((p) => p.number !== phone.number);
       return [...prev, phone];
     });
   }, []);
