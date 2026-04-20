@@ -168,7 +168,7 @@ export const ProductFormScreen: React.FC<ProductFormScreenProps> = ({
                 type="button"
                 onClick={resetForm}
                 size={isMobile ? 'sm' : 'default'}
-                className="w-full sm:w-auto h-10"
+                className="w-full sm:w-auto"
               >
                 {t('product.reset')}
                 {!isMobile && <DestructiveKbd keyLabel="E" control />}
@@ -212,7 +212,6 @@ export const ProductFormScreen: React.FC<ProductFormScreenProps> = ({
                   type="button"
                   onClick={handleCancel}
                   size={isMobile ? 'sm' : 'default'}
-                  className="h-10"
                 >
                   {t('product.cancel')}
                   {!isMobile && <Kbd keyLabel="Esc" control />}
@@ -220,7 +219,6 @@ export const ProductFormScreen: React.FC<ProductFormScreenProps> = ({
                 <PrimaryButton
                   type="submit"
                   size={isMobile ? 'sm' : 'default'}
-                  className="h-10"
                   disabled={name.trim() === ''}
                 >
                   {t(submitKey)}

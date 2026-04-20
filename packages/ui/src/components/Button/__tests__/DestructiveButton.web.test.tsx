@@ -38,7 +38,7 @@ describe('DestructiveButton (web)', () => {
 
   it('forwards size prop', () => {
     render(<DestructiveButton size="icon">X</DestructiveButton>);
-    expect(screen.getByRole('button').className).toContain('size-9');
+    expect(screen.getByRole('button').className).toContain('size-10');
   });
 
   it('renders shortcut badge when shortcut provided', () => {

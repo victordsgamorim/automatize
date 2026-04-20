@@ -258,7 +258,6 @@ export const InvoiceScreen: React.FC<InvoiceScreenProps> = ({
               size="icon"
               onClick={onAddInvoice}
               aria-label={t('invoice.list.add')}
-              className="size-8"
             >
               <Plus className="size-4" />
             </SecondaryButton>

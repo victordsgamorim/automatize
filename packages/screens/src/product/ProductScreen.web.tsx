@@ -241,7 +241,6 @@ export const ProductScreen: React.FC<ProductScreenProps> = ({
               size="icon"
               onClick={onAddProduct}
               aria-label={t('product.list.add')}
-              className="size-8"
             >
               <Plus className="size-4" />
             </SecondaryButton>
