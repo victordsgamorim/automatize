@@ -268,7 +268,6 @@ export const TechnicianScreen: React.FC<TechnicianScreenProps> = ({
               size="icon"
               onClick={handleOpenDialog}
               aria-label={t('technician.list.add')}
-              className="size-8"
             >
               <Plus className="size-4" />
             </SecondaryButton>

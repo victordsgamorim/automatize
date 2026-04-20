@@ -234,7 +234,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                 type="button"
                 onClick={resetForm}
                 size={isMobile ? 'sm' : 'default'}
-                className="w-full sm:w-auto h-10"
+                className="w-full sm:w-auto"
               >
                 {t('client.reset')}
                 {!isMobile && <DestructiveKbd keyLabel="E" control />}
@@ -282,7 +282,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                   type="button"
                   onClick={handleCancel}
                   size={isMobile ? 'sm' : 'default'}
-                  className="h-10"
                 >
                   {t('client.cancel')}
                   {!isMobile && <Kbd keyLabel="Esc" control />}
@@ -290,7 +289,6 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
                 <PrimaryButton
                   type="submit"
                   size={isMobile ? 'sm' : 'default'}
-                  className="h-10"
                   disabled={name.trim() === ''}
                 >
                   {t(submitKey)}

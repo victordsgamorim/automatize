@@ -347,7 +347,6 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
               size="icon"
               onClick={onAddClient}
               aria-label={t('client.list.add')}
-              className="size-8"
             >
               <Plus className="size-4" />
             </SecondaryButton>

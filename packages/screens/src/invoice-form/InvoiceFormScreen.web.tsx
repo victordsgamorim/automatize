@@ -218,7 +218,7 @@ export const InvoiceFormScreen: React.FC<InvoiceFormScreenProps> = ({
                 type="button"
                 onClick={resetForm}
                 size={isMobile ? 'sm' : 'default'}
-                className="w-full sm:w-auto h-10"
+                className="w-full sm:w-auto"
               >
                 {t('invoice.reset')}
                 {!isMobile && <DestructiveKbd keyLabel="E" control />}
@@ -294,7 +294,6 @@ export const InvoiceFormScreen: React.FC<InvoiceFormScreenProps> = ({
                   type="button"
                   onClick={handleCancel}
                   size={isMobile ? 'sm' : 'default'}
-                  className="h-10"
                 >
                   {t('invoice.cancel')}
                   {!isMobile && <Kbd keyLabel="Esc" control />}
@@ -302,7 +301,6 @@ export const InvoiceFormScreen: React.FC<InvoiceFormScreenProps> = ({
                 <PrimaryButton
                   type="submit"
                   size={isMobile ? 'sm' : 'default'}
-                  className="h-10"
                   disabled={!clientId}
                 >
                   {t(submitKey)}

@@ -183,7 +183,6 @@ export const SupplierScreen: React.FC<SupplierScreenProps> = ({
               size="icon"
               onClick={handleOpenDialog}
               aria-label={t('supplier.list.add')}
-              className="size-8"
             >
               <Plus className="size-4" />
             </SecondaryButton>
