@@ -7,7 +7,7 @@ import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { ProductFormScreen } from '@automatize/screens/product-form/web';
 import type {
   ProductFormData,
-  Company,
+  Supplier,
 } from '@automatize/screens/product-form/web';
 import type { ProductRow } from '@automatize/screens/product/web';
 import {
@@ -21,28 +21,23 @@ import {
   SecondaryButton,
   Kbd,
 } from '@automatize/ui/web';
-import { generateId } from '@automatize/utils';
 import {
   getProductIdToEdit,
   getProductFormData,
   updateSavedProduct,
   clearProductToEdit,
-  getSavedCompanies,
-  addSavedCompany,
+  getSavedSuppliers,
+  addSavedSupplier,
 } from '../productStore';
 
-/**
- * Module-level draft store. Survives SPA navigations;
- * cleared on page refresh (same pattern as new/page.tsx).
- */
 let formDraft: Partial<ProductFormData> | undefined;
 
 function toProductRow(
   data: ProductFormData,
   id: string,
-  companies: Company[]
+  suppliers: Supplier[]
 ): ProductRow {
-  const company = companies.find((c) => c.id === data.companyId);
+  const supplier = suppliers.find((s) => s.id === data.companyId);
   return {
     id,
     name: data.name,
@@ -51,7 +46,7 @@ function toProductRow(
     info: data.info || undefined,
     photo: data.photoUrl,
     companyId: data.companyId,
-    companyName: company?.name,
+    companyName: supplier?.name,
   };
 }
 
@@ -66,7 +61,7 @@ export default function EditProductPage(): React.JSX.Element {
     return formDraft as ProductFormData | undefined;
   });
 
-  const [companies, setCompanies] = useState(() => getSavedCompanies());
+  const [suppliers, setSuppliers] = useState(() => getSavedSuppliers());
   const [pendingData, setPendingData] = useState<ProductFormData | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
@@ -101,13 +96,13 @@ export default function EditProductPage(): React.JSX.Element {
     if (!productId || !pendingData) return;
     updateSavedProduct(
       productId,
-      toProductRow(pendingData, productId, companies),
+      toProductRow(pendingData, productId, suppliers),
       pendingData
     );
     clearProductToEdit();
     formDraft = undefined;
     navigate('/products');
-  }, [productId, pendingData, companies, navigate]);
+  }, [productId, pendingData, suppliers, navigate]);
 
   const handleCancelConfirm = useCallback(() => {
     setShowConfirmDialog(false);
@@ -125,10 +120,9 @@ export default function EditProductPage(): React.JSX.Element {
     window.history.pushState(null, '', window.location.href);
   };
 
-  const handleAddCompany = (name: string) => {
-    const company: Company = { id: generateId(), name };
-    addSavedCompany(company);
-    setCompanies((prev) => [...prev, company]);
+  const handleAddSupplier = (name: string) => {
+    const supplier = addSavedSupplier(name);
+    setSuppliers((prev) => [...prev, supplier]);
   };
 
   useEffect(() => {
@@ -158,8 +152,8 @@ export default function EditProductPage(): React.JSX.Element {
         onBack={handleBack}
         showDiscardDialog={showDiscardDialog}
         onDiscardCancel={handleDiscardCancel}
-        companies={companies}
-        onAddCompany={handleAddCompany}
+        suppliers={suppliers}
+        onAddSupplier={handleAddSupplier}
         locale={{
           languages: SUPPORTED_LANGUAGES.map((lang) => ({
             code: lang,
@@ -180,7 +174,6 @@ export default function EditProductPage(): React.JSX.Element {
         }}
       />
 
-      {/* Confirm edit dialog */}
       <Dialog
         open={showConfirmDialog}
         onOpenChange={(open) => {

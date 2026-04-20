@@ -1,17 +1,14 @@
 import type { ProductRow } from '@automatize/screens/product/web';
 import type {
   ProductFormData,
-  Company,
+  Supplier,
 } from '@automatize/screens/product-form/web';
+import { generateId } from '@automatize/utils';
 
-/**
- * Module-level in-memory store.
- * Survives SPA navigations; cleared on page refresh (JS runtime restart).
- */
 let savedProducts: ProductRow[] = [];
 const productFormDataMap = new Map<string, ProductFormData>();
 let productIdToEdit: string | undefined;
-let savedCompanies: Company[] = [];
+let savedSuppliers: Supplier[] = [];
 
 export function getSavedProducts(): ProductRow[] {
   return savedProducts;
@@ -50,12 +47,24 @@ export function clearProductToEdit(): void {
   productIdToEdit = undefined;
 }
 
-export function getSavedCompanies(): Company[] {
-  return savedCompanies;
+export function getSavedSuppliers(): Supplier[] {
+  return savedSuppliers;
 }
 
-export function addSavedCompany(company: Company): void {
-  savedCompanies = [...savedCompanies, company];
+export function addSavedSupplier(name: string): Supplier {
+  const supplier: Supplier = { id: generateId(), name };
+  savedSuppliers = [...savedSuppliers, supplier];
+  return supplier;
+}
+
+export function updateSavedSupplier(id: string, name: string): void {
+  savedSuppliers = savedSuppliers.map((s) =>
+    s.id === id ? { ...s, name } : s
+  );
+}
+
+export function deleteSavedSupplier(id: string): void {
+  savedSuppliers = savedSuppliers.filter((s) => s.id !== id);
 }
 
 export function decrementProductStock(id: string, qty: number): void {

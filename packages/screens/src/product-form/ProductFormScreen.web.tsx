@@ -20,7 +20,7 @@ import type { ProductFormScreenProps } from './ProductFormScreen.types';
 import { useProductForm } from './useProductForm';
 import { PhotoSection } from './components/PhotoSection/PhotoSection.web';
 import { ProductDetailsSection } from './components/ProductDetailsSection/ProductDetailsSection.web';
-import { CompanySection } from './components/CompanySection/CompanySection.web';
+import { SupplierSection } from './components/SupplierSection/SupplierSection.web';
 
 export const ProductFormScreen: React.FC<ProductFormScreenProps> = ({
   mode = 'create',
@@ -30,8 +30,8 @@ export const ProductFormScreen: React.FC<ProductFormScreenProps> = ({
   onBack,
   showDiscardDialog,
   onDiscardCancel,
-  companies = [],
-  onAddCompany,
+  suppliers = [],
+  onAddSupplier,
 }) => {
   const isEdit = mode === 'edit';
   const titleKey = isEdit ? 'product.form.title.edit' : 'product.form.title';
@@ -154,7 +154,6 @@ export const ProductFormScreen: React.FC<ProductFormScreenProps> = ({
     <>
       <div className="max-w-3xl mx-auto py-8 px-4">
         <Card padding="lg">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
@@ -179,7 +178,6 @@ export const ProductFormScreen: React.FC<ProductFormScreenProps> = ({
 
           <div className="space-y-6">
             <form className="space-y-6" onSubmit={handleSubmit}>
-              {/* Photo */}
               <PhotoSection
                 photoUrl={photoUrl}
                 onPhotoChange={handlePhotoChange}
@@ -187,7 +185,6 @@ export const ProductFormScreen: React.FC<ProductFormScreenProps> = ({
 
               <Separator />
 
-              {/* Name, price, quantity, info */}
               <ProductDetailsSection
                 name={name}
                 onNameChange={setName}
@@ -201,17 +198,15 @@ export const ProductFormScreen: React.FC<ProductFormScreenProps> = ({
 
               <Separator />
 
-              {/* Company */}
-              <CompanySection
-                companies={companies}
-                selectedCompanyId={companyId}
-                onCompanySelect={setCompanyId}
-                onAddCompany={onAddCompany}
+              <SupplierSection
+                suppliers={suppliers}
+                selectedSupplierId={companyId}
+                onSupplierSelect={setCompanyId}
+                onAddSupplier={onAddSupplier}
               />
 
               <Separator />
 
-              {/* Action buttons */}
               <div className="flex justify-end gap-2">
                 <SecondaryButton
                   type="button"
@@ -237,7 +232,6 @@ export const ProductFormScreen: React.FC<ProductFormScreenProps> = ({
         </Card>
       </div>
 
-      {/* Discard confirmation dialog */}
       <Dialog
         open={dialogOpen}
         onOpenChange={(open) => {
