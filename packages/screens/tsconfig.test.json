@@ -1,0 +1,11 @@
+{
+  "extends": "../../tools/tsconfig/base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "types": ["vitest/globals"],
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "exclude": ["node_modules", "dist"],
+  "include": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+}

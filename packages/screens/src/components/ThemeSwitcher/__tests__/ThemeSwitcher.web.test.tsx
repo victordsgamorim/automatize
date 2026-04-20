@@ -4,8 +4,6 @@ import React from 'react';
 
 // Mock @automatize/ui/web DropdownMenu to avoid Radix UI portal/pointer-event issues in jsdom
 vi.mock('@automatize/ui/web', async () => {
-  const actual =
-    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   const { createElement } = await import('react');
 
   type WithChildren = { children?: React.ReactNode };
@@ -29,7 +27,6 @@ vi.mock('@automatize/ui/web', async () => {
       children
     );
   return {
-    ...actual,
     DropdownMenu,
     DropdownMenuTrigger,
     DropdownMenuContent,

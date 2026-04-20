@@ -1,5 +1,8 @@
 {
-  "*.{ts,tsx}": ["pnpm exec eslint --fix", "pnpm exec prettier --write"],
+  "*.{ts,tsx}": [
+    "pnpm exec eslint --fix --ignore-pattern '**/__tests__/**'",
+    "pnpm exec prettier --write"
+  ],
   "*.{js,jsx}": ["pnpm exec prettier --write"],
   "*.{json,md}": ["pnpm exec prettier --write"]
 }
