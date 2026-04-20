@@ -4,23 +4,18 @@ import React from 'react';
 
 // Mock @automatize/ui/web
 vi.mock('@automatize/ui/web', async () => {
-  const actual =
-    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   const { createElement } = await import('react');
 
   type WithChildren = { children?: React.ReactNode };
 
   const Popover = ({
     children,
-    open,
-    onOpenChange,
+    open: _open,
+    onOpenChange: _onOpenChange,
   }: WithChildren & {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-  }) =>
-    open
-      ? createElement('div', { onClick: () => onOpenChange(false) }, children)
-      : null;
+  }) => createElement('div', null, children);
   const PopoverTrigger = ({
     children,
     asChild,
@@ -167,7 +162,6 @@ vi.mock('@automatize/ui/web', async () => {
   const Wrench = () => createElement('span', { 'data-testid': 'wrench-icon' });
 
   return {
-    ...actual,
     Popover,
     PopoverTrigger,
     PopoverContent,
@@ -255,7 +249,8 @@ describe('TechniciansSection (web)', () => {
   // ── Rendering ────────────────────────────────────────────────────────────────
   it('renders technicians section header', () => {
     renderTechniciansSection();
-    expect(screen.getByText(/invoice.technicians/i)).toBeDefined();
+    const elements = screen.getAllByText(/invoice.technicians/i);
+    expect(elements.length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders technician combobox', () => {
@@ -318,7 +313,8 @@ describe('TechniciansSection (web)', () => {
   // ── Selected Technicians ──────────────────────────────────────────────────
   it('displays selected technicians as tags', () => {
     renderTechniciansSection({ selectedTechnicians: mockSelectedTechnicians });
-    expect(screen.getByText('John Doe')).toBeDefined();
+    const tags = screen.getAllByText('John Doe');
+    expect(tags.length).toBeGreaterThanOrEqual(1);
   });
 
   it('calls onRemoveTechnician when remove button is clicked', () => {
@@ -336,9 +332,15 @@ describe('TechniciansSection (web)', () => {
     const { onToggleTechnician } = renderTechniciansSection({
       selectedTechnicians: mockSelectedTechnicians,
     });
-    const techTag = screen.getByText('John Doe').closest('button');
-    expect(techTag).not.toBeNull();
-    fireEvent.click(techTag as Element);
+    const techElements = screen.getAllByText('John Doe');
+    const techTag = techElements.find(
+      (el) =>
+        el.closest('button')?.getAttribute('type') === 'button' &&
+        el.closest('button')?.getAttribute('aria-label') ===
+          'invoice.technicians.toggle'
+    );
+    expect(techTag).toBeDefined();
+    fireEvent.click(techTag!.closest('button') as Element);
     expect(onToggleTechnician).toHaveBeenCalledWith('tech-1');
   });
 

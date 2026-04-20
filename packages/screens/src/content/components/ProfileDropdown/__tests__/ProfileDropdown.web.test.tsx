@@ -5,10 +5,7 @@ import React from 'react';
 /* ─── Mock @automatize/ui/web DropdownMenu primitives ──────────────────── */
 
 vi.mock('@automatize/ui/web', async () => {
-  const actual =
-    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   return {
-    ...actual,
     DropdownMenu: ({ children }: { children: React.ReactNode }) => (
       <div data-testid="dropdown-menu">{children}</div>
     ),

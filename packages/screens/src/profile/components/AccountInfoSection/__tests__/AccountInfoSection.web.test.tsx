@@ -4,8 +4,6 @@ import React from 'react';
 
 // Mock @automatize/ui/web
 vi.mock('@automatize/ui/web', async () => {
-  const actual =
-    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   const { createElement } = await import('react');
 
   type _WithChildren = { children?: React.ReactNode };
@@ -22,19 +20,17 @@ vi.mock('@automatize/ui/web', async () => {
     children?: React.ReactNode;
   }) => createElement('span', { variant, color, className }, children);
 
-  const Mail = () => createElement('span', { 'data-testid': 'mail-icon' });
-  const Building2 = () =>
-    createElement('span', { 'data-testid': 'building-icon' });
-  const Lock = () => createElement('span', { 'data-testid': 'lock-icon' });
-
   return {
-    ...actual,
     Text,
-    Mail,
-    Building2,
-    Lock,
   };
 });
+
+vi.mock('lucide-react', () => ({
+  Mail: () => React.createElement('span', { 'data-testid': 'mail-icon' }),
+  Building2: () =>
+    React.createElement('span', { 'data-testid': 'building-icon' }),
+  Lock: () => React.createElement('span', { 'data-testid': 'lock-icon' }),
+}));
 
 // Mock useTranslation
 vi.mock('@automatize/core-localization', () => ({

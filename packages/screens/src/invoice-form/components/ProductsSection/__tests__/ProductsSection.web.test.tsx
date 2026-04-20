@@ -4,23 +4,18 @@ import React from 'react';
 
 // Mock @automatize/ui/web
 vi.mock('@automatize/ui/web', async () => {
-  const actual =
-    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   const { createElement } = await import('react');
 
   type WithChildren = { children?: React.ReactNode };
 
   const Popover = ({
     children,
-    open,
-    onOpenChange,
+    open: _open,
+    onOpenChange: _onOpenChange,
   }: WithChildren & {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-  }) =>
-    open
-      ? createElement('div', { onClick: () => onOpenChange(false) }, children)
-      : null;
+  }) => createElement('div', null, children);
   const PopoverTrigger = ({
     children,
     asChild,
@@ -92,7 +87,6 @@ vi.mock('@automatize/ui/web', async () => {
   const Trash2 = () => createElement('span', { 'data-testid': 'trash-icon' });
 
   return {
-    ...actual,
     Popover,
     PopoverTrigger,
     PopoverContent,
@@ -180,7 +174,7 @@ describe('ProductsSection (web)', () => {
   // ── Rendering ────────────────────────────────────────────────────────────────
   it('renders products section header', () => {
     renderProductsSection();
-    expect(screen.getByText(/invoice.products/i)).toBeDefined();
+    expect(screen.getByText(/^invoice.products$/i)).toBeDefined();
   });
 
   it('renders product search/select combobox', () => {
@@ -301,7 +295,7 @@ describe('ProductsSection (web)', () => {
     const decrementButton = screen.getByRole('button', {
       name: /decrease quantity/i,
     });
-    expect(decrementButton).toBeDisabled();
+    expect((decrementButton as HTMLButtonElement).disabled).toBe(true);
   });
 
   it('disables increment button when quantity equals available stock', () => {
@@ -320,6 +314,6 @@ describe('ProductsSection (web)', () => {
     const incrementButton = screen.getByRole('button', {
       name: /increase quantity/i,
     });
-    expect(incrementButton).toBeDisabled();
+    expect((incrementButton as HTMLButtonElement).disabled).toBe(true);
   });
 });

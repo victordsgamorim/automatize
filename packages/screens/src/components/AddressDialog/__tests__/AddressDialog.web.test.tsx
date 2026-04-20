@@ -4,17 +4,21 @@ import React from 'react';
 
 // Mock @automatize/ui/web to avoid Radix UI portal/pointer-event issues in jsdom
 vi.mock('@automatize/ui/web', async () => {
-  const actual =
-    await vi.importActual<Record<string, React.ReactNode>>(
-      '@automatize/ui/web'
-    );
-  // Keep React imported for side effects
-  await import('react');
-
   type WithChildren = { children?: React.ReactNode };
 
-  const Dialog = ({ children }: WithChildren) =>
-    React.createElement('div', null, children);
+  const Dialog = ({
+    children,
+    onOpenChange,
+  }: WithChildren & { open: boolean; onOpenChange: (open: boolean) => void }) =>
+    React.createElement(
+      'div',
+      {
+        onKeyDown: (e: React.KeyboardEvent) => {
+          if (e.key === 'Escape') onOpenChange(false);
+        },
+      },
+      children
+    );
   const DialogContent = ({ children }: WithChildren) =>
     React.createElement('div', { 'data-slot': 'dialog-content' }, children);
   const DialogHeader = ({ children }: WithChildren) =>
@@ -25,20 +29,11 @@ vi.mock('@automatize/ui/web', async () => {
     React.createElement('p', null, children);
   const DialogFooter = ({ children }: WithChildren) =>
     React.createElement('div', null, children);
-  const Tabs = ({
-    children,
-    value: _value,
-    onValueChange: _onValueChange,
-  }: {
-    children?: React.ReactNode;
+  const TabsContext = React.createContext<{
     value: string;
-    onValueChange: (value: string) => void;
-  }) => {
-    return React.createElement('div', null, children);
-  };
-  const TabsList = ({ children }: { children?: React.ReactNode }) =>
-    React.createElement('div', null, children);
-  const TabsTrigger = ({
+    onValueChange: (v: string) => void;
+  }>({ value: '', onValueChange: () => {} });
+  const Tabs = ({
     children,
     value,
     onValueChange,
@@ -48,37 +43,64 @@ vi.mock('@automatize/ui/web', async () => {
     onValueChange: (value: string) => void;
   }) => {
     return React.createElement(
+      TabsContext.Provider,
+      { value: { value, onValueChange } },
+      children
+    );
+  };
+  const TabsList = ({
+    children,
+  }: {
+    children?: React.ReactNode;
+    variant?: string;
+    size?: string;
+  }) => React.createElement('div', null, children);
+  const TabsTrigger = ({
+    children,
+    value,
+  }: {
+    children?: React.ReactNode;
+    value: string;
+  }) => {
+    const ctx = React.useContext(TabsContext);
+    return React.createElement(
       'button',
       {
-        'aria-selected': value === 'residence' ? true : undefined,
-        onClick: () => onValueChange(value),
+        role: 'tab',
+        'aria-selected': ctx.value === value ? 'true' : undefined,
+        onClick: () => ctx.onValueChange(value),
       },
       children
     );
   };
   const Input = ({
-    _label,
+    label,
     value,
     onChange,
     placeholder,
     id,
     _autoFocus,
   }: {
-    _label?: unknown;
     label?: string;
+    _label?: unknown;
     value: string;
-    onChange: (value: string) => void;
+    onChange: (e: { target: { value: string } }) => void;
     placeholder?: string;
     id: string;
-    _autoFocus?: unknown;
     autoFocus?: boolean;
+    _autoFocus?: unknown;
   }) => {
-    return React.createElement('input', {
-      id,
-      value,
-      onChange: (e: { target: { value: string } }) => onChange(e.target.value),
-      placeholder,
-    });
+    return React.createElement(
+      'div',
+      null,
+      label ? React.createElement('label', { htmlFor: id }, label) : null,
+      React.createElement('input', {
+        id,
+        value,
+        onChange,
+        placeholder,
+      })
+    );
   };
   const Text = ({
     htmlFor,
@@ -95,42 +117,76 @@ vi.mock('@automatize/ui/web', async () => {
     return React.createElement('label', { htmlFor, className }, children);
   };
   const Select = ({
+    children,
     value,
     onValueChange,
-    children,
   }: {
     value: string;
     onValueChange: (value: string) => void;
     children?: React.ReactNode;
   }) => {
+    const triggerId = React.Children.toArray(children).find(
+      (child): child is React.ReactElement<{ id: string }> =>
+        React.isValidElement(child) &&
+        (child.type as () => unknown).name === 'SelectTrigger'
+    )?.props?.id;
+    const items: Array<{ value: string; children?: React.ReactNode }> = [];
+    const findItems = (el: React.ReactNode) => {
+      React.Children.forEach(el, (child) => {
+        if (!React.isValidElement(child)) return;
+        if ((child.type as () => unknown).name === 'SelectItem') {
+          items.push({
+            value: (child.props as { value: string }).value,
+            children: (child.props as { children?: React.ReactNode }).children,
+          });
+        }
+        if ((child.props as { children?: React.ReactNode }).children) {
+          findItems((child.props as { children?: React.ReactNode }).children);
+        }
+      });
+    };
+    findItems(children);
     return React.createElement(
       'select',
       {
+        id: triggerId,
         value,
         onChange: (e: { target: { value: string } }) =>
           onValueChange(e.target.value),
       },
-      children
+      ...items.map((item) =>
+        React.createElement(
+          'option',
+          { key: item.value, value: item.value },
+          item.children
+        )
+      )
     );
   };
   const SelectTrigger = ({
-    id,
-    children,
+    id: _id,
+    children: _children,
   }: {
     id: string;
     children?: React.ReactNode;
-  }) => React.createElement('select', { id }, children);
-  const SelectValue = ({ placeholder }: { placeholder?: string }) =>
-    React.createElement('option', {}, placeholder);
-  const SelectContent = ({ children }: { children?: React.ReactNode }) =>
-    React.createElement('div', null, children);
+  }) => null;
+  const SelectValue = ({
+    placeholder: _placeholder,
+  }: {
+    placeholder?: string;
+  }) => null;
+  const SelectContent = ({
+    children: _children,
+  }: {
+    children?: React.ReactNode;
+  }) => null;
   const SelectItem = ({
-    children,
-    value,
+    children: _children,
+    value: _value,
   }: {
     children?: React.ReactNode;
     value: string;
-  }) => React.createElement('option', { value }, children);
+  }) => null;
   const PrimaryButton = ({
     children,
     onClick,
@@ -162,7 +218,6 @@ vi.mock('@automatize/ui/web', async () => {
   const cn = (...classes: string[]): string => classes.join(' ');
 
   return {
-    ...actual,
     Dialog,
     DialogContent,
     DialogHeader,
@@ -204,7 +259,15 @@ function renderAddressDialog(
   const props = {
     open: true,
     onOpenChange,
-    data: {},
+    data: {
+      street: '',
+      number: '',
+      neighborhood: '',
+      city: '',
+      state: '',
+      info: undefined,
+      addressType: 'residence' as const,
+    },
     onChange,
     onSave,
     editingId: null,
@@ -321,8 +384,8 @@ describe('AddressDialog (web)', () => {
       name: /client.address.type.establishment/i,
     });
 
-    expect(residenceTab).toHaveAttribute('aria-selected', 'true');
-    expect(establishmentTab).not.toHaveAttribute('aria-selected');
+    expect(residenceTab.getAttribute('aria-selected')).toBe('true');
+    expect(establishmentTab.getAttribute('aria-selected')).toBeNull();
 
     // Click establishment tab
     fireEvent.click(establishmentTab);
@@ -436,7 +499,7 @@ describe('AddressDialog (web)', () => {
       },
     });
     const saveButton = screen.getByRole('button', { name: /Save/i });
-    expect(saveButton).toBeDisabled();
+    expect(saveButton.disabled).toBe(true);
   });
 
   it('enables save button when street is not empty', () => {
@@ -452,6 +515,6 @@ describe('AddressDialog (web)', () => {
       },
     });
     const saveButton = screen.getByRole('button', { name: /Save/i });
-    expect(saveButton).not.toBeDisabled();
+    expect(saveButton.disabled).toBe(false);
   });
 });

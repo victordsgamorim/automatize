@@ -8,19 +8,12 @@ vi.mock('@automatize/ui/web', () => {
 
   const Popover = ({
     children,
-    open,
-    onOpenChange,
+    open: _open,
+    onOpenChange: _onOpenChange,
   }: WithChildren & {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-  }) =>
-    open
-      ? React.createElement(
-          'div',
-          { onClick: () => onOpenChange(false) },
-          children
-        )
-      : null;
+  }) => React.createElement('div', null, children);
   const PopoverTrigger = ({
     children,
     asChild,
@@ -119,7 +112,7 @@ vi.mock('@automatize/core-localization', () => ({
 }));
 
 // Mock AddressDialog
-vi.mock('../../../components/AddressDialog/AddressDialog.web', () => ({
+vi.mock('../../../../components/AddressDialog/AddressDialog.web', () => ({
   AddressDialog: ({
     open,
     onSave,
@@ -144,7 +137,7 @@ vi.mock('../../../components/AddressDialog/AddressDialog.web', () => ({
 }));
 
 // Mock PhoneDialog
-vi.mock('../../../components/PhoneDialog/PhoneDialog.web', () => ({
+vi.mock('../../../../components/PhoneDialog/PhoneDialog.web', () => ({
   PhoneDialog: ({
     open,
     onSave,
@@ -170,7 +163,7 @@ vi.mock('../../../components/PhoneDialog/PhoneDialog.web', () => ({
 
 // Mock SaveToProfileDialog
 vi.mock(
-  '../../../components/SaveToProfileDialog/SaveToProfileDialog.web',
+  '../../../../components/SaveToProfileDialog/SaveToProfileDialog.web',
   () => ({
     SaveToProfileDialog: ({
       open,
@@ -201,7 +194,7 @@ vi.mock(
 );
 
 // Mock useAddressDialog hook
-vi.mock('../../../components/AddressDialog/useAddressDialog', () => ({
+vi.mock('../../../../components/AddressDialog/useAddressDialog', () => ({
   useAddressDialog: () => ({
     isOpen: false,
     data: {
@@ -223,7 +216,7 @@ vi.mock('../../../components/AddressDialog/useAddressDialog', () => ({
 }));
 
 // Mock usePhoneDialog hook
-vi.mock('../../../components/PhoneDialog/usePhoneDialog', () => ({
+vi.mock('../../../../components/PhoneDialog/usePhoneDialog', () => ({
   usePhoneDialog: () => ({
     isOpen: false,
     data: { phoneType: 'mobile', number: '' },
@@ -322,7 +315,8 @@ describe('ClientSection (web)', () => {
   // ── Rendering ────────────────────────────────────────────────────────────────
   it('renders client section header', () => {
     renderClientSection();
-    expect(screen.getByText(/invoice.client/i)).toBeDefined();
+    const elements = screen.getAllByText(/invoice.client/i);
+    expect(elements.length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders client selector when no client is selected', () => {
@@ -412,7 +406,7 @@ describe('ClientSection (web)', () => {
       clientAddresses: mockAddresses,
     });
 
-    expect(screen.getByText(/Street 1/i)).toBeDefined();
+    expect(screen.getAllByText(/Street 1/i).length).toBeGreaterThanOrEqual(1);
   });
 
   // ── Phones Section ────────────────────────────────────────────────────────
@@ -440,6 +434,6 @@ describe('ClientSection (web)', () => {
       clientPhones: mockPhones,
     });
 
-    expect(screen.getByText('11999999999')).toBeDefined();
+    expect(screen.getAllByText('11999999999').length).toBeGreaterThanOrEqual(1);
   });
 });

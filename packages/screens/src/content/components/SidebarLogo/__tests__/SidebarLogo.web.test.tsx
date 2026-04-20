@@ -7,10 +7,7 @@ import React from 'react';
 const mockUseSidebar = vi.fn();
 
 vi.mock('@automatize/ui/web', async () => {
-  const actual =
-    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   return {
-    ...actual,
     useSidebar: () => mockUseSidebar() as Record<string, unknown>,
   };
 });

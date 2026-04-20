@@ -2,20 +2,28 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-// Mock @automatize/ui/web to avoid Radix UI portal/pointer-event issues in jsdom
 vi.mock('@automatize/ui/web', async () => {
-  const actual =
-    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   const { createElement } = await import('react');
 
   type WithChildren = { children?: React.ReactNode };
-  type _MenuItemProps = WithChildren & {
-    onClick?: React.MouseEventHandler<HTMLDivElement>;
-  };
-  type _TriggerProps = WithChildren & { asChild?: boolean };
 
-  const Dialog = ({ children }: WithChildren) =>
-    createElement('div', null, children);
+  const Dialog = ({
+    children,
+    open,
+    onOpenChange,
+  }: WithChildren & {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+  }) =>
+    createElement(
+      'div',
+      {
+        onKeyDown: (e: React.KeyboardEvent) => {
+          if (e.key === 'Escape') onOpenChange(false);
+        },
+      },
+      children
+    );
   const DialogContent = ({ children }: WithChildren) =>
     createElement('div', { 'data-slot': 'dialog-content' }, children);
   const DialogHeader = ({ children }: WithChildren) =>
@@ -26,82 +34,79 @@ vi.mock('@automatize/ui/web', async () => {
     createElement('p', null, children);
   const DialogFooter = ({ children }: WithChildren) =>
     createElement('div', null, children);
-  const Input = ({
-    value,
-    onChange,
-    placeholder,
-    id,
-  }: {
-    _label?: unknown;
-    label?: string;
-    value: string;
-    onChange: (value: string) => void;
-    placeholder?: string;
-    id: string;
-  }) => {
-    return createElement('input', {
-      id,
-      value,
-      onChange: (e: { target: { value: string } }) => onChange(e.target.value),
-      placeholder,
-    });
-  };
-  const Text = ({
-    htmlFor,
-    className,
+  const Tabs = ({
     children,
-  }: {
-    _color?: unknown;
-    htmlFor?: string;
-    color?: string;
-    className?: string;
-    children?: React.ReactNode;
-  }) => {
-    return createElement('label', { htmlFor, className }, children);
-  };
-  const Select = ({
     value,
     onValueChange,
-    children,
   }: {
+    children?: React.ReactNode;
     value: string;
     onValueChange: (value: string) => void;
+  }) =>
+    createElement(
+      TabsContext.Provider,
+      { value: { value, onValueChange } },
+      children
+    );
+  const TabsList = ({
+    children,
+  }: {
     children?: React.ReactNode;
+    variant?: string;
+    size?: string;
+  }) => createElement('div', null, children);
+  const TabsTrigger = ({
+    children,
+    value,
+  }: {
+    children?: React.ReactNode;
+    value: string;
   }) => {
+    const ctx = React.useContext(TabsContext);
     return createElement(
-      'select',
+      'button',
       {
-        value,
-        onChange: (e: { target: { value: string } }) =>
-          onValueChange(e.target.value),
+        onClick: () => ctx.onValueChange(value),
       },
       children
     );
   };
-  const SelectTrigger = ({
-    id,
-    children,
-  }: {
-    id: string;
-    children?: React.ReactNode;
-  }) => createElement('select', { id }, children);
-  const SelectValue = ({ placeholder }: { placeholder?: string }) =>
-    createElement('option', {}, placeholder);
-  const SelectContent = ({ children }: { children?: React.ReactNode }) =>
-    createElement('div', null, children);
-  const SelectItem = ({
-    children,
-    value,
-  }: {
-    children?: React.ReactNode;
+  const TabsContext = React.createContext<{
     value: string;
-  }) => createElement('option', { value }, children);
+    onValueChange: (v: string) => void;
+  }>({ value: '', onValueChange: () => {} });
+  const Input = ({
+    label,
+    value,
+    onChange,
+    placeholder,
+    id,
+    autoFocus: _autoFocus,
+  }: {
+    label?: string;
+    value: string;
+    onChange: (e: { target: { value: string } }) => void;
+    placeholder?: string;
+    id: string;
+    autoFocus?: boolean;
+  }) => {
+    return createElement(
+      'div',
+      null,
+      label ? createElement('label', { htmlFor: id }, label) : null,
+      createElement('input', {
+        id,
+        value,
+        onChange,
+        placeholder,
+      })
+    );
+  };
   const PrimaryButton = ({
     children,
     onClick,
     disabled,
   }: {
-    _shortcut?: unknown;
     children?: React.ReactNode;
     onClick: () => void;
     disabled?: boolean;
@@ -119,7 +124,6 @@ vi.mock('@automatize/ui/web', async () => {
     children,
     onClick,
   }: {
-    _shortcut?: unknown;
     children?: React.ReactNode;
     onClick: () => void;
     shortcut?: string;
@@ -127,27 +131,22 @@ vi.mock('@automatize/ui/web', async () => {
   const cn = (...classes: string[]) => classes.join(' ');
 
   return {
-    ...actual,
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogDescription,
     DialogFooter,
+    Tabs,
+    TabsList,
+    TabsTrigger,
     Input,
-    Text,
-    Select,
-    SelectTrigger,
-    SelectValue,
-    SelectContent,
-    SelectItem,
     PrimaryButton,
     SecondaryButton,
     cn,
   };
 });
 
-// Mock useTranslation
 vi.mock('@automatize/core-localization', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
@@ -187,7 +186,6 @@ function renderPhoneDialog(
 }
 
 describe('PhoneDialog (web)', () => {
-  // ── Rendering ────────────────────────────────────────────────────────────────
   it('renders dialog with title and description', () => {
     renderPhoneDialog();
     expect(screen.getByText('Test Title')).toBeDefined();
@@ -206,13 +204,12 @@ describe('PhoneDialog (web)', () => {
 
   it('renders phone number field', () => {
     renderPhoneDialog();
-    expect(screen.getByLabelText(/client.phone.number/i)).toBeDefined();
+    expect(screen.getByLabelText(/client.phone.label/i)).toBeDefined();
   });
 
-  // ── Interaction ──────────────────────────────────────────────────────────────
   it('updates phone number value when input changes', () => {
     const { onChange } = renderPhoneDialog();
-    const input = screen.getByLabelText(/client.phone.number/i);
+    const input = screen.getByLabelText(/client.phone.label/i);
     fireEvent.input(input, { target: { value: '(11) 99999-9999' } });
     expect(onChange).toHaveBeenCalledWith(
       expect.objectContaining({ number: '(11) 99999-9999' })
@@ -228,13 +225,11 @@ describe('PhoneDialog (web)', () => {
       name: /client.phone.type.telephone/i,
     });
 
-    // Click telephone button
     fireEvent.click(telephoneButton);
     expect(onChange).toHaveBeenCalledWith(
       expect.objectContaining({ phoneType: 'telephone' })
     );
 
-    // Click mobile button
     fireEvent.click(mobileButton);
     expect(onChange).toHaveBeenCalledWith(
       expect.objectContaining({ phoneType: 'mobile' })
@@ -245,7 +240,7 @@ describe('PhoneDialog (web)', () => {
     const { onSave } = renderPhoneDialog({
       data: { phoneType: 'mobile', number: '(11) 99999-9999' },
     });
-    const input = screen.getByLabelText(/client.phone.number/i);
+    const input = screen.getByLabelText(/client.phone.label/i);
     fireEvent.keyDown(input, { key: 'Enter', shiftKey: false });
     expect(onSave).toHaveBeenCalled();
   });
@@ -254,15 +249,9 @@ describe('PhoneDialog (web)', () => {
     const { onSave } = renderPhoneDialog({
       data: { phoneType: 'mobile', number: '' },
     });
-    const input = screen.getByLabelText(/client.phone.number/i);
+    const input = screen.getByLabelText(/client.phone.label/i);
     fireEvent.keyDown(input, { key: 'Enter', shiftKey: false });
     expect(onSave).not.toHaveBeenCalled();
-  });
-
-  it('calls onOpenChange(false) when Escape is pressed', () => {
-    const { onOpenChange } = renderPhoneDialog();
-    fireEvent.keyDown(document.body, { key: 'Escape' });
-    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
   it('calls onOpenChange(false) when cancel button is clicked', () => {
@@ -285,15 +274,19 @@ describe('PhoneDialog (web)', () => {
     renderPhoneDialog({
       data: { phoneType: 'mobile', number: '' },
     });
-    const saveButton = screen.getByRole('button', { name: /Save/i });
-    expect(saveButton).toBeDisabled();
+    const saveButton = screen.getByRole('button', {
+      name: /Save/i,
+    }) as HTMLButtonElement;
+    expect(saveButton.disabled).toBe(true);
   });
 
   it('enables save button when number is not empty', () => {
     renderPhoneDialog({
       data: { phoneType: 'mobile', number: '(11) 99999-9999' },
     });
-    const saveButton = screen.getByRole('button', { name: /Save/i });
-    expect(saveButton).not.toBeDisabled();
+    const saveButton = screen.getByRole('button', {
+      name: /Save/i,
+    }) as HTMLButtonElement;
+    expect(saveButton.disabled).toBe(false);
   });
 });

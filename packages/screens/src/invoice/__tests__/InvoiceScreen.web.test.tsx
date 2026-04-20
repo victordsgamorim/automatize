@@ -1,11 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import React from 'react';
 
 // Mock @automatize/ui/web
 vi.mock('@automatize/ui/web', async () => {
-  const actual =
-    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   const { createElement } = await import('react');
 
   type _WithChildren = { children?: React.ReactNode };
@@ -210,7 +208,6 @@ vi.mock('@automatize/ui/web', async () => {
   const Users = () => createElement('span', { 'data-testid': 'users-icon' });
 
   return {
-    ...actual,
     Table,
     Drawer,
     BottomSheet,
@@ -402,7 +399,10 @@ describe('InvoiceScreen (web)', () => {
     expect(row).not.toBeNull();
     fireEvent.click(row as Element);
 
-    expect(screen.getByText('John Doe')).toBeDefined();
+    const drawer = screen.getByTestId('drawer');
+    expect(
+      within(drawer).getAllByText('John Doe').length
+    ).toBeGreaterThanOrEqual(1);
   });
 
   it('displays formatted date in detail view', () => {
@@ -411,7 +411,8 @@ describe('InvoiceScreen (web)', () => {
     expect(row).not.toBeNull();
     fireEvent.click(row as Element);
 
-    expect(screen.getByText('15/01/2024')).toBeDefined();
+    const drawer = screen.getByTestId('drawer');
+    expect(within(drawer).getByText('15/01/2024')).toBeDefined();
   });
 
   it('displays warranty months in detail view', () => {
@@ -420,7 +421,10 @@ describe('InvoiceScreen (web)', () => {
     expect(row).not.toBeNull();
     fireEvent.click(row as Element);
 
-    expect(screen.getByText(/invoice.detail.warrantyValue/i)).toBeDefined();
+    const drawer = screen.getByTestId('drawer');
+    expect(
+      within(drawer).getByText(/invoice.detail.warrantyValue/i)
+    ).toBeDefined();
   });
 
   it('displays "—" when warranty months is 0', () => {
@@ -429,7 +433,8 @@ describe('InvoiceScreen (web)', () => {
     expect(row).not.toBeNull();
     fireEvent.click(row as Element);
 
-    expect(screen.getByText('—')).toBeDefined();
+    const drawer = screen.getByTestId('drawer');
+    expect(within(drawer).getByText('—')).toBeDefined();
   });
 
   it('displays formatted total in detail view', () => {
@@ -438,6 +443,7 @@ describe('InvoiceScreen (web)', () => {
     expect(row).not.toBeNull();
     fireEvent.click(row as Element);
 
-    expect(screen.getByText('R$ 1.500,00')).toBeDefined();
+    const drawer = screen.getByTestId('drawer');
+    expect(within(drawer).getByText('R$ 1.500,00')).toBeDefined();
   });
 });

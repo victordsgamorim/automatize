@@ -138,7 +138,7 @@ vi.mock('@automatize/core-localization', () => ({
 
 // Mock ClientSection
 vi.mock(
-  './components/ClientSection/ClientSection.web',
+  '../components/ClientSection/ClientSection.web',
   (): {
     ClientSection: (props: {
       onSelectClient?: (id: string) => void;
@@ -173,25 +173,25 @@ vi.mock(
 );
 
 // Mock ProductsSection
-vi.mock('./components/ProductsSection/ProductsSection.web', () => ({
+vi.mock('../components/ProductsSection/ProductsSection.web', () => ({
   ProductsSection: () =>
     React.createElement('div', { 'data-testid': 'products-section' }),
 }));
 
 // Mock TechniciansSection
-vi.mock('./components/TechniciansSection/TechniciansSection.web', () => ({
+vi.mock('../components/TechniciansSection/TechniciansSection.web', () => ({
   TechniciansSection: () =>
     React.createElement('div', { 'data-testid': 'technicians-section' }),
 }));
 
 // Mock WarrantySection
-vi.mock('./components/WarrantySection/WarrantySection.web', () => ({
+vi.mock('../components/WarrantySection/WarrantySection.web', () => ({
   WarrantySection: () =>
     React.createElement('div', { 'data-testid': 'warranty-section' }),
 }));
 
 // Mock useInvoiceForm
-vi.mock('./useInvoiceForm', () => ({
+vi.mock('../useInvoiceForm', () => ({
   useInvoiceForm: (_props?: {
     initialData?: Record<string, unknown>;
     onDataChange?: (data: Record<string, unknown>) => void;
@@ -291,7 +291,7 @@ describe('InvoiceFormScreen (web)', () => {
     const submitButton = screen.getByRole('button', {
       name: /invoice.submit/i,
     });
-    expect(submitButton).toBeDisabled();
+    expect((submitButton as HTMLButtonElement).disabled).toBe(true);
   });
 
   it('calls onBack when cancel is clicked', () => {

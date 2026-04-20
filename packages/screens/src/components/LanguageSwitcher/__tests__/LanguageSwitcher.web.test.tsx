@@ -3,6 +3,63 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
+vi.mock('@automatize/ui/web', async () => {
+  const { createElement } = await import('react');
+
+  const DropdownMenu = ({ children }: { children: React.ReactNode }) => {
+    return createElement('div', null, children);
+  };
+  const DropdownMenuTrigger = ({
+    children,
+    asChild: _asChild,
+  }: {
+    children: React.ReactNode;
+    asChild?: boolean;
+  }) => {
+    if (_asChild && React.isValidElement(children))
+      return React.cloneElement(
+        children as React.ReactElement<Record<string, unknown>>,
+        {}
+      );
+    return createElement('button', null, children);
+  };
+  const DropdownMenuContent = ({
+    children,
+  }: {
+    children: React.ReactNode;
+    align?: string;
+    className?: string;
+  }) => {
+    return createElement('div', { role: 'menu' }, children);
+  };
+  const DropdownMenuItem = ({
+    children,
+    onClick,
+  }: {
+    children: React.ReactNode;
+    onClick?: () => void;
+    className?: string;
+  }) => {
+    return createElement(
+      'div',
+      {
+        role: 'menuitem',
+        onClick: () => {
+          onClick?.();
+        },
+      },
+      children
+    );
+  };
+
+  return {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+  };
+});
+
 import { LanguageSwitcher } from '../LanguageSwitcher.web';
 import type { LanguageOption } from '../LanguageSwitcher.web';
 

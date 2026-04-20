@@ -4,14 +4,12 @@ import React from 'react';
 
 // Mock @automatize/ui/web
 vi.mock('@automatize/ui/web', async () => {
-  const actual =
-    await vi.importActual<Record<string, unknown>>('@automatize/ui/web');
   const { createElement } = await import('react');
 
   type _WithChildren = { children?: React.ReactNode };
 
   const Input = ({
-    _label,
+    label,
     value,
     onChange,
     placeholder,
@@ -25,13 +23,18 @@ vi.mock('@automatize/ui/web', async () => {
     id: string;
     required?: boolean;
   }) =>
-    createElement('input', {
-      id,
-      value,
-      onChange: (e) => onChange(e),
-      placeholder,
-      required,
-    });
+    createElement(
+      'div',
+      null,
+      label ? createElement('label', { htmlFor: id }, label) : null,
+      createElement('input', {
+        id,
+        value,
+        onChange: (e) => onChange(e),
+        placeholder,
+        required,
+      })
+    );
 
   const Text = ({
     variant,
@@ -42,7 +45,6 @@ vi.mock('@automatize/ui/web', async () => {
   }) => createElement('div', { 'data-variant': variant }, children);
 
   return {
-    ...actual,
     Input,
     Text,
   };
@@ -57,7 +59,7 @@ vi.mock('@automatize/core-localization', () => ({
 
 // Mock PhoneSection - must use vi.fn() and return a function that creates elements
 vi.mock(
-  '../../../client-form/components/PhoneSection/PhoneSection.web',
+  '../../../../client-form/components/PhoneSection/PhoneSection.web',
   () => ({
     PhoneSection: ({ phones }: { phones: Array<{ id: string }> }) =>
       React.createElement('div', {
