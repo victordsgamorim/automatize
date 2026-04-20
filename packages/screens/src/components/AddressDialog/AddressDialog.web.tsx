@@ -147,6 +147,7 @@ export function AddressDialog<T extends AddressFields>({
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey && data.street.trim()) {
               e.preventDefault();
+              e.stopPropagation();
               onSave();
             }
           }}

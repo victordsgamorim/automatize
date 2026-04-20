@@ -111,6 +111,7 @@ export function PhoneDialog<T extends PhoneFields>({
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey && data.number.trim()) {
               e.preventDefault();
+              e.stopPropagation();
               onSave();
             }
           }}
