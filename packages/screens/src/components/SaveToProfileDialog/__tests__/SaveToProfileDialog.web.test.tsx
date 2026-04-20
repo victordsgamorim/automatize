@@ -41,8 +41,15 @@ vi.mock('@automatize/ui/web', async () => {
       children
     );
   };
-  const DialogContent = ({ children }: WithChildren) =>
-    createElement('div', { 'data-slot': 'dialog-content' }, children);
+  const DialogContent = ({
+    children,
+    onKeyDown,
+  }: WithChildren & { onKeyDown?: React.KeyboardEventHandler }) =>
+    createElement(
+      'div',
+      { 'data-slot': 'dialog-content', onKeyDown },
+      children
+    );
   const DialogHeader = ({ children }: WithChildren) =>
     createElement('div', null, children);
   const DialogTitle = ({ children }: WithChildren) =>
@@ -134,17 +141,21 @@ describe('SaveToProfileDialog (web)', () => {
     expect(onSkip).toHaveBeenCalled();
   });
 
-  it('calls onSkip when dialog is closed (via onOpenChange with false)', () => {
-    // We need to mock the Dialog to call onOpenChange when closed.
-    // Since we didn't mock the Dialog to handle closing, we'll skip this test for now.
-    // Alternatively, we can adjust the mock to simulate closing.
-    // But note: the component does not have a close button, only the two action buttons.
-    // The dialog is closed by the parent when it sets open to false.
-    // The onOpenChange prop is called by the Dialog when the user clicks on the backdrop or presses escape.
-    // Since we are not testing the backdrop or escape, we can leave this out.
-    // However, to be thorough, let's try to simulate closing by clicking on a backdrop.
-    // We don't have a backdrop in our mock, so we cannot test this.
-    // We'll skip this test and rely on the button tests.
-    expect(true).toBe(true);
+  it('calls onConfirm when Enter key is pressed inside the dialog', () => {
+    const { onConfirm } = renderSaveToProfileDialog();
+    const content = screen
+      .getByRole('heading', { name: /Test Title/i })
+      .closest('[data-slot="dialog-content"]') as HTMLElement;
+    fireEvent.keyDown(content, { key: 'Enter', shiftKey: false });
+    expect(onConfirm).toHaveBeenCalled();
+  });
+
+  it('does not call onConfirm when Shift+Enter is pressed', () => {
+    const { onConfirm } = renderSaveToProfileDialog();
+    const content = screen
+      .getByRole('heading', { name: /Test Title/i })
+      .closest('[data-slot="dialog-content"]') as HTMLElement;
+    fireEvent.keyDown(content, { key: 'Enter', shiftKey: true });
+    expect(onConfirm).not.toHaveBeenCalled();
   });
 });

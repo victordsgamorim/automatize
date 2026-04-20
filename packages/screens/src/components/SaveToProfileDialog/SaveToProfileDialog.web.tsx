@@ -35,7 +35,15 @@ export const SaveToProfileDialog: React.FC<SaveToProfileDialogProps> = ({
       if (!v) onSkip();
     }}
   >
-    <DialogContent>
+    <DialogContent
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          e.stopPropagation();
+          onConfirm();
+        }
+      }}
+    >
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
@@ -44,7 +52,7 @@ export const SaveToProfileDialog: React.FC<SaveToProfileDialogProps> = ({
         <SecondaryButton type="button" onClick={onSkip}>
           {skipLabel}
         </SecondaryButton>
-        <PrimaryButton type="button" onClick={onConfirm}>
+        <PrimaryButton type="button" onClick={onConfirm} autoFocus>
           {confirmLabel}
         </PrimaryButton>
       </DialogFooter>

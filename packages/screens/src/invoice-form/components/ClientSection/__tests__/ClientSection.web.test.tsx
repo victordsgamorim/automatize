@@ -79,6 +79,27 @@ vi.mock('@automatize/ui/web', () => {
   const Smartphone = () =>
     React.createElement('span', { 'data-testid': 'smartphone-icon' });
 
+  const SecondaryChip = ({
+    children,
+    onRemove,
+  }: {
+    children?: React.ReactNode;
+    onRemove?: () => void;
+    size?: string;
+  }) =>
+    React.createElement(
+      'div',
+      { 'data-testid': 'secondary-chip' },
+      children,
+      onRemove
+        ? React.createElement(
+            'button',
+            { onClick: onRemove, 'data-testid': 'chip-remove' },
+            'Remove'
+          )
+        : null
+    );
+
   return {
     Popover,
     PopoverTrigger,
@@ -91,6 +112,7 @@ vi.mock('@automatize/ui/web', () => {
     CommandItem,
     Text,
     Separator,
+    SecondaryChip,
     cn,
     Check,
     ChevronsUpDown,
@@ -435,5 +457,47 @@ describe('ClientSection (web)', () => {
     });
 
     expect(screen.getAllByText('11999999999').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('renders phone numbers as SecondaryChip components', () => {
+    const clientWithPhones: ClientRow = {
+      id: 'client-1',
+      name: 'John Doe',
+      document: '12345678901',
+      addresses: [],
+      phones: mockPhones,
+    };
+
+    renderClientSection({
+      availableClients: [clientWithPhones],
+      selectedClientId: 'client-1',
+      selectedClientName: 'John Doe',
+      clientPhones: mockPhones,
+    });
+
+    const chips = screen.getAllByTestId('secondary-chip');
+    expect(chips.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('calls onRemovePhone when chip remove button is clicked', () => {
+    const clientWithPhones: ClientRow = {
+      id: 'client-1',
+      name: 'John Doe',
+      document: '12345678901',
+      addresses: [],
+      phones: mockPhones,
+    };
+
+    const { onRemovePhone } = renderClientSection({
+      availableClients: [clientWithPhones],
+      selectedClientId: 'client-1',
+      selectedClientName: 'John Doe',
+      clientPhones: mockPhones,
+    });
+
+    const removeButton = screen.getByTestId('chip-remove');
+    fireEvent.click(removeButton);
+
+    expect(onRemovePhone).toHaveBeenCalledWith('phone-1');
   });
 });

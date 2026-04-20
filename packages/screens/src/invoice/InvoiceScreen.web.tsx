@@ -16,6 +16,7 @@ import {
   BottomSheet,
   Separator,
   Text,
+  PrimaryChip,
 } from '@automatize/ui/web';
 import type { TableColumn } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
@@ -107,15 +108,16 @@ export const InvoiceScreen: React.FC<InvoiceScreenProps> = ({
         minWidth: 90,
         sortable: true,
         sortFn: (a, b) => a.warrantyMonths - b.warrantyMonths,
-        render: (invoice) => (
-          <span className="text-sm text-foreground/80">
-            {invoice.warrantyMonths > 0
-              ? t('invoice.detail.warrantyValue', {
-                  months: String(invoice.warrantyMonths),
-                })
-              : '—'}
-          </span>
-        ),
+        render: (invoice) =>
+          invoice.warrantyMonths > 0 ? (
+            <PrimaryChip>
+              {t('invoice.detail.warrantyValue', {
+                months: String(invoice.warrantyMonths),
+              })}
+            </PrimaryChip>
+          ) : (
+            <span className="text-sm text-foreground/80">—</span>
+          ),
       },
       {
         key: 'total',
@@ -192,13 +194,17 @@ export const InvoiceScreen: React.FC<InvoiceScreenProps> = ({
             <Text variant="label" className="block text-muted-foreground">
               {t('invoice.detail.warranty')}
             </Text>
-            <Text variant="body" className="font-medium">
-              {selectedInvoice.warrantyMonths > 0
-                ? t('invoice.detail.warrantyValue', {
-                    months: String(selectedInvoice.warrantyMonths),
-                  })
-                : '—'}
-            </Text>
+            {selectedInvoice.warrantyMonths > 0 ? (
+              <PrimaryChip>
+                {t('invoice.detail.warrantyValue', {
+                  months: String(selectedInvoice.warrantyMonths),
+                })}
+              </PrimaryChip>
+            ) : (
+              <Text variant="body" className="font-medium">
+                —
+              </Text>
+            )}
           </div>
         </div>
       </div>

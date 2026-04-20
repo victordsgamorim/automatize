@@ -86,8 +86,23 @@ export {
 } from './components/Dialog/Dialog.web';
 
 // Kbd
-export { Kbd, DestructiveKbd } from './components/Kbd/Kbd.web';
+export {
+  Kbd,
+  PrimaryKbd,
+  SecondaryKbd,
+  DestructiveKbd,
+} from './components/Kbd/Kbd.web';
 export type { KbdProps } from './components/Kbd/Kbd.web';
+
+// Chip
+export { Chip, chipVariants } from './components/Chip/Chip.web';
+export type { ChipProps } from './components/Chip/Chip.web';
+export { PrimaryChip } from './components/Chip/PrimaryChip.web';
+export type { PrimaryChipProps } from './components/Chip/PrimaryChip.web';
+export { SecondaryChip } from './components/Chip/SecondaryChip.web';
+export type { SecondaryChipProps } from './components/Chip/SecondaryChip.web';
+export { DestructiveChip } from './components/Chip/DestructiveChip.web';
+export type { DestructiveChipProps } from './components/Chip/DestructiveChip.web';
 
 export {
   Command,

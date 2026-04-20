@@ -22,6 +22,7 @@ import {
   CommandItem,
   Text,
   Separator,
+  SecondaryChip,
   cn,
 } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
@@ -127,11 +128,12 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
   const savedAddresses: ClientAddress[] = selectedClient?.addresses ?? [];
   const savedPhones: ClientPhone[] = selectedClient?.phones ?? [];
 
-  const savedPhoneIds = new Set(savedPhones.map((p) => p.id));
+  const savedPhoneNumbers = new Set(savedPhones.map((p) => p.number));
   const allDropdownPhones: ClientPhone[] = [
     ...savedPhones,
-    ...clientPhones.filter((p) => !savedPhoneIds.has(p.id)),
+    ...clientPhones.filter((p) => !savedPhoneNumbers.has(p.number)),
   ];
+  const chipPhones = clientPhones;
 
   const currentAddress: ClientAddress | null = clientAddresses[0] ?? null;
 
@@ -184,7 +186,7 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
   const handleSavePhoneToProfile = () => {
     if (!pendingPhone) return;
     onSavePhoneToClient?.(pendingPhone);
-    onAddPhone({ ...pendingPhone });
+    onTogglePhone(pendingPhone);
     setPendingPhone(null);
     setSavePhoneDialogOpen(false);
   };
@@ -487,7 +489,7 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
                       <CommandGroup>
                         {allDropdownPhones.map((phone) => {
                           const isSelected = clientPhones.some(
-                            (p) => p.id === phone.id
+                            (p) => p.number === phone.number
                           );
                           const PhoneIcon =
                             phone.phoneType === 'mobile' ? Smartphone : Phone;
@@ -524,27 +526,20 @@ export const ClientSection: React.FC<ClientSectionProps> = ({
               </Popover>
             )}
 
-            {clientPhones.length > 0 && (
+            {chipPhones.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {clientPhones.map((phone) => {
+                {chipPhones.map((phone) => {
                   const PhoneIcon =
                     phone.phoneType === 'mobile' ? Smartphone : Phone;
                   return (
-                    <div
+                    <SecondaryChip
                       key={phone.id}
-                      className="group flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1"
+                      size="lg"
+                      onRemove={() => onRemovePhone(phone.id)}
                     >
-                      <PhoneIcon className="size-3 text-muted-foreground" />
-                      <Text variant="bodySmall">{phone.number}</Text>
-                      <button
-                        type="button"
-                        onClick={() => onRemovePhone(phone.id)}
-                        aria-label={t('client.phone.remove')}
-                        className="text-muted-foreground hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
-                      >
-                        <X className="size-3" />
-                      </button>
-                    </div>
+                      <PhoneIcon className="size-3" />
+                      {phone.number}
+                    </SecondaryChip>
                   );
                 })}
               </div>
