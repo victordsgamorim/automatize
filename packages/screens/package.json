@@ -137,6 +137,16 @@
       "types": "./dist/invoice-form/web.d.ts",
       "import": "./dist/invoice-form/web.mjs",
       "require": "./dist/invoice-form/web.js"
+    },
+    "./analytics": {
+      "types": "./dist/analytics/index.d.ts",
+      "import": "./dist/analytics/index.mjs",
+      "require": "./dist/analytics/index.js"
+    },
+    "./analytics/web": {
+      "types": "./dist/analytics/web.d.ts",
+      "import": "./dist/analytics/web.mjs",
+      "require": "./dist/analytics/web.js"
     }
   },
   "scripts": {
@@ -159,6 +169,7 @@
     "date-fns": "catalog:",
     "lucide-react": "catalog:",
     "lucide-react-native": "catalog:",
+    "recharts": "^2.15.2",
     "zod": "catalog:"
   },
   "devDependencies": {

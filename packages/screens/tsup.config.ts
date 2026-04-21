@@ -48,6 +48,8 @@ export default defineConfig({
     'src/invoice/web.ts',
     'src/invoice-form/index.ts',
     'src/invoice-form/web.ts',
+    'src/analytics/index.ts',
+    'src/analytics/web.ts',
   ],
   format: ['cjs', 'esm'],
   dts: true,
