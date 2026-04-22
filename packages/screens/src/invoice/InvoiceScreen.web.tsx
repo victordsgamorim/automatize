@@ -6,6 +6,14 @@ import {
   Calendar,
   DollarSign,
   Users,
+  Phone,
+  Smartphone,
+  MapPin,
+  Home,
+  Store,
+  Package,
+  Wrench,
+  FileText,
 } from 'lucide-react';
 import {
   SecondaryButton,
@@ -151,76 +159,313 @@ export const InvoiceScreen: React.FC<InvoiceScreenProps> = ({
   };
 
   const detailContent = selectedInvoice ? (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Client */}
-      <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
-        <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-          <Users className="size-5" />
+      <div className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border bg-muted/20">
+        <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
+          <Users className="size-3.5" />
         </div>
-        <div className="min-w-0">
-          <Text variant="label" className="block text-muted-foreground">
+        <div className="min-w-0 flex-1 flex items-center justify-between gap-2">
+          <Text variant="caption" className="text-muted-foreground shrink-0">
             {t('invoice.detail.client')}
           </Text>
-          <Text variant="body" className="font-medium">
+          <Text variant="bodySmall" className="font-medium truncate text-right">
             {selectedInvoice.clientName}
           </Text>
         </div>
       </div>
 
+      {/* Client Phones */}
+      {selectedInvoice.clientPhones &&
+        selectedInvoice.clientPhones.length > 0 && (
+          <>
+            <Separator />
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Phone className="size-4 text-muted-foreground" />
+                <Text variant="label">{t('invoice.client.phones')}</Text>
+              </div>
+              <div className="space-y-2">
+                {selectedInvoice.clientPhones.map((p) => {
+                  const isMobilePhone = p.phoneType !== 'telephone';
+                  return (
+                    <div
+                      key={p.id}
+                      className="flex items-center gap-2.5 py-2 px-2.5 rounded-lg border border-border bg-muted/20"
+                    >
+                      <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
+                        {isMobilePhone ? (
+                          <Smartphone className="size-3.5" />
+                        ) : (
+                          <Phone className="size-3.5" />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1 flex items-center justify-between gap-2">
+                        {p.phoneType && (
+                          <Text
+                            variant="caption"
+                            className="text-muted-foreground shrink-0"
+                          >
+                            {t(
+                              isMobilePhone
+                                ? 'client.phone.type.mobile'
+                                : 'client.phone.type.telephone'
+                            )}
+                          </Text>
+                        )}
+                        <Text
+                          variant="bodySmall"
+                          className="font-medium whitespace-nowrap tabular-nums ml-auto"
+                        >
+                          {p.number}
+                        </Text>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </>
+        )}
+
+      {/* Client Addresses */}
+      {selectedInvoice.clientAddresses &&
+        selectedInvoice.clientAddresses.length > 0 && (
+          <>
+            <Separator />
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin className="size-4 text-muted-foreground" />
+                <Text variant="label">{t('invoice.client.addresses')}</Text>
+              </div>
+              <div className="space-y-2">
+                {selectedInvoice.clientAddresses.map((a) => {
+                  const streetLine = [a.street, a.number]
+                    .filter(Boolean)
+                    .join(', ');
+                  const cityLine = [a.city, a.state]
+                    .filter(Boolean)
+                    .join(' - ');
+                  const isEstablishment = a.addressType === 'establishment';
+                  return (
+                    <div
+                      key={a.id}
+                      className="flex items-start gap-2.5 p-2.5 rounded-lg border border-border bg-muted/20"
+                    >
+                      <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0 mt-0.5">
+                        {isEstablishment ? (
+                          <Store className="size-3.5" />
+                        ) : (
+                          <Home className="size-3.5" />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        {a.addressType && (
+                          <Text
+                            variant="caption"
+                            className="text-muted-foreground block mb-0.5"
+                          >
+                            {t(
+                              isEstablishment
+                                ? 'client.address.type.establishment'
+                                : 'client.address.type.residence'
+                            )}
+                          </Text>
+                        )}
+                        {streetLine && (
+                          <Text
+                            variant="bodySmall"
+                            className="font-medium block truncate"
+                          >
+                            {streetLine}
+                          </Text>
+                        )}
+                        {a.neighborhood && (
+                          <Text
+                            variant="caption"
+                            className="text-foreground/80 block truncate"
+                          >
+                            {a.neighborhood}
+                          </Text>
+                        )}
+                        {cityLine && (
+                          <Text
+                            variant="caption"
+                            className="text-foreground/80 block"
+                          >
+                            {cityLine}
+                          </Text>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </>
+        )}
+
       <Separator />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         {/* Date */}
-        <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
-          <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-            <Calendar className="size-5" />
-          </div>
-          <div className="min-w-0">
-            <Text variant="label" className="block text-muted-foreground">
+        <div className="flex flex-col gap-1 p-2.5 rounded-lg border border-border bg-muted/20">
+          <div className="flex items-center gap-1.5">
+            <Calendar className="size-3.5 text-primary" />
+            <Text variant="caption" className="text-muted-foreground">
               {t('invoice.detail.date')}
             </Text>
-            <Text variant="body" className="font-medium">
-              {formatDate(selectedInvoice.date)}
-            </Text>
           </div>
+          <Text
+            variant="bodySmall"
+            className="font-medium whitespace-nowrap tabular-nums block"
+          >
+            {formatDate(selectedInvoice.date)}
+          </Text>
         </div>
 
         {/* Warranty */}
-        <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
-          <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-            <Shield className="size-5" />
-          </div>
-          <div className="min-w-0">
-            <Text variant="label" className="block text-muted-foreground">
+        <div className="flex flex-col gap-1 p-2.5 rounded-lg border border-border bg-muted/20">
+          <div className="flex items-center gap-1.5">
+            <Shield className="size-3.5 text-primary" />
+            <Text variant="caption" className="text-muted-foreground">
               {t('invoice.detail.warranty')}
             </Text>
-            {selectedInvoice.warrantyMonths > 0 ? (
-              <PrimaryChip>
-                {t('invoice.detail.warrantyValue', {
-                  months: String(selectedInvoice.warrantyMonths),
-                })}
-              </PrimaryChip>
-            ) : (
-              <Text variant="body" className="font-medium">
-                —
-              </Text>
-            )}
           </div>
+          {selectedInvoice.warrantyMonths > 0 ? (
+            <PrimaryChip>
+              {t('invoice.detail.warrantyValue', {
+                months: String(selectedInvoice.warrantyMonths),
+              })}
+            </PrimaryChip>
+          ) : (
+            <Text variant="bodySmall" className="font-medium">
+              —
+            </Text>
+          )}
         </div>
       </div>
 
       <Separator />
 
-      {/* Total */}
-      <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
-        <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-          <DollarSign className="size-5" />
+      {/* Products */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <Package className="size-4 text-muted-foreground" />
+          <Text variant="label">{t('invoice.detail.products')}</Text>
         </div>
-        <div className="min-w-0">
-          <Text variant="label" className="block text-muted-foreground">
+        {!selectedInvoice.products || selectedInvoice.products.length === 0 ? (
+          <Text variant="caption" className="text-muted-foreground">
+            {t('invoice.detail.noProducts')}
+          </Text>
+        ) : (
+          <div className="space-y-2">
+            {selectedInvoice.products.map((p) => (
+              <div
+                key={p.id}
+                className="p-2.5 rounded-lg border border-border bg-muted/20"
+              >
+                <div className="flex items-baseline justify-between gap-2">
+                  <Text variant="bodySmall" className="font-medium truncate">
+                    {p.name}
+                  </Text>
+                  <Text
+                    variant="bodySmall"
+                    className="font-bold whitespace-nowrap tabular-nums shrink-0"
+                  >
+                    ×{p.quantity}
+                  </Text>
+                </div>
+                <div className="flex items-baseline justify-between gap-2 mt-0.5">
+                  <Text
+                    variant="caption"
+                    className="text-muted-foreground whitespace-nowrap tabular-nums"
+                  >
+                    {formatPrice(p.unitPrice)}/un
+                  </Text>
+                  <Text
+                    variant="caption"
+                    className="text-foreground/80 font-medium whitespace-nowrap tabular-nums shrink-0"
+                  >
+                    {formatPrice(p.totalPrice)}
+                  </Text>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Technicians */}
+      {selectedInvoice.technicians !== undefined && (
+        <>
+          <Separator />
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Wrench className="size-4 text-muted-foreground" />
+              <Text variant="label">{t('invoice.detail.technicians')}</Text>
+            </div>
+            {selectedInvoice.technicians.length === 0 ? (
+              <Text variant="caption" className="text-muted-foreground">
+                {t('invoice.detail.noTechnicians')}
+              </Text>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {selectedInvoice.technicians.map((tech) => (
+                  <div
+                    key={tech.id}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-border bg-muted/20"
+                  >
+                    <Wrench className="size-3 text-primary shrink-0" />
+                    <Text
+                      variant="caption"
+                      className="font-medium whitespace-nowrap"
+                    >
+                      {tech.name}
+                    </Text>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Additional Info */}
+      {selectedInvoice.additionalInfo && (
+        <>
+          <Separator />
+          <div className="flex items-start gap-2.5 p-2.5 rounded-lg border border-border bg-muted/20">
+            <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0 mt-0.5">
+              <FileText className="size-3.5" />
+            </div>
+            <div className="min-w-0">
+              <Text variant="caption" className="text-muted-foreground block">
+                {t('invoice.detail.additionalInfo')}
+              </Text>
+              <Text variant="bodySmall" className="break-words mt-0.5">
+                {selectedInvoice.additionalInfo}
+              </Text>
+            </div>
+          </div>
+        </>
+      )}
+
+      <Separator />
+
+      {/* Total */}
+      <div className="flex items-center gap-2.5 p-3 rounded-lg border border-border bg-primary/5">
+        <div className="flex size-7 items-center justify-center rounded-md bg-primary/15 text-primary shrink-0">
+          <DollarSign className="size-3.5" />
+        </div>
+        <div className="min-w-0 flex-1 flex items-center justify-between gap-2">
+          <Text variant="caption" className="text-muted-foreground shrink-0">
             {t('invoice.detail.total')}
           </Text>
-          <Text variant="body" className="font-bold text-primary text-lg">
+          <Text
+            variant="body"
+            className="font-bold text-primary text-lg whitespace-nowrap tabular-nums"
+          >
             {formatPrice(selectedInvoice.total)}
           </Text>
         </div>

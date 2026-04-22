@@ -116,21 +116,21 @@ export const ProductScreen: React.FC<ProductScreenProps> = ({
   };
 
   const detailContent = selectedProduct ? (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Photo */}
       {selectedProduct.photo ? (
         <div className="flex justify-center">
           <img
             src={selectedProduct.photo}
             alt={selectedProduct.name}
-            className="w-full max-w-xs h-48 object-cover rounded-lg border border-border"
+            className="w-full max-w-xs h-44 object-cover rounded-lg border border-border"
           />
         </div>
       ) : (
         <div className="flex justify-center">
-          <div className="flex items-center justify-center w-full h-32 rounded-lg border border-border bg-muted/20">
-            <div className="flex flex-col items-center gap-2 text-muted-foreground">
-              <ImageOff className="size-7" />
+          <div className="flex items-center justify-center w-full h-28 rounded-lg border border-border bg-muted/20">
+            <div className="flex flex-col items-center gap-1.5 text-muted-foreground">
+              <ImageOff className="size-6" />
               <Text variant="caption">{t('product.photo.none')}</Text>
             </div>
           </div>
@@ -139,69 +139,77 @@ export const ProductScreen: React.FC<ProductScreenProps> = ({
 
       <Separator />
 
+      {/* Price & Quantity */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="flex flex-col gap-1 p-2.5 rounded-lg border border-border bg-muted/20">
+          <div className="flex items-center gap-1.5">
+            <Tag className="size-3.5 text-primary" />
+            <Text variant="caption" className="text-muted-foreground">
+              {t('product.price')}
+            </Text>
+          </div>
+          <Text
+            variant="bodySmall"
+            className="font-medium whitespace-nowrap tabular-nums block"
+          >
+            {formatPrice(selectedProduct.price)}
+          </Text>
+        </div>
+        <div className="flex flex-col gap-1 p-2.5 rounded-lg border border-border bg-muted/20">
+          <div className="flex items-center gap-1.5">
+            <Hash className="size-3.5 text-primary" />
+            <Text variant="caption" className="text-muted-foreground">
+              {t('product.quantity')}
+            </Text>
+          </div>
+          <Text
+            variant="bodySmall"
+            className="font-medium whitespace-nowrap tabular-nums block"
+          >
+            {String(selectedProduct.quantity)}
+          </Text>
+        </div>
+      </div>
+
       {/* Supplier */}
       {selectedProduct.companyName && (
         <>
-          <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
-            <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-              <Building2 className="size-5" />
+          <Separator />
+          <div className="flex items-center gap-2.5 p-2.5 rounded-lg border border-border bg-muted/20">
+            <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
+              <Building2 className="size-3.5" />
             </div>
-            <div className="min-w-0">
-              <Text variant="label" className="block text-muted-foreground">
+            <div className="min-w-0 flex-1 flex items-center justify-between gap-2">
+              <Text
+                variant="caption"
+                className="text-muted-foreground shrink-0"
+              >
                 {t('product.supplier')}
               </Text>
-              <Text variant="body" className="font-medium">
+              <Text
+                variant="bodySmall"
+                className="font-medium truncate text-right"
+              >
                 {selectedProduct.companyName}
               </Text>
             </div>
           </div>
-          <Separator />
         </>
       )}
-
-      {/* Price & Quantity */}
-      <div className="space-y-3">
-        <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
-          <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-            <Tag className="size-5" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <Text variant="label" className="block text-muted-foreground">
-              {t('product.price')}
-            </Text>
-            <Text variant="body" className="font-medium block truncate">
-              {formatPrice(selectedProduct.price)}
-            </Text>
-          </div>
-        </div>
-        <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
-          <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-            <Hash className="size-5" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <Text variant="label" className="block text-muted-foreground">
-              {t('product.quantity')}
-            </Text>
-            <Text variant="body" className="font-medium block truncate">
-              {String(selectedProduct.quantity)}
-            </Text>
-          </div>
-        </div>
-      </div>
 
       {/* Info */}
       {selectedProduct.info && (
         <>
           <Separator />
-          <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
-            <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-              <Info className="size-5" />
+          <div className="flex items-start gap-2.5 p-2.5 rounded-lg border border-border bg-muted/20">
+            <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0 mt-0.5">
+              <Info className="size-3.5" />
             </div>
             <div className="min-w-0">
-              <Text variant="label" className="block text-muted-foreground">
+              <Text variant="caption" className="text-muted-foreground block">
                 {t('product.info')}
               </Text>
-              <Text variant="body" className="break-words">
+              <Text variant="bodySmall" className="break-words mt-0.5">
                 {selectedProduct.info}
               </Text>
             </div>
