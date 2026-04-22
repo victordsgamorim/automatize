@@ -9,6 +9,9 @@ catalogs:
     '@react-native-community/netinfo':
       specifier: ^11.3.1
       version: 11.5.2
+    '@tanstack/react-query':
+      specifier: ^5.80.0
+      version: 5.99.2
     '@testing-library/react':
       specifier: ^16.3.2
       version: 16.3.2
@@ -258,6 +261,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.71.2(react@19.2.4))
+      '@tanstack/react-query':
+        specifier: 'catalog:'
+        version: 5.99.2(react@19.2.4)
       date-fns:
         specifier: 'catalog:'
         version: 3.6.0
@@ -4166,6 +4172,14 @@ packages:
 
   '@tailwindcss/postcss@4.2.1':
     resolution: {integrity: sha512-OEwGIBnXnj7zJeonOh6ZG9woofIjGrd2BORfvE5p9USYKDCZoQmfqLcfNiRWoJlRWLdNPn2IgVZuWAOM4iTYMw==}
+
+  '@tanstack/query-core@5.99.2':
+    resolution: {integrity: sha512-1HunU0bXVsR1ZJMZbcOPE6VtaBJxsW809RE9xPe4Gz7MlB0GWwQvuTPhMoEmQ/hIzFKJ/DWAuttIe7BOaWx0tA==}
+
+  '@tanstack/react-query@5.99.2':
+    resolution: {integrity: sha512-vM91UEe45QUS9ED6OklsVL15i8qKcRqNwpWzPTVWvRPRSEgDudDgHpvyTjcdlwHcrKNa80T+xXYcchT2noPnZA==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
@@ -10766,7 +10780,7 @@ snapshots:
     dependencies:
       uuid: 8.3.2
 
-  '@expo/cli@0.17.13(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(expo-modules-autolinking@1.10.3)':
+  '@expo/cli@0.17.13(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))(expo-modules-autolinking@1.10.3)':
     dependencies:
       '@babel/runtime': 7.28.6
       '@expo/code-signing-certificates': 0.0.5
@@ -10776,7 +10790,7 @@ snapshots:
       '@expo/env': 0.2.3
       '@expo/image-utils': 0.4.2
       '@expo/json-file': 8.3.3
-      '@expo/metro-config': 0.17.8(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))
+      '@expo/metro-config': 0.17.8(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))
       '@expo/osascript': 2.4.2
       '@expo/package-manager': 1.10.3
       '@expo/plist': 0.1.3
@@ -11016,7 +11030,7 @@ snapshots:
       json5: 2.2.3
       write-file-atomic: 2.4.3
 
-  '@expo/metro-config@0.17.8(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))':
+  '@expo/metro-config@0.17.8(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/generator': 7.29.1
@@ -13055,6 +13069,13 @@ snapshots:
       '@tailwindcss/oxide': 4.2.1
       postcss: 8.5.8
       tailwindcss: 4.2.1
+
+  '@tanstack/query-core@5.99.2': {}
+
+  '@tanstack/react-query@5.99.2(react@19.2.4)':
+    dependencies:
+      '@tanstack/query-core': 5.99.2
+      react: 19.2.4
 
   '@testing-library/dom@10.4.1':
     dependencies:
@@ -15280,10 +15301,10 @@ snapshots:
   expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.28.6
-      '@expo/cli': 0.17.13(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(expo-modules-autolinking@1.10.3)
+      '@expo/cli': 0.17.13(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))(expo-modules-autolinking@1.10.3)
       '@expo/config': 8.5.6
       '@expo/config-plugins': 7.9.2
-      '@expo/metro-config': 0.17.8(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))
+      '@expo/metro-config': 0.17.8(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))
       '@expo/vector-icons': 14.1.0(expo-font@11.10.3(expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0)))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0)
       babel-preset-expo: 10.0.2(@babel/core@7.29.0)
       expo-asset: 9.0.2(expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(react-native@0.73.11(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0))(react@18.2.0))(react@18.2.0))
@@ -15308,10 +15329,10 @@ snapshots:
   expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.28.6
-      '@expo/cli': 0.17.13(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(expo-modules-autolinking@1.10.3)
+      '@expo/cli': 0.17.13(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))(expo-modules-autolinking@1.10.3)
       '@expo/config': 8.5.6
       '@expo/config-plugins': 7.9.2
-      '@expo/metro-config': 0.17.8(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))
+      '@expo/metro-config': 0.17.8(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))
       '@expo/vector-icons': 14.1.0(expo-font@11.10.3(expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0)))(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0)
       babel-preset-expo: 10.0.2(@babel/core@7.29.0)
       expo-asset: 9.0.2(expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0))
@@ -15336,10 +15357,10 @@ snapshots:
   expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/runtime': 7.28.6
-      '@expo/cli': 0.17.13(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))(expo-modules-autolinking@1.10.3)
+      '@expo/cli': 0.17.13(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))(expo-modules-autolinking@1.10.3)
       '@expo/config': 8.5.6
       '@expo/config-plugins': 7.9.2
-      '@expo/metro-config': 0.17.8(@react-native/babel-preset@0.73.21(@babel/core@7.29.0)(@babel/preset-env@7.29.0(@babel/core@7.29.0)))
+      '@expo/metro-config': 0.17.8(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))
       '@expo/vector-icons': 14.1.0(expo-font@11.10.3(expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0)))(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0)
       babel-preset-expo: 10.0.2(@babel/core@7.29.0)
       expo-asset: 9.0.2(expo@50.0.21(@babel/core@7.29.0)(@react-native/babel-preset@0.73.21(@babel/core@7.29.0))(react-native@0.82.1(@babel/core@7.29.0)(@react-native-community/cli@12.3.7)(@types/react@18.3.28)(react@18.2.0))(react@18.2.0))

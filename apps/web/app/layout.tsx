@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import { AuthProviderWrapper } from './auth-provider';
 import { LocalizationWrapper } from './localization-provider';
 import { ThemeWrapper } from './theme-provider';
+import { QueryProvider } from './query-provider';
 import { ToastProvider } from '@automatize/ui/web';
 import { ResponsiveProvider } from '@automatize/ui/responsive';
 import './globals.css';
@@ -46,9 +47,11 @@ export default function RootLayout({
         <ThemeWrapper>
           <LocalizationWrapper>
             <ResponsiveProvider>
-              <AuthProviderWrapper>
-                <ToastProvider>{children}</ToastProvider>
-              </AuthProviderWrapper>
+              <QueryProvider>
+                <AuthProviderWrapper>
+                  <ToastProvider>{children}</ToastProvider>
+                </AuthProviderWrapper>
+              </QueryProvider>
             </ResponsiveProvider>
           </LocalizationWrapper>
         </ThemeWrapper>

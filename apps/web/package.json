@@ -22,6 +22,7 @@
     "@automatize/utils": "workspace:*",
     "date-fns": "catalog:",
     "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-query": "catalog:",
     "lucide-react": "catalog:",
     "next": "^16.2.0",
     "react": "catalog:react19",
