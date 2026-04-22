@@ -7,14 +7,14 @@ import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { ClientScreen } from '@automatize/screens/client/web';
 import type { ClientRow } from '@automatize/screens/client/web';
 import { setClientToEdit } from './clientStore';
-import { useClients } from './useClients';
+import { useClientsRows } from './data/hooks';
 
 export default function ClientsPage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
-  const clients = useClients();
+  const clients = useClientsRows();
 
   const handleEditClient = (client: ClientRow) => {
     setClientToEdit(client.id);
