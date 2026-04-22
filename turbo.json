@@ -29,7 +29,7 @@
       "dependsOn": ["^build", "^lint"]
     },
     "typecheck": {
-      "dependsOn": ["^build", "^typecheck"]
+      "dependsOn": ["build", "^build", "^typecheck"]
     },
     "test": {
       "dependsOn": ["^build"],

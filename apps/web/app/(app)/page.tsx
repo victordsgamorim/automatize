@@ -14,7 +14,10 @@ export default function DashboardPage(): React.JSX.Element {
   const technicians = useState(() => getSavedTechnicians())[0];
 
   const invoiceDetails = useMemo(() => {
-    const map = new Map<string, ReturnType<typeof getInvoiceFormData>>();
+    const map = new Map<
+      string,
+      NonNullable<ReturnType<typeof getInvoiceFormData>>
+    >();
     for (const inv of invoices) {
       const detail = getInvoiceFormData(inv.id);
       if (detail) map.set(inv.id, detail);
