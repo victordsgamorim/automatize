@@ -5,26 +5,69 @@ import type {
   UpdateClientInput,
 } from './types';
 import { clientSchema } from './validators';
-import { getMockClients, getMockClientById } from './mock-clients';
 
+const MOCK_DATA_URL = '/mock-data/clients.json';
 const SIMULATED_DELAY_MS = 400;
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+async function fetchMockClients(): Promise<Client[]> {
+  try {
+    const res = await fetch(MOCK_DATA_URL);
+    if (!res.ok) return [];
+    const data: unknown = await res.json();
+    if (!Array.isArray(data)) return [];
+    return data as Client[];
+  } catch {
+    return [];
+  }
+}
+
 export class ClientRemoteDatasource {
+  private _cache: Client[] | null = null;
+
+  private async getClients(): Promise<Client[]> {
+    if (this._cache) return this._cache;
+    const clients = await fetchMockClients();
+    this._cache = clients;
+    return clients;
+  }
+
   async fetchRemote(
     tenantId: string,
     cursor?: string
   ): Promise<PaginatedResponse<Client>> {
     await delay(SIMULATED_DELAY_MS);
-    return getMockClients(tenantId, cursor);
+    const all = await this.getClients();
+    let filtered = all.filter(
+      (c) => c.tenantId === tenantId && c.deletedAt === null
+    );
+
+    filtered.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
+    if (cursor) {
+      const idx = filtered.findIndex((c) => c.id === cursor);
+      if (idx >= 0) {
+        filtered = filtered.slice(idx + 1);
+      }
+    }
+
+    return {
+      data: filtered,
+      nextCursor: null,
+      hasMore: false,
+    };
   }
 
   async getById(id: string): Promise<Client> {
     await delay(SIMULATED_DELAY_MS);
-    const client = getMockClientById(id);
+    const all = await this.getClients();
+    const client = all.find((c) => c.id === id && c.deletedAt === null);
     if (!client) {
       throw new Error(`Client not found: ${id}`);
     }
@@ -50,7 +93,9 @@ export class ClientRemoteDatasource {
       updatedAt: now,
       deletedAt: null,
     };
-    return clientSchema.parse(client);
+    const validated = clientSchema.parse(client);
+    this._cache?.push(validated);
+    return validated;
   }
 
   async update(
@@ -59,7 +104,8 @@ export class ClientRemoteDatasource {
     input: UpdateClientInput
   ): Promise<Client> {
     await delay(SIMULATED_DELAY_MS);
-    const existing = getMockClientById(id);
+    const all = await this.getClients();
+    const existing = all.find((c) => c.id === id && c.deletedAt === null);
     if (!existing) throw new Error(`Client not found: ${id}`);
     if (existing.tenantId !== tenantId)
       throw new Error(`Tenant mismatch for client: ${id}`);
@@ -79,14 +125,13 @@ export class ClientRemoteDatasource {
 
   async softDelete(id: string, tenantId: string): Promise<Client> {
     await delay(SIMULATED_DELAY_MS);
-    const existing = getMockClientById(id);
+    const all = await this.getClients();
+    const existing = all.find((c) => c.id === id && c.deletedAt === null);
     if (!existing) throw new Error(`Client not found: ${id}`);
     if (existing.tenantId !== tenantId)
       throw new Error(`Tenant mismatch for client: ${id}`);
-    return clientSchema.parse({
-      ...existing,
-      deletedAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
+    existing.deletedAt = new Date().toISOString();
+    existing.updatedAt = new Date().toISOString();
+    return clientSchema.parse(existing);
   }
 }

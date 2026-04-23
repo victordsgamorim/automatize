@@ -24,7 +24,7 @@ import {
   updateSavedClient,
   clearClientToEdit,
 } from '../clientStore';
-import { getMockClientById } from '../data/mock-clients';
+import { useClient } from '../data/hooks';
 import type { Client } from '../data/types';
 
 let formDraft: ClientFormData | undefined;
@@ -82,15 +82,22 @@ export default function EditClientPage(): React.JSX.Element {
   const { preference, isDark, setTheme } = useTheme();
 
   const clientId = getClientIdToEdit();
-  const [initialData] = useState<ClientFormData | undefined>(() => {
-    if (clientId) {
-      const fromStore = getClientFormData(clientId);
-      if (fromStore) return fromStore;
-      const fromMock = getMockClientById(clientId);
-      if (fromMock) return clientToFormData(fromMock);
+  const { data: remoteClient } = useClient(clientId ?? '');
+  const [initialData, setInitialData] = useState<ClientFormData | undefined>(
+    () => {
+      if (clientId) {
+        const fromStore = getClientFormData(clientId);
+        if (fromStore) return fromStore;
+      }
+      return formDraft;
     }
-    return formDraft;
-  });
+  );
+
+  useEffect(() => {
+    if (clientId && remoteClient && !getClientFormData(clientId)) {
+      setInitialData(clientToFormData(remoteClient));
+    }
+  }, [clientId, remoteClient]);
 
   const [pendingData, setPendingData] = useState<ClientFormData | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
