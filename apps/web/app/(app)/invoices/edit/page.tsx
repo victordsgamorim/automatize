@@ -68,6 +68,19 @@ function toInvoiceRow(
     date: originalDate,
     warrantyMonths: data.warrantyMonths,
     total: data.total,
+    clientPhones: data.clientPhones,
+    clientAddresses: data.clientAddresses,
+    products: data.products.map((p) => ({
+      id: p.id,
+      name: p.name,
+      quantity: p.quantity,
+      unitPrice: p.unitPrice,
+      totalPrice: p.totalPrice,
+    })),
+    technicians: data.technicians
+      .filter((tech) => tech.active)
+      .map((tech) => ({ id: tech.id, name: tech.name })),
+    additionalInfo: data.additionalInfo,
   };
 }
 

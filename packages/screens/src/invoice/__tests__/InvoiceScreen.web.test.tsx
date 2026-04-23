@@ -206,6 +206,8 @@ vi.mock('@automatize/ui/web', async () => {
   const DollarSign = () =>
     createElement('span', { 'data-testid': 'dollar-icon' });
   const Users = () => createElement('span', { 'data-testid': 'users-icon' });
+  const PrimaryChip = ({ children }: { children?: React.ReactNode }) =>
+    createElement('span', { 'data-testid': 'primary-chip' }, children);
 
   return {
     Table,
@@ -222,6 +224,7 @@ vi.mock('@automatize/ui/web', async () => {
     Calendar,
     DollarSign,
     Users,
+    PrimaryChip,
   };
 });
 

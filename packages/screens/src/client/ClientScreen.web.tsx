@@ -131,25 +131,23 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
   };
 
   const detailContent = selectedClient ? (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Client type + document */}
       {(selectedClient.clientType || selectedClient.document) && (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             {selectedClient.clientType && (
-              <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
-                <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
+              <div className="flex flex-col gap-1 p-2.5 rounded-lg border border-border bg-muted/20">
+                <Text variant="caption" className="text-muted-foreground">
+                  {t('client.detail.type')}
+                </Text>
+                <div className="flex items-center gap-1.5 min-w-0">
                   {selectedClient.clientType === 'business' ? (
-                    <Building2 className="size-5" />
+                    <Building2 className="size-3.5 text-primary shrink-0" />
                   ) : (
-                    <User className="size-5" />
+                    <User className="size-3.5 text-primary shrink-0" />
                   )}
-                </div>
-                <div className="min-w-0">
-                  <Text variant="label" className="block text-muted-foreground">
-                    {t('client.detail.type')}
-                  </Text>
-                  <Text variant="body" className="font-medium">
+                  <Text variant="bodySmall" className="font-medium truncate">
                     {t(
                       selectedClient.clientType === 'business'
                         ? 'client.type.business'
@@ -160,22 +158,23 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
               </div>
             )}
             {selectedClient.document && (
-              <div className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20">
-                <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-                  <IdCard className="size-5" />
-                </div>
-                <div className="min-w-0">
-                  <Text variant="label" className="block text-muted-foreground">
+              <div className="flex flex-col gap-1 p-2.5 rounded-lg border border-border bg-muted/20">
+                <div className="flex items-center gap-1.5">
+                  <IdCard className="size-3.5 text-primary shrink-0" />
+                  <Text variant="caption" className="text-muted-foreground">
                     {t(
                       selectedClient.clientType === 'business'
                         ? 'client.cnpj'
                         : 'client.cpf'
                     )}
                   </Text>
-                  <Text variant="body" className="font-medium break-all">
-                    {selectedClient.document}
-                  </Text>
                 </div>
+                <Text
+                  variant="bodySmall"
+                  className="font-medium whitespace-nowrap tabular-nums"
+                >
+                  {selectedClient.document}
+                </Text>
               </div>
             )}
           </div>
@@ -194,7 +193,7 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
             {t('client.detail.noAddresses')}
           </Text>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {selectedClient.addresses.map((a) => {
               const streetLine = [a.street, a.number]
                 .filter(Boolean)
@@ -204,20 +203,20 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
               return (
                 <div
                   key={a.id}
-                  className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/20"
+                  className="flex items-start gap-2.5 p-2.5 rounded-lg border border-border bg-muted/20"
                 >
-                  <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
+                  <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0 mt-0.5">
                     {isEstablishment ? (
-                      <Store className="size-5" />
+                      <Store className="size-3.5" />
                     ) : (
-                      <Home className="size-5" />
+                      <Home className="size-3.5" />
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
                     {a.addressType && (
                       <Text
-                        variant="label"
-                        className="block text-muted-foreground mb-1"
+                        variant="caption"
+                        className="text-muted-foreground block mb-0.5"
                       >
                         {t(
                           isEstablishment
@@ -227,22 +226,25 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
                       </Text>
                     )}
                     {streetLine && (
-                      <Text variant="body" className="block font-medium">
+                      <Text
+                        variant="bodySmall"
+                        className="font-medium block truncate"
+                      >
                         {streetLine}
                       </Text>
                     )}
                     {a.neighborhood && (
                       <Text
-                        variant="bodySmall"
-                        className="block text-foreground/80"
+                        variant="caption"
+                        className="text-foreground/80 block truncate"
                       >
                         {a.neighborhood}
                       </Text>
                     )}
                     {cityLine && (
                       <Text
-                        variant="bodySmall"
-                        className="block text-foreground/80"
+                        variant="caption"
+                        className="text-foreground/80 block"
                       >
                         {cityLine}
                       </Text>
@@ -250,7 +252,7 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
                     {a.info && (
                       <Text
                         variant="caption"
-                        className="block text-muted-foreground mt-1"
+                        className="text-muted-foreground block mt-0.5"
                       >
                         {a.info}
                       </Text>
@@ -276,35 +278,38 @@ export const ClientScreen: React.FC<ClientScreenProps> = ({
             {t('client.detail.noPhones')}
           </Text>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {selectedClient.phones.map((p) => {
-              const isMobile = p.phoneType !== 'telephone';
+              const isMobilePhone = p.phoneType !== 'telephone';
               return (
                 <div
                   key={p.id}
-                  className="flex items-center gap-3 p-3 rounded-lg border border-border bg-muted/20"
+                  className="flex items-center gap-2.5 py-2 px-2.5 rounded-lg border border-border bg-muted/20"
                 >
-                  <div className="flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
-                    {isMobile ? (
-                      <Smartphone className="size-5" />
+                  <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary shrink-0">
+                    {isMobilePhone ? (
+                      <Smartphone className="size-3.5" />
                     ) : (
-                      <Phone className="size-5" />
+                      <Phone className="size-3.5" />
                     )}
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 flex items-center justify-between gap-2">
                     {p.phoneType && (
                       <Text
-                        variant="label"
-                        className="block text-muted-foreground mb-0.5"
+                        variant="caption"
+                        className="text-muted-foreground shrink-0"
                       >
                         {t(
-                          isMobile
+                          isMobilePhone
                             ? 'client.phone.type.mobile'
                             : 'client.phone.type.telephone'
                         )}
                       </Text>
                     )}
-                    <Text variant="body" className="font-medium">
+                    <Text
+                      variant="bodySmall"
+                      className="font-medium whitespace-nowrap tabular-nums ml-auto"
+                    >
                       {p.number}
                     </Text>
                   </div>

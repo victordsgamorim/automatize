@@ -73,10 +73,10 @@ describe('Drawer (web)', () => {
     expect(panel?.className).toContain('ease-in-out');
   });
 
-  it('applies default width w-80', () => {
+  it('applies default width w-96', () => {
     render(<Drawer {...defaults} />);
     const panel = screen.getByText('Content here').closest('[class*="fixed"]');
-    expect(panel?.className).toContain('w-80');
+    expect(panel?.className).toContain('w-96');
   });
 
   it('merges custom className', () => {
