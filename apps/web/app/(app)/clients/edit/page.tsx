@@ -24,12 +24,33 @@ import {
   updateSavedClient,
   clearClientToEdit,
 } from '../clientStore';
+import { useClient } from '../data/hooks';
+import type { Client } from '../data/types';
 
-/**
- * Module-level draft store. Survives SPA navigations;
- * cleared on page refresh (same pattern as new/page.tsx).
- */
 let formDraft: ClientFormData | undefined;
+
+function clientToFormData(client: Client): ClientFormData {
+  return {
+    clientType: client.clientType,
+    name: client.name,
+    document: client.document,
+    addresses: client.addresses.map((a) => ({
+      id: a.id,
+      addressType: a.addressType,
+      street: a.street,
+      number: a.number,
+      neighborhood: a.neighborhood,
+      city: a.city,
+      state: a.state,
+      info: a.info,
+    })),
+    phones: client.phones.map((p) => ({
+      id: p.id,
+      phoneType: p.phoneType,
+      number: p.number,
+    })),
+  };
+}
 
 function toClientRow(data: ClientFormData, id: string): ClientRow {
   return {
@@ -60,19 +81,28 @@ export default function EditClientPage(): React.JSX.Element {
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
-  // Resolve which client we're editing; fall back to module-level draft on
-  // SPA back-navigation (clientIdToEdit cleared on confirm, draft persists).
   const clientId = getClientIdToEdit();
-  const [initialData] = useState<ClientFormData | undefined>(() => {
-    if (clientId) return getClientFormData(clientId);
-    return formDraft;
-  });
+  const { data: remoteClient } = useClient(clientId ?? '');
+  const [initialData, setInitialData] = useState<ClientFormData | undefined>(
+    () => {
+      if (clientId) {
+        const fromStore = getClientFormData(clientId);
+        if (fromStore) return fromStore;
+      }
+      return formDraft;
+    }
+  );
+
+  useEffect(() => {
+    if (clientId && remoteClient && !getClientFormData(clientId)) {
+      setInitialData(clientToFormData(remoteClient));
+    }
+  }, [clientId, remoteClient]);
 
   const [pendingData, setPendingData] = useState<ClientFormData | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
 
-  // Guard browser back button when a draft exists
   useEffect(() => {
     if (!initialData && !formDraft) return;
 
@@ -94,7 +124,6 @@ export default function EditClientPage(): React.JSX.Element {
     formDraft = data;
   }, []);
 
-  // Intercept submit — show confirm dialog instead of saving immediately
   const handleSubmit = (data: ClientFormData) => {
     setPendingData(data);
     setShowConfirmDialog(true);
@@ -128,7 +157,6 @@ export default function EditClientPage(): React.JSX.Element {
     window.history.pushState(null, '', window.location.href);
   };
 
-  // Keyboard shortcuts for the confirm-edit dialog
   useEffect(() => {
     if (!showConfirmDialog) return;
 
@@ -176,7 +204,6 @@ export default function EditClientPage(): React.JSX.Element {
         }}
       />
 
-      {/* Confirm edit dialog */}
       <Dialog
         open={showConfirmDialog}
         onOpenChange={(open) => {
