@@ -202,6 +202,7 @@ supabase/seed.sql
 .claude/launch.json
 **/CLAUDE.md
 **/AGENTS.md
+**/DESIGN.md
 
 # ============================================================================
 # MISC DIRECTORIES
