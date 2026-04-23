@@ -101,8 +101,36 @@ export function addPhoneToClient(clientId: string, phone: ClientPhone): void {
   emitChange();
 }
 
-export function setClientToEdit(id: string): void {
+function clientRowToFormData(row: ClientRow): ClientFormData {
+  return {
+    clientType: row.clientType ?? 'individual',
+    name: row.name,
+    document: row.document ?? '',
+    addresses: row.addresses.map((a) => ({
+      id: a.id,
+      addressType: a.addressType ?? 'residence',
+      street: a.street,
+      number: a.number,
+      neighborhood: a.neighborhood,
+      city: a.city,
+      state: a.state,
+      info: a.info ?? '',
+    })),
+    phones: row.phones.map((p) => ({
+      id: p.id,
+      phoneType: p.phoneType ?? 'mobile',
+      number: p.number,
+    })),
+  };
+}
+
+export function setClientToEdit(id: string, row?: ClientRow): void {
   clientIdToEdit = id;
+  // Pre-seed form data from the row so the edit page renders instantly.
+  // Only seeds if there's no cached (potentially partially-edited) data already.
+  if (row && !clientFormDataMap.has(id)) {
+    clientFormDataMap.set(id, clientRowToFormData(row));
+  }
 }
 
 export function getClientIdToEdit(): string | undefined {

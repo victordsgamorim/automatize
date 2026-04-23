@@ -76,7 +76,27 @@ export function useClientForm(
     initialData?.clientType ?? 'individual'
   );
   const [name, setName] = useState(initialData?.name ?? '');
-  const [document, setDocument] = useState(initialData?.document ?? '');
+
+  // Each type caches its own document so switching back restores the previous value.
+  const [individualDoc, setIndividualDoc] = useState(
+    initialData?.clientType !== 'business' ? (initialData?.document ?? '') : ''
+  );
+  const [businessDoc, setBusinessDoc] = useState(
+    initialData?.clientType === 'business' ? (initialData?.document ?? '') : ''
+  );
+
+  const document = clientType === 'individual' ? individualDoc : businessDoc;
+  const setDocument = useCallback(
+    (value: string) => {
+      if (clientType === 'individual') {
+        setIndividualDoc(value);
+      } else {
+        setBusinessDoc(value);
+      }
+    },
+    [clientType]
+  );
+
   const [addresses, setAddresses] = useState<Address[]>(
     initialData?.addresses ?? []
   );
@@ -85,17 +105,50 @@ export function useClientForm(
   // Track whether we've mounted to avoid firing onDataChange with initial values
   const mountedRef = useRef(false);
 
+  // Sync form state when initialData changes after mount (e.g. async remote load)
+  const appliedInitialDataRef = useRef<ClientFormData | undefined>(initialData);
+  useEffect(() => {
+    if (!initialData || initialData === appliedInitialDataRef.current) return;
+    appliedInitialDataRef.current = initialData;
+    const type = initialData.clientType ?? 'individual';
+    setClientTypeState(type);
+    setName(initialData.name ?? '');
+    if (type === 'business') {
+      setBusinessDoc(initialData.document ?? '');
+      setIndividualDoc('');
+    } else {
+      setIndividualDoc(initialData.document ?? '');
+      setBusinessDoc('');
+    }
+    setAddresses(initialData.addresses ?? []);
+    setPhones(initialData.phones ?? []);
+  }, [initialData]);
+
   useEffect(() => {
     if (!mountedRef.current) {
       mountedRef.current = true;
       return;
     }
-    onDataChange?.({ clientType, name, document, addresses, phones });
-  }, [clientType, name, document, addresses, phones, onDataChange]);
+    onDataChange?.({
+      clientType,
+      name,
+      document: clientType === 'individual' ? individualDoc : businessDoc,
+      addresses,
+      phones,
+    });
+  }, [
+    clientType,
+    name,
+    individualDoc,
+    businessDoc,
+    addresses,
+    phones,
+    onDataChange,
+  ]);
 
   const setClientType = useCallback((type: ClientType) => {
     setClientTypeState(type);
-    setDocument('');
+    // No clearing — each type has its own cached document.
   }, []);
 
   const addAddress = useCallback((data?: Partial<Omit<Address, 'id'>>) => {
@@ -152,17 +205,18 @@ export function useClientForm(
     (): ClientFormData => ({
       clientType,
       name,
-      document,
+      document: clientType === 'individual' ? individualDoc : businessDoc,
       addresses,
       phones,
     }),
-    [clientType, name, document, addresses, phones]
+    [clientType, name, individualDoc, businessDoc, addresses, phones]
   );
 
   const resetForm = useCallback(() => {
     setClientTypeState('individual');
     setName('');
-    setDocument('');
+    setIndividualDoc('');
+    setBusinessDoc('');
     setAddresses([]);
     setPhones([]);
   }, []);

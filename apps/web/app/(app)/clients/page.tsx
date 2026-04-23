@@ -17,7 +17,7 @@ export default function ClientsPage(): React.JSX.Element {
   const clients = useClientsRows();
 
   const handleEditClient = (client: ClientRow) => {
-    setClientToEdit(client.id);
+    setClientToEdit(client.id, client);
     navigate('/clients/edit');
   };
 
