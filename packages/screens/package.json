@@ -53,6 +53,16 @@
       "import": "./dist/client/web.mjs",
       "require": "./dist/client/web.js"
     },
+    "./client/data": {
+      "types": "./dist/client/data/index.d.ts",
+      "import": "./dist/client/data/index.mjs",
+      "require": "./dist/client/data/index.js"
+    },
+    "./client/providers": {
+      "types": "./dist/client/providers/index.d.ts",
+      "import": "./dist/client/providers/index.mjs",
+      "require": "./dist/client/providers/index.js"
+    },
     "./client-form": {
       "types": "./dist/client-form/index.d.ts",
       "import": "./dist/client-form/index.mjs",

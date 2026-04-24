@@ -31,6 +31,8 @@ export default defineConfig({
     'src/settings/web.ts',
     'src/client/index.ts',
     'src/client/web.ts',
+    'src/client/data/index.ts',
+    'src/client/providers/index.ts',
     'src/client-form/index.ts',
     'src/client-form/web.ts',
     'src/product/index.ts',

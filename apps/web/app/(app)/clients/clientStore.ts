@@ -25,7 +25,6 @@ export function getSnapshot(): ClientRow[] {
 
 let savedClients: ClientRow[] = [];
 const clientFormDataMap = new Map<string, ClientFormData>();
-let clientIdToEdit: string | undefined;
 
 export function getSavedClients(): ClientRow[] {
   return savedClients;
@@ -99,16 +98,4 @@ export function addPhoneToClient(clientId: string, phone: ClientPhone): void {
     });
   }
   emitChange();
-}
-
-export function setClientToEdit(id: string): void {
-  clientIdToEdit = id;
-}
-
-export function getClientIdToEdit(): string | undefined {
-  return clientIdToEdit;
-}
-
-export function clearClientToEdit(): void {
-  clientIdToEdit = undefined;
 }

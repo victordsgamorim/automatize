@@ -7,9 +7,14 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query';
 import type { ClientRow } from '@automatize/screens/client/web';
-import { ClientRemoteDatasource } from './remote-datasource';
-import { ClientRepository } from './repository';
-import type { PaginatedResponse, Client } from './types';
+import {
+  ClientRemoteDatasource,
+  ClientRepository,
+} from '@automatize/screens/client/data';
+import type {
+  PaginatedResponse,
+  Client,
+} from '@automatize/screens/client/data';
 
 const CLIENTS_KEY = 'clients';
 const CLIENT_KEY = 'client';
@@ -21,13 +26,13 @@ function createRepo(): ClientRepository {
   return new ClientRepository(remote);
 }
 
-interface ClientsQueryData {
+export interface ClientsQueryData {
   pages: PaginatedResponse<Client>[];
   pageParams: (string | undefined)[];
   clients: Client[];
 }
 
-function toClientRow(client: Client): ClientRow {
+export function toClientRow(client: Client): ClientRow {
   return {
     id: client.id,
     name: client.name,
@@ -57,7 +62,7 @@ export function useClientsData(
   return useInfiniteQuery({
     queryKey: [CLIENTS_KEY, tenantId],
     queryFn: ({ pageParam }) => createRepo().getAll(tenantId, pageParam),
-    getNextPageParam: (lastPage) =>
+    getNextPageParam: (lastPage: PaginatedResponse<Client>) =>
       lastPage.hasMore ? lastPage.nextCursor : undefined,
     initialPageParam: undefined as string | undefined,
     select: (data): ClientsQueryData => ({
