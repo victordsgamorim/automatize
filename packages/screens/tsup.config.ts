@@ -35,6 +35,8 @@ export default defineConfig({
     'src/client-form/web.ts',
     'src/product/index.ts',
     'src/product/web.ts',
+    'src/product/data/index.ts',
+    'src/product/providers/index.ts',
     'src/product-form/index.ts',
     'src/product-form/web.ts',
     'src/draft-persistence/index.ts',

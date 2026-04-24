@@ -1,19 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { ProductScreen } from '@automatize/screens/product/web';
+import { useProductContext } from '@automatize/screens/product/web';
 import type { ProductRow } from '@automatize/screens/product/web';
-import { getSavedProducts, setProductToEdit } from './productStore';
 
 export default function ProductsPage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
-  const [products] = useState(() => getSavedProducts());
+  const { products, setProductToEdit } = useProductContext();
 
   const handleEditProduct = (product: ProductRow) => {
     setProductToEdit(product.id);

@@ -10,6 +10,7 @@ import type {
   Supplier,
 } from '@automatize/screens/product-form/web';
 import type { ProductRow } from '@automatize/screens/product/web';
+import { useProductContext } from '@automatize/screens/product/web';
 import {
   Dialog,
   DialogContent,
@@ -22,15 +23,26 @@ import {
   Kbd,
 } from '@automatize/ui/web';
 import {
-  getProductIdToEdit,
   getProductFormData,
   updateSavedProduct,
-  clearProductToEdit,
   getSavedSuppliers,
   addSavedSupplier,
 } from '../productStore';
+import { useProduct } from '../hooks';
+import type { Product } from '@automatize/screens/product/data';
 
 let formDraft: Partial<ProductFormData> | undefined;
+
+function productToFormData(product: Product): ProductFormData {
+  return {
+    name: product.name,
+    price: product.price,
+    quantity: product.quantity,
+    info: product.info,
+    photoUrl: product.photoUrl,
+    companyId: product.companyId,
+  };
+}
 
 function toProductRow(
   data: ProductFormData,
@@ -55,11 +67,27 @@ export default function EditProductPage(): React.JSX.Element {
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
-  const productId = getProductIdToEdit();
-  const [initialData] = useState<ProductFormData | undefined>(() => {
-    if (productId) return getProductFormData(productId);
-    return formDraft as ProductFormData | undefined;
-  });
+  const { productIdToEdit, clearProductToEdit } = useProductContext();
+  const { data: remoteProduct } = useProduct(productIdToEdit ?? '');
+  const [initialData, setInitialData] = useState<ProductFormData | undefined>(
+    () => {
+      if (productIdToEdit) {
+        const fromStore = getProductFormData(productIdToEdit);
+        if (fromStore) return fromStore;
+      }
+      return formDraft as ProductFormData | undefined;
+    }
+  );
+
+  useEffect(() => {
+    if (
+      productIdToEdit &&
+      remoteProduct &&
+      !getProductFormData(productIdToEdit)
+    ) {
+      setInitialData(productToFormData(remoteProduct));
+    }
+  }, [productIdToEdit, remoteProduct]);
 
   const [suppliers, setSuppliers] = useState(() => getSavedSuppliers());
   const [pendingData, setPendingData] = useState<ProductFormData | null>(null);
@@ -93,16 +121,16 @@ export default function EditProductPage(): React.JSX.Element {
   };
 
   const handleConfirm = useCallback(() => {
-    if (!productId || !pendingData) return;
+    if (!productIdToEdit || !pendingData) return;
     updateSavedProduct(
-      productId,
-      toProductRow(pendingData, productId, suppliers),
+      productIdToEdit,
+      toProductRow(pendingData, productIdToEdit, suppliers),
       pendingData
     );
     clearProductToEdit();
     formDraft = undefined;
     navigate('/products');
-  }, [productId, pendingData, suppliers, navigate]);
+  }, [productIdToEdit, pendingData, suppliers, clearProductToEdit, navigate]);
 
   const handleCancelConfirm = useCallback(() => {
     setShowConfirmDialog(false);

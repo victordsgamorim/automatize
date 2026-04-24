@@ -73,6 +73,16 @@
       "import": "./dist/product/web.mjs",
       "require": "./dist/product/web.js"
     },
+    "./product/data": {
+      "types": "./dist/product/data/index.d.ts",
+      "import": "./dist/product/data/index.mjs",
+      "require": "./dist/product/data/index.js"
+    },
+    "./product/providers": {
+      "types": "./dist/product/providers/index.d.ts",
+      "import": "./dist/product/providers/index.mjs",
+      "require": "./dist/product/providers/index.js"
+    },
     "./product-form": {
       "types": "./dist/product-form/index.d.ts",
       "import": "./dist/product-form/index.mjs",
