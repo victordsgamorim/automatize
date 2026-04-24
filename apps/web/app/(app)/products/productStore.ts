@@ -7,7 +7,6 @@ import { generateId } from '@automatize/utils';
 
 let savedProducts: ProductRow[] = [];
 const productFormDataMap = new Map<string, ProductFormData>();
-let productIdToEdit: string | undefined;
 let savedSuppliers: Supplier[] = [];
 
 export function getSavedProducts(): ProductRow[] {
@@ -33,18 +32,6 @@ export function updateSavedProduct(
 ): void {
   savedProducts = savedProducts.map((p) => (p.id === id ? row : p));
   productFormDataMap.set(id, formData);
-}
-
-export function setProductToEdit(id: string): void {
-  productIdToEdit = id;
-}
-
-export function getProductIdToEdit(): string | undefined {
-  return productIdToEdit;
-}
-
-export function clearProductToEdit(): void {
-  productIdToEdit = undefined;
 }
 
 export function getSavedSuppliers(): Supplier[] {

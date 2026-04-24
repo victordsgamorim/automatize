@@ -7,6 +7,7 @@ import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
 import { ClientFormScreen } from '@automatize/screens/client-form/web';
 import type { ClientFormData } from '@automatize/screens/client-form/web';
 import type { ClientRow } from '@automatize/screens/client/web';
+import { useClientContext } from '@automatize/screens/client/web';
 import {
   Dialog,
   DialogContent,
@@ -18,14 +19,9 @@ import {
   SecondaryButton,
   Kbd,
 } from '@automatize/ui/web';
-import {
-  getClientIdToEdit,
-  getClientFormData,
-  updateSavedClient,
-  clearClientToEdit,
-} from '../clientStore';
-import { useClient } from '../data/hooks';
-import type { Client } from '../data/types';
+import { getClientFormData, updateSavedClient } from '../clientStore';
+import { useClient } from '../hooks';
+import type { Client } from '@automatize/screens/client/data';
 
 let formDraft: ClientFormData | undefined;
 
@@ -47,6 +43,32 @@ function clientToFormData(client: Client): ClientFormData {
     phones: client.phones.map((p) => ({
       id: p.id,
       phoneType: p.phoneType,
+      number: p.number,
+    })),
+  };
+}
+
+function clientRowToFormData(row: ClientRow): ClientFormData {
+  return {
+    clientType: (row.clientType ??
+      'individual') as ClientFormData['clientType'],
+    name: row.name,
+    document: row.document ?? '',
+    addresses: row.addresses.map((a) => ({
+      id: a.id,
+      addressType: (a.addressType ??
+        'residence') as ClientFormData['addresses'][number]['addressType'],
+      street: a.street,
+      number: a.number,
+      neighborhood: a.neighborhood,
+      city: a.city,
+      state: a.state,
+      info: a.info ?? '',
+    })),
+    phones: row.phones.map((p) => ({
+      id: p.id,
+      phoneType: (p.phoneType ??
+        'mobile') as ClientFormData['phones'][number]['phoneType'],
       number: p.number,
     })),
   };
@@ -81,23 +103,25 @@ export default function EditClientPage(): React.JSX.Element {
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
-  const clientId = getClientIdToEdit();
-  const { data: remoteClient } = useClient(clientId ?? '');
+  const { clientIdToEdit, clearClientToEdit, clients } = useClientContext();
+  const { data: remoteClient } = useClient(clientIdToEdit ?? '');
   const [initialData, setInitialData] = useState<ClientFormData | undefined>(
     () => {
-      if (clientId) {
-        const fromStore = getClientFormData(clientId);
+      if (clientIdToEdit) {
+        const fromStore = getClientFormData(clientIdToEdit);
         if (fromStore) return fromStore;
+        const fromList = clients.find((c) => c.id === clientIdToEdit);
+        if (fromList) return clientRowToFormData(fromList);
       }
       return formDraft;
     }
   );
 
   useEffect(() => {
-    if (clientId && remoteClient && !getClientFormData(clientId)) {
+    if (clientIdToEdit && remoteClient && !initialData) {
       setInitialData(clientToFormData(remoteClient));
     }
-  }, [clientId, remoteClient]);
+  }, [clientIdToEdit, remoteClient, initialData]);
 
   const [pendingData, setPendingData] = useState<ClientFormData | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -130,16 +154,16 @@ export default function EditClientPage(): React.JSX.Element {
   };
 
   const handleConfirm = useCallback(() => {
-    if (!clientId || !pendingData) return;
+    if (!clientIdToEdit || !pendingData) return;
     updateSavedClient(
-      clientId,
-      toClientRow(pendingData, clientId),
+      clientIdToEdit,
+      toClientRow(pendingData, clientIdToEdit),
       pendingData
     );
     clearClientToEdit();
     formDraft = undefined;
     navigate('/clients');
-  }, [clientId, pendingData, navigate]);
+  }, [clientIdToEdit, pendingData, clearClientToEdit, navigate]);
 
   const handleCancelConfirm = useCallback(() => {
     setShowConfirmDialog(false);
@@ -177,6 +201,7 @@ export default function EditClientPage(): React.JSX.Element {
   return (
     <>
       <ClientFormScreen
+        key={initialData ? clientIdToEdit : undefined}
         mode="edit"
         onSubmit={handleSubmit}
         initialData={initialData}

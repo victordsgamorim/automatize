@@ -4,17 +4,15 @@ import React from 'react';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
-import { ClientScreen } from '@automatize/screens/client/web';
+import { ClientScreen, useClientContext } from '@automatize/screens/client/web';
 import type { ClientRow } from '@automatize/screens/client/web';
-import { setClientToEdit } from './clientStore';
-import { useClientsRows } from './data/hooks';
 
 export default function ClientsPage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
-  const clients = useClientsRows();
+  const { clients, setClientToEdit } = useClientContext();
 
   const handleEditClient = (client: ClientRow) => {
     setClientToEdit(client.id);
