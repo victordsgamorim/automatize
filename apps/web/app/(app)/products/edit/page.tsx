@@ -44,6 +44,17 @@ function productToFormData(product: Product): ProductFormData {
   };
 }
 
+function productRowToFormData(row: ProductRow): ProductFormData {
+  return {
+    name: row.name,
+    price: row.price,
+    quantity: row.quantity,
+    info: row.info ?? '',
+    photoUrl: row.photo,
+    companyId: row.companyId,
+  };
+}
+
 function toProductRow(
   data: ProductFormData,
   id: string,
@@ -67,27 +78,25 @@ export default function EditProductPage(): React.JSX.Element {
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
 
-  const { productIdToEdit, clearProductToEdit } = useProductContext();
+  const { productIdToEdit, clearProductToEdit, products } = useProductContext();
   const { data: remoteProduct } = useProduct(productIdToEdit ?? '');
   const [initialData, setInitialData] = useState<ProductFormData | undefined>(
     () => {
       if (productIdToEdit) {
         const fromStore = getProductFormData(productIdToEdit);
         if (fromStore) return fromStore;
+        const fromList = products.find((p) => p.id === productIdToEdit);
+        if (fromList) return productRowToFormData(fromList);
       }
       return formDraft as ProductFormData | undefined;
     }
   );
 
   useEffect(() => {
-    if (
-      productIdToEdit &&
-      remoteProduct &&
-      !getProductFormData(productIdToEdit)
-    ) {
+    if (productIdToEdit && remoteProduct && !initialData) {
       setInitialData(productToFormData(remoteProduct));
     }
-  }, [productIdToEdit, remoteProduct]);
+  }, [productIdToEdit, remoteProduct, initialData]);
 
   const [suppliers, setSuppliers] = useState(() => getSavedSuppliers());
   const [pendingData, setPendingData] = useState<ProductFormData | null>(null);
@@ -173,6 +182,7 @@ export default function EditProductPage(): React.JSX.Element {
   return (
     <>
       <ProductFormScreen
+        key={initialData ? productIdToEdit : undefined}
         mode="edit"
         onSubmit={handleSubmit}
         initialData={initialData}
