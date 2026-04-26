@@ -1,41 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
-import { SupplierScreen } from '@automatize/screens/supplier/web';
-import type { SupplierRow } from '@automatize/screens/supplier/web';
+import React from 'react';
 import {
-  getSavedSuppliers,
-  addSavedSupplier,
-  updateSavedSupplier,
-  deleteSavedSupplier,
-} from '../products/productStore';
+  SupplierScreen,
+  useSupplierContext,
+} from '@automatize/screens/supplier/web';
 
 export default function SupplierPage(): React.JSX.Element {
-  const [suppliers, setSuppliers] = useState<SupplierRow[]>(() =>
-    getSavedSuppliers()
-  );
-
-  const handleAdd = (name: string) => {
-    const supplier = addSavedSupplier(name);
-    setSuppliers((prev) => [...prev, supplier]);
-  };
-
-  const handleEdit = (id: string, name: string) => {
-    updateSavedSupplier(id, name);
-    setSuppliers((prev) => prev.map((s) => (s.id === id ? { ...s, name } : s)));
-  };
-
-  const handleDelete = (id: string) => {
-    deleteSavedSupplier(id);
-    setSuppliers((prev) => prev.filter((s) => s.id !== id));
-  };
+  const { suppliers, addSupplier, updateSupplier, deleteSupplier } =
+    useSupplierContext();
 
   return (
     <SupplierScreen
       suppliers={suppliers}
-      onAdd={handleAdd}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
+      onAdd={addSupplier}
+      onEdit={updateSupplier}
+      onDelete={deleteSupplier}
     />
   );
 }
