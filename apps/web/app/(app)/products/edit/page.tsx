@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
@@ -22,14 +22,15 @@ import {
   SecondaryButton,
   Kbd,
 } from '@automatize/ui/web';
-import {
-  getProductFormData,
-  updateSavedProduct,
-  getSavedSuppliers,
-  addSavedSupplier,
-} from '../productStore';
+import { useQueryClient } from '@tanstack/react-query';
+import { getProductFormData, updateSavedProduct } from '../productStore';
 import { useProduct } from '../hooks';
 import type { Product } from '@automatize/screens/product/data';
+import {
+  useSuppliersData,
+  createSupplierInCache,
+  SUPPLIERS_QUERY_KEY,
+} from '../../supplier/hooks';
 
 let formDraft: Partial<ProductFormData> | undefined;
 
@@ -77,6 +78,7 @@ export default function EditProductPage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
+  const queryClient = useQueryClient();
 
   const { productIdToEdit, clearProductToEdit, products } = useProductContext();
   const { data: remoteProduct } = useProduct(productIdToEdit ?? '');
@@ -98,7 +100,13 @@ export default function EditProductPage(): React.JSX.Element {
     }
   }, [productIdToEdit, remoteProduct, initialData]);
 
-  const [suppliers, setSuppliers] = useState(() => getSavedSuppliers());
+  const { data: suppliersData } = useSuppliersData();
+  const suppliers = useMemo<Supplier[]>(
+    () =>
+      suppliersData?.suppliers.map((s) => ({ id: s.id, name: s.name })) ?? [],
+    [suppliersData]
+  );
+
   const [pendingData, setPendingData] = useState<ProductFormData | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
@@ -158,8 +166,9 @@ export default function EditProductPage(): React.JSX.Element {
   };
 
   const handleAddSupplier = (name: string) => {
-    const supplier = addSavedSupplier(name);
-    setSuppliers((prev) => [...prev, supplier]);
+    void createSupplierInCache(name).then(() =>
+      queryClient.invalidateQueries({ queryKey: [SUPPLIERS_QUERY_KEY] })
+    );
   };
 
   useEffect(() => {

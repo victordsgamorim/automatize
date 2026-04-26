@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
@@ -11,11 +11,13 @@ import type {
 } from '@automatize/screens/product-form/web';
 import type { ProductRow } from '@automatize/screens/product/web';
 import { generateId } from '@automatize/utils';
+import { useQueryClient } from '@tanstack/react-query';
+import { addSavedProduct } from '../productStore';
 import {
-  addSavedProduct,
-  getSavedSuppliers,
-  addSavedSupplier,
-} from '../productStore';
+  useSuppliersData,
+  createSupplierInCache,
+  SUPPLIERS_QUERY_KEY,
+} from '../../supplier/hooks';
 
 let formDraft: Partial<ProductFormData> | undefined;
 
@@ -40,9 +42,15 @@ export default function NewProductPage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
+  const queryClient = useQueryClient();
 
   const [initialData] = useState(() => formDraft);
-  const [suppliers, setSuppliers] = useState(() => getSavedSuppliers());
+  const { data: suppliersData } = useSuppliersData();
+  const suppliers = useMemo<Supplier[]>(
+    () =>
+      suppliersData?.suppliers.map((s) => ({ id: s.id, name: s.name })) ?? [],
+    [suppliersData]
+  );
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
 
   useEffect(() => {
@@ -83,8 +91,9 @@ export default function NewProductPage(): React.JSX.Element {
   };
 
   const handleAddSupplier = (name: string) => {
-    const supplier = addSavedSupplier(name);
-    setSuppliers((prev) => [...prev, supplier]);
+    void createSupplierInCache(name).then(() =>
+      queryClient.invalidateQueries({ queryKey: [SUPPLIERS_QUERY_KEY] })
+    );
   };
 
   return (

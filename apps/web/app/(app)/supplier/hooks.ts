@@ -13,13 +13,20 @@ import type {
   PaginatedResponse,
 } from '@automatize/screens/supplier/data';
 
-const SUPPLIERS_KEY = 'suppliers';
+export const SUPPLIERS_QUERY_KEY = 'suppliers';
 const DEFAULT_TENANT = '01JQF0NDEKTSV4RRFFQ69G5FA0';
 
 const remote = new SupplierRemoteDatasource();
 
 function createRepo(): SupplierRepository {
   return new SupplierRepository(remote);
+}
+
+export async function createSupplierInCache(
+  name: string,
+  tenantId: string = DEFAULT_TENANT
+): Promise<Supplier> {
+  return remote.create(tenantId, { name });
 }
 
 export interface SuppliersQueryData {
@@ -39,7 +46,7 @@ export function useSuppliersData(
   tenantId: string = DEFAULT_TENANT
 ): UseInfiniteQueryResult<SuppliersQueryData, Error> {
   return useInfiniteQuery({
-    queryKey: [SUPPLIERS_KEY, tenantId],
+    queryKey: [SUPPLIERS_QUERY_KEY, tenantId],
     queryFn: ({ pageParam }) => createRepo().getAll(tenantId, pageParam),
     getNextPageParam: (lastPage: PaginatedResponse<Supplier>) =>
       lastPage.hasMore ? lastPage.nextCursor : undefined,
