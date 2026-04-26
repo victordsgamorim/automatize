@@ -219,6 +219,8 @@ reports/
 # ============================================================================
 **/mock-data/clients.json
 **/mock-data/products.json
+**/mock-data/technicians.json
+**/mock-data/suppliers.json
 
 # ============================================================================
 # DOCUMENTATION (local-only, not committed)
