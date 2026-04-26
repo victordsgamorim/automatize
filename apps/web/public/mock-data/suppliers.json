@@ -1,0 +1,50 @@
+[
+  {
+    "id": "01JQS0NDEKTSV4RRFFQ69G5FA1",
+    "tenantId": "01JQF0NDEKTSV4RRFFQ69G5FA0",
+    "name": "Samsung Brasil",
+    "createdAt": "2025-01-10T08:00:00.000Z",
+    "updatedAt": "2025-01-10T08:00:00.000Z",
+    "deletedAt": null
+  },
+  {
+    "id": "01JQS1NDEKTSV4RRFFQ69G5FA2",
+    "tenantId": "01JQF0NDEKTSV4RRFFQ69G5FA0",
+    "name": "Dell Technologies",
+    "createdAt": "2025-01-10T08:00:00.000Z",
+    "updatedAt": "2025-01-10T08:00:00.000Z",
+    "deletedAt": null
+  },
+  {
+    "id": "01JQS2NDEKTSV4RRFFQ69G5FA3",
+    "tenantId": "01JQF0NDEKTSV4RRFFQ69G5FA0",
+    "name": "Intelbras",
+    "createdAt": "2025-01-11T08:00:00.000Z",
+    "updatedAt": "2025-01-11T08:00:00.000Z",
+    "deletedAt": null
+  },
+  {
+    "id": "01JQS3NDEKTSV4RRFFQ69G5FA4",
+    "tenantId": "01JQF0NDEKTSV4RRFFQ69G5FA0",
+    "name": "Positivo Tecnologia",
+    "createdAt": "2025-01-12T08:00:00.000Z",
+    "updatedAt": "2025-01-12T08:00:00.000Z",
+    "deletedAt": null
+  },
+  {
+    "id": "01JQS4NDEKTSV4RRFFQ69G5FA5",
+    "tenantId": "01JQF0NDEKTSV4RRFFQ69G5FA0",
+    "name": "LG Electronics Brasil",
+    "createdAt": "2025-01-13T08:00:00.000Z",
+    "updatedAt": "2025-01-13T08:00:00.000Z",
+    "deletedAt": null
+  },
+  {
+    "id": "01JQS5NDEKTSV4RRFFQ69G5FA6",
+    "tenantId": "01JQF0NDEKTSV4RRFFQ69G5FA0",
+    "name": "Multilaser",
+    "createdAt": "2025-01-14T08:00:00.000Z",
+    "updatedAt": "2025-01-14T08:00:00.000Z",
+    "deletedAt": null
+  }
+]
