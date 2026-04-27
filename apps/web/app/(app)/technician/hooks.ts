@@ -2,7 +2,12 @@
 
 import { useMemo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import type { UseInfiniteQueryResult } from '@tanstack/react-query';
+import type {
+  UseInfiniteQueryResult,
+  QueryClient,
+  InfiniteData,
+} from '@tanstack/react-query';
+import { generateId } from '@automatize/utils';
 import type { TechnicianRow } from '@automatize/screens/technician/web';
 import {
   TechnicianRemoteDatasource,
@@ -58,4 +63,81 @@ export function useTechniciansRows(
 ): TechnicianRow[] {
   const { data } = useTechniciansData(tenantId);
   return useMemo(() => data?.technicians.map(toTechnicianRow) ?? [], [data]);
+}
+
+export function addTechnicianToCache(
+  queryClient: QueryClient,
+  name: string,
+  entryDate: string,
+  tenantId: string = DEFAULT_TENANT
+): void {
+  const now = new Date().toISOString();
+  const technician: Technician = {
+    id: generateId(),
+    tenantId,
+    name,
+    entryDate,
+    createdAt: now,
+    updatedAt: now,
+    deletedAt: null,
+  };
+  queryClient.setQueryData<InfiniteData<PaginatedResponse<Technician>>>(
+    [TECHNICIANS_KEY, tenantId],
+    (old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        pages: [
+          { ...old.pages[0], data: [technician, ...old.pages[0].data] },
+          ...old.pages.slice(1),
+        ],
+      };
+    }
+  );
+}
+
+export function updateTechnicianInCache(
+  queryClient: QueryClient,
+  id: string,
+  name: string,
+  entryDate: string,
+  tenantId: string = DEFAULT_TENANT
+): void {
+  queryClient.setQueryData<InfiniteData<PaginatedResponse<Technician>>>(
+    [TECHNICIANS_KEY, tenantId],
+    (old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          data: page.data.map((t) =>
+            t.id === id
+              ? { ...t, name, entryDate, updatedAt: new Date().toISOString() }
+              : t
+          ),
+        })),
+      };
+    }
+  );
+}
+
+export function deleteTechnicianInCache(
+  queryClient: QueryClient,
+  id: string,
+  tenantId: string = DEFAULT_TENANT
+): void {
+  queryClient.setQueryData<InfiniteData<PaginatedResponse<Technician>>>(
+    [TECHNICIANS_KEY, tenantId],
+    (old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          data: page.data.filter((t) => t.id !== id),
+        })),
+      };
+    }
+  );
 }

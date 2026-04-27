@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@automatize/navigation';
 import { InvoiceFormScreen } from '@automatize/screens/invoice-form/web';
 import type {
@@ -18,9 +19,19 @@ import {
   addAddressToClient,
   addPhoneToClient,
 } from '../../clients/clientStore';
-import { useClientsRows } from '../../clients/hooks';
-import { useProductsRows } from '../../products/hooks';
-import { useTechniciansRows } from '../../technician/hooks';
+import {
+  useClientsRows,
+  addAddressToClientInCache,
+  addPhoneToClientInCache,
+} from '../../clients/hooks';
+import {
+  useProductsRows,
+  adjustProductStockInCache,
+} from '../../products/hooks';
+import {
+  useTechniciansRows,
+  addTechnicianToCache,
+} from '../../technician/hooks';
 import {
   addSavedInvoice,
   getSavedWarrantyOptions,
@@ -56,6 +67,7 @@ function toInvoiceRow(data: InvoiceFormData, id: string): InvoiceRow {
 
 export default function NewInvoicePage(): React.JSX.Element {
   const { navigate } = useNavigation();
+  const queryClient = useQueryClient();
 
   const [initialData] = useState(() => formDraft);
   const clients = useClientsRows();
@@ -101,6 +113,7 @@ export default function NewInvoicePage(): React.JSX.Element {
     addSavedInvoice(toInvoiceRow(data, id), data);
     for (const item of data.products) {
       decrementProductStock(item.productId, item.quantity);
+      adjustProductStockInCache(queryClient, item.productId, -item.quantity);
     }
     formDraft = undefined;
     navigate('/invoices');
@@ -135,6 +148,7 @@ export default function NewInvoicePage(): React.JSX.Element {
   const handleSaveTechnicianToTable = (name: string) => {
     const today = new Date().toISOString().split('T')[0] ?? '';
     addTableTechnician(name, today);
+    addTechnicianToCache(queryClient, name, today);
     setLocalTechs((prev) =>
       prev.filter((t) => t.name.toLowerCase() !== name.toLowerCase())
     );
@@ -146,17 +160,19 @@ export default function NewInvoicePage(): React.JSX.Element {
   };
 
   const handleSaveAddressToClient = useCallback(
-    (_clientId: string, address: ClientAddress) => {
-      addAddressToClient(_clientId, address);
+    (clientId: string, address: ClientAddress) => {
+      addAddressToClient(clientId, address);
+      addAddressToClientInCache(queryClient, clientId, address);
     },
-    []
+    [queryClient]
   );
 
   const handleSavePhoneToClient = useCallback(
-    (_clientId: string, phone: ClientPhone) => {
-      addPhoneToClient(_clientId, phone);
+    (clientId: string, phone: ClientPhone) => {
+      addPhoneToClient(clientId, phone);
+      addPhoneToClientInCache(queryClient, clientId, phone);
     },
-    []
+    [queryClient]
   );
 
   return (

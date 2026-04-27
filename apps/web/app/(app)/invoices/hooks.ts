@@ -5,6 +5,8 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import type {
   UseInfiniteQueryResult,
   UseQueryResult,
+  QueryClient,
+  InfiniteData,
 } from '@tanstack/react-query';
 import type { InvoiceRow } from '@automatize/screens/invoice/web';
 import {
@@ -126,4 +128,29 @@ export function useInvoice(
     queryFn: () => createRepo().getById(id),
     enabled: !!id,
   });
+}
+
+/**
+ * Replace an invoice in the React Query cache by ID.
+ * Call this after a confirmed edit so the list page reflects the change immediately.
+ */
+export function updateInvoiceInCache(
+  queryClient: QueryClient,
+  id: string,
+  updatedInvoice: Invoice,
+  tenantId: string = DEFAULT_TENANT
+): void {
+  queryClient.setQueryData<InfiniteData<PaginatedResponse<Invoice>>>(
+    [INVOICES_QUERY_KEY, tenantId],
+    (old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          data: page.data.map((inv) => (inv.id === id ? updatedInvoice : inv)),
+        })),
+      };
+    }
+  );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
@@ -9,6 +10,7 @@ import type { ClientFormData } from '@automatize/screens/client-form/web';
 import type { ClientRow } from '@automatize/screens/client/web';
 import { generateId } from '@automatize/utils';
 import { addSavedClient } from '../clientStore';
+import { addClientToCache } from '../hooks';
 
 /**
  * Module-level draft store. Survives client-side (SPA) navigations
@@ -45,6 +47,7 @@ export default function NewClientPage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
+  const queryClient = useQueryClient();
 
   const [initialData] = useState(() => formDraft);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
@@ -71,7 +74,9 @@ export default function NewClientPage(): React.JSX.Element {
   }, []);
 
   const handleSubmit = (data: ClientFormData) => {
-    addSavedClient(toClientRow(data), data);
+    const row = toClientRow(data);
+    addSavedClient(row, data);
+    addClientToCache(queryClient, row, data);
     formDraft = undefined;
     navigate('/clients');
   };

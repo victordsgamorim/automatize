@@ -1,6 +1,13 @@
 'use client';
 
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@automatize/navigation';
 import {
   Dialog,
@@ -30,9 +37,19 @@ import {
   addAddressToClient,
   addPhoneToClient,
 } from '../../clients/clientStore';
-import { useClientsRows } from '../../clients/hooks';
-import { useProductsRows } from '../../products/hooks';
-import { useTechniciansRows } from '../../technician/hooks';
+import {
+  useClientsRows,
+  addAddressToClientInCache,
+  addPhoneToClientInCache,
+} from '../../clients/hooks';
+import {
+  useProductsRows,
+  adjustProductStockInCache,
+} from '../../products/hooks';
+import {
+  useTechniciansRows,
+  addTechnicianToCache,
+} from '../../technician/hooks';
 import {
   getInvoiceFormData,
   getInvoiceDate,
@@ -45,7 +62,7 @@ import {
   decrementProductStock,
   incrementProductStock,
 } from '../../products/productStore';
-import { useInvoice, invoiceToFormData } from '../hooks';
+import { useInvoice, invoiceToFormData, updateInvoiceInCache } from '../hooks';
 import { generateId } from '@automatize/utils';
 
 let formDraft: Partial<InvoiceFormData> | undefined;
@@ -118,6 +135,7 @@ function toInvoiceRow(
 export default function EditInvoicePage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const { invoiceIdToEdit, clearInvoiceToEdit, invoices } = useInvoiceContext();
   const { data: remoteInvoice } = useInvoice(invoiceIdToEdit ?? '');
@@ -133,12 +151,8 @@ export default function EditInvoicePage(): React.JSX.Element {
       return formDraft as InvoiceFormData | undefined;
     }
   );
-
-  useEffect(() => {
-    if (invoiceIdToEdit && remoteInvoice && !initialData) {
-      setInitialData(invoiceToFormData(remoteInvoice));
-    }
-  }, [invoiceIdToEdit, remoteInvoice, initialData]);
+  const [formKey, setFormKey] = useState(0);
+  const remoteResolvedRef = useRef(!!getInvoiceFormData(invoiceIdToEdit ?? ''));
 
   const clients = useClientsRows();
   const products = useProductsRows();
@@ -159,6 +173,25 @@ export default function EditInvoicePage(): React.JSX.Element {
   const [pendingData, setPendingData] = useState<InvoiceFormData | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
+
+  // Resolve full initial data (clientId + correct productId/availableStock) once both
+  // remote invoice and product catalog are loaded.
+  useEffect(() => {
+    if (remoteResolvedRef.current) return;
+    if (!invoiceIdToEdit || !remoteInvoice || products.length === 0) return;
+
+    remoteResolvedRef.current = true;
+    const formData = invoiceToFormData(remoteInvoice);
+    const resolvedProducts = formData.products.map((p) => {
+      const catalogProduct = products.find((pr) => pr.id === p.productId);
+      return catalogProduct
+        ? { ...p, availableStock: catalogProduct.quantity }
+        : p;
+    });
+
+    setInitialData({ ...formData, products: resolvedProducts });
+    setFormKey((k) => k + 1);
+  }, [invoiceIdToEdit, remoteInvoice, products]);
 
   useEffect(() => {
     if (!initialData && !formDraft) return;
@@ -187,29 +220,80 @@ export default function EditInvoicePage(): React.JSX.Element {
   };
 
   const handleConfirm = useCallback(() => {
-    if (!invoiceIdToEdit || !pendingData) return;
-    const originalDate =
-      getInvoiceDate(invoiceIdToEdit) ??
-      new Date().toISOString().split('T')[0] ??
-      '';
-    const oldData = getInvoiceFormData(invoiceIdToEdit);
-    if (oldData) {
-      for (const item of oldData.products) {
-        incrementProductStock(item.productId, item.quantity);
+    setShowConfirmDialog(false);
+    setPendingData(null);
+
+    if (!invoiceIdToEdit || !pendingData) {
+      clearInvoiceToEdit();
+      formDraft = undefined;
+      navigate('/invoices');
+      return;
+    }
+
+    try {
+      const originalDate =
+        getInvoiceDate(invoiceIdToEdit) ??
+        new Date().toISOString().split('T')[0] ??
+        '';
+
+      const oldData = getInvoiceFormData(invoiceIdToEdit);
+      if (oldData) {
+        for (const item of oldData.products) {
+          incrementProductStock(item.productId, item.quantity);
+          adjustProductStockInCache(queryClient, item.productId, item.quantity);
+        }
       }
+
+      for (const item of pendingData.products) {
+        decrementProductStock(item.productId, item.quantity);
+        adjustProductStockInCache(queryClient, item.productId, -item.quantity);
+      }
+
+      updateSavedInvoice(
+        invoiceIdToEdit,
+        toInvoiceRow(pendingData, invoiceIdToEdit, originalDate),
+        pendingData
+      );
+
+      if (remoteInvoice) {
+        updateInvoiceInCache(queryClient, invoiceIdToEdit, {
+          ...remoteInvoice,
+          clientId: pendingData.clientId,
+          clientName: pendingData.clientName ?? remoteInvoice.clientName,
+          warrantyMonths: pendingData.warrantyMonths,
+          total: pendingData.total,
+          additionalInfo: pendingData.additionalInfo,
+          clientAddresses: pendingData.clientAddresses.map((a) => ({ ...a })),
+          clientPhones: pendingData.clientPhones.map((p) => ({ ...p })),
+          products: pendingData.products.map((p) => ({
+            id: p.id,
+            productId: p.productId,
+            name: p.name,
+            quantity: p.quantity,
+            unitPrice: p.unitPrice,
+            totalPrice: p.totalPrice,
+          })),
+          technicians: pendingData.technicians
+            .filter((tech) => tech.active)
+            .map((tech) => ({ id: tech.id, name: tech.name })),
+          updatedAt: new Date().toISOString(),
+        });
+      }
+    } catch {
+      console.error('Failed to update invoice');
     }
-    for (const item of pendingData.products) {
-      decrementProductStock(item.productId, item.quantity);
-    }
-    updateSavedInvoice(
-      invoiceIdToEdit,
-      toInvoiceRow(pendingData, invoiceIdToEdit, originalDate),
-      pendingData
-    );
+
     clearInvoiceToEdit();
     formDraft = undefined;
     navigate('/invoices');
-  }, [invoiceIdToEdit, pendingData, clearInvoiceToEdit, navigate]);
+  }, [
+    invoiceIdToEdit,
+    pendingData,
+    remoteInvoice,
+    queryClient,
+    clearInvoiceToEdit,
+    navigate,
+  ]);
 
   const handleCancelConfirm = useCallback(() => {
     setShowConfirmDialog(false);
@@ -246,6 +330,7 @@ export default function EditInvoicePage(): React.JSX.Element {
   const handleSaveTechnicianToTable = (name: string) => {
     const today = new Date().toISOString().split('T')[0] ?? '';
     addTableTechnician(name, today);
+    addTechnicianToCache(queryClient, name, today);
     setLocalTechs((prev) =>
       prev.filter((t) => t.name.toLowerCase() !== name.toLowerCase())
     );
@@ -256,18 +341,22 @@ export default function EditInvoicePage(): React.JSX.Element {
     setWarrantyOptions((prev) => [...prev, option]);
   };
 
+  // Both update the local clientStore (for store-based lookups) and the React Query
+  // cache so that the client profile page and the address dropdown reflect the change.
   const handleSaveAddressToClient = useCallback(
-    (_clientId: string, address: ClientAddress) => {
-      addAddressToClient(_clientId, address);
+    (clientId: string, address: ClientAddress) => {
+      addAddressToClient(clientId, address);
+      addAddressToClientInCache(queryClient, clientId, address);
     },
-    []
+    [queryClient]
   );
 
   const handleSavePhoneToClient = useCallback(
-    (_clientId: string, phone: ClientPhone) => {
-      addPhoneToClient(_clientId, phone);
+    (clientId: string, phone: ClientPhone) => {
+      addPhoneToClient(clientId, phone);
+      addPhoneToClientInCache(queryClient, clientId, phone);
     },
-    []
+    [queryClient]
   );
 
   useEffect(() => {
@@ -290,6 +379,7 @@ export default function EditInvoicePage(): React.JSX.Element {
   return (
     <>
       <InvoiceFormScreen
+        key={formKey}
         mode="edit"
         onSubmit={handleSubmit}
         initialData={initialData}
