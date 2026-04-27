@@ -24,10 +24,7 @@ import {
   addAddressToClientInCache,
   addPhoneToClientInCache,
 } from '../../clients/hooks';
-import {
-  useProductsRows,
-  adjustProductStockInCache,
-} from '../../products/hooks';
+import { useProductsRows } from '../../products/hooks';
 import {
   useTechniciansRows,
   addTechnicianToCache,
@@ -113,7 +110,6 @@ export default function NewInvoicePage(): React.JSX.Element {
     addSavedInvoice(toInvoiceRow(data, id), data);
     for (const item of data.products) {
       decrementProductStock(item.productId, item.quantity);
-      adjustProductStockInCache(queryClient, item.productId, -item.quantity);
     }
     formDraft = undefined;
     navigate('/invoices');

@@ -17,6 +17,7 @@ import type {
   PaginatedResponse,
   Product,
 } from '@automatize/screens/product/data';
+import { applyStockDeltas } from './productStore';
 
 const PRODUCTS_KEY = 'products';
 const PRODUCT_KEY = 'product';
@@ -68,7 +69,10 @@ export function useProductsRows(
   tenantId: string = DEFAULT_TENANT
 ): ProductRow[] {
   const { data } = useProductsData(tenantId);
-  return useMemo(() => data?.products.map(toProductRow) ?? [], [data]);
+  return useMemo(
+    () => applyStockDeltas(data?.products.map(toProductRow) ?? []),
+    [data]
+  );
 }
 
 export function useProduct(

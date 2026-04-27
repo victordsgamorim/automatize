@@ -42,10 +42,7 @@ import {
   addAddressToClientInCache,
   addPhoneToClientInCache,
 } from '../../clients/hooks';
-import {
-  useProductsRows,
-  adjustProductStockInCache,
-} from '../../products/hooks';
+import { useProductsRows } from '../../products/hooks';
 import {
   useTechniciansRows,
   addTechnicianToCache,
@@ -240,13 +237,11 @@ export default function EditInvoicePage(): React.JSX.Element {
       if (oldData) {
         for (const item of oldData.products) {
           incrementProductStock(item.productId, item.quantity);
-          adjustProductStockInCache(queryClient, item.productId, item.quantity);
         }
       }
 
       for (const item of pendingData.products) {
         decrementProductStock(item.productId, item.quantity);
-        adjustProductStockInCache(queryClient, item.productId, -item.quantity);
       }
 
       updateSavedInvoice(
