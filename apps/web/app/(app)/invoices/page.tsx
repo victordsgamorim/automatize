@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigation } from '@automatize/navigation';
-import { InvoiceScreen } from '@automatize/screens/invoice/web';
+import {
+  InvoiceScreen,
+  useInvoiceContext,
+} from '@automatize/screens/invoice/web';
 import type { InvoiceRow } from '@automatize/screens/invoice/web';
-import { getSavedInvoices, setInvoiceToEdit } from './invoiceStore';
 
 export default function InvoicesPage(): React.JSX.Element {
   const { navigate } = useNavigation();
-
-  const [invoices] = useState(() => getSavedInvoices());
+  const { invoices, setInvoiceToEdit } = useInvoiceContext();
 
   const handleEditInvoice = (invoice: InvoiceRow) => {
     setInvoiceToEdit(invoice.id);

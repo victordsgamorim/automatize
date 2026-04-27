@@ -1,0 +1,211 @@
+[
+  {
+    "id": "01JRV0NDEKTSV4RRFFQ69G5FA1",
+    "tenantId": "01JQF0NDEKTSV4RRFFQ69G5FA0",
+    "clientId": "01JQF3NDEKTSV4RRFFQ69G5FA1",
+    "clientName": "Maria Silva",
+    "date": "2026-04-10",
+    "warrantyMonths": 12,
+    "total": 2899.99,
+    "additionalInfo": "Entrega em domicílio. Cliente solicitou instalação.",
+    "clientAddresses": [
+      {
+        "id": "01JQF4NDEKTSV4RRFFQ69G5FA1",
+        "street": "Rua das Flores",
+        "number": "123",
+        "neighborhood": "Centro",
+        "city": "São Paulo",
+        "state": "SP",
+        "addressType": "residence",
+        "info": "Apto 42"
+      }
+    ],
+    "clientPhones": [
+      {
+        "id": "01JQF5NDEKTSV4RRFFQ69G5FA1",
+        "number": "(11) 99999-1234",
+        "phoneType": "mobile"
+      }
+    ],
+    "products": [
+      {
+        "id": "01JRV1NDEKTSV4RRFFQ69G5FA1",
+        "productId": "01JQP0NDEKTSV4RRFFQ69G5FA1",
+        "name": "Smart TV Samsung 55\" 4K UHD",
+        "quantity": 1,
+        "unitPrice": 2899.99,
+        "totalPrice": 2899.99
+      }
+    ],
+    "technicians": [
+      {
+        "id": "01JQT0NDEKTSV4RRFFQ69G5FA1",
+        "name": "Carlos Eduardo Santos"
+      }
+    ],
+    "createdAt": "2026-04-10T14:30:00.000Z",
+    "updatedAt": "2026-04-10T14:30:00.000Z",
+    "deletedAt": null
+  },
+  {
+    "id": "01JRV0NDEKTSV4RRFFQ69G5FA2",
+    "tenantId": "01JQF0NDEKTSV4RRFFQ69G5FA0",
+    "clientId": "01JQF3NDEKTSV4RRFFQ69G5FA2",
+    "clientName": "Tech Solutions Ltda",
+    "date": "2026-04-15",
+    "warrantyMonths": 24,
+    "total": 5299.8,
+    "additionalInfo": "Pedido corporativo. Nota fiscal necessária.",
+    "clientAddresses": [
+      {
+        "id": "01JQF4NDEKTSV4RRFFQ69G5FA2",
+        "street": "Av. Paulista",
+        "number": "1578",
+        "neighborhood": "Bela Vista",
+        "city": "São Paulo",
+        "state": "SP",
+        "addressType": "establishment",
+        "info": "Sala 501"
+      }
+    ],
+    "clientPhones": [
+      {
+        "id": "01JQF5NDEKTSV4RRFFQ69G5FA2",
+        "number": "(11) 3456-7890",
+        "phoneType": "telephone"
+      },
+      {
+        "id": "01JQF5NDEKTSV4RRFFQ69G5FA3",
+        "number": "(11) 98888-5678",
+        "phoneType": "mobile"
+      }
+    ],
+    "products": [
+      {
+        "id": "01JRV2NDEKTSV4RRFFQ69G5FA1",
+        "productId": "01JQP1NDEKTSV4RRFFQ69G5FA2",
+        "name": "Notebook Dell Inspiron 15 3520",
+        "quantity": 1,
+        "unitPrice": 3499.9,
+        "totalPrice": 3499.9
+      },
+      {
+        "id": "01JRV2NDEKTSV4RRFFQ69G5FA2",
+        "productId": "01JQP3NDEKTSV4RRFFQ69G5FA4",
+        "name": "Ar Condicionado Split Electrolux 12000 BTUs",
+        "quantity": 1,
+        "unitPrice": 1799.9,
+        "totalPrice": 1799.9
+      }
+    ],
+    "technicians": [
+      {
+        "id": "01JQT1NDEKTSV4RRFFQ69G5FA2",
+        "name": "Ana Paula Ferreira"
+      }
+    ],
+    "createdAt": "2026-04-15T10:00:00.000Z",
+    "updatedAt": "2026-04-15T10:00:00.000Z",
+    "deletedAt": null
+  },
+  {
+    "id": "01JRV0NDEKTSV4RRFFQ69G5FA3",
+    "tenantId": "01JQF0NDEKTSV4RRFFQ69G5FA0",
+    "clientId": "01JQF3NDEKTSV4RRFFQ69G5FA3",
+    "clientName": "João Oliveira",
+    "date": "2026-04-18",
+    "warrantyMonths": 6,
+    "total": 4199.0,
+    "additionalInfo": "",
+    "clientAddresses": [
+      {
+        "id": "01JQF4NDEKTSV4RRFFQ69G5FA4",
+        "street": "Rua do Comércio",
+        "number": "45",
+        "neighborhood": "Jardins",
+        "city": "Campinas",
+        "state": "SP",
+        "addressType": "residence",
+        "info": ""
+      }
+    ],
+    "clientPhones": [
+      {
+        "id": "01JQF5NDEKTSV4RRFFQ69G5FA6",
+        "number": "(19) 97777-3456",
+        "phoneType": "mobile"
+      }
+    ],
+    "products": [
+      {
+        "id": "01JRV3NDEKTSV4RRFFQ69G5FA1",
+        "productId": "01JQP2NDEKTSV4RRFFQ69G5FA3",
+        "name": "Geladeira Brastemp Frost Free 443L",
+        "quantity": 1,
+        "unitPrice": 4199.0,
+        "totalPrice": 4199.0
+      }
+    ],
+    "technicians": [
+      {
+        "id": "01JQT0NDEKTSV4RRFFQ69G5FA1",
+        "name": "Carlos Eduardo Santos"
+      }
+    ],
+    "createdAt": "2026-04-18T08:45:00.000Z",
+    "updatedAt": "2026-04-18T08:45:00.000Z",
+    "deletedAt": null
+  },
+  {
+    "id": "01JRV0NDEKTSV4RRFFQ69G5FA4",
+    "tenantId": "01JQF0NDEKTSV4RRFFQ69G5FA0",
+    "clientId": "01JQF3NDEKTSV4RRFFQ69G5FA1",
+    "clientName": "Maria Silva",
+    "date": "2026-04-22",
+    "warrantyMonths": 12,
+    "total": 3599.8,
+    "additionalInfo": "Segunda compra da cliente. Desconto aplicado.",
+    "clientAddresses": [
+      {
+        "id": "01JQF4NDEKTSV4RRFFQ69G5FA1",
+        "street": "Rua das Flores",
+        "number": "123",
+        "neighborhood": "Centro",
+        "city": "São Paulo",
+        "state": "SP",
+        "addressType": "residence",
+        "info": "Apto 42"
+      }
+    ],
+    "clientPhones": [
+      {
+        "id": "01JQF5NDEKTSV4RRFFQ69G5FA1",
+        "number": "(11) 99999-1234",
+        "phoneType": "mobile"
+      }
+    ],
+    "products": [
+      {
+        "id": "01JRV4NDEKTSV4RRFFQ69G5FA1",
+        "productId": "01JQP3NDEKTSV4RRFFQ69G5FA4",
+        "name": "Ar Condicionado Split Electrolux 12000 BTUs",
+        "quantity": 2,
+        "unitPrice": 1799.9,
+        "totalPrice": 3599.8
+      }
+    ],
+    "technicians": [
+      {
+        "id": "01JQT0NDEKTSV4RRFFQ69G5FA1",
+        "name": "Carlos Eduardo Santos"
+      },
+      {
+        "id": "01JQT1NDEKTSV4RRFFQ69G5FA2",
+        "name": "Ana Paula Ferreira"
+      }
+    ],
+    "createdAt": "2026-04-22T16:00:00.000Z",
+    "updatedAt": "2026-04-22T16:00:00.000Z",
+    "deletedAt": null
+  }
+]

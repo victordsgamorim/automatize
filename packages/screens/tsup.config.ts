@@ -54,6 +54,8 @@ export default defineConfig({
     'src/supplier/providers/index.ts',
     'src/invoice/index.ts',
     'src/invoice/web.ts',
+    'src/invoice/data/index.ts',
+    'src/invoice/providers/index.ts',
     'src/invoice-form/index.ts',
     'src/invoice-form/web.ts',
     'src/analytics/index.ts',

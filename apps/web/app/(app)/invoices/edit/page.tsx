@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { useNavigation } from '@automatize/navigation';
 import {
   Dialog,
@@ -20,42 +20,73 @@ import type {
   WarrantyOption,
 } from '@automatize/screens/invoice-form/web';
 import type { InvoiceRow } from '@automatize/screens/invoice/web';
+import { useInvoiceContext } from '@automatize/screens/invoice/web';
 import type {
   ClientAddress,
   ClientPhone,
 } from '@automatize/screens/client/web';
+import type { TechnicianRow } from '@automatize/screens/technician/web';
 import {
   addAddressToClient,
   addPhoneToClient,
 } from '../../clients/clientStore';
-import { useClients } from '../../clients/useClients';
+import { useClientsRows } from '../../clients/hooks';
+import { useProductsRows } from '../../products/hooks';
+import { useTechniciansRows } from '../../technician/hooks';
 import {
-  getSavedProducts,
-  decrementProductStock,
-  incrementProductStock,
-} from '../../products/productStore';
-import {
-  getInvoiceIdToEdit,
   getInvoiceFormData,
   getInvoiceDate,
   updateSavedInvoice,
-  clearInvoiceToEdit,
-  getSavedTechnicians as getInvoiceTechnicians,
-  addSavedTechnician as addInvoiceTechnician,
   getSavedWarrantyOptions,
   addSavedWarrantyOption,
 } from '../invoiceStore';
+import { addSavedTechnician as addTableTechnician } from '../../technician/technicianStore';
 import {
-  getSavedTechnicians as getTableTechnicians,
-  addSavedTechnician as addTableTechnician,
-} from '../../technician/technicianStore';
-import type { TechnicianRow } from '@automatize/screens/technician/web';
+  decrementProductStock,
+  incrementProductStock,
+} from '../../products/productStore';
+import { useInvoice, invoiceToFormData } from '../hooks';
+import { generateId } from '@automatize/utils';
 
-/**
- * Module-level draft store. Survives SPA navigations;
- * cleared on page refresh (JS runtime restart).
- */
 let formDraft: Partial<InvoiceFormData> | undefined;
+
+function invoiceRowToFormData(row: InvoiceRow): InvoiceFormData {
+  return {
+    clientName: row.clientName,
+    clientAddresses: (row.clientAddresses ?? []).map((a) => ({
+      id: a.id,
+      addressType: a.addressType ?? 'residence',
+      street: a.street,
+      number: a.number,
+      neighborhood: a.neighborhood,
+      city: a.city,
+      state: a.state,
+      info: a.info ?? '',
+    })),
+    clientPhones: (row.clientPhones ?? []).map((p) => ({
+      id: p.id,
+      phoneType: p.phoneType ?? 'mobile',
+      number: p.number,
+    })),
+    products: (row.products ?? []).map((p) => ({
+      id: p.id,
+      productId: p.id,
+      name: p.name,
+      unitPrice: p.unitPrice,
+      quantity: p.quantity,
+      availableStock: p.quantity,
+      totalPrice: p.totalPrice,
+    })),
+    technicians: (row.technicians ?? []).map((t) => ({
+      id: t.id,
+      name: t.name,
+      active: true,
+    })),
+    warrantyMonths: row.warrantyMonths,
+    additionalInfo: row.additionalInfo ?? '',
+    total: row.total,
+  };
+}
 
 function toInvoiceRow(
   data: InvoiceFormData,
@@ -84,29 +115,43 @@ function toInvoiceRow(
   };
 }
 
-function mergedTechnicians(): TechnicianRow[] {
-  const table = getTableTechnicians();
-  const tableNames = new Set(table.map((t) => t.name.toLowerCase()));
-  const invoiceOnly = getInvoiceTechnicians().filter(
-    (t) => !tableNames.has(t.name.toLowerCase())
-  );
-  return [...table, ...invoiceOnly];
-}
-
 export default function EditInvoicePage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { t } = useTranslation();
 
-  const invoiceId = getInvoiceIdToEdit();
-  const [initialData] = useState<InvoiceFormData | undefined>(() => {
-    if (invoiceId) return getInvoiceFormData(invoiceId);
-    return formDraft as InvoiceFormData | undefined;
-  });
+  const { invoiceIdToEdit, clearInvoiceToEdit, invoices } = useInvoiceContext();
+  const { data: remoteInvoice } = useInvoice(invoiceIdToEdit ?? '');
 
-  const clients = useClients();
-  const [products] = useState(() => getSavedProducts());
-  const [technicians, setTechnicians] =
-    useState<TechnicianRow[]>(mergedTechnicians);
+  const [initialData, setInitialData] = useState<InvoiceFormData | undefined>(
+    () => {
+      if (invoiceIdToEdit) {
+        const fromStore = getInvoiceFormData(invoiceIdToEdit);
+        if (fromStore) return fromStore;
+        const fromList = invoices.find((inv) => inv.id === invoiceIdToEdit);
+        if (fromList) return invoiceRowToFormData(fromList);
+      }
+      return formDraft as InvoiceFormData | undefined;
+    }
+  );
+
+  useEffect(() => {
+    if (invoiceIdToEdit && remoteInvoice && !initialData) {
+      setInitialData(invoiceToFormData(remoteInvoice));
+    }
+  }, [invoiceIdToEdit, remoteInvoice, initialData]);
+
+  const clients = useClientsRows();
+  const products = useProductsRows();
+  const remoteTechs = useTechniciansRows();
+  const [localTechs, setLocalTechs] = useState<TechnicianRow[]>([]);
+  const technicians = useMemo(() => {
+    const names = new Set(remoteTechs.map((t) => t.name.toLowerCase()));
+    return [
+      ...remoteTechs,
+      ...localTechs.filter((t) => !names.has(t.name.toLowerCase())),
+    ];
+  }, [remoteTechs, localTechs]);
+
   const [warrantyOptions, setWarrantyOptions] = useState<WarrantyOption[]>(() =>
     getSavedWarrantyOptions()
   );
@@ -142,11 +187,12 @@ export default function EditInvoicePage(): React.JSX.Element {
   };
 
   const handleConfirm = useCallback(() => {
-    if (!invoiceId || !pendingData) return;
+    if (!invoiceIdToEdit || !pendingData) return;
     const originalDate =
-      getInvoiceDate(invoiceId) ?? new Date().toISOString().split('T')[0] ?? '';
-    // Restore stock from the original invoice before applying the new quantities
-    const oldData = getInvoiceFormData(invoiceId);
+      getInvoiceDate(invoiceIdToEdit) ??
+      new Date().toISOString().split('T')[0] ??
+      '';
+    const oldData = getInvoiceFormData(invoiceIdToEdit);
     if (oldData) {
       for (const item of oldData.products) {
         incrementProductStock(item.productId, item.quantity);
@@ -156,14 +202,14 @@ export default function EditInvoicePage(): React.JSX.Element {
       decrementProductStock(item.productId, item.quantity);
     }
     updateSavedInvoice(
-      invoiceId,
-      toInvoiceRow(pendingData, invoiceId, originalDate),
+      invoiceIdToEdit,
+      toInvoiceRow(pendingData, invoiceIdToEdit, originalDate),
       pendingData
     );
     clearInvoiceToEdit();
     formDraft = undefined;
     navigate('/invoices');
-  }, [invoiceId, pendingData, navigate]);
+  }, [invoiceIdToEdit, pendingData, clearInvoiceToEdit, navigate]);
 
   const handleCancelConfirm = useCallback(() => {
     setShowConfirmDialog(false);
@@ -182,27 +228,26 @@ export default function EditInvoicePage(): React.JSX.Element {
   };
 
   const handleAddTechnician = (name: string) => {
-    // If already in the main table, skip adding to invoice-local store
-    const inTable = getTableTechnicians().some(
+    const alreadyInList = technicians.some(
       (t) => t.name.toLowerCase() === name.toLowerCase()
     );
-    if (!inTable) {
-      const tech = addInvoiceTechnician(name);
-      setTechnicians((prev) =>
-        prev.some((t) => t.name.toLowerCase() === name.toLowerCase())
-          ? prev
-          : [...prev, tech]
-      );
+    if (!alreadyInList) {
+      setLocalTechs((prev) => [
+        ...prev,
+        {
+          id: generateId(),
+          name,
+          entryDate: new Date().toISOString().split('T')[0] ?? '',
+        },
+      ]);
     }
   };
 
   const handleSaveTechnicianToTable = (name: string) => {
     const today = new Date().toISOString().split('T')[0] ?? '';
-    const tech = addTableTechnician(name, today);
-    setTechnicians((prev) =>
-      prev.some((t) => t.name.toLowerCase() === name.toLowerCase())
-        ? prev
-        : [...prev, tech]
+    addTableTechnician(name, today);
+    setLocalTechs((prev) =>
+      prev.filter((t) => t.name.toLowerCase() !== name.toLowerCase())
     );
   };
 
@@ -225,7 +270,6 @@ export default function EditInvoicePage(): React.JSX.Element {
     []
   );
 
-  // Keyboard shortcuts for the confirm dialog
   useEffect(() => {
     if (!showConfirmDialog) return;
 
@@ -266,7 +310,6 @@ export default function EditInvoicePage(): React.JSX.Element {
         onAddWarrantyOption={handleAddWarrantyOption}
       />
 
-      {/* Confirm edit dialog */}
       <Dialog
         open={showConfirmDialog}
         onOpenChange={(open) => {

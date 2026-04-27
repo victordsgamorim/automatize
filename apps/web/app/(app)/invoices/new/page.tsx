@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import { useNavigation } from '@automatize/navigation';
 import { InvoiceFormScreen } from '@automatize/screens/invoice-form/web';
 import type {
@@ -13,32 +13,22 @@ import type {
   ClientPhone,
 } from '@automatize/screens/client/web';
 import { generateId } from '@automatize/utils';
+import type { TechnicianRow } from '@automatize/screens/technician/web';
 import {
   addAddressToClient,
   addPhoneToClient,
 } from '../../clients/clientStore';
-import { useClients } from '../../clients/useClients';
-import {
-  getSavedProducts,
-  decrementProductStock,
-} from '../../products/productStore';
+import { useClientsRows } from '../../clients/hooks';
+import { useProductsRows } from '../../products/hooks';
+import { useTechniciansRows } from '../../technician/hooks';
 import {
   addSavedInvoice,
-  getSavedTechnicians as getInvoiceTechnicians,
-  addSavedTechnician as addInvoiceTechnician,
   getSavedWarrantyOptions,
   addSavedWarrantyOption,
 } from '../invoiceStore';
-import {
-  getSavedTechnicians as getTableTechnicians,
-  addSavedTechnician as addTableTechnician,
-} from '../../technician/technicianStore';
-import type { TechnicianRow } from '@automatize/screens/technician/web';
+import { addSavedTechnician as addTableTechnician } from '../../technician/technicianStore';
+import { decrementProductStock } from '../../products/productStore';
 
-/**
- * Module-level draft store. Survives SPA navigations;
- * cleared on page refresh (JS runtime restart).
- */
 let formDraft: Partial<InvoiceFormData> | undefined;
 
 function toInvoiceRow(data: InvoiceFormData, id: string): InvoiceRow {
@@ -64,23 +54,22 @@ function toInvoiceRow(data: InvoiceFormData, id: string): InvoiceRow {
   };
 }
 
-function mergedTechnicians(): TechnicianRow[] {
-  const table = getTableTechnicians();
-  const tableNames = new Set(table.map((t) => t.name.toLowerCase()));
-  const invoiceOnly = getInvoiceTechnicians().filter(
-    (t) => !tableNames.has(t.name.toLowerCase())
-  );
-  return [...table, ...invoiceOnly];
-}
-
 export default function NewInvoicePage(): React.JSX.Element {
   const { navigate } = useNavigation();
 
   const [initialData] = useState(() => formDraft);
-  const clients = useClients();
-  const [products] = useState(() => getSavedProducts());
-  const [technicians, setTechnicians] =
-    useState<TechnicianRow[]>(mergedTechnicians);
+  const clients = useClientsRows();
+  const products = useProductsRows();
+  const remoteTechs = useTechniciansRows();
+  const [localTechs, setLocalTechs] = useState<TechnicianRow[]>([]);
+  const technicians = useMemo(() => {
+    const names = new Set(remoteTechs.map((t) => t.name.toLowerCase()));
+    return [
+      ...remoteTechs,
+      ...localTechs.filter((t) => !names.has(t.name.toLowerCase())),
+    ];
+  }, [remoteTechs, localTechs]);
+
   const [warrantyOptions, setWarrantyOptions] = useState<WarrantyOption[]>(() =>
     getSavedWarrantyOptions()
   );
@@ -128,27 +117,26 @@ export default function NewInvoicePage(): React.JSX.Element {
   };
 
   const handleAddTechnician = (name: string) => {
-    // If already in the main table, skip adding to invoice-local store
-    const inTable = getTableTechnicians().some(
+    const alreadyInList = technicians.some(
       (t) => t.name.toLowerCase() === name.toLowerCase()
     );
-    if (!inTable) {
-      const tech = addInvoiceTechnician(name);
-      setTechnicians((prev) =>
-        prev.some((t) => t.name.toLowerCase() === name.toLowerCase())
-          ? prev
-          : [...prev, tech]
-      );
+    if (!alreadyInList) {
+      setLocalTechs((prev) => [
+        ...prev,
+        {
+          id: generateId(),
+          name,
+          entryDate: new Date().toISOString().split('T')[0] ?? '',
+        },
+      ]);
     }
   };
 
   const handleSaveTechnicianToTable = (name: string) => {
     const today = new Date().toISOString().split('T')[0] ?? '';
-    const tech = addTableTechnician(name, today);
-    setTechnicians((prev) =>
-      prev.some((t) => t.name.toLowerCase() === name.toLowerCase())
-        ? prev
-        : [...prev, tech]
+    addTableTechnician(name, today);
+    setLocalTechs((prev) =>
+      prev.filter((t) => t.name.toLowerCase() !== name.toLowerCase())
     );
   };
 

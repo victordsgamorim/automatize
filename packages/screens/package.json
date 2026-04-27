@@ -168,6 +168,16 @@
       "import": "./dist/invoice/web.mjs",
       "require": "./dist/invoice/web.js"
     },
+    "./invoice/data": {
+      "types": "./dist/invoice/data/index.d.ts",
+      "import": "./dist/invoice/data/index.mjs",
+      "require": "./dist/invoice/data/index.js"
+    },
+    "./invoice/providers": {
+      "types": "./dist/invoice/providers/index.d.ts",
+      "import": "./dist/invoice/providers/index.mjs",
+      "require": "./dist/invoice/providers/index.js"
+    },
     "./invoice-form": {
       "types": "./dist/invoice-form/index.d.ts",
       "import": "./dist/invoice-form/index.mjs",
