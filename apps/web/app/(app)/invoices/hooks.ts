@@ -38,6 +38,7 @@ export interface InvoicesQueryData {
 export function toInvoiceRow(invoice: Invoice): InvoiceRow {
   return {
     id: invoice.id,
+    clientId: invoice.clientId,
     clientName: invoice.clientName,
     date: invoice.date,
     warrantyMonths: invoice.warrantyMonths,

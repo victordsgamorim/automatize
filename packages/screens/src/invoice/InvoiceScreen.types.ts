@@ -30,6 +30,7 @@ export interface InvoiceTechnicianItem {
 
 export interface InvoiceRow {
   id: string;
+  clientId?: string;
   clientName: string;
   date: string; // ISO "YYYY-MM-DD"
   warrantyMonths: number;

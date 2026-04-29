@@ -69,7 +69,9 @@ import { generateId } from '@automatize/utils';
 let formDraft: Partial<InvoiceFormData> | undefined;
 
 function invoiceRowToFormData(row: InvoiceRow): InvoiceFormData {
-  return {
+  const result: InvoiceFormData = {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    clientId: row.clientId,
     clientName: row.clientName,
     clientAddresses: (row.clientAddresses ?? []).map((a) => ({
       id: a.id,
@@ -104,6 +106,7 @@ function invoiceRowToFormData(row: InvoiceRow): InvoiceFormData {
     additionalInfo: row.additionalInfo ?? '',
     total: row.total,
   };
+  return result;
 }
 
 function toInvoiceRow(
