@@ -24,6 +24,7 @@ import { useTranslation } from '@automatize/localization';
 import { InvoiceFormScreen } from '@automatize/screens/invoice-form/web';
 import type {
   InvoiceFormData,
+  InvoiceProductItem,
   WarrantyOption,
 } from '@automatize/screens/invoice-form/web';
 import type { InvoiceRow } from '@automatize/screens/invoice/web';
@@ -42,7 +43,10 @@ import {
   addAddressToClientInCache,
   addPhoneToClientInCache,
 } from '../../clients/hooks';
-import { useProductsRows } from '../../products/hooks';
+import {
+  useProductsRows,
+  adjustProductStockInCache,
+} from '../../products/hooks';
 import {
   useTechniciansRows,
   addTechnicianToCache,
@@ -171,6 +175,12 @@ export default function EditInvoicePage(): React.JSX.Element {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
 
+  const prevDraftProductsRef = useRef<InvoiceProductItem[]>(
+    initialData?.products ?? []
+  );
+  // Net stock delta applied during this edit session — used to reverse on cancel.
+  const sessionDeltaRef = useRef<Map<string, number>>(new Map());
+
   // Resolve full initial data (clientId + correct productId/availableStock) once both
   // remote invoice and product catalog are loaded.
   useEffect(() => {
@@ -209,6 +219,51 @@ export default function EditInvoicePage(): React.JSX.Element {
 
   const handleDataChange = useCallback((data: Partial<InvoiceFormData>) => {
     formDraft = data;
+
+    const nextProducts = data.products ?? [];
+    const prevProducts = prevDraftProductsRef.current;
+    const prevMap = new Map(prevProducts.map((p) => [p.productId, p.quantity]));
+    const nextMap = new Map(nextProducts.map((p) => [p.productId, p.quantity]));
+
+    for (const [productId, qty] of prevMap) {
+      if (!nextMap.has(productId)) {
+        incrementProductStock(productId, qty);
+        sessionDeltaRef.current.set(
+          productId,
+          (sessionDeltaRef.current.get(productId) ?? 0) + qty
+        );
+      }
+    }
+    for (const [productId, qty] of nextMap) {
+      if (!prevMap.has(productId)) {
+        decrementProductStock(productId, qty);
+        sessionDeltaRef.current.set(
+          productId,
+          (sessionDeltaRef.current.get(productId) ?? 0) - qty
+        );
+      }
+    }
+    for (const [productId, nextQty] of nextMap) {
+      const prevQty = prevMap.get(productId);
+      if (prevQty !== undefined && prevQty !== nextQty) {
+        const diff = nextQty - prevQty;
+        if (diff > 0) {
+          decrementProductStock(productId, diff);
+          sessionDeltaRef.current.set(
+            productId,
+            (sessionDeltaRef.current.get(productId) ?? 0) - diff
+          );
+        } else {
+          incrementProductStock(productId, -diff);
+          sessionDeltaRef.current.set(
+            productId,
+            (sessionDeltaRef.current.get(productId) ?? 0) + -diff
+          );
+        }
+      }
+    }
+
+    prevDraftProductsRef.current = nextProducts;
   }, []);
 
   const handleSubmit = (data: InvoiceFormData) => {
@@ -233,15 +288,10 @@ export default function EditInvoicePage(): React.JSX.Element {
         new Date().toISOString().split('T')[0] ??
         '';
 
-      const oldData = getInvoiceFormData(invoiceIdToEdit);
-      if (oldData) {
-        for (const item of oldData.products) {
-          incrementProductStock(item.productId, item.quantity);
-        }
-      }
-
-      for (const item of pendingData.products) {
-        decrementProductStock(item.productId, item.quantity);
+      // Stock already adjusted incrementally in handleDataChange.
+      // Sync the net session delta into the RQ cache now.
+      for (const [productId, delta] of sessionDeltaRef.current) {
+        adjustProductStockInCache(queryClient, productId, delta);
       }
 
       updateSavedInvoice(
@@ -278,6 +328,8 @@ export default function EditInvoicePage(): React.JSX.Element {
       console.error('Failed to update invoice');
     }
 
+    sessionDeltaRef.current = new Map();
+    prevDraftProductsRef.current = [];
     clearInvoiceToEdit();
     formDraft = undefined;
     navigate('/invoices');
@@ -296,6 +348,13 @@ export default function EditInvoicePage(): React.JSX.Element {
   }, []);
 
   const handleBack = () => {
+    // Reverse all stock changes made during this edit session.
+    for (const [productId, delta] of sessionDeltaRef.current) {
+      if (delta < 0) incrementProductStock(productId, -delta);
+      else if (delta > 0) decrementProductStock(productId, delta);
+    }
+    sessionDeltaRef.current = new Map();
+    prevDraftProductsRef.current = [];
     formDraft = undefined;
     clearInvoiceToEdit();
     navigate('/invoices');
