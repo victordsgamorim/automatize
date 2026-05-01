@@ -1,12 +1,4 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import type { TechnicianRow } from '../TechnicianScreen.types';
 
 export interface TechnicianContextValue {
@@ -20,49 +12,43 @@ const TechnicianContext = createContext<TechnicianContextValue | null>(null);
 
 export interface TechnicianProviderProps {
   children: React.ReactNode;
-  initialTechnicians?: TechnicianRow[];
+  technicians?: TechnicianRow[];
   isLoading?: boolean;
   error?: Error | null;
+  onAdd?: (name: string, entryDate: string) => void;
+  onUpdate?: (id: string, name: string, entryDate: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 export function TechnicianProvider({
   children,
-  initialTechnicians = [],
+  technicians = [],
   isLoading: _isLoading = false,
   error: _error = null,
+  onAdd,
+  onUpdate,
+  onDelete,
 }: TechnicianProviderProps): React.JSX.Element {
-  const [technicians, setTechnicians] =
-    useState<TechnicianRow[]>(initialTechnicians);
-  const seededRef = useRef(initialTechnicians.length > 0);
-
-  useEffect(() => {
-    if (!seededRef.current && initialTechnicians.length > 0) {
-      seededRef.current = true;
-      setTechnicians(initialTechnicians);
-    }
-  }, [initialTechnicians]);
-
-  const addTechnician = useCallback((name: string, entryDate: string) => {
-    const newTech: TechnicianRow = {
-      id: crypto.randomUUID(),
-      name,
-      entryDate,
-    };
-    setTechnicians((prev) => [...prev, newTech]);
-  }, []);
+  const addTechnician = useCallback(
+    (name: string, entryDate: string) => {
+      onAdd?.(name, entryDate);
+    },
+    [onAdd]
+  );
 
   const updateTechnician = useCallback(
     (id: string, name: string, entryDate: string) => {
-      setTechnicians((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, name, entryDate } : t))
-      );
+      onUpdate?.(id, name, entryDate);
     },
-    []
+    [onUpdate]
   );
 
-  const deleteTechnician = useCallback((id: string) => {
-    setTechnicians((prev) => prev.filter((t) => t.id !== id));
-  }, []);
+  const deleteTechnician = useCallback(
+    (id: string) => {
+      onDelete?.(id);
+    },
+    [onDelete]
+  );
 
   const value = useMemo<TechnicianContextValue>(
     () => ({

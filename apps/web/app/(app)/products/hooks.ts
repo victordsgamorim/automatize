@@ -5,6 +5,8 @@ import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import type {
   UseInfiniteQueryResult,
   UseQueryResult,
+  QueryClient,
+  InfiniteData,
 } from '@tanstack/react-query';
 import type { ProductRow } from '@automatize/screens/product/web';
 import {
@@ -15,6 +17,7 @@ import type {
   PaginatedResponse,
   Product,
 } from '@automatize/screens/product/data';
+import { applyStockDeltas } from './productStore';
 
 const PRODUCTS_KEY = 'products';
 const PRODUCT_KEY = 'product';
@@ -66,7 +69,10 @@ export function useProductsRows(
   tenantId: string = DEFAULT_TENANT
 ): ProductRow[] {
   const { data } = useProductsData(tenantId);
-  return useMemo(() => data?.products.map(toProductRow) ?? [], [data]);
+  return useMemo(
+    () => applyStockDeltas(data?.products.map(toProductRow) ?? []),
+    [data]
+  );
 }
 
 export function useProduct(
@@ -78,4 +84,33 @@ export function useProduct(
     queryFn: () => createRepo().getById(id),
     enabled: !!id,
   });
+}
+
+/**
+ * Adjust a product's quantity in the React Query cache by `delta` (negative = decrement).
+ * Use this after invoice mutations to keep the product screen in sync without a refetch.
+ */
+export function adjustProductStockInCache(
+  queryClient: QueryClient,
+  productId: string,
+  delta: number,
+  tenantId: string = DEFAULT_TENANT
+): void {
+  queryClient.setQueryData<InfiniteData<PaginatedResponse<Product>>>(
+    [PRODUCTS_KEY, tenantId],
+    (old) => {
+      if (!old) return old;
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          data: page.data.map((p) =>
+            p.id === productId
+              ? { ...p, quantity: Math.max(0, p.quantity + delta) }
+              : p
+          ),
+        })),
+      };
+    }
+  );
 }

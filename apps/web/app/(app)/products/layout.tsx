@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import { ProductProvider } from '@automatize/screens/product/web';
 import { useProductsData, toProductRow } from './hooks';
+import { applyStockDeltas } from './productStore';
 
 export default function ProductsLayout({
   children,
@@ -11,7 +12,7 @@ export default function ProductsLayout({
 }): React.JSX.Element {
   const { data, isLoading, error } = useProductsData();
   const products = useMemo(
-    () => data?.products.map(toProductRow) ?? [],
+    () => applyStockDeltas(data?.products.map(toProductRow) ?? []),
     [data]
   );
 

@@ -1,10 +1,18 @@
 'use client';
 
-import React, { useCallback, useState, useEffect } from 'react';
+import React, {
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@automatize/navigation';
 import { InvoiceFormScreen } from '@automatize/screens/invoice-form/web';
 import type {
   InvoiceFormData,
+  InvoiceProductItem,
   WarrantyOption,
 } from '@automatize/screens/invoice-form/web';
 import type { InvoiceRow } from '@automatize/screens/invoice/web';
@@ -13,32 +21,35 @@ import type {
   ClientPhone,
 } from '@automatize/screens/client/web';
 import { generateId } from '@automatize/utils';
+import type { TechnicianRow } from '@automatize/screens/technician/web';
 import {
   addAddressToClient,
   addPhoneToClient,
 } from '../../clients/clientStore';
-import { useClients } from '../../clients/useClients';
 import {
-  getSavedProducts,
-  decrementProductStock,
-} from '../../products/productStore';
+  useClientsRows,
+  addAddressToClientInCache,
+  addPhoneToClientInCache,
+} from '../../clients/hooks';
+import {
+  useProductsRows,
+  adjustProductStockInCache,
+} from '../../products/hooks';
+import {
+  useTechniciansRows,
+  addTechnicianToCache,
+} from '../../technician/hooks';
 import {
   addSavedInvoice,
-  getSavedTechnicians as getInvoiceTechnicians,
-  addSavedTechnician as addInvoiceTechnician,
   getSavedWarrantyOptions,
   addSavedWarrantyOption,
 } from '../invoiceStore';
+import { addSavedTechnician as addTableTechnician } from '../../technician/technicianStore';
 import {
-  getSavedTechnicians as getTableTechnicians,
-  addSavedTechnician as addTableTechnician,
-} from '../../technician/technicianStore';
-import type { TechnicianRow } from '@automatize/screens/technician/web';
+  decrementProductStock,
+  incrementProductStock,
+} from '../../products/productStore';
 
-/**
- * Module-level draft store. Survives SPA navigations;
- * cleared on page refresh (JS runtime restart).
- */
 let formDraft: Partial<InvoiceFormData> | undefined;
 
 function toInvoiceRow(data: InvoiceFormData, id: string): InvoiceRow {
@@ -64,27 +75,31 @@ function toInvoiceRow(data: InvoiceFormData, id: string): InvoiceRow {
   };
 }
 
-function mergedTechnicians(): TechnicianRow[] {
-  const table = getTableTechnicians();
-  const tableNames = new Set(table.map((t) => t.name.toLowerCase()));
-  const invoiceOnly = getInvoiceTechnicians().filter(
-    (t) => !tableNames.has(t.name.toLowerCase())
-  );
-  return [...table, ...invoiceOnly];
-}
-
 export default function NewInvoicePage(): React.JSX.Element {
   const { navigate } = useNavigation();
+  const queryClient = useQueryClient();
 
   const [initialData] = useState(() => formDraft);
-  const clients = useClients();
-  const [products] = useState(() => getSavedProducts());
-  const [technicians, setTechnicians] =
-    useState<TechnicianRow[]>(mergedTechnicians);
+  const clients = useClientsRows();
+  const products = useProductsRows();
+  const remoteTechs = useTechniciansRows();
+  const [localTechs, setLocalTechs] = useState<TechnicianRow[]>([]);
+  const technicians = useMemo(() => {
+    const names = new Set(remoteTechs.map((t) => t.name.toLowerCase()));
+    return [
+      ...remoteTechs,
+      ...localTechs.filter((t) => !names.has(t.name.toLowerCase())),
+    ];
+  }, [remoteTechs, localTechs]);
+
   const [warrantyOptions, setWarrantyOptions] = useState<WarrantyOption[]>(() =>
     getSavedWarrantyOptions()
   );
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
+
+  const prevDraftProductsRef = useRef<InvoiceProductItem[]>(
+    initialData?.products ?? []
+  );
 
   useEffect(() => {
     if (!initialData && !formDraft) return;
@@ -105,19 +120,48 @@ export default function NewInvoicePage(): React.JSX.Element {
 
   const handleDataChange = useCallback((data: Partial<InvoiceFormData>) => {
     formDraft = data;
+
+    const nextProducts = data.products ?? [];
+    const prevProducts = prevDraftProductsRef.current;
+    const prevMap = new Map(prevProducts.map((p) => [p.productId, p.quantity]));
+    const nextMap = new Map(nextProducts.map((p) => [p.productId, p.quantity]));
+
+    for (const [productId, qty] of prevMap) {
+      if (!nextMap.has(productId)) incrementProductStock(productId, qty);
+    }
+    for (const [productId, qty] of nextMap) {
+      if (!prevMap.has(productId)) decrementProductStock(productId, qty);
+    }
+    for (const [productId, nextQty] of nextMap) {
+      const prevQty = prevMap.get(productId);
+      if (prevQty !== undefined && prevQty !== nextQty) {
+        const diff = nextQty - prevQty;
+        if (diff > 0) decrementProductStock(productId, diff);
+        else incrementProductStock(productId, -diff);
+      }
+    }
+
+    prevDraftProductsRef.current = nextProducts;
   }, []);
 
   const handleSubmit = (data: InvoiceFormData) => {
     const id = generateId();
     addSavedInvoice(toInvoiceRow(data, id), data);
+    // Stock already decremented incrementally — only sync the RQ cache now.
     for (const item of data.products) {
-      decrementProductStock(item.productId, item.quantity);
+      adjustProductStockInCache(queryClient, item.productId, -item.quantity);
     }
+    prevDraftProductsRef.current = [];
     formDraft = undefined;
     navigate('/invoices');
   };
 
   const handleBack = () => {
+    // Undo any stock reservations made for the abandoned draft.
+    for (const p of prevDraftProductsRef.current) {
+      incrementProductStock(p.productId, p.quantity);
+    }
+    prevDraftProductsRef.current = [];
     formDraft = undefined;
     navigate('/invoices');
   };
@@ -128,27 +172,27 @@ export default function NewInvoicePage(): React.JSX.Element {
   };
 
   const handleAddTechnician = (name: string) => {
-    // If already in the main table, skip adding to invoice-local store
-    const inTable = getTableTechnicians().some(
+    const alreadyInList = technicians.some(
       (t) => t.name.toLowerCase() === name.toLowerCase()
     );
-    if (!inTable) {
-      const tech = addInvoiceTechnician(name);
-      setTechnicians((prev) =>
-        prev.some((t) => t.name.toLowerCase() === name.toLowerCase())
-          ? prev
-          : [...prev, tech]
-      );
+    if (!alreadyInList) {
+      setLocalTechs((prev) => [
+        ...prev,
+        {
+          id: generateId(),
+          name,
+          entryDate: new Date().toISOString().split('T')[0] ?? '',
+        },
+      ]);
     }
   };
 
   const handleSaveTechnicianToTable = (name: string) => {
     const today = new Date().toISOString().split('T')[0] ?? '';
-    const tech = addTableTechnician(name, today);
-    setTechnicians((prev) =>
-      prev.some((t) => t.name.toLowerCase() === name.toLowerCase())
-        ? prev
-        : [...prev, tech]
+    addTableTechnician(name, today);
+    addTechnicianToCache(queryClient, name, today);
+    setLocalTechs((prev) =>
+      prev.filter((t) => t.name.toLowerCase() !== name.toLowerCase())
     );
   };
 
@@ -158,17 +202,19 @@ export default function NewInvoicePage(): React.JSX.Element {
   };
 
   const handleSaveAddressToClient = useCallback(
-    (_clientId: string, address: ClientAddress) => {
-      addAddressToClient(_clientId, address);
+    (clientId: string, address: ClientAddress) => {
+      addAddressToClient(clientId, address);
+      addAddressToClientInCache(queryClient, clientId, address);
     },
-    []
+    [queryClient]
   );
 
   const handleSavePhoneToClient = useCallback(
-    (_clientId: string, phone: ClientPhone) => {
-      addPhoneToClient(_clientId, phone);
+    (clientId: string, phone: ClientPhone) => {
+      addPhoneToClient(clientId, phone);
+      addPhoneToClientInCache(queryClient, clientId, phone);
     },
-    []
+    [queryClient]
   );
 
   return (

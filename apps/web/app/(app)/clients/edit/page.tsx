@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@automatize/navigation';
 import { useTranslation, SUPPORTED_LANGUAGES } from '@automatize/localization';
 import { useTheme, THEME_PREFERENCES } from '@automatize/theme';
@@ -20,7 +21,7 @@ import {
   Kbd,
 } from '@automatize/ui/web';
 import { getClientFormData, updateSavedClient } from '../clientStore';
-import { useClient } from '../hooks';
+import { useClient, updateClientInCache } from '../hooks';
 import type { Client } from '@automatize/screens/client/data';
 
 let formDraft: ClientFormData | undefined;
@@ -102,6 +103,7 @@ export default function EditClientPage(): React.JSX.Element {
   const { navigate } = useNavigation();
   const { i18n, t } = useTranslation();
   const { preference, isDark, setTheme } = useTheme();
+  const queryClient = useQueryClient();
 
   const { clientIdToEdit, clearClientToEdit, clients } = useClientContext();
   const { data: remoteClient } = useClient(clientIdToEdit ?? '');
@@ -155,15 +157,13 @@ export default function EditClientPage(): React.JSX.Element {
 
   const handleConfirm = useCallback(() => {
     if (!clientIdToEdit || !pendingData) return;
-    updateSavedClient(
-      clientIdToEdit,
-      toClientRow(pendingData, clientIdToEdit),
-      pendingData
-    );
+    const row = toClientRow(pendingData, clientIdToEdit);
+    updateSavedClient(clientIdToEdit, row, pendingData);
+    updateClientInCache(queryClient, clientIdToEdit, row);
     clearClientToEdit();
     formDraft = undefined;
     navigate('/clients');
-  }, [clientIdToEdit, pendingData, clearClientToEdit, navigate]);
+  }, [clientIdToEdit, pendingData, queryClient, clearClientToEdit, navigate]);
 
   const handleCancelConfirm = useCallback(() => {
     setShowConfirmDialog(false);

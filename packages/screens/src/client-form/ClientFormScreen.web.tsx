@@ -303,7 +303,7 @@ export const ClientFormScreen: React.FC<ClientFormScreenProps> = ({
       <Dialog
         open={dialogOpen}
         onOpenChange={(open) => {
-          if (!open && !isControlled) {
+          if (!open) {
             handleCancelDiscard();
           }
         }}
