@@ -1,16 +1,9 @@
 import type { ClientRow } from '../client/ClientScreen.types';
 import type { ProductRow } from '../product/ProductScreen.types';
-import type { TechnicianRow } from '../technician/TechnicianScreen.types';
 import type { InvoiceRow } from '../invoice/InvoiceScreen.types';
 import type { InvoiceFormData } from '../invoice-form/InvoiceFormScreen.types';
 
-export type {
-  ClientRow,
-  ProductRow,
-  TechnicianRow,
-  InvoiceRow,
-  InvoiceFormData,
-};
+export type { ClientRow, ProductRow, InvoiceRow, InvoiceFormData };
 
 export interface AnalyticsScreenProps {
   invoices: InvoiceRow[];
@@ -18,5 +11,4 @@ export interface AnalyticsScreenProps {
   invoiceDetails: Map<string, InvoiceFormData>;
   clients: ClientRow[];
   products: ProductRow[];
-  technicians: TechnicianRow[];
 }

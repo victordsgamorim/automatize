@@ -385,11 +385,9 @@
   "analytics.kpi.totalRevenue.invoices": "faturas",
   "analytics.kpi.totalInvoices": "Total de Faturas",
   "analytics.kpi.avgInvoiceValue": "Valor Médio da Fatura",
-  "analytics.kpi.totalClients": "Total de Clientes",
-  "analytics.kpi.totalClients.breakdown": "{{individual}} pessoa física, {{business}} pessoa jurídica",
-  "analytics.kpi.totalProducts": "Total de Produtos",
-  "analytics.kpi.totalProducts.inventoryValue": "Estoque: {{value}}",
-  "analytics.kpi.activeTechnicians": "Técnicos Ativos",
+  "analytics.kpi.uniqueClientsInvoiced": "Clientes Faturados",
+  "analytics.kpi.productsSold": "Produtos Vendidos",
+  "analytics.kpi.topClientBySpending": "Cliente Top",
   "analytics.chart.noData": "Sem dados disponíveis",
   "analytics.chart.revenueOverTime": "Receita ao Longo do Tempo",
   "analytics.chart.revenue": "Receita",
@@ -405,5 +403,6 @@
   "analytics.chart.technicianWorkload": "Carga de Trabalho dos Técnicos",
   "analytics.chart.lowStockAlerts": "Alertas de Estoque Baixo",
   "analytics.chart.lowStockAlerts.empty": "Todos os produtos estão bem abastecidos",
-  "analytics.chart.lowStockAlerts.unit": "unidades"
+  "analytics.chart.lowStockAlerts.unit": "unidades",
+  "analytics.trend.vsLastMonth": "vs mês anterior"
 }

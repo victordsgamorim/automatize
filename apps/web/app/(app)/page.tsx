@@ -1,29 +1,42 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { AnalyticsScreen } from '@automatize/screens/analytics/web';
-import { getSavedInvoices, getInvoiceFormData } from './invoices/invoiceStore';
-import { getSavedClients } from './clients/clientStore';
-import { getSavedProducts } from './products/productStore';
-import { getSavedTechnicians } from './invoices/invoiceStore';
+import type { InvoiceFormData } from '@automatize/screens/invoice-form/web';
+import {
+  useInvoicesData,
+  toInvoiceRow,
+  invoiceToFormData,
+} from './invoices/hooks';
+import { useClientsData, toClientRow } from './clients/hooks';
+import { useProductsData, toProductRow } from './products/hooks';
 
 export default function DashboardPage(): React.JSX.Element {
-  const invoices = useState(() => getSavedInvoices())[0];
-  const clients = useState(() => getSavedClients())[0];
-  const products = useState(() => getSavedProducts())[0];
-  const technicians = useState(() => getSavedTechnicians())[0];
+  const { data: invoicesData } = useInvoicesData();
+  const { data: clientsData } = useClientsData();
+  const { data: productsData } = useProductsData();
+
+  const invoices = useMemo(
+    () => invoicesData?.invoices.map(toInvoiceRow) ?? [],
+    [invoicesData]
+  );
+  const clients = useMemo(
+    () => clientsData?.clients.map(toClientRow) ?? [],
+    [clientsData]
+  );
+  const products = useMemo(
+    () => productsData?.products.map(toProductRow) ?? [],
+    [productsData]
+  );
 
   const invoiceDetails = useMemo(() => {
-    const map = new Map<
-      string,
-      NonNullable<ReturnType<typeof getInvoiceFormData>>
-    >();
-    for (const inv of invoices) {
-      const detail = getInvoiceFormData(inv.id);
-      if (detail) map.set(inv.id, detail);
+    const map = new Map<string, InvoiceFormData>();
+    if (!invoicesData?.invoices) return map;
+    for (const invoice of invoicesData.invoices) {
+      map.set(invoice.id, invoiceToFormData(invoice));
     }
     return map;
-  }, [invoices]);
+  }, [invoicesData]);
 
   return (
     <AnalyticsScreen
@@ -31,7 +44,6 @@ export default function DashboardPage(): React.JSX.Element {
       invoiceDetails={invoiceDetails}
       clients={clients}
       products={products}
-      technicians={technicians}
     />
   );
 }

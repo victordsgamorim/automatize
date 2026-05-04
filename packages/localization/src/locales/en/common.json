@@ -385,11 +385,9 @@
   "analytics.kpi.totalRevenue.invoices": "invoices",
   "analytics.kpi.totalInvoices": "Total Invoices",
   "analytics.kpi.avgInvoiceValue": "Average Invoice Value",
-  "analytics.kpi.totalClients": "Total Clients",
-  "analytics.kpi.totalClients.breakdown": "{{individual}} individual, {{business}} business",
-  "analytics.kpi.totalProducts": "Total Products",
-  "analytics.kpi.totalProducts.inventoryValue": "Inventory: {{value}}",
-  "analytics.kpi.activeTechnicians": "Active Technicians",
+  "analytics.kpi.uniqueClientsInvoiced": "Clients Invoiced",
+  "analytics.kpi.productsSold": "Products Sold",
+  "analytics.kpi.topClientBySpending": "Top Client",
   "analytics.chart.noData": "No data available",
   "analytics.chart.revenueOverTime": "Revenue Over Time",
   "analytics.chart.revenue": "Revenue",
@@ -405,5 +403,6 @@
   "analytics.chart.technicianWorkload": "Technician Workload",
   "analytics.chart.lowStockAlerts": "Low Stock Alerts",
   "analytics.chart.lowStockAlerts.empty": "All products are well stocked",
-  "analytics.chart.lowStockAlerts.unit": "units"
+  "analytics.chart.lowStockAlerts.unit": "units",
+  "analytics.trend.vsLastMonth": "vs last month"
 }

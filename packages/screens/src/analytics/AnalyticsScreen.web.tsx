@@ -5,12 +5,13 @@ import {
   TrendingUp,
   Users,
   Package,
-  Wrench,
+  Crown,
 } from 'lucide-react';
 import { Card, Text } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
 import { useAnalyticsData } from './hooks/useAnalyticsData';
 import { KpiCard } from './components/KpiCard.web';
+import { KpiSparkline } from './components/KpiSparkline.web';
 import { RevenueChart } from './components/RevenueChart.web';
 import { InvoicesChart } from './components/InvoicesChart.web';
 import { ClientTypeChart } from './components/ClientTypeChart.web';
@@ -24,12 +25,6 @@ function formatPrice(value: number): string {
     style: 'currency',
     currency: 'BRL',
   }).format(value);
-}
-
-function formatCompact(value: number): string {
-  if (value >= 1_000_000) return `R$ ${(value / 1_000_000).toFixed(1)}M`;
-  if (value >= 1_000) return `R$ ${(value / 1_000).toFixed(0)}k`;
-  return formatPrice(value);
 }
 
 interface ChartCardProps {
@@ -54,7 +49,6 @@ export const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({
   invoiceDetails,
   clients,
   products,
-  technicians,
 }) => {
   const { t } = useTranslation();
 
@@ -63,7 +57,6 @@ export const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({
     invoiceDetails,
     clients,
     products,
-    technicians,
   });
 
   const typeLabels: Record<string, string> = {
@@ -72,49 +65,114 @@ export const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({
   };
 
   const noData = t('analytics.chart.noData');
+  const trendLabel = t('analytics.trend.vsLastMonth');
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-6">
-      {/* ── KPI Cards ────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <KpiCard
-          icon={<DollarSign className="size-5" />}
-          title={t('analytics.kpi.totalRevenue')}
-          value={formatPrice(data.totalRevenue)}
-          description={`${data.totalInvoices} ${t('analytics.kpi.totalRevenue.invoices')}`}
-        />
-        <KpiCard
-          icon={<FileText className="size-5" />}
-          title={t('analytics.kpi.totalInvoices')}
-          value={String(data.totalInvoices)}
-        />
-        <KpiCard
-          icon={<TrendingUp className="size-5" />}
-          title={t('analytics.kpi.avgInvoiceValue')}
-          value={formatPrice(data.avgInvoiceValue)}
-        />
-        <KpiCard
-          icon={<Users className="size-5" />}
-          title={t('analytics.kpi.totalClients')}
-          value={String(data.totalClients)}
-          description={t('analytics.kpi.totalClients.breakdown', {
-            individual: String(data.individualClients),
-            business: String(data.businessClients),
-          })}
-        />
-        <KpiCard
-          icon={<Package className="size-5" />}
-          title={t('analytics.kpi.totalProducts')}
-          value={String(data.totalProducts)}
-          description={t('analytics.kpi.totalProducts.inventoryValue', {
-            value: formatCompact(data.inventoryValue),
-          })}
-        />
-        <KpiCard
-          icon={<Wrench className="size-5" />}
-          title={t('analytics.kpi.activeTechnicians')}
-          value={String(data.activeTechnicians)}
-        />
+      {/* ── KPI Cards (bento grid) ───────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12">
+        {/* Hero: Total Revenue */}
+        <div className="sm:col-span-2 lg:col-span-6">
+          <KpiCard
+            size="hero"
+            accent="primary"
+            icon={<DollarSign className="size-6" />}
+            title={t('analytics.kpi.totalRevenue')}
+            value={formatPrice(data.totalRevenue)}
+            description={`${data.totalInvoices} ${t('analytics.kpi.totalRevenue.invoices')}`}
+            trend={
+              data.revenueDeltaPct !== null
+                ? { pct: data.revenueDeltaPct, label: trendLabel }
+                : undefined
+            }
+          >
+            <KpiSparkline data={data.revenueByMonth} />
+          </KpiCard>
+        </div>
+
+        {/* Default: Unique Clients Invoiced */}
+        <div className="lg:col-span-3">
+          <KpiCard
+            size="default"
+            accent="info"
+            icon={<Users className="size-5" />}
+            title={t('analytics.kpi.uniqueClientsInvoiced')}
+            value={String(data.uniqueClientsInvoiced)}
+            trend={
+              data.uniqueClientsDeltaPct !== null
+                ? { pct: data.uniqueClientsDeltaPct, label: trendLabel }
+                : undefined
+            }
+          />
+        </div>
+
+        {/* Default: Products Sold */}
+        <div className="lg:col-span-3">
+          <KpiCard
+            size="default"
+            accent="success"
+            icon={<Package className="size-5" />}
+            title={t('analytics.kpi.productsSold')}
+            value={String(data.totalProductsSold)}
+            trend={
+              data.productsSoldDeltaPct !== null
+                ? { pct: data.productsSoldDeltaPct, label: trendLabel }
+                : undefined
+            }
+          />
+        </div>
+
+        {/* Compact: Total Invoices */}
+        <div className="lg:col-span-4">
+          <KpiCard
+            size="compact"
+            accent="primary"
+            icon={<FileText className="size-5" />}
+            title={t('analytics.kpi.totalInvoices')}
+            value={String(data.totalInvoices)}
+            trend={
+              data.invoicesDeltaPct !== null
+                ? { pct: data.invoicesDeltaPct, label: trendLabel }
+                : undefined
+            }
+          />
+        </div>
+
+        {/* Compact: Avg Invoice Value */}
+        <div className="lg:col-span-4">
+          <KpiCard
+            size="compact"
+            accent="info"
+            icon={<TrendingUp className="size-5" />}
+            title={t('analytics.kpi.avgInvoiceValue')}
+            value={formatPrice(data.avgInvoiceValue)}
+            trend={
+              data.avgInvoiceDeltaPct !== null
+                ? { pct: data.avgInvoiceDeltaPct, label: trendLabel }
+                : undefined
+            }
+          />
+        </div>
+
+        {/* Default: Top Client by Spending */}
+        <div className="lg:col-span-4">
+          <KpiCard
+            size="default"
+            accent="warning"
+            icon={<Crown className="size-5" />}
+            title={t('analytics.kpi.topClientBySpending')}
+            value={
+              data.topClientBySpending
+                ? formatPrice(data.topClientBySpending.total)
+                : formatPrice(0)
+            }
+            description={
+              data.topClientBySpending
+                ? data.topClientBySpending.name
+                : undefined
+            }
+          />
+        </div>
       </div>
 
       {/* ── Charts ───────────────────────────────────────────────────────────── */}

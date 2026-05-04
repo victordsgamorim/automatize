@@ -33,29 +33,30 @@ export interface LowStockItem {
   companyName?: string;
 }
 
+export interface TopClientSpending {
+  name: string;
+  total: number;
+}
+
 export interface AnalyticsData {
-  // KPIs
   totalRevenue: number;
   totalInvoices: number;
   avgInvoiceValue: number;
-  totalClients: number;
-  individualClients: number;
-  businessClients: number;
-  totalProducts: number;
-  inventoryValue: number;
-  activeTechnicians: number;
-  // Time series
+  uniqueClientsInvoiced: number;
+  totalProductsSold: number;
+  topClientBySpending: TopClientSpending | null;
+  revenueDeltaPct: number | null;
+  invoicesDeltaPct: number | null;
+  avgInvoiceDeltaPct: number | null;
+  uniqueClientsDeltaPct: number | null;
+  productsSoldDeltaPct: number | null;
   revenueByMonth: MonthRevenuePoint[];
   invoicesByMonth: MonthCountPoint[];
-  // Rankings
+  clientTypeDistribution: ClientTypeItem[];
   topClientsByRevenue: NameValueItem[];
   topProductsByRevenue: NameValueItem[];
   topProductsByQuantity: NameValueItem[];
-  // Distribution
-  clientTypeDistribution: ClientTypeItem[];
-  // Workload
   technicianWorkload: TechnicianWorkloadItem[];
-  // Alerts
   lowStockProducts: LowStockItem[];
 }
 
@@ -67,33 +68,73 @@ export function useAnalyticsData({
   invoiceDetails,
   clients,
   products,
-  technicians,
 }: AnalyticsScreenProps): AnalyticsData {
   return useMemo(() => {
-    // ── KPIs ───────────────────────────────────────────────────────────────────
     const totalRevenue = invoices.reduce((sum, inv) => sum + inv.total, 0);
     const totalInvoices = invoices.length;
     const avgInvoiceValue =
       totalInvoices > 0 ? totalRevenue / totalInvoices : 0;
-    const individualClients = clients.filter(
-      (c) => c.clientType === 'individual'
-    ).length;
-    const businessClients = clients.filter(
-      (c) => c.clientType === 'business'
-    ).length;
-    const inventoryValue = products.reduce(
-      (sum, p) => sum + p.price * p.quantity,
-      0
-    );
+
+    const uniqueClientIds = new Set<string>();
+    for (const inv of invoices) {
+      if (inv.clientId) uniqueClientIds.add(inv.clientId);
+    }
+    const uniqueClientsInvoiced = uniqueClientIds.size;
+
+    let totalProductsSold = 0;
+    const clientSpendMap = new Map<string, { name: string; total: number }>();
+    for (const inv of invoices) {
+      if (inv.clientId) {
+        const existing = clientSpendMap.get(inv.clientId) ?? {
+          name: inv.clientName,
+          total: 0,
+        };
+        clientSpendMap.set(inv.clientId, {
+          name: existing.name,
+          total: existing.total + inv.total,
+        });
+      }
+      const detail = invoiceDetails.get(inv.id);
+      if (detail) {
+        for (const product of detail.products) {
+          totalProductsSold += product.quantity;
+        }
+      }
+    }
+    const topClientBySpending =
+      invoices.length > 0
+        ? ([...clientSpendMap.values()].sort((a, b) => b.total - a.total)[0] ??
+          null)
+        : null;
 
     // ── Monthly time series ────────────────────────────────────────────────────
-    const monthMap = new Map<string, { revenue: number; count: number }>();
+    const monthMap = new Map<
+      string,
+      {
+        revenue: number;
+        count: number;
+        clientIds: Set<string>;
+        productsSold: number;
+      }
+    >();
     for (const inv of invoices) {
-      const key = inv.date.slice(0, 7); // 'YYYY-MM'
-      const existing = monthMap.get(key) ?? { revenue: 0, count: 0 };
+      const key = inv.date.slice(0, 7);
+      const existing = monthMap.get(key) ?? {
+        revenue: 0,
+        count: 0,
+        clientIds: new Set<string>(),
+        productsSold: 0,
+      };
+      if (inv.clientId) existing.clientIds.add(inv.clientId);
+      const detail = invoiceDetails.get(inv.id);
+      const sold = detail
+        ? detail.products.reduce((s, p) => s + p.quantity, 0)
+        : 0;
       monthMap.set(key, {
         revenue: existing.revenue + inv.total,
         count: existing.count + 1,
+        clientIds: existing.clientIds,
+        productsSold: existing.productsSold + sold,
       });
     }
     const sortedEntries = [...monthMap.entries()].sort(([a], [b]) =>
@@ -112,7 +153,41 @@ export function useAnalyticsData({
       })
     );
 
-    // ── Client type distribution ───────────────────────────────────────────────
+    // ── MoM deltas (last two months only) ──────────────────────────────────────
+    let revenueDeltaPct: number | null = null;
+    let invoicesDeltaPct: number | null = null;
+    let avgInvoiceDeltaPct: number | null = null;
+    let uniqueClientsDeltaPct: number | null = null;
+    let productsSoldDeltaPct: number | null = null;
+    if (sortedEntries.length >= 2) {
+      const prev = sortedEntries[sortedEntries.length - 2][1];
+      const curr = sortedEntries[sortedEntries.length - 1][1];
+      revenueDeltaPct =
+        prev.revenue === 0
+          ? null
+          : (curr.revenue - prev.revenue) / prev.revenue;
+      invoicesDeltaPct =
+        prev.count === 0 ? null : (curr.count - prev.count) / prev.count;
+      const prevAvg = prev.count === 0 ? 0 : prev.revenue / prev.count;
+      const currAvg = curr.count === 0 ? 0 : curr.revenue / curr.count;
+      avgInvoiceDeltaPct = prevAvg === 0 ? null : (currAvg - prevAvg) / prevAvg;
+      const prevClients = prev.clientIds.size;
+      const currClients = curr.clientIds.size;
+      uniqueClientsDeltaPct =
+        prevClients === 0 ? null : (currClients - prevClients) / prevClients;
+      productsSoldDeltaPct =
+        prev.productsSold === 0
+          ? null
+          : (curr.productsSold - prev.productsSold) / prev.productsSold;
+    }
+
+    // ── Client type distribution (still needs clients prop for type info) ──────
+    const individualClients = clients.filter(
+      (c) => c.clientType === 'individual'
+    ).length;
+    const businessClients = clients.filter(
+      (c) => c.clientType === 'business'
+    ).length;
     const clientTypeDistribution: ClientTypeItem[] = [
       { type: 'individual', count: individualClients },
       { type: 'business', count: businessClients },
@@ -197,12 +272,14 @@ export function useAnalyticsData({
       totalRevenue,
       totalInvoices,
       avgInvoiceValue,
-      totalClients: clients.length,
-      individualClients,
-      businessClients,
-      totalProducts: products.length,
-      inventoryValue,
-      activeTechnicians: technicians.length,
+      uniqueClientsInvoiced,
+      totalProductsSold,
+      topClientBySpending,
+      revenueDeltaPct,
+      invoicesDeltaPct,
+      avgInvoiceDeltaPct,
+      uniqueClientsDeltaPct,
+      productsSoldDeltaPct,
       revenueByMonth,
       invoicesByMonth,
       clientTypeDistribution,
@@ -212,5 +289,5 @@ export function useAnalyticsData({
       technicianWorkload,
       lowStockProducts,
     };
-  }, [invoices, invoiceDetails, clients, products, technicians]);
+  }, [invoices, invoiceDetails, clients, products]);
 }
