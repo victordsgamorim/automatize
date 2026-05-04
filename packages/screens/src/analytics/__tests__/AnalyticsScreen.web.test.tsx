@@ -117,7 +117,7 @@ vi.mock('lucide-react', () => ({
     React.createElement('span', { 'data-testid': 'icon-trending' }),
   Users: () => React.createElement('span', { 'data-testid': 'icon-users' }),
   Package: () => React.createElement('span', { 'data-testid': 'icon-package' }),
-  Wrench: () => React.createElement('span', { 'data-testid': 'icon-wrench' }),
+  Crown: () => React.createElement('span', { 'data-testid': 'icon-crown' }),
   AlertTriangle: () =>
     React.createElement('span', { 'data-testid': 'icon-alert' }),
   ArrowUpRight: () =>
@@ -133,11 +133,11 @@ import type { InvoiceRow } from '../../invoice/InvoiceScreen.types';
 import type { InvoiceFormData } from '../../invoice-form/InvoiceFormScreen.types';
 import type { ClientRow } from '../../client/ClientScreen.types';
 import type { ProductRow } from '../../product/ProductScreen.types';
-import type { TechnicianRow } from '../../technician/TechnicianScreen.types';
 
 const mockInvoices: InvoiceRow[] = [
   {
     id: 'inv-1',
+    clientId: 'cl-1',
     clientName: 'Client A',
     date: '2024-01-15',
     warrantyMonths: 3,
@@ -145,6 +145,7 @@ const mockInvoices: InvoiceRow[] = [
   },
   {
     id: 'inv-2',
+    clientId: 'cl-2',
     clientName: 'Client B',
     date: '2024-02-20',
     warrantyMonths: 0,
@@ -152,6 +153,7 @@ const mockInvoices: InvoiceRow[] = [
   },
   {
     id: 'inv-3',
+    clientId: 'cl-3',
     clientName: 'Client C',
     date: '2024-03-10',
     warrantyMonths: 12,
@@ -266,18 +268,12 @@ const mockProducts: ProductRow[] = [
   { id: 'prod-3', name: 'Product C', quantity: 0, price: 200 },
 ];
 
-const mockTechnicians: TechnicianRow[] = [
-  { id: 'tech-1', name: 'Tech A', entryDate: '2024-01-01' },
-  { id: 'tech-2', name: 'Tech B', entryDate: '2024-02-01' },
-];
-
 function defaultProps(): AnalyticsScreenProps {
   return {
     invoices: mockInvoices,
     invoiceDetails: mockInvoiceDetails,
     clients: mockClients,
     products: mockProducts,
-    technicians: mockTechnicians,
   };
 }
 
@@ -298,13 +294,13 @@ describe('AnalyticsScreen (web)', () => {
       screen.getAllByText('analytics.kpi.avgInvoiceValue').length
     ).toBeGreaterThanOrEqual(1);
     expect(
-      screen.getAllByText('analytics.kpi.totalClients').length
+      screen.getAllByText('analytics.kpi.uniqueClientsInvoiced').length
     ).toBeGreaterThanOrEqual(1);
     expect(
-      screen.getAllByText('analytics.kpi.totalProducts').length
+      screen.getAllByText('analytics.kpi.productsSold').length
     ).toBeGreaterThanOrEqual(1);
     expect(
-      screen.getAllByText('analytics.kpi.activeTechnicians').length
+      screen.getAllByText('analytics.kpi.topClientBySpending').length
     ).toBeGreaterThanOrEqual(1);
   });
 
@@ -323,19 +319,9 @@ describe('AnalyticsScreen (web)', () => {
     expect(screen.getByText('R$ 2.333,33')).toBeDefined();
   });
 
-  it('renders total clients count', () => {
+  it('renders top client name as description', () => {
     renderAnalytics();
-    expect(screen.getAllByText('3').length).toBeGreaterThanOrEqual(1);
-  });
-
-  it('renders total products count', () => {
-    renderAnalytics();
-    expect(screen.getAllByText('3').length).toBeGreaterThanOrEqual(1);
-  });
-
-  it('renders active technicians count', () => {
-    renderAnalytics();
-    expect(screen.getByText('2')).toBeDefined();
+    expect(screen.getByText('Client C')).toBeDefined();
   });
 
   it('renders all chart section titles', () => {
@@ -378,7 +364,6 @@ describe('AnalyticsScreen (web)', () => {
       invoiceDetails: new Map(),
       clients: [],
       products: [],
-      technicians: [],
     });
     const noDataLabels = screen.getAllByText('analytics.chart.noData');
     expect(noDataLabels.length).toBeGreaterThanOrEqual(1);
@@ -390,24 +375,9 @@ describe('AnalyticsScreen (web)', () => {
       invoiceDetails: new Map(),
       clients: [],
       products: [{ id: 'p1', name: 'P1', quantity: 50, price: 100 }],
-      technicians: [],
     });
     expect(
       screen.getByText('analytics.chart.lowStockAlerts.empty')
-    ).toBeDefined();
-  });
-
-  it('computes client type breakdown description', () => {
-    renderAnalytics();
-    expect(
-      screen.getByText('analytics.kpi.totalClients.breakdown')
-    ).toBeDefined();
-  });
-
-  it('computes inventory value description', () => {
-    renderAnalytics();
-    expect(
-      screen.getByText('analytics.kpi.totalProducts.inventoryValue')
     ).toBeDefined();
   });
 

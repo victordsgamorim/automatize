@@ -5,7 +5,7 @@ import {
   TrendingUp,
   Users,
   Package,
-  Wrench,
+  Crown,
 } from 'lucide-react';
 import { Card, Text } from '@automatize/ui/web';
 import { useTranslation } from '@automatize/core-localization';
@@ -25,12 +25,6 @@ function formatPrice(value: number): string {
     style: 'currency',
     currency: 'BRL',
   }).format(value);
-}
-
-function formatCompact(value: number): string {
-  if (value >= 1_000_000) return `R$ ${(value / 1_000_000).toFixed(1)}M`;
-  if (value >= 1_000) return `R$ ${(value / 1_000).toFixed(0)}k`;
-  return formatPrice(value);
 }
 
 interface ChartCardProps {
@@ -55,7 +49,6 @@ export const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({
   invoiceDetails,
   clients,
   products,
-  technicians,
 }) => {
   const { t } = useTranslation();
 
@@ -64,7 +57,6 @@ export const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({
     invoiceDetails,
     clients,
     products,
-    technicians,
   });
 
   const typeLabels: Record<string, string> = {
@@ -98,32 +90,35 @@ export const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({
           </KpiCard>
         </div>
 
-        {/* Rich: Total Clients */}
+        {/* Default: Unique Clients Invoiced */}
         <div className="lg:col-span-3">
           <KpiCard
             size="default"
             accent="info"
             icon={<Users className="size-5" />}
-            title={t('analytics.kpi.totalClients')}
-            value={String(data.totalClients)}
-            description={t('analytics.kpi.totalClients.breakdown', {
-              individual: String(data.individualClients),
-              business: String(data.businessClients),
-            })}
+            title={t('analytics.kpi.uniqueClientsInvoiced')}
+            value={String(data.uniqueClientsInvoiced)}
+            trend={
+              data.uniqueClientsDeltaPct !== null
+                ? { pct: data.uniqueClientsDeltaPct, label: trendLabel }
+                : undefined
+            }
           />
         </div>
 
-        {/* Rich: Total Products */}
+        {/* Default: Products Sold */}
         <div className="lg:col-span-3">
           <KpiCard
             size="default"
             accent="success"
             icon={<Package className="size-5" />}
-            title={t('analytics.kpi.totalProducts')}
-            value={String(data.totalProducts)}
-            description={t('analytics.kpi.totalProducts.inventoryValue', {
-              value: formatCompact(data.inventoryValue),
-            })}
+            title={t('analytics.kpi.productsSold')}
+            value={String(data.totalProductsSold)}
+            trend={
+              data.productsSoldDeltaPct !== null
+                ? { pct: data.productsSoldDeltaPct, label: trendLabel }
+                : undefined
+            }
           />
         </div>
 
@@ -159,14 +154,23 @@ export const AnalyticsScreen: React.FC<AnalyticsScreenProps> = ({
           />
         </div>
 
-        {/* Compact: Active Technicians */}
-        <div className="sm:col-span-2 lg:col-span-4">
+        {/* Default: Top Client by Spending */}
+        <div className="lg:col-span-4">
           <KpiCard
-            size="compact"
+            size="default"
             accent="warning"
-            icon={<Wrench className="size-5" />}
-            title={t('analytics.kpi.activeTechnicians')}
-            value={String(data.activeTechnicians)}
+            icon={<Crown className="size-5" />}
+            title={t('analytics.kpi.topClientBySpending')}
+            value={
+              data.topClientBySpending
+                ? formatPrice(data.topClientBySpending.total)
+                : formatPrice(0)
+            }
+            description={
+              data.topClientBySpending
+                ? data.topClientBySpending.name
+                : undefined
+            }
           />
         </div>
       </div>
