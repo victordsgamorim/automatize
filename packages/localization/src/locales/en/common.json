@@ -405,5 +405,6 @@
   "analytics.chart.technicianWorkload": "Technician Workload",
   "analytics.chart.lowStockAlerts": "Low Stock Alerts",
   "analytics.chart.lowStockAlerts.empty": "All products are well stocked",
-  "analytics.chart.lowStockAlerts.unit": "units"
+  "analytics.chart.lowStockAlerts.unit": "units",
+  "analytics.trend.vsLastMonth": "vs last month"
 }

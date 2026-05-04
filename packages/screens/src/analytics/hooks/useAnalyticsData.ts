@@ -44,6 +44,10 @@ export interface AnalyticsData {
   totalProducts: number;
   inventoryValue: number;
   activeTechnicians: number;
+  // Month-over-month deltas (decimal — 0.125 = +12.5%); null when undefined or previous-month base = 0
+  revenueDeltaPct: number | null;
+  invoicesDeltaPct: number | null;
+  avgInvoiceDeltaPct: number | null;
   // Time series
   revenueByMonth: MonthRevenuePoint[];
   invoicesByMonth: MonthCountPoint[];
@@ -111,6 +115,24 @@ export function useAnalyticsData({
         count,
       })
     );
+
+    // ── MoM deltas (last two months only — null otherwise) ─────────────────────
+    let revenueDeltaPct: number | null = null;
+    let invoicesDeltaPct: number | null = null;
+    let avgInvoiceDeltaPct: number | null = null;
+    if (sortedEntries.length >= 2) {
+      const prev = sortedEntries[sortedEntries.length - 2][1];
+      const curr = sortedEntries[sortedEntries.length - 1][1];
+      revenueDeltaPct =
+        prev.revenue === 0
+          ? null
+          : (curr.revenue - prev.revenue) / prev.revenue;
+      invoicesDeltaPct =
+        prev.count === 0 ? null : (curr.count - prev.count) / prev.count;
+      const prevAvg = prev.count === 0 ? 0 : prev.revenue / prev.count;
+      const currAvg = curr.count === 0 ? 0 : curr.revenue / curr.count;
+      avgInvoiceDeltaPct = prevAvg === 0 ? null : (currAvg - prevAvg) / prevAvg;
+    }
 
     // ── Client type distribution ───────────────────────────────────────────────
     const clientTypeDistribution: ClientTypeItem[] = [
@@ -203,6 +225,9 @@ export function useAnalyticsData({
       totalProducts: products.length,
       inventoryValue,
       activeTechnicians: technicians.length,
+      revenueDeltaPct,
+      invoicesDeltaPct,
+      avgInvoiceDeltaPct,
       revenueByMonth,
       invoicesByMonth,
       clientTypeDistribution,

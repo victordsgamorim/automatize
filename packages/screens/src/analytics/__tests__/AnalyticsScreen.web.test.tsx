@@ -120,6 +120,11 @@ vi.mock('lucide-react', () => ({
   Wrench: () => React.createElement('span', { 'data-testid': 'icon-wrench' }),
   AlertTriangle: () =>
     React.createElement('span', { 'data-testid': 'icon-alert' }),
+  ArrowUpRight: () =>
+    React.createElement('span', { 'data-testid': 'icon-arrow-up' }),
+  ArrowDownRight: () =>
+    React.createElement('span', { 'data-testid': 'icon-arrow-down' }),
+  Minus: () => React.createElement('span', { 'data-testid': 'icon-minus' }),
 }));
 
 import { AnalyticsScreen } from '../AnalyticsScreen.web';
@@ -404,5 +409,31 @@ describe('AnalyticsScreen (web)', () => {
     expect(
       screen.getByText('analytics.kpi.totalProducts.inventoryValue')
     ).toBeDefined();
+  });
+
+  it('renders trend chip for revenue when MoM data is available', () => {
+    renderAnalytics();
+    // Three monthly invoices yield revenueDeltaPct = +20% (Mar 3000 vs Feb 2500)
+    const upArrows = screen.getAllByTestId('icon-arrow-up');
+    expect(upArrows.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('hides trend chips when only one month of data exists', () => {
+    renderAnalytics({
+      invoices: [
+        {
+          id: 'inv-only',
+          clientName: 'Solo',
+          date: '2024-01-15',
+          warrantyMonths: 0,
+          total: 1000,
+        },
+      ],
+      invoiceDetails: new Map(),
+    });
+    // No up/down arrows should appear when there is no prior month
+    const ups = screen.queryAllByTestId('icon-arrow-up');
+    const downs = screen.queryAllByTestId('icon-arrow-down');
+    expect(ups.length + downs.length).toBe(0);
   });
 });

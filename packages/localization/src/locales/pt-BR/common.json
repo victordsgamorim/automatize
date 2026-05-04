@@ -405,5 +405,6 @@
   "analytics.chart.technicianWorkload": "Carga de Trabalho dos Técnicos",
   "analytics.chart.lowStockAlerts": "Alertas de Estoque Baixo",
   "analytics.chart.lowStockAlerts.empty": "Todos os produtos estão bem abastecidos",
-  "analytics.chart.lowStockAlerts.unit": "unidades"
+  "analytics.chart.lowStockAlerts.unit": "unidades",
+  "analytics.trend.vsLastMonth": "vs mês anterior"
 }
